@@ -1,7 +1,7 @@
 ---
 layout: post
-title: First post
-subtitle: This is test Markdown
+title: Googleアナリティクス入門
+subtitle: 【初心者向き】Googleアナリティクスを導入するまで
 categories: markdown
 tags: [test]
 ---
