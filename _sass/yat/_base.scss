@@ -285,6 +285,7 @@ table {
 @mixin center-image {
   height: 100%;
   max-width: 1000%;
+  background: linear-gradient(to top, rgba(217, 175, 217, 0.7) 0%, rgba(151, 217, 225, 0.7) 100%);
   background-size: cover;
   background-position: center center;
   overflow: hidden;
