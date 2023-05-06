@@ -1,4 +1,4 @@
 home:
   heading: "独学データサイエンス"
-  subheading: "AI、統計学、そしてそれに関連するプログラミングの基本から実践的な技術まで"
-  banner: "Your image url"
+  subheading: "AI、統計学、そしてプログラミングの基本から実践的な技術まで"
+  banner: "/assets/images/banners/meka.jpg"

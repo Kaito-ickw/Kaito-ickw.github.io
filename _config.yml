@@ -43,9 +43,9 @@ author: Kaito-ickw
 copyright: "{author} (c) 2021-{currentYear}"
 
 description: >- # this means to ignore newlines until "baseurl:"
-  Write an awesome description for your new site here. You can edit this
-  line in _config.yml. It will appear in your document head meta (for
-  Google search results) and in your feed.xml site description.
+  AIや統計に関する知識を初心者向けに解説するブログです。
+  人工知能やデータ分析とそれに関連したプログラミングについて
+  基本的な概念から応用まで、わかりやすく紹介します。
 
 baseurl: "" # the subpath of your site, e.g. /blog
 url: "" # the base hostname & protocol for your site, e.g. http://example.com

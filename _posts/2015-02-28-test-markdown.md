@@ -1,18 +1,28 @@
 ---
 layout: post
-title: Test markdown
-subtitle: Each post also has a subtitle
+title: markdown記法チートシート
+subtitle: jekyllで使用するmarkdown記法の一覧
 categories: markdown
-tags: [test]
+tags: [markdown, cheat sheet]
 ---
 
-You can write regular [markdown](http://markdowntutorial.com/) here and Jekyll will automatically convert it to a nice webpage.  I strongly encourage you to [take 5 minutes to learn how to write in markdown](http://markdowntutorial.com/) - it'll teach you how to transform regular text into bold/italics/headings/tables/etc.
+通常の[markdown](http://markdowntutorial.com/)を記述すると、Jekyllにより自動的にWebページに変換されます。markdown記法については、[take 5 minutes to learn how to write in markdown](http://markdowntutorial.com/) がおすすめです。通常のテキストを太字/斜体/見出し/表などに変換する方法を学ぶことができます。
 
-**Here is some bold text**
+'**'(アスタリスク2つ)で囲うと太字:
 
-## Here is a secondary heading
+**太字のテキスト**
 
-Here's a useless table:
+'_'(アンダースコア)で囲うと斜体:
+
+_斜体のテキスト_
+
+## 見出し1
+### 見出し2
+#### 見出し3
+##### 見出し4
+###### 見出し5
+
+テーブル:
 
 | Number | Next number | Previous number |
 | :------ |:--- | :--- |
@@ -22,15 +32,15 @@ Here's a useless table:
 | Two | Three | One |
 
 
-How about a yummy crepe?
+おいしいクレープはいかがですか?
 
 ![Crepe](https://s3-media3.fl.yelpcdn.com/bphoto/cQ1Yoa75m2yUFFbY2xwuqw/348s.jpg)
 
-It can also be centered!
+センタリングすることもできます!
 
 ![Crepe](https://s3-media3.fl.yelpcdn.com/bphoto/cQ1Yoa75m2yUFFbY2xwuqw/348s.jpg){: .center-block :}
 
-Here's a code chunk:
+コードブロック:
 
 ~~~
 var foo = function(x) {
@@ -39,7 +49,7 @@ var foo = function(x) {
 foo(3)
 ~~~
 
-And here is the same code with syntax highlighting:
+シンタックスハイライト付きの場合:
 
 ```javascript
 var foo = function(x) {
@@ -48,7 +58,7 @@ var foo = function(x) {
 foo(3)
 ```
 
-And here is the same code yet again but with line numbers:
+行番号付きの場合:
 
 {% highlight javascript linenos %}
 var foo = function(x) {
@@ -57,20 +67,20 @@ var foo = function(x) {
 foo(3)
 {% endhighlight %}
 
-## Boxes
-You can add notification, warning and error boxes like this:
+## ボックス
+以下のように、通知、警告、エラーボックスを追加することができます。:
 
-### Notification
+### 通知
 
 {: .box-note}
-**Note:** This is a notification box.
+**Note:** 通知ボックスです
 
-### Warning
+### 警告
 
 {: .box-warning}
-**Warning:** This is a warning box.
+**Warning:** 警告ボックスです
 
-### Error
+### エラー
 
 {: .box-error}
-**Error:** This is an error box.
+**Error:** エラーボックスです
