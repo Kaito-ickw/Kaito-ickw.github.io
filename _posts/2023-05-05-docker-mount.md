@@ -9,7 +9,7 @@ tags: [Docker, Ubuntu]
 
 # DockerでUbuntuを動かす - マウント編
 
-こんにちは、Genieです。前回はDocker初心者の方向けに、DockerでUbuntuを動かす方法について解説しました。今回は、Dockerコンテナ内でのファイル操作について学びましょう。
+前回はDocker初心者の方向けに、DockerでUbuntuを動かす方法について解説しました。今回は、Dockerコンテナ内でのファイル操作について学びましょう。
 
 ## 概要
 
@@ -48,14 +48,6 @@ $ sudo docker run -v [ボリューム名]:[コンテナ内のディレクトリ]
 
 ```
 $ sudo docker run -v myvolume:/data ubuntu
-```
-
-## サンプルコード
-
-以下は、バインドマウントを利用して、ホストマシンの`/home/user/work`ディレクトリをDockerコンテナ内の`/work`ディレクトリにマウントするサンプルコードです。
-
-```
-$ sudo docker run -v /home/user/work:/work ubuntu
 ```
 
 ## まとめ

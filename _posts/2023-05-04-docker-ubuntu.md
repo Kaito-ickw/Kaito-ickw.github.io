@@ -6,7 +6,7 @@ categories: Docker
 tags: [Docker, Ubuntu]
 ---
 
-こんにちは、今回はDocker初心者の方向けに、DockerでUbuntuを動かす方法について解説します。この記事を読むことで、Dockerの基本コマンドを習得し、DockerからのUbuntu環境の構築ができるようになります。
+今回はDocker初心者の方向けに、DockerでUbuntuを動かす方法について解説します。この記事を読むことで、Dockerの基本コマンドを習得し、DockerからのUbuntu環境の構築ができるようになります。
 
 ## 概要
 
@@ -41,6 +41,12 @@ Dockerコンテナを操作するためには、Dockerコマンドを使いま�
 
 ```
 $ sudo docker ps -a
+```
+
+### Ubuntuのイメージをダウンロード
+
+```
+$ docker pull ubuntu
 ```
 
 ### コンテナの起動
