@@ -6,8 +6,6 @@ categories: Web Development
 tags: [Jekyll, GitHub Pages, Google Analytics]
 ---
 
-# JekyllとGitHub PagesでGoogle Analyticsを導入する
-
 GitHub PagesでホストされているJekyllサイトにGoogle Analyticsを導入する方法を解説します。
 
 ## はじめに
