@@ -6,7 +6,8 @@ categories: Docker
 tags: [Docker, Ubuntu]
 ---
 
-今回はDocker初心者の方向けに、DockerでUbuntuを動かす方法について解説します。この記事を読むことで、Dockerの基本コマンドを習得し、DockerからのUbuntu環境の構築ができるようになります。
+今回はDocker初心者の方向けに、DockerでUbuntuを動かす方法について解説します。
+この記事を読むことで、Dockerの基本コマンドを習得し、DockerからのUbuntu環境の構築ができるようになります。
 
 ## 概要
 
