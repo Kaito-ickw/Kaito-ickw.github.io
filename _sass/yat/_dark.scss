@@ -26,6 +26,10 @@ html[data-theme="dark"]  {
     background-color: $dark-background-color;
   }
 
+  h1, h2, h3, h4, h5, h6 {
+    color: #e2e8f0;
+  }
+
   *:not(pre) > code {
     color: $dark-text-color;
     background-color: #454545;

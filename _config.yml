@@ -24,9 +24,9 @@
 # You can create any custom variable you would like, and they will be accessible
 # in the templates via {{ site.myvariable }}.
 
-title: 独学データサイエンス
+title: "Waka-DS.com"
 email: your-email@domain.com
-author: Kaito-ickw
+author: Waka-DS
 
 # Copyright setting
 # You can use any html code, currently below placeholders are available:
@@ -42,10 +42,10 @@ author: Kaito-ickw
 #
 copyright: "{author} (c) 2021-{currentYear}"
 
-description: >- # this means to ignore newlines until "baseurl:"
-  AIや統計に関する知識を初心者向けに解説するブログです。
-  人工知能やデータ分析とそれに関連したプログラミングについて
-  基本的な概念から応用まで、わかりやすく紹介します。
+description: >-
+  ITコンサルタントによる技術ブログ。Data Engineering・AI Agent開発・SaaS最適化など、
+  Docker・WSL2・Python・TypeScriptを中心としたプロダクション実践ノートを記録しています。
+  System Architecture & Data Strategy.
 
 baseurl: "" # the subpath of your site, e.g. /blog
 url: "" # the base hostname & protocol for your site, e.g. http://example.com
@@ -108,6 +108,7 @@ google_analytics: G-XNP1RBTG9C
 #
 # Custom color as below:
 # theme_color: "#882250"
+theme_color: "#0f172a"
 
 # You can choose a brand color
 # Default brand colors as below:
@@ -119,6 +120,7 @@ google_analytics: G-XNP1RBTG9C
 #
 # Custom color as below:
 # brand_color: "#1a8e42"
+brand_color: "#0d9488"
 
 # Night/Dark mode
 # Default mode is "auto", "auto" is for auto nightshift
