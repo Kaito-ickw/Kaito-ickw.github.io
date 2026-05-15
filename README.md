@@ -1,38 +1,63 @@
-# 独学データサイエンス
+# Waka-DS.com
 
-独学データサイエンスは、AIや統計学、そしてそれに関連するプログラミングを扱うブログです。このブログでは、初心者から中級者を対象に、AIや統計学の基本概念や実践的な技術、最新のトレンドなどを解説しています。
+**System Architecture & Data Strategy** — Technical blog by an IT Consultant specializing in data engineering, AI agent development, and SaaS optimization.
 
-## 目次
+Built with [Jekyll](https://jekyllrb.com/) + [YAT theme](https://github.com/jeffreytse/jekyll-theme-yat). Deployed via GitHub Pages at [waka-ds.com](https://waka-ds.com).
 
-- [記事一覧](#記事一覧)
-- [ブログの更新](#ブログの更新)
-- [このブログについて](#このブログについて)
-- [お問い合わせ](#お問い合わせ)
-- [ライセンス](#ライセンス)
+---
 
-## 記事一覧
+## About
 
-* [記事1のタイトル](リンク)
-* [記事2のタイトル](リンク)
-* [記事3のタイトル](リンク)
+This repository is the source of [waka-ds.com](https://waka-ds.com) — a portfolio and knowledge base documenting production-tested solutions across:
 
-（記事を追加するごとに、このセクションを更新してください）
+- **Data Engineering**: ETL pipelines, SQL Server, Python (pandas, SQLAlchemy)
+- **AI Agent Development**: LLM API integration (OpenAI, Anthropic), automated reasoning pipelines
+- **Infrastructure**: Docker, WSL2, GitHub Actions, environment containerization
+- **SaaS & DX Consulting**: Tech stack auditing, integration architecture, stakeholder alignment
 
-## ブログの更新
+> Building in production. Documenting what survives contact with reality.
 
-このブログは定期的に更新されます。新しい記事や情報は、このリポジトリに追加されるので、更新をチェックするにはこちらをフォローしてください。
+---
 
-## このブログについて
+## Tech Stack
 
-独学データサイエンスは、wakaによって運営されています。AIや統計学、プログラミングに関心があり、同じような興味がある独学者、初学者へ向けて知識や経験を共有することを目的としています。
+| Layer | Stack |
+|---|---|
+| Languages | Python · TypeScript · SQL · Bash |
+| Infrastructure | Docker · WSL2 · Linux (Ubuntu) |
+| Data | SQL Server · pandas · SQLAlchemy |
+| AI / LLM | OpenAI API · Anthropic Claude |
+| Site | Jekyll · GitHub Pages · GitHub Actions |
 
-## お問い合わせ
+---
 
-質問やフィードバックがある場合は、以下の方法でお問い合わせください。
+## Development
 
-* メールアドレス: example@example.com
-* Twitter: [@your_twitter_handle](https://twitter.com/your_twitter_handle)
+Runs locally via Docker. No local Ruby/Jekyll installation required.
 
-## ライセンス
+```bash
+# Start dev server (http://localhost:4000)
+docker compose up
 
-このブログのコンテンツは、[CC BY 4.0](https://creativecommons.org/licenses/by/4.0/)ライセンスの下で公開されています。つまり、適切なクレジットを表示し、リンクを提供した上で、商用・非商用を問わず、自由に共有・改変することができます。
+# Stop
+docker compose down
+
+# Restart after _config.yml changes
+docker compose restart jekyll
+```
+
+> **Note:** Changes to `_config.yml` require a container restart. SCSS, HTML, and Markdown changes are hot-reloaded automatically via `--livereload`.
+
+---
+
+## Contact
+
+- X (Twitter): [@waka_ds_tech](https://x.com/waka_ds_tech)
+- Blog: [waka-ds.com](https://waka-ds.com)
+
+---
+
+## License
+
+Blog content: [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/)
+Theme: [jekyll-theme-yat](https://github.com/jeffreytse/jekyll-theme-yat) by Jeffrey Tse (MIT License)
