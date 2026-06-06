@@ -50,6 +50,46 @@ docker compose restart jekyll
 
 ---
 
+## Writing Posts
+
+### Multilingual Support
+
+Japanese and English posts are provided as separate hand-written files. Other languages use Google Translate (enabled in the site header).
+
+**To create a bilingual post:**
+
+1. Write the Japanese post as usual, adding `lang` and `ref` to the front matter:
+
+```yaml
+---
+layout: post
+title: "記事タイトル"
+lang: ja
+ref: my-post-slug   # shared key linking translations
+---
+```
+
+2. Create an English version with the same `ref`:
+
+```
+_posts/2026-01-01-my-post-en.md
+```
+
+```yaml
+---
+layout: post
+title: "Post Title"
+lang: en
+ref: my-post-slug   # must match the Japanese post
+---
+```
+
+That's it. A language switcher (`日本語 / English`) will appear automatically below the tags on both posts.
+
+Posts without a `ref` are unaffected — no switcher is shown.
+
+---
+
 ## Contact
 
 - X (Twitter): [@waka_ds_tech](https://x.com/waka_ds_tech)

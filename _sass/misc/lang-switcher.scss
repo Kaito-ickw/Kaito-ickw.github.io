@@ -1,0 +1,28 @@
+.lang-switcher {
+  display: inline-flex;
+  gap: 6px;
+  margin-top: 10px;
+
+  .lang-btn {
+    display: inline-block;
+    padding: 3px 12px;
+    border-radius: 3px;
+    font-size: $small-font-size;
+    border: 1px solid $brand-color;
+    color: $brand-color;
+    text-decoration: none;
+    transition: background-color 0.15s, color 0.15s;
+
+    &:hover {
+      background-color: $brand-color;
+      color: #fff;
+      text-decoration: none;
+    }
+
+    &--active {
+      background-color: $brand-color;
+      color: #fff;
+      cursor: default;
+    }
+  }
+}
