@@ -283,7 +283,7 @@ Log collection API (FastAPI) → Railway
 DB + Auth + Vector search    → Supabase (pgvector)
 ```
 
-I cover the reasons for choosing Vercel for the frontend in a [separate post]({% post_url 2026-06-06-vercel-frontend-selection %}).
+I cover the reasons for choosing Vercel for the frontend in a [separate post]({% post_url 2026-06-06-vercel-frontend-selection-en %}).
 
 **Supabase alone** can handle a fair amount of API logic through Edge Functions, but for **always-on, high-throughput** workloads like log collection, Railway's container-based approach is the better fit.
 

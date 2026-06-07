@@ -4,6 +4,8 @@ title: "なぜフロントエンドに Vercel を選ぶのか ── Netlify・C
 subtitle: AI ネイティブなログアプリのフロントエンド選定
 categories: 開発
 tags: ["Vercel", "Netlify", "Cloudflare", "Next.js", "フロントエンド", "ホスティング"]
+lang: ja
+ref: vercel-frontend-selection
 ---
 
 [バックエンド選定の記事]({% post_url 2026-06-06-supabase-vs-railway-comparison %})では `フロントエンド → Vercel` と一言で済ませたが、これにも選定理由がある。
