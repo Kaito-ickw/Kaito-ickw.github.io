@@ -40,14 +40,27 @@
               {%- endif -%}
             {%- endfor -%}
 
-            {%- assign name = 'translate_langs' -%}
-            {%- include functions.html func='get_value' -%}
-            {%- assign translate_langs = return -%}
-            {%- if translate_langs.size > 0 -%}
+            {%- if page.ref -%}
+              {%- assign translations = site.posts | where: "ref", page.ref -%}
+              {%- if translations.size > 1 -%}
               <span class="page-link">
-                  {%- include extensions/google-translate.html -%}
+                <span class="lang-switcher lang-switcher--nav">
+                  {%- for post in translations -%}
+                    {%- if post.lang == 'ja' -%}{%- assign label = '日本語' -%}
+                    {%- elsif post.lang == 'en' -%}{%- assign label = 'English' -%}
+                    {%- else -%}{%- assign label = post.lang -%}
+                    {%- endif -%}
+                    {%- if post.url == page.url -%}
+                      <span class="lang-btn lang-btn--active">{{ label }}</span>
+                    {%- else -%}
+                      <a class="lang-btn" href="{{ post.url | relative_url }}">{{ label }}</a>
+                    {%- endif -%}
+                  {%- endfor -%}
+                </span>
               </span>
+              {%- endif -%}
             {%- endif -%}
+
           </div>
         </nav>
       {%- endif -%}

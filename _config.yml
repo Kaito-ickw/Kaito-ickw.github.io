@@ -71,29 +71,6 @@ google_analytics: G-XNP1RBTG9C
 # If you want to change site language, you can set lang option
 # lang: "en"  # default lang is en
 
-# Translate languages
-# ja/en are provided as manual posts — only other languages use Google Translate
-# langs refer to https://cloud.google.com/translate/docs/languages
-translate_langs:
-  - lang: zh-CN
-    img: https://cdn.countryflags.com/thumbs/china/flag-400.png
-    text: 中文
-
-  - lang: ko
-    img: https://cdn.countryflags.com/thumbs/south-korea/flag-400.png
-    text: 한국어
-
-  - lang: fr
-    img: https://cdn.countryflags.com/thumbs/france/flag-400.png
-    text: Français
-
-  - lang: de
-    img: https://cdn.countryflags.com/thumbs/germany/flag-400.png
-    text: Deutsch
-
-  - lang: es
-    img: https://cdn.countryflags.com/thumbs/spain/flag-400.png
-    text: Español
 
 # You can choose a theme color
 # Default theme colors as below:
