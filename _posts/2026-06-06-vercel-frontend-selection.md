@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "なぜフロントエンドに Vercel を選ぶのか ── Netlify・Cloudflare Pages との比較 (2026年版)"
+title: "なぜフロントエンドに Vercel を選ぶのか"
 subtitle: AI ネイティブなログアプリのフロントエンド選定
 categories: 開発
 tags: ["Vercel", "Netlify", "Cloudflare", "Next.js", "フロントエンド", "ホスティング"]

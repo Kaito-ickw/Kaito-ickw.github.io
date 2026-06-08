@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "OpenAPI とは何か ── API 仕様を「人間にも機械にも読めるドキュメント」にする仕組み"
+title: "OpenAPI で API の仕様とドキュメントを同期させる"
 subtitle: Swagger との関係から YAML の書き方、コード生成・Postman 連携まで一気に理解する
 categories: 開発
 tags: ["OpenAPI", "Swagger", "API", "REST", "バックエンド", "ドキュメント"]

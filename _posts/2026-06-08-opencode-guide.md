@@ -1,8 +1,8 @@
 ---
 layout: post
-title: "opencode とは何か ── ターミナルで動くオープンソースの AI コーディングエージェント"
+title: "LLM を選べる OSS コーディングエージェント opencode"
 subtitle: SST チームが作った OSS コーディング AI の仕組み・使い方・Claude Code との違いを整理する
-categories: 開発
+categories: AI開発
 tags: ["opencode", "AI", "コーディングエージェント", "CLI", "OSS", "Claude", "LLM"]
 lang: ja
 ref: opencode-guide

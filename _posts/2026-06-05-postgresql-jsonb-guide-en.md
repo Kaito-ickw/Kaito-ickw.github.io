@@ -2,7 +2,7 @@
 layout: post
 title: "The Complete Guide to PostgreSQL JSONB — Flexible Schemas and Fast Queries"
 subtitle: A practical guide to JSON vs JSONB, GIN indexes, operators, and more
-categories: Development
+categories: Data Engineering
 tags: ["PostgreSQL", "JSONB", "Database", "SQL"]
 lang: en
 ref: postgresql-jsonb-guide

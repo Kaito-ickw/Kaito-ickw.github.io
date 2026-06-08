@@ -2,7 +2,7 @@
 layout: post
 title: "What is opencode ── An Open-Source AI Coding Agent for the Terminal"
 subtitle: Architecture, usage, and how it compares to Claude Code — from the team behind SST
-categories: development
+categories: Development
 tags: ["opencode", "AI", "coding agent", "CLI", "OSS", "Claude", "LLM"]
 lang: en
 ref: opencode-guide

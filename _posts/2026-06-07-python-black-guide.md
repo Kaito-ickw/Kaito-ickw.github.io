@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "Python の Black とは何か ── AI ネイティブ開発でコード整形を自動化する"
+title: "AI コーディング向けの Python フォーマッター Black"
 subtitle: フォーマッターの役割から設定・VS Code・CIでの使い方までやさしく解説
 categories: 開発
 tags: ["Python", "Black", "コードフォーマッター", "AIネイティブ開発", "開発環境"]

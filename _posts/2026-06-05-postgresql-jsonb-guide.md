@@ -1,8 +1,8 @@
 ---
 layout: post
-title: "PostgreSQL JSONB 完全ガイド ── 柔軟なスキーマ設計と高速クエリの両立"
+title: "PostgreSQL JSONB 完全ガイド"
 subtitle: JSON vs JSONB の違いから GIN インデックス・演算子まで実践的に解説
-categories: 開発
+categories: データエンジニアリング
 tags: ["PostgreSQL", "JSONB", "データベース", "SQL"]
 lang: ja
 ref: postgresql-jsonb-guide

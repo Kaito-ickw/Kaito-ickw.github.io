@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "Supabase vs Railway vs Neon ── AIネイティブなログアプリのバックエンド選定 (2026年版)"
+title: "Supabase vs Railway vs Neon バックエンド選定 (2026年版)"
 subtitle: 主要 BaaS/PaaS の最新料金・機能を徹底比較
 categories: 開発
 tags: ["Supabase", "Railway", "Neon", "BaaS", "PaaS", "バックエンド"]

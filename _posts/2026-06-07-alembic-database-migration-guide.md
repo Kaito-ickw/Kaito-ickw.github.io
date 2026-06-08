@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "Alembic とは何か ── DDL の正本としてデータベース変更を管理する"
+title: "Alembic でデータベーススキーマの変更を管理する"
 subtitle: SQLAlchemy との関係、マイグレーションの仕組み、既存DBへの導入までやさしく解説
 categories: 開発
 tags: ["Alembic", "SQLAlchemy", "PostgreSQL", "データベース", "マイグレーション", "AIネイティブ開発"]
