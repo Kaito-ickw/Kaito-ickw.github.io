@@ -4,7 +4,11 @@
   {%- assign paginator = site -%}
 {%- endif -%}
 
-{%- assign display_posts = paginator.posts | where_exp: "post", "post.lang != 'en'" -%}
+{%- if page.lang == 'en' -%}
+  {%- assign display_posts = paginator.posts | where: "lang", "en" -%}
+{%- else -%}
+  {%- assign display_posts = paginator.posts | where_exp: "post", "post.lang != 'en'" -%}
+{%- endif -%}
 {%- if display_posts.size > 0 -%}
 <div class="pagination">
   <!-- Post list links -->

@@ -56,3 +56,15 @@ function smoothScrollTo(y, time) {
   }
 }
 
+// Language preference persistence
+document.addEventListener('DOMContentLoaded', function() {
+  document.querySelectorAll('a.lang-btn').forEach(function(btn) {
+    btn.addEventListener('click', function() {
+      try {
+        var href = this.getAttribute('href') || '';
+        localStorage.setItem('preferred_lang', href.indexOf('/en') === 0 ? 'en' : 'ja');
+      } catch(e) {}
+    });
+  });
+});
+

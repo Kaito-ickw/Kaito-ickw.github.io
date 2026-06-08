@@ -10,7 +10,11 @@
   <ul class="page-segments-list">
     {% for key in keys %}
     <h2 id="{{ key }}" class="segment-name">{{ key }}</h2>
-      {% assign items = site.posts | where_exp: "post", "post.lang != 'en'" | where: field, key %}
+      {% if page.lang == 'en' %}
+        {% assign items = site.posts | where: "lang", "en" | where: field, key %}
+      {% else %}
+        {% assign items = site.posts | where_exp: "post", "post.lang != 'en'" | where: field, key %}
+      {% endif %}
       {% for item in items %}
         {% if item != nil %}
         <li> {% include views/post-item.html %} </li>

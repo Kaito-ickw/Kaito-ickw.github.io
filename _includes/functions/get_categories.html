@@ -1,8 +1,12 @@
 {% assign split_mark = '<|>' %}
-{% assign ja_posts = site.posts | where_exp: "post", "post.lang != 'en'" %}
+{% if page.lang == 'en' %}
+  {% assign filtered_posts = site.posts | where: "lang", "en" %}
+{% else %}
+  {% assign filtered_posts = site.posts | where_exp: "post", "post.lang != 'en'" %}
+{% endif %}
 
 {% assign categories = '' %}
-{% for post in ja_posts %}
+{% for post in filtered_posts %}
   {% for category in post.categories %}
     {% assign categories = categories | append: split_mark | append: category %}
   {% endfor %}
