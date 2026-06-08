@@ -3,9 +3,10 @@
 {% endif %}
 
 {% assign split_mark = '<|>' %}
+{% assign ja_posts = site.posts | where_exp: "post", "post.lang != 'en'" %}
 
 {% assign dates = '' %}
-{% for post in site.posts %}
+{% for post in ja_posts %}
   {% assign name = post.date | date: filter %}
   {% assign dates = dates | append: split_mark  | append: name %}
 {% endfor %}

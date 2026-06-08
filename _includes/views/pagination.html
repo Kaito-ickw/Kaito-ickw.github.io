@@ -4,11 +4,12 @@
   {%- assign paginator = site -%}
 {%- endif -%}
 
-{%- if paginator.posts.size > 0 -%}
+{%- assign display_posts = paginator.posts | where_exp: "post", "post.lang != 'en'" -%}
+{%- if display_posts.size > 0 -%}
 <div class="pagination">
   <!-- Post list links -->
   <ul class="post-list">
-    {%- for post in paginator.posts -%}
+    {%- for post in display_posts -%}
     <li>
       {%- assign date_format = site.yat.date_format | default: "%b %-d, %Y" -%}
 
