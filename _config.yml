@@ -166,6 +166,20 @@ code_badge:
 #   client_secret: "Your client secret"
 #   redirect_uri: "Your redirect url"   # If you use a custom domain name
 
+# Files excluded from Jekyll build (not published to GitHub Pages)
+exclude:
+  # AI agent / internal operation files
+  - AGENTS.md
+  - CLAUDE.md
+  - GEMINI.md
+  # Development files
+  - Dockerfile
+  - docker-compose.yml
+  - jekyll-theme-yat.gemspec
+  - "*.code-workspace"
+  # Repository metadata
+  - README.md
+
 # Build settings
 # highlighter: none
 markdown: kramdown
