@@ -1,0 +1,54 @@
+{% unless page.lang == 'en' %}
+<section class="featured-articles">
+  <h2 class="featured-articles__heading">まず読むなら</h2>
+  <div class="featured-articles__groups">
+
+    <div class="featured-articles__group">
+      <h3 class="featured-articles__group-title">AIエージェント開発</h3>
+      <ul class="featured-articles__list">
+        <li>
+          <a href="{% post_url 2026-06-08-harness-engineering-guide %}">ハーネスエンジニアリングとは何か</a>
+          <p>AIエージェントを外側から制御する「ハーネス」の設計パターンをまとめた基本記事。</p>
+        </li>
+        <li>
+          <a href="{% post_url 2026-06-07-agent-context-management-2026 %}">エージェントを長く自律動作させるためのコンテキスト設計</a>
+          <p>長時間稼働するエージェントでコンテキストウィンドウをどう管理するかを整理した。</p>
+        </li>
+        <li>
+          <a href="{% post_url 2026-06-07-multi-agent-asymmetric-handoff %}">Claude と Codex のマルチエージェント引き継ぎ問題と解消パターン</a>
+          <p>複数エージェント間でタスクを引き継ぐ際の非対称な問題と、3層に分けた解消策。</p>
+        </li>
+      </ul>
+    </div>
+
+    <div class="featured-articles__group">
+      <h3 class="featured-articles__group-title">システム設計</h3>
+      <ul class="featured-articles__list">
+        <li>
+          <a href="{% post_url 2026-06-09-state-transition-diagram-guide %}">状態遷移図の書き方と使いどころ</a>
+          <p>実務で状態遷移図を書くべき場面と書き方を、具体的なケースを交えて整理した。</p>
+        </li>
+        <li>
+          <a href="{% post_url 2026-06-07-openapi-guide %}">OpenAPI で API の仕様とドキュメントを同期させる</a>
+          <p>OpenAPI の基本からコード生成・Postman 連携まで、仕様とドキュメントを一元管理する方法。</p>
+        </li>
+      </ul>
+    </div>
+
+    <div class="featured-articles__group">
+      <h3 class="featured-articles__group-title">データ基盤</h3>
+      <ul class="featured-articles__list">
+        <li>
+          <a href="{% post_url 2026-06-05-postgresql-jsonb-guide %}">PostgreSQL JSONB 完全ガイド</a>
+          <p>JSON vs JSONB の違いから GIN インデックス・演算子まで実践的にまとめたリファレンス。</p>
+        </li>
+        <li>
+          <a href="{% post_url 2026-06-06-supabase-vs-railway-comparison %}">Supabase vs Railway vs Neon バックエンド選定</a>
+          <p>AIネイティブなアプリのバックエンドを3サービスで比較した実際の調査記録（2026年版）。</p>
+        </li>
+      </ul>
+    </div>
+
+  </div>
+</section>
+{% endunless %}
