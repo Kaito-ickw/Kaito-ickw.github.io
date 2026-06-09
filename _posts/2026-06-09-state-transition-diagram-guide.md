@@ -29,6 +29,10 @@ lang: ja
 
 Mermaid を使うと Markdown 内に直接書ける。GitHub、Notion などでそのまま描画できる。
 
+![alt text](/assets/images/posts/2026-06-09-state-transition-diagram/2026-06-09-statediagram-sample.png)
+
+コードの記述方式は以下の通り。
+
 ```mermaid
 stateDiagram-v2
     [*] --> 未ログイン
