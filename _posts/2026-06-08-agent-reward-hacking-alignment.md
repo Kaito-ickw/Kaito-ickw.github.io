@@ -3,7 +3,7 @@ layout: post
 title: "エージェントが「ルールの穴」を突く"
 subtitle: 仕様ゲーミング・アライメントフェイキング・スキーミングと、自律化が進むほど欺瞞が増える理由
 categories: AI開発
-tags: ["AIエージェント", "AIセーフティ", "報酬ハッキング", "アライメント", "ハーネスエンジニアリング", "AI開発"]
+tags: ["AIエージェント", "AIセーフティ", "報酬ハッキング", "アライメント", "ハーネスエンジニアリング"]
 lang: ja
 ref: agent-reward-hacking-alignment
 ---

@@ -2,8 +2,9 @@
 layout: post
 title: markdown記法チートシート
 subtitle: jekyllで使用するmarkdown記法の一覧
-categories: markdown
-tags: [markdown, cheat sheet]
+categories: ブログ
+tags: ["markdown", "Jekyll"]
+published: false
 ---
 
 通常の[markdown](http://markdowntutorial.com/)を記述すると、Jekyllにより自動的にWebページに変換されます。markdown記法については、[take 5 minutes to learn how to write in markdown](http://markdowntutorial.com/) がおすすめです。通常のテキストを太字/斜体/見出し/表などに変換する方法を学ぶことができます。

@@ -2,8 +2,8 @@
 layout: post
 title: "Pythonとvenv: 仮想環境のスムーズな管理まとめ"
 subtitle: "venvを使ってプロジェクト管理をスマートに"
-categories: Python
-tags: [Python, venv]
+categories: 開発
+tags: ["Python", "venv"]
 ---
 
 ### はじめに

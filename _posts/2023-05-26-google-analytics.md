@@ -2,8 +2,8 @@
 layout: post
 title: "JekyllとGitHub PagesでGoogle Analyticsを導入する"
 subtitle: "ウェブサイトにリアルタイム分析を取り入れる方法"
-categories: "Web Development"
-tags: [Jekyll, GitHub Pages, Google Analytics]
+categories: ブログ
+tags: ["Jekyll", "GitHub Pages", "Google Analytics"]
 ---
 
 GitHub PagesでホストされているJekyllサイトにGoogle Analyticsを導入する方法を解説します。

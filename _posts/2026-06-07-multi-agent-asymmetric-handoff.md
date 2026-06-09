@@ -3,7 +3,7 @@ layout: post
 title: "Claude と Codex のマルチエージェント引き継ぎ問題と解消パターン"
 subtitle: メッセージ配信・プロセス起動・実行ポリシーの3層を分けて設計する
 categories: AI開発
-tags: ["マルチエージェント", "Claude Code", "Codex", "agmsg", "自動化", "AI開発"]
+tags: ["マルチエージェント", "Claude Code", "Codex", "agmsg", "自動化"]
 lang: ja
 ref: multi-agent-asymmetric-handoff
 ---

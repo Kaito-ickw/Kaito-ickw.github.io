@@ -2,8 +2,8 @@
 layout: post
 title: 【VSCode】よく使うショートカット10選
 subtitle:
-categories: editor
-tags: [vSCode]
+categories: 開発
+tags: ["VSCode"]
 ---
 
 Visual Studio Code(通称VSCode)はMicrosoftが開発したエディタで、多くのエンジニアが利用している定番エディタとなっています。

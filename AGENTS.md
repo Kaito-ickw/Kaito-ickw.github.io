@@ -130,26 +130,53 @@ ref: slug-name   # 日本語版と同じ値
 
 ### 日本語タグ
 
-`AI開発`, `AIエージェント`, `AIネイティブ開発`, `AIセーフティ`,
+日本語記事では、固有名詞・プロダクト名は英語表記のまま使う（例: `Claude Code`, `Docker`）。
+
+**AIエージェント系**  
+`AIエージェント`, `AIネイティブ開発`, `AIセーフティ`,
 `マルチエージェント`, `ハーネスエンジニアリング`, `コンテキスト管理`,
 `自動化`, `報酬ハッキング`, `アライメント`,
-`Python`, `Docker`, `PostgreSQL`, `LLM`,
-`データベース`, `バックエンド`, `開発環境`,
-`コードフォーマッター`, `コーディングエージェント`,
-`ホスティング`, `フロントエンド`, `ドキュメント`
+`コーディングエージェント`
+
+**プロダクト・ツール（英語表記）**  
+`Claude`, `Claude Code`, `Codex`, `Codex CLI`, `opencode`, `agmsg`,
+`Ralph Loop`, `Black`, `Alembic`, `SQLAlchemy`,
+`Docker`, `Docker Compose`, `Dockerfile`,
+`Python`, `Git`, `VSCode`,
+`PostgreSQL`, `JSONB`, `SQL`,
+`Supabase`, `Railway`, `Neon`,
+`Vercel`, `Netlify`, `Cloudflare`, `Next.js`,
+`OpenAPI`, `Swagger`, `API`, `REST`,
+`GitHub Pages`, `Jekyll`,
+`LLM`, `AI`, `OSS`, `CLI`
+
+**汎用（日本語）**  
+`データベース`, `バックエンド`, `フロントエンド`, `ホスティング`,
+`開発環境`, `コードフォーマッター`, `ドキュメント`,
+`マイグレーション`, `設計`
 
 ### 英語タグ
 
-`Python`, `Docker`, `PostgreSQL`, `SQL`, `LLM`,
+**AI / Agent**  
+`AI`, `LLM`, `AI-Native Development`, `Coding Agent`,
 `Claude`, `Claude Code`, `Codex`, `Codex CLI`, `opencode`, `agmsg`,
-`Supabase`, `Railway`, `Neon`, `Vercel`, `Netlify`, `Cloudflare`,
-`BaaS`, `PaaS`, `Backend`, `Frontend`,
-`OpenAPI`, `REST`, `API`, `Swagger`,
-`Next.js`, `CLI`, `OSS`,
-`GitHub Pages`, `Jekyll`,
-`AI`, `AI-Native Development`, `Code Formatter`,
-`Development Environment`, `Database`,
-`Ralph Loop`, `Black`, `Alembic`, `SQLAlchemy`, `JSONB`
+`Ralph Loop`
+
+**バックエンド / データ**  
+`Python`, `Docker`, `PostgreSQL`, `SQL`, `JSONB`,
+`Alembic`, `SQLAlchemy`, `Database`, `Backend`,
+`Supabase`, `Railway`, `Neon`, `BaaS`, `PaaS`
+
+**フロントエンド / インフラ**  
+`Vercel`, `Netlify`, `Cloudflare`, `Next.js`, `Frontend`, `Hosting`
+
+**API / 仕様**  
+`OpenAPI`, `REST`, `API`, `Swagger`, `Documentation`
+
+**ツール / 環境**  
+`Git`, `VSCode`, `Docker Compose`, `Development Environment`,
+`Code Formatter`, `Black`, `CLI`, `OSS`,
+`GitHub Pages`, `Jekyll`
 
 ---
 

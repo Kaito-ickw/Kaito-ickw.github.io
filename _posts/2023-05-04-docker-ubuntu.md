@@ -2,8 +2,8 @@
 layout: post
 title: "DockerでUbuntuを動かそう！"
 subtitle: Dockerを使ったUbuntu環境の構築方法
-categories: Docker
-tags: [Docker, Ubuntu]
+categories: 開発
+tags: ["Docker", "Ubuntu"]
 ---
 
 今回はDocker初心者の方向けに、DockerでUbuntuを動かす方法について解説します。

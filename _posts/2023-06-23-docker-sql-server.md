@@ -2,8 +2,9 @@
 layout: post
 title: DockerでSQLサーバを構築する(仮)
 subtitle:
-categories: example
-tags: [Docker, sql]
+categories: 開発
+tags: ["Docker", "SQL"]
+published: false
 ---
 
 SQLパズルを読み始めたところ、実際にSQLを試す環境が欲しくなり、DockerでSQL Server構築をしてみることにしました。

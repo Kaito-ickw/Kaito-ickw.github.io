@@ -3,7 +3,7 @@ layout: post
 title: "Android から Claude Code を使うパターンと選び方"
 subtitle: "Remote Control・SSH・Termux それぞれの特徴と使い分け"
 categories: AI開発
-tags: ["Claude Code", "コーディングエージェント", "開発環境", "AI開発"]
+tags: ["Claude Code", "コーディングエージェント", "開発環境"]
 lang: ja
 ---
 

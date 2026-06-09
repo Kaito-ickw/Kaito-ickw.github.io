@@ -2,8 +2,8 @@
 layout: post
 title: 【Docker & VSCode】Pythonデータ分析環境の構築と運用
 subtitle: VSCodeのRemote Containersを利用して効率的にデータ分析環境を構築する
-categories: programming
-tags: [Docker, VSCode, Python, Data Analysis]
+categories: 開発
+tags: ["Docker", "VSCode", "Python", "Data Analysis"]
 ---
 
 ## はじめに

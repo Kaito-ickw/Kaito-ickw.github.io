@@ -3,7 +3,7 @@ layout: post
 title: "RLHFがモデルの返答をどう変えるか"
 subtitle: 訓練の3段階と、現在のモデルの返答スタイルに残るその痕跡
 categories: AI開発
-tags: ["AI開発", "LLM", "AIセーフティ", "アライメント"]
+tags: ["LLM", "AIセーフティ", "アライメント"]
 lang: ja
 ---
 

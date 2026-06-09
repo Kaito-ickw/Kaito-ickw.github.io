@@ -3,7 +3,7 @@ layout: post
 title: "エージェントを長く自律動作させるためのコンテキスト設計"
 subtitle: 下位エージェントと上位エージェントで問題が非対称である理由と、2026年時点の解決アプローチ
 categories: AI開発
-tags: ["マルチエージェント", "コンテキスト管理", "Claude Code", "Codex CLI", "LLM", "AI開発"]
+tags: ["マルチエージェント", "コンテキスト管理", "Claude Code", "Codex CLI", "LLM"]
 lang: ja
 ref: agent-context-management-2026
 ---

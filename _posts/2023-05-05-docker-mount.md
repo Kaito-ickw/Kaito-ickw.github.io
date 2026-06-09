@@ -2,8 +2,8 @@
 layout: post
 title: "DockerでUbuntuを動かそう！- マウント編"
 subtitle: Dockerコンテナ内でのファイル操作とマウント方法
-categories: Docker
-tags: [Docker, Ubuntu]
+categories: 開発
+tags: ["Docker", "Ubuntu"]
 ---
 
 
