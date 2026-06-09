@@ -43,9 +43,8 @@ author: Waka-DS
 copyright: "{author} (c) 2021-{currentYear}"
 
 description: >-
-  ITコンサルタントによる技術ブログ。Data Engineering・AI Agent開発・SaaS最適化など、
-  Docker・WSL2・Python・TypeScriptを中心としたプロダクション実践ノートを記録しています。
-  System Architecture & Data Strategy.
+  AIエージェント時代のシステム設計・データ基盤・開発環境を実務目線で整理する技術ブログ。
+  Data Engineering・AI Agent開発・SaaS最適化など、Docker・WSL2・Python・TypeScriptを中心としたプロダクション実践ノートを記録。
 
 baseurl: "" # the subpath of your site, e.g. /blog
 url: "" # the base hostname & protocol for your site, e.g. http://example.com
