@@ -1,3 +1,4 @@
+----------------------------------
 name: "Quick blog draft"
 about: "AIとの会話やメモを貼って、ブログ記事ドラフトを作成する"
 title: "[Quick Blog] "
@@ -28,3 +29,5 @@ labels: ["blog", "draft", "quick"]
 * 共有リンクだけに依存せず、Issue本文のメモを優先する
 * AGENTS.mdに従ってGitHub Pages用の記事ドラフトを作る
 * 公開前にレビューできるよう、PRを作成する
+
+/quick-blog
