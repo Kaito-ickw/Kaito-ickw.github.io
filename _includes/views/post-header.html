@@ -8,6 +8,17 @@
       <i class="fa fa-calendar"></i> {{ page.date | date: date_format }}
     </time>
 
+    {%- if page.last_modified_at -%}
+    <time class="dt-updated left-vsplit" datetime="{{ page.last_modified_at | date_to_xmlschema }}" itemprop="dateModified">
+      <i class="fa fa-refresh"></i>
+      {% if page.lang == 'en' %}
+        Updated: {{ page.last_modified_at | date: date_format }}
+      {% else %}
+        更新日: {{ page.last_modified_at | date: date_format }}
+      {% endif %}
+    </time>
+    {%- endif -%}
+
     {% assign article = page.content %}
     {% assign lang = page.lang %}
     {%- include functions.html func='get_reading_time' -%}

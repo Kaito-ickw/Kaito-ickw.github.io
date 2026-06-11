@@ -4,6 +4,7 @@ title: ここにタイトルを入力
 subtitle: ここにサブタイトルを入力
 categories: ここにカテゴリを入力
 tags: [ここにタグを入力]
+# last_modified_at: YYYY-MM-DD
 ---
 
 ここに本文を入力します。

@@ -71,6 +71,7 @@ categories: 開発
 tags: ["タグ1", "タグ2"]
 lang: ja
 ref: slug-name   # 日英対応させる場合のみ。英語版と同じ値にする
+last_modified_at: YYYY-MM-DD   # 公開後に内容を更新した場合のみ
 ---
 ```
 
@@ -85,6 +86,7 @@ categories: Development
 tags: ["tag1", "tag2"]
 lang: en
 ref: slug-name   # 日本語版と同じ値
+last_modified_at: YYYY-MM-DD   # Only after updating published content
 ---
 ```
 
@@ -95,6 +97,7 @@ ref: slug-name   # 日本語版と同じ値
   - NG: `〇〇・△△・□□まで体系的に解説` / `〇〇の使い方からCIでの活用法まで丁寧に解説`
   - OK: `Claude Code の Hooks・Ralph Loop の設計と実装`（何が書いてあるかを素直に示す）
 - `ref` は日英対応が不要なら省略してよい
+- `last_modified_at` は公開後に記事内容を更新した場合のみ追加する。初回公開時や軽微な誤字修正では省略する
 
 ---
 
