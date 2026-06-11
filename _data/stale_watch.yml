@@ -1,0 +1,68 @@
+# 情報の鮮度管理リスト
+# 時間経過で陳腐化しやすい情報を含む記事を管理する
+#
+# stale_risk:
+#   high:   3ヶ月ごとに確認（料金・モデル名など頻繁に変わるもの）
+#   medium: 6ヶ月ごとに確認（ツール仕様・API など）
+#   low:    1年ごとに確認（概念・設計論で時制が入っているもの）
+#
+# last_verified: 最後にweb検索で内容を確認した日付（YYYY-MM-DD）
+# 更新時は last_verified を今日の日付に更新し、記事も修正すること
+
+articles:
+
+  # ── high: 3ヶ月ごとに確認 ────────────────────────────────
+
+  - slug: 2026-06-06-supabase-vs-railway-comparison
+    stale_risk: high
+    reason: Supabase・Railway・Neon の詳細料金比較（無料枠・従量単価）
+    last_verified: 2026-06-11
+
+  - slug: 2026-06-06-vercel-frontend-selection
+    stale_risk: high
+    reason: Vercel 料金表（月額・帯域課金）
+    last_verified: 2026-06-11
+
+  - slug: 2026-06-10-claude-mythos-fable
+    stale_risk: high
+    reason: Claude Fable 5 のベンチマーク・特性（新モデルリリースで陳腐化）
+    last_verified: 2026-06-11
+
+  - slug: 2026-06-11-goose-agent-pyramid-hierarchy
+    stale_risk: high
+    reason: エージェントツール比較表（Goose・Claude Code・Codex CLI の LLM バージョン）
+    last_verified: 2026-06-11
+
+  # ── medium: 6ヶ月ごとに確認 ──────────────────────────────
+
+  - slug: 2026-06-10-claude-code-skills-guide
+    stale_risk: medium
+    reason: Claude Code スキル一覧（機能追加で変わる）
+    last_verified: 2026-06-11
+
+  - slug: 2026-06-08-opencode-guide
+    stale_risk: medium
+    reason: opencode の仕様・セットアップ手順
+    last_verified: 2026-06-11
+
+  - slug: 2026-06-08-harness-engineering-guide
+    stale_risk: medium
+    reason: Claude Code Hook イベント仕様・権限設定の記述
+    last_verified: 2026-06-11
+
+  - slug: 2026-06-09-beast-mode-ai-tools
+    stale_risk: medium
+    reason: VS Code Copilot のカスタムモード仕様（バージョン 3.1 と記載）
+    last_verified: 2026-06-11
+
+  # ── low: 1年ごとに確認 ────────────────────────────────────
+
+  - slug: 2026-06-07-agent-context-management-2026
+    stale_risk: low
+    reason: 「2026年時点」という時制を含む設計論
+    last_verified: 2026-06-11
+
+  - slug: 2026-06-08-agent-reward-hacking-alignment
+    stale_risk: low
+    reason: 2026年5月時点のベンチマーク言及
+    last_verified: 2026-06-11
