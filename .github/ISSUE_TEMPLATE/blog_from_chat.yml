@@ -1,18 +1,18 @@
-name: Blog draft from AI chat
-description: ChatGPT / Claude / Gemini との会話をもとにブログ記事ドラフトを作成する
+name: "Blog draft from AI chat"
+description: "ChatGPT / Claude / Gemini との会話をもとにブログ記事ドラフトを作成する"
 title: "[Blog Draft] "
 labels: ["blog", "draft", "agent"]
 body:
   - type: markdown
     attributes:
       value: |
-        AIチャットの共有リンクまたは会話本文から、GitHub Pages用の記事ドラフトを作成するためのIssueです。
+        "AIチャットの共有リンクまたは会話本文から、GitHub Pages用の記事ドラフトを作成するためのIssueです。"
 
   - type: input
     id: source_link
     attributes:
-      label: Source chat link
-      description: ChatGPT / Claude / Gemini などの共有リンク。取得できない場合があるため、重要な内容は下の本文にも貼ってください。
+      label: "Source chat link"
+      description: "ChatGPT / Claude / Gemini などの共有リンク。取得できない場合があるため、重要な内容は下の本文にも貼ってください。"
       placeholder: "https://..."
     validations:
       required: false
@@ -20,40 +20,40 @@ body:
   - type: textarea
     id: raw_transcript
     attributes:
-      label: Raw transcript / notes
-      description: 会話本文、要点、スクショから写した内容など。リンクだけに依存しないため、できるだけここにも貼る。
+      label: "Raw transcript / notes"
+      description: "会話本文、要点、スクショから写した内容など。リンクだけに依存しないため、できるだけここにも貼る。"
       placeholder: |
-        ここに会話本文や要点を貼る
+        "ここに会話本文や要点を貼る"
     validations:
       required: false
 
   - type: textarea
     id: article_goal
     attributes:
-      label: Article goal
-      description: 読者に何を持ち帰ってほしいか
+      label: "Article goal"
+      description: "読者に何を持ち帰ってほしいか"
       placeholder: |
-        例: スマホ中心でAI開発環境を運用するためのPRベース構成を整理する
+        "例: スマホ中心でAI開発環境を運用するためのPRベース構成を整理する"
     validations:
       required: true
 
   - type: dropdown
     id: article_type
     attributes:
-      label: Article type
+      label: "Article type"
       options:
-        - 技術メモ
-        - 調査ログ
-        - 設計論
-        - 実装手順
-        - 意見・考察
+        - "技術メモ"
+        - "調査ログ"
+        - "設計論"
+        - "実装手順"
+        - "意見・考察"
     validations:
       required: true
 
   - type: input
     id: target_reader
     attributes:
-      label: Target reader
+      label: "Target reader"
       placeholder: "例: AIコーディングエージェントを使い始めた個人開発者"
     validations:
       required: false
@@ -61,8 +61,8 @@ body:
   - type: input
     id: category
     attributes:
-      label: Category
-      description: AGENTS.md のカテゴリから選ぶ。迷う場合はエージェントに提案させる。
+      label: "Category"
+      description: "AGENTS.md のカテゴリから選ぶ。迷う場合はエージェントに提案させる。"
       placeholder: "AI開発"
     validations:
       required: false
@@ -70,8 +70,8 @@ body:
   - type: input
     id: tags
     attributes:
-      label: Tags
-      description: AGENTS.md の既存タグを優先
+      label: "Tags"
+      description: "AGENTS.md の既存タグを優先"
       placeholder: "AIエージェント, Claude Code, Codex, GitHub Pages"
     validations:
       required: false
@@ -79,11 +79,11 @@ body:
   - type: checkboxes
     id: output
     attributes:
-      label: Output
+      label: "Output"
       options:
-        - label: 日本語記事を作成する
+        - label: "日本語記事を作成する"
           required: true
-        - label: 必要なら英語版も提案する
+        - label: "必要なら英語版も提案する"
           required: false
-        - label: `_posts/` に直接追加せず、PRでレビューできる状態にする
+        - label: "`_posts/` に直接追加せず、PRでレビューできる状態にする"
           required: true
