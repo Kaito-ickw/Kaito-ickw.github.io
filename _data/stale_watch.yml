@@ -33,6 +33,11 @@ articles:
     reason: エージェントツール比較表（Goose・Claude Code・Codex CLI の LLM バージョン）
     last_verified: 2026-06-11
 
+  - slug: 2026-06-11-mobile-first-ai-dev-issue-pr-workflow
+    stale_risk: medium
+    reason: Claude Code GitHub Actions の Issue/PR メンション仕様（機能追加で変わる可能性）
+    last_verified: 2026-06-11
+
   # ── medium: 6ヶ月ごとに確認 ──────────────────────────────
 
   - slug: 2026-06-10-claude-code-skills-guide
