@@ -62,6 +62,11 @@ articles:
 
   # ── low: 1年ごとに確認 ────────────────────────────────────
 
+  - slug: 2026-06-12-2026-world-cup-soccer-data-revolution
+    stale_risk: low
+    reason: 2026年ワールドカップの試合数・データ技術の記述、Brighton/Brentford の移籍金など具体的数値
+    last_verified: 2026-06-12
+
   - slug: 2026-06-07-agent-context-management-2026
     stale_risk: low
     reason: 「2026年時点」という時制を含む設計論
