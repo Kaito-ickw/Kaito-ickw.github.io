@@ -40,6 +40,11 @@ articles:
 
   # ── medium: 6ヶ月ごとに確認 ──────────────────────────────
 
+  - slug: 2026-06-13-openclaw-personal-ai-agent
+    stale_risk: medium
+    reason: OpenClaw の対応チャンネル・導入手順・Gateway・Skill・Sandbox・Cron 仕様
+    last_verified: 2026-06-13
+
   - slug: 2026-06-10-claude-code-skills-guide
     stale_risk: medium
     reason: Claude Code スキル一覧（機能追加で変わる）
