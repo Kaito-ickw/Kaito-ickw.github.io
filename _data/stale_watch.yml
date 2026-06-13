@@ -40,6 +40,21 @@ articles:
 
   # ── medium: 6ヶ月ごとに確認 ──────────────────────────────
 
+  - slug: 2026-06-13-github-secrets-guide
+    stale_risk: medium
+    reason: GitHub Actions Secrets の上限・スコープ・Environment保護ルール・プラン制限
+    last_verified: 2026-06-13
+
+  - slug: 2026-06-13-github-useful-features
+    stale_risk: medium
+    reason: Dependabot・Branch Protection・Secret scanning・Push Protection・GitHub Actions の仕様
+    last_verified: 2026-06-13
+
+  - slug: 2026-06-13-nodejs-basics-for-vibe-coding
+    stale_risk: medium
+    reason: Node.js・npm run・npm install・npm ci・npm exec・環境変数の仕様
+    last_verified: 2026-06-13
+
   - slug: 2026-06-13-openclaw-personal-ai-agent
     stale_risk: medium
     reason: OpenClaw の対応チャンネル・導入手順・Gateway・Skill・Sandbox・Cron 仕様
