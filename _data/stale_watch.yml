@@ -13,6 +13,11 @@ articles:
 
   # ── high: 3ヶ月ごとに確認 ────────────────────────────────
 
+  - slug: 2026-06-16-spacex-ipo-kardashev-scale
+    stale_risk: high
+    reason: SpaceXのIPO価格・調達額・時価総額・株価などの数値（市場変動で陳腐化）
+    last_verified: 2026-06-16
+
   - slug: 2026-06-06-supabase-vs-railway-comparison
     stale_risk: high
     reason: Supabase・Railway・Neon の詳細料金比較（無料枠・従量単価）
