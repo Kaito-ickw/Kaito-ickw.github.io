@@ -38,6 +38,11 @@ articles:
     reason: Claude Code GitHub Actions の Issue/PR メンション仕様（機能追加で変わる可能性）
     last_verified: 2026-06-11
 
+  - slug: 2026-06-16-openai-jony-ive-ai-hardware-vision
+    stale_risk: high
+    reason: OpenAIのハードウェアデバイス計画（製品名・形状・発売時期・製造体制）。未発表のため報道内容が頻繁に変わる
+    last_verified: 2026-06-16
+
   # ── medium: 6ヶ月ごとに確認 ──────────────────────────────
 
   - slug: 2026-06-13-github-secrets-guide
