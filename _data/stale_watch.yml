@@ -40,6 +40,11 @@ articles:
 
   # ── medium: 6ヶ月ごとに確認 ──────────────────────────────
 
+  - slug: 2026-06-16-notion-database-personal-backend
+    stale_risk: medium
+    reason: Notion API のレート制限（約3req/s）・無料プラン上限（5MB・履歴7日）・データソースモデル（2025-09-03）
+    last_verified: 2026-06-16
+
   - slug: 2026-06-13-github-secrets-guide
     stale_risk: medium
     reason: GitHub Actions Secrets の上限・スコープ・Environment保護ルール・プラン制限
