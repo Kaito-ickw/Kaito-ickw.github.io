@@ -85,6 +85,11 @@ articles:
     reason: Claude Code Hook イベント仕様・権限設定の記述
     last_verified: 2026-06-11
 
+  - slug: 2026-06-16-graphai-agent-workflow-engine
+    stale_risk: medium
+    reason: GraphAI のバージョン・対応エージェント一覧・CLI仕様
+    last_verified: 2026-06-16
+
   - slug: 2026-06-09-beast-mode-ai-tools
     stale_risk: medium
     reason: VS Code Copilot のカスタムモード仕様（バージョン 3.1 と記載）
