@@ -121,3 +121,8 @@ articles:
     stale_risk: low
     reason: 2026年5月時点のベンチマーク言及
     last_verified: 2026-06-11
+
+  - slug: 2026-06-18-claude-code-grill-me
+    stale_risk: medium
+    reason: npx インストールコマンド・SKILL.md の仕様（スキルリポジトリのアップデートで変わる可能性）
+    last_verified: 2026-06-18
