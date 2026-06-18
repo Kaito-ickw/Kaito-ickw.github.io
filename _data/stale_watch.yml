@@ -48,6 +48,11 @@ articles:
     reason: OpenAIのハードウェアデバイス計画（製品名・形状・発売時期・製造体制）。未発表のため報道内容が頻繁に変わる
     last_verified: 2026-06-16
 
+  - slug: 2026-06-18-google-workspace-studio-guide
+    stale_risk: high
+    reason: Google Workspace Studio の機能仕様・対応コネクタ数・利用可能プラン（リリース初期のため頻繁に変わる）
+    last_verified: 2026-06-18
+
   # ── medium: 6ヶ月ごとに確認 ──────────────────────────────
 
   - slug: 2026-06-16-notion-database-personal-backend
