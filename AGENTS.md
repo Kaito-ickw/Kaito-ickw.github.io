@@ -150,7 +150,7 @@ last_modified_at: YYYY-MM-DD   # Only after updating published content
 `コーディングエージェント`
 
 **プロダクト・ツール（英語表記）**  
-`Claude`, `Claude Code`, `Codex`, `Codex CLI`, `opencode`, `agmsg`,
+`Claude`, `Claude Code`, `Codex`, `Codex CLI`, `opencode`, `agmsg`, `MCP`,
 `Ralph Loop`, `Black`, `Alembic`, `SQLAlchemy`,
 `Docker`, `Docker Compose`, `Dockerfile`,
 `Python`, `Git`, `VSCode`,
