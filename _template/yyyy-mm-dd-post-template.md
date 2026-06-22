@@ -5,6 +5,9 @@ subtitle: ここにサブタイトルを入力
 categories: ここにカテゴリを入力
 tags: [ここにタグを入力]
 # last_modified_at: YYYY-MM-DD
+# image:
+#   path: /assets/images/posts/YYYY-MM-DD-slug/eyecatch.png
+#   alt: 画像の内容が分かる説明
 ---
 
 ここに本文を入力します。
