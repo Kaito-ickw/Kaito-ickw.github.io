@@ -4,6 +4,9 @@ title: "状態遷移図の書き方と使いどころ"
 categories: 開発
 tags: ["ドキュメント", "AIエージェント", "設計"]
 lang: ja
+image:
+  path: /assets/images/posts/2026-06-09-state-transition-diagram-guide/eyecatch.png
+  alt: 複数の状態を結ぶ経路と途切れた遷移を紙で表現した図
 ---
 
 設計ドキュメントのなかで、状態遷移図はわりと判断が難しい部類だ。「書いた方がいいのはわかるけど、いつ書くのか」という感覚はあっても、実際に書くきっかけをうまくつかめないことがある。

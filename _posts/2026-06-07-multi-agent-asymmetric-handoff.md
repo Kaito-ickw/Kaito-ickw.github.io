@@ -6,6 +6,9 @@ categories: AI開発
 tags: ["マルチエージェント", "Claude Code", "Codex", "agmsg", "自動化"]
 lang: ja
 ref: multi-agent-asymmetric-handoff
+image:
+  path: /assets/images/posts/2026-06-07-multi-agent-asymmetric-handoff/eyecatch.png
+  alt: 複数のコンピューター間でメッセージと処理が引き継がれる様子
 ---
 
 AIエージェントを複数組み合わせて開発を進めると、ある非対称な問題にぶつかる。

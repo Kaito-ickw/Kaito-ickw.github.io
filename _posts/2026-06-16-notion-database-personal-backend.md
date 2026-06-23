@@ -6,8 +6,8 @@ categories: 開発
 tags: ["Notion", "データベース", "バックエンド", "API", "AIネイティブ開発"]
 lang: ja
 image:
-  path: /assets/images/posts/2026-06-16-notion-database-personal-backend/notion-database-backend-eyecatch.png
-  alt: Notionデータベースをアプリと管理画面から操作する構成
+  path: /assets/images/posts/2026-06-16-notion-database-personal-backend/eyecatch.png
+  alt: アプリと人が同じデータキャビネットを操作するミニチュア
 ---
 
 AIエージェントに任せて小さなアプリを作っていると、毎回ぶつかるのが「データをどこに置くか」だ。

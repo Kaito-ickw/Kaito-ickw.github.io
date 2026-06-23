@@ -3,3 +3,6 @@
 .sass-cache
 _site
 Gemfile.lock
+
+# Local AI-generated eyecatch candidates and archives
+/.eyecatch-work/

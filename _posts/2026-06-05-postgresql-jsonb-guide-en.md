@@ -6,6 +6,9 @@ categories: Data Engineering
 tags: ["PostgreSQL", "JSONB", "Database", "SQL"]
 lang: en
 ref: postgresql-jsonb-guide
+image:
+  path: /assets/images/posts/2026-06-05-postgresql-jsonb-guide/eyecatch.png
+  alt: A miniature index searching document branches extending from a card database
 ---
 
 When requirements include "store data before the schema is finalized" or "handle structures whose fields change dynamically," PostgreSQL's **JSONB** type is often a strong option.

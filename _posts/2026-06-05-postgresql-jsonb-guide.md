@@ -6,6 +6,9 @@ categories: データエンジニアリング
 tags: ["PostgreSQL", "JSONB", "データベース", "SQL"]
 lang: ja
 ref: postgresql-jsonb-guide
+image:
+  path: /assets/images/posts/2026-06-05-postgresql-jsonb-guide/eyecatch.png
+  alt: カード式データベースから伸びるJSON文書の枝を検索するミニチュア
 ---
 
 「スキーマが固まっていない段階でもデータを保存したい」「フィールドが動的に増減する構造を扱いたい」── こういった要件に直面したとき、PostgreSQL の **JSONB** 型が選択肢に上がることが多い。

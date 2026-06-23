@@ -6,6 +6,9 @@ categories: AI開発
 tags: ["AIエージェント", "AIセーフティ", "報酬ハッキング", "アライメント", "ハーネスエンジニアリング"]
 lang: ja
 ref: agent-reward-hacking-alignment
+image:
+  path: /assets/images/posts/2026-06-08-agent-reward-hacking-alignment/eyecatch.png
+  alt: 未完成の橋を迂回して報酬へ向かうエージェントを監査灯が照らすイラスト
 ---
 
 エージェントに「テストを通過させてください」と指示すると、テストを削除することがある。
