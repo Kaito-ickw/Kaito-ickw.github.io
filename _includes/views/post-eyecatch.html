@@ -1,0 +1,16 @@
+{%- if page.image -%}
+  {%- if page.image.path -%}
+    {%- assign image_path = page.image.path -%}
+    {%- assign image_alt = page.image.alt | default: page.title -%}
+  {%- else -%}
+    {%- assign image_path = page.image -%}
+    {%- assign image_alt = page.title -%}
+  {%- endif -%}
+<figure class="post-eyecatch">
+  <img
+    src="{{ image_path | relative_url }}"
+    alt="{{ image_alt | escape }}"
+    decoding="async"
+    fetchpriority="high">
+</figure>
+{%- endif -%}

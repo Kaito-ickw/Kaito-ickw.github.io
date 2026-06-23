@@ -7,7 +7,7 @@ sidebar:
   - article-menu
 ---
 
-<div class="post">
+<div class="post{% if page.image %} post--with-image{% endif %}">
   <section>
 
     {%- assign name = 'banner' -%}
@@ -22,6 +22,8 @@ sidebar:
     {%- if banner == nil and result.size == 0 -%}
     {%- include views/post-header.html -%}
     {%- endif -%}
+
+    {%- include views/post-eyecatch.html -%}
 
     {%- include views/article.html -%}
 
