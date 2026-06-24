@@ -5,6 +5,9 @@ subtitle: 外部リポジトリを取り込む2つの方法を比較する
 categories: 開発
 tags: ["Git", "開発環境", "CLI"]
 lang: ja
+image:
+  path: /assets/images/posts/2026-06-10-git-submodule-subtree/eyecatch.png
+  alt: 外部の箱につながる参照と親の箱へ展開された内容を対比する紙工作
 ---
 
 外部のリポジトリを自分のプロジェクトに組み込みたいとき、Git には `submodule` と `subtree` という2つのアプローチがある。どちらも「外部リポジトリを取り込む」ことはできるが、仕組みも運用上の扱いも大きく異なる。

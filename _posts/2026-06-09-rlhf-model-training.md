@@ -5,6 +5,9 @@ subtitle: 訓練の3段階と、現在のモデルの返答スタイルに残る
 categories: AI開発
 tags: ["LLM", "AIセーフティ", "アライメント"]
 lang: ja
+image:
+  path: /assets/images/posts/2026-06-09-rlhf-model-training/eyecatch.png
+  alt: 人の選択が返答カードの進路を変えるリソグラフ
 ---
 
 最近のAIはずいぶん話しやすくなった。丁寧に答えるし、危ない話題は断るし、無茶な要求も穏やかにかわす。こうした特徴は「最初からそういうモデルを作った」のではなく、学習プロセスで後から付け加えられたものだ。

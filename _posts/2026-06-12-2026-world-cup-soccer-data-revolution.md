@@ -4,6 +4,9 @@ title: "2026ワールドカップで見るサッカーのデータ革命"
 categories: データエンジニアリング
 tags: ["AI", "データベース", "設計"]
 lang: ja
+image:
+  path: /assets/images/posts/2026-06-12-2026-world-cup-soccer-data-revolution/eyecatch.png
+  alt: 紙のピッチをめくってデータで見えるオフザボールの走路を表したコラージュ
 ---
 
 2026年6月、FIFA ワールドカップが開幕した。48チームが北米3カ国を舞台に戦うこの大会は、規模だけでなくデータ活用の点でも過去最大規模になる見込みだ。

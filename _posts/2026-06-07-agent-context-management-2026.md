@@ -6,6 +6,9 @@ categories: AI開発
 tags: ["マルチエージェント", "コンテキスト管理", "Claude Code", "Codex CLI", "LLM"]
 lang: ja
 ref: agent-context-management-2026
+image:
+  path: /assets/images/posts/2026-06-07-agent-context-management-2026/eyecatch.png
+  alt: 完了した作業を外部アーカイブへ移して机を空けるミニチュアの管制室
 ---
 
 エージェントに多くのタスクを自律的にやらせようとすると、ある非対称な問題にぶつかる。
