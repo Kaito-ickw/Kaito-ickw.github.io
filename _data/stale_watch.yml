@@ -13,6 +13,11 @@ articles:
 
   # ── high: 3ヶ月ごとに確認 ────────────────────────────────
 
+  - slug: 2026-06-24-ai-subscription-telehodai
+    stale_risk: high
+    reason: Claude Code・Codexのサブスクリプション利用上限とリセット仕様
+    last_verified: 2026-06-24
+
   - slug: 2026-06-16-spacex-ipo-kardashev-scale
     stale_risk: high
     reason: SpaceXのIPO価格・調達額・時価総額・株価などの数値（市場変動で陳腐化）
@@ -161,3 +166,8 @@ articles:
     stale_risk: medium
     reason: npx インストールコマンド・SKILL.md の仕様（スキルリポジトリのアップデートで変わる可能性）
     last_verified: 2026-06-18
+
+  - slug: 2026-06-24-gsd-core-ai-coding-workflow
+    stale_risk: medium
+    reason: GSD Core の開発リポジトリ・インストール方法・コマンド名・対応ランタイム・phase loop仕様
+    last_verified: 2026-06-24
