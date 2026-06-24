@@ -13,6 +13,8 @@ MCP対応アプリでToolを使うと、画面上では「モデルがToolを選
 
 [前回はTools・Resources・Promptsの使い分け]({% post_url 2026-06-19-mcp-tools-resources-prompts %})を整理した。今回はノートを読む`read_note` Toolを例に、接続から実行までをメッセージ単位で追う。この記事はMCP仕様の`2025-11-25`版を基準にしている。
 
+{% include mcp-series-index.html current=4 %}
+
 ---
 
 ## 全体は初期化・通常処理・終了の3段階

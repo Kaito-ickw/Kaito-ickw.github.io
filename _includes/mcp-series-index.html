@@ -1,0 +1,54 @@
+<nav class="mcp-series-index" aria-label="MCPサーバー連載">
+  <p><strong>MCPサーバー連載（全7回）</strong></p>
+  <ol>
+    <li>
+      {% if include.current == 1 %}
+        <strong aria-current="page">MCPは何を標準化するプロトコルなのか（この記事）</strong>
+      {% else %}
+        <a href="{% post_url 2026-06-17-mcp-protocol-overview %}">MCPは何を標準化するプロトコルなのか</a>
+      {% endif %}
+    </li>
+    <li>
+      {% if include.current == 2 %}
+        <strong aria-current="page">MCPのHost・Client・Serverを整理する（この記事）</strong>
+      {% else %}
+        <a href="{% post_url 2026-06-18-mcp-host-client-server %}">MCPのHost・Client・Serverを整理する</a>
+      {% endif %}
+    </li>
+    <li>
+      {% if include.current == 3 %}
+        <strong aria-current="page">MCPのTools・Resources・Promptsを使い分ける（この記事）</strong>
+      {% else %}
+        <a href="{% post_url 2026-06-19-mcp-tools-resources-prompts %}">MCPのTools・Resources・Promptsを使い分ける</a>
+      {% endif %}
+    </li>
+    <li>
+      {% if include.current == 4 %}
+        <strong aria-current="page">MCPの接続と通信をJSON-RPCから理解する（この記事）</strong>
+      {% else %}
+        <a href="{% post_url 2026-06-20-mcp-json-rpc-lifecycle %}">MCPの接続と通信をJSON-RPCから理解する</a>
+      {% endif %}
+    </li>
+    <li>
+      {% if include.current == 5 %}
+        <strong aria-current="page">Pythonで小さなMCPサーバーを作る（この記事）</strong>
+      {% else %}
+        <a href="{% post_url 2026-06-21-build-mcp-server-python %}">Pythonで小さなMCPサーバーを作る</a>
+      {% endif %}
+    </li>
+    <li>
+      {% if include.current == 6 %}
+        <strong aria-current="page">ローカルMCPとリモートMCPの違い（この記事）</strong>
+      {% else %}
+        <a href="{% post_url 2026-06-22-mcp-local-remote-transports %}">ローカルMCPとリモートMCPの違い</a>
+      {% endif %}
+    </li>
+    <li>
+      {% if include.current == 7 %}
+        <strong aria-current="page">MCPサーバーを安全に運用する（この記事）</strong>
+      {% else %}
+        <a href="{% post_url 2026-06-23-mcp-security-operations %}">MCPサーバーを安全に運用する</a>
+      {% endif %}
+    </li>
+  </ol>
+</nav>

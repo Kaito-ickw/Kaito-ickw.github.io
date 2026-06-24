@@ -13,6 +13,8 @@ MCPサーバーというと、LLMから外部APIを呼ぶためのToolsがまず
 
 違いはデータ形式よりも「誰が、どのタイミングで使うものか」にある。本連載の[前回はHost・Client・Serverの分担]({% post_url 2026-06-18-mcp-host-client-server %})を整理した。今回はその上に、MCPが提供する機能を配置していく。なお、この記事はMCP仕様の`2025-11-25`版を基準にしている。
 
+{% include mcp-series-index.html current=3 %}
+
 ---
 
 ## 3つの違いは操作の主導権にある

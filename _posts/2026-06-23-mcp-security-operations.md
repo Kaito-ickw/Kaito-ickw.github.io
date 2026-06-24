@@ -13,6 +13,8 @@ MCPサーバーを接続すると、AIアプリケーションはファイル、
 
 前回の[ローカルMCPとリモートMCPの違い]({% post_url 2026-06-22-mcp-local-remote-transports %})では、stdioとStreamable HTTPの実行モデルを整理した。連載最終回では、その接続を実運用へ持ち込む際の信頼境界を扱う。
 
+{% include mcp-series-index.html current=7 %}
+
 ---
 
 ## 結論を先に
