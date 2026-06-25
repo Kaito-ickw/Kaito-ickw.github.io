@@ -5,6 +5,9 @@ subtitle: Tool実行が通る参加者と責任の境界
 categories: AI開発
 tags: ["MCP", "AIエージェント", "LLM", "API", "設計"]
 lang: ja
+image:
+  path: /assets/images/posts/2026-06-18-mcp-host-client-server/eyecatch.png
+  alt: 中央の管制卓から二つの工房へ別々の経路が伸びる粘土模型風イラスト
 ---
 
 MCPの構成は「ClientとServerが通信する」と説明される。それ自体は正しいが、Claude CodeやIDEのようなアプリケーションをMCP Clientと呼んでしまうと、実際の接続構造が見えにくくなる。

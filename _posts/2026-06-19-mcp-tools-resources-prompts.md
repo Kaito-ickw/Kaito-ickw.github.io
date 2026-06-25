@@ -5,6 +5,9 @@ subtitle: サーバーが公開する3つの機能と、クライアント側機
 categories: AI開発
 tags: ["MCP", "AIエージェント", "LLM", "API", "設計"]
 lang: ja
+image:
+  path: /assets/images/posts/2026-06-19-mcp-tools-resources-prompts/eyecatch.png
+  alt: レバー、資料箱、手順カードが工房の棚に分かれて収まるミニチュア風イラスト
 ---
 
 MCPサーバーというと、LLMから外部APIを呼ぶためのToolsがまず思い浮かぶ。実際には、MCPサーバーが公開する基本機能にはTools、Resources、Promptsの3種類がある。

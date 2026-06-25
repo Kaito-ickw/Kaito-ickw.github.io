@@ -5,6 +5,9 @@ subtitle: 初期化、機能の発見、Tool実行までのメッセージを追
 categories: AI開発
 tags: ["MCP", "API", "LLM", "設計"]
 lang: ja
+image:
+  path: /assets/images/posts/2026-06-20-mcp-json-rpc-lifecycle/eyecatch.png
+  alt: 二つの装置が通行証、目録、仕事の箱を順に受け渡す紙コラージュ風イラスト
 ---
 
 MCP対応アプリでToolを使うと、画面上では「モデルがToolを選び、結果を受け取った」ように見える。その裏では、ClientとServerが接続を初期化し、互いに対応機能を宣言し、Tool一覧を取得してから、引数付きの呼び出しを行っている。

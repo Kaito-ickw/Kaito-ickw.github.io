@@ -5,6 +5,9 @@ subtitle: stdioとStreamable HTTPを実行・通信・運用から比較する
 categories: AI開発
 tags: ["MCP", "AIエージェント", "API", "REST", "設計"]
 lang: ja
+image:
+  path: /assets/images/posts/2026-06-22-mcp-local-remote-transports/eyecatch.png
+  alt: 操作卓から机下の専用機と橋の先の共有施設へ二つの経路が分かれる紙コラージュ風イラスト
 ---
 
 MCP Serverを導入するとき、「ローカルMCPかリモートMCPか」という言い方をよくする。実際の設計では、Serverをどこで動かすかと、Clientがどう接続するかを分けて考えた方がよい。

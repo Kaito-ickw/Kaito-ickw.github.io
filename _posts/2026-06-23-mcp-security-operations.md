@@ -5,6 +5,9 @@ subtitle: 権限・認証・承認・ログから信頼境界を設計する
 categories: AI開発
 tags: ["MCP", "AIエージェント", "AIセーフティ", "API", "設計"]
 lang: ja
+image:
+  path: /assets/images/posts/2026-06-23-mcp-security-operations/eyecatch.png
+  alt: 作業機械へ向かう荷物が複数の検問と承認レバーを通過するミニチュア工場風イラスト
 ---
 
 MCPサーバーを接続すると、AIアプリケーションはファイル、データベース、GitHub、社内SaaSなどを共通の方法で操作できるようになる。便利になる一方で、モデルの出力が実際の処理へつながる経路も増える。
