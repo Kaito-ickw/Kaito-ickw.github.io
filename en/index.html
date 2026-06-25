@@ -1,0 +1,1289 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <script>
+  (function() {
+    try {
+      var p = localStorage.getItem('preferred_lang');
+      if (!p) return;
+      var path = window.location.pathname;
+      var ja = ['/', '/archives.html', '/categories.html', '/tags.html', '/about.html'];
+      var en = ['/en/', '/en/archives.html', '/en/categories.html', '/en/tags.html', '/en/about.html'];
+      if (p === 'en' && ja.indexOf(path) !== -1) {
+        window.location.replace('/en' + (path === '/' ? '/' : path));
+      } else if (p === 'ja' && en.indexOf(path) !== -1) {
+        window.location.replace(path.slice(3) || '/');
+      }
+    } catch(e) {}
+  })();
+  </script>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="google-translate-customization" content="108d9124921d80c3-80e20d618ff053c8-g4f02ec6f3dba68b7-c">
+<!-- Begin Jekyll SEO tag v2.9.0 -->
+<title>Home | Waka-DS.com</title>
+<meta name="generator" content="Jekyll v4.4.1">
+<meta property="og:title" content="Home">
+<meta name="author" content="Waka-DS">
+<meta property="og:locale" content="en">
+<meta name="description" content="AIエージェント時代のシステム設計・データ基盤・開発環境を実務目線で整理する技術ブログ。 Data Engineering・AI Agent開発・SaaS最適化など、Docker・WSL2・Python・TypeScriptを中心としたプロダクション実践ノートを記録。">
+<meta name="twitter:description" property="og:description" content="AIエージェント時代のシステム設計・データ基盤・開発環境を実務目線で整理する技術ブログ。 Data Engineering・AI Agent開発・SaaS最適化など、Docker・WSL2・Python・TypeScriptを中心としたプロダクション実践ノートを記録。">
+<link rel="canonical" href="/jekyll-theme-yat/en/">
+<meta property="og:url" content="/jekyll-theme-yat/en/">
+<meta property="og:site_name" content="Waka-DS.com">
+<meta property="og:type" content="website">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Home">
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"WebPage","author":{"@type":"Person","name":"Waka-DS"},"description":"AIエージェント時代のシステム設計・データ基盤・開発環境を実務目線で整理する技術ブログ。 Data Engineering・AI Agent開発・SaaS最適化など、Docker・WSL2・Python・TypeScriptを中心としたプロダクション実践ノートを記録。","headline":"Home","url":"/jekyll-theme-yat/en/"}</script>
+<!-- End Jekyll SEO tag -->
+<link rel="shortcut icon" href="">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=Noto+Sans+JP:wght@400;500;700&amp;display=swap">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+  <link rel="stylesheet" href="/jekyll-theme-yat/assets/css/main.css">
+  <script src="/jekyll-theme-yat/assets/js/main.js"></script><link type="application/atom+xml" rel="alternate" href="/jekyll-theme-yat/feed.xml" title="Waka-DS.com">
+<script>
+  function initGoogleAnalytics() {
+    var doNotTrack = (window.doNotTrack === "1" || navigator.doNotTrack === "1" ||
+      navigator.doNotTrack === "yes" || navigator.msDoNotTrack === "1");
+    var enableDNT = "true" == "true";
+
+    if (!enableDNT || !doNotTrack) {
+      var ga_id = 'G-XNP1RBTG9C';
+
+      var script = document.createElement('script');
+      script.async = true;
+      script.src = 'https://www.googletagmanager.com/gtag/js?id=' + ga_id;
+      document.head.appendChild(script);
+
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', ga_id);
+    }
+  }
+  window.addEventListener("load", initGoogleAnalytics);
+</script>
+<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/styles/default.min.css">
+<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/highlight.min.js"></script>
+<!-- and it's easy to individually load additional languages -->
+<script charset="UTF-8" src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/languages/go.min.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<script>
+// Init highlight js
+document.addEventListener('DOMContentLoaded', function(event) {
+  var els = document.querySelectorAll('pre code')
+
+  function addLangData(block) {
+    var outer = block.parentElement.parentElement.parentElement;
+    var lang = block.getAttribute('data-lang');
+    for (var i = 0; i < outer.classList.length; i++) {
+      var cls = outer.classList[i];
+      if (cls.startsWith('language-')) {
+        lang = cls;
+        break;
+      }
+    }
+    if (!lang) {
+      cls = block.getAttribute('class');
+      lang = cls ? cls.replace('hljs ', '') : '';
+    }
+    if (lang.startsWith('language-')) {
+      lang = lang.substr(9);
+    }
+    block.setAttribute('class', 'hljs ' + lang);
+    block.parentNode.setAttribute('data-lang', lang);
+  }
+
+  function addBadge(block) {
+    var enabled = ('true' || 'true').toLowerCase();
+    if (enabled == 'true') {
+      var pre = block.parentElement;
+      pre.classList.add('badge');
+    }
+  }
+
+  function handle(block) {
+    addLangData(block);
+    addBadge(block)
+    hljs.highlightBlock(block);
+  }
+
+  for (var i = 0; i < els.length; i++) {
+    var el = els[i];
+    handle(el);
+  }
+});
+</script>
+
+<style>
+  /* code language badge */
+  pre.badge::before {
+    content: attr(data-lang);
+    color: #fff;
+    background-color: #0d9488;
+    padding: 0 .5em;
+    border-radius: 0 2px;
+    text-transform: uppercase;
+    text-align: center;
+    min-width: 32px;
+    display: inline-block;
+    position: absolute;
+    right: 0;
+  }
+
+  /* fix wrong badge display for firefox browser */
+  code > table pre::before {
+    display: none;
+  }
+</style>
+</head>
+<body>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<header class="site-header site-header-transparent" role="banner">
+
+  <div class="wrapper">
+    <div class="site-header-inner">
+<span class="site-brand"><a class="site-brand-inner" rel="author" href="/jekyll-theme-yat/">
+  <img class="site-favicon" title="Waka-DS.com" src="" onerror="this.style.display='none'">
+  Waka-DS.com
+</a>
+</span><nav class="site-nav">
+          <input type="checkbox" id="nav-trigger" class="nav-trigger">
+          <label for="nav-trigger">
+            <span class="menu-icon">
+              <svg viewbox="0 0 18 15" width="18px" height="15px">
+                <path d="M18,1.484c0,0.82-0.665,1.484-1.484,1.484H1.484C0.665,2.969,0,2.304,0,1.484l0,0C0,0.665,0.665,0,1.484,0 h15.032C17.335,0,18,0.665,18,1.484L18,1.484z M18,7.516C18,8.335,17.335,9,16.516,9H1.484C0.665,9,0,8.335,0,7.516l0,0 c0-0.82,0.665-1.484,1.484-1.484h15.032C17.335,6.031,18,6.696,18,7.516L18,7.516z M18,13.516C18,14.335,17.335,15,16.516,15H1.484 C0.665,15,0,14.335,0,13.516l0,0c0-0.82,0.665-1.483,1.484-1.483h15.032C17.335,12.031,18,12.695,18,13.516L18,13.516z"></path>
+              </svg>
+            </span>
+          </label>
+
+          <div class="trigger">
+<a class="page-link" href="/jekyll-theme-yat/en/about.html">ABOUT</a><a class="page-link" href="/jekyll-theme-yat/en/archives.html">ARCHIVES</a><a class="page-link" href="/jekyll-theme-yat/en/categories.html">CATEGORIES</a><a class="page-link" href="/jekyll-theme-yat/en/">HOME</a><a class="page-link" href="/jekyll-theme-yat/en/tags.html">TAGS</a><span class="page-link">
+                <span class="lang-switcher lang-switcher--nav"><a class="lang-btn" href="/jekyll-theme-yat/">日本語</a>
+                    <span class="lang-btn lang-btn--active">English</span></span>
+              </span>
+</div>
+        </nav>
+</div>
+  </div>
+</header>
+
+<script>
+  function initHeader() {
+    var lastScrollY = getScrollPos().y;
+    var documentElement = document.documentElement;
+
+    function storeScrollData() {
+      var y = getScrollPos().y;documentElement.setAttribute("data-header-transparent", "");var scrollStatus = "";
+
+      if (y <= 0) {
+        scrollStatus = "top";
+      } else if ((window.innerHeight + y) >= document.body.offsetHeight) {
+        scrollStatus = "bottom";
+      } else {
+        var isScrollDown = (y - lastScrollY > 0) ? true : false;
+        scrollStatus = isScrollDown ? "down" : "up";
+      }
+
+      lastScrollY = y;
+      documentElement.setAttribute("data-scroll-status", scrollStatus);
+    }
+
+    window.addEventListener('scroll', function(e) {
+      storeScrollData();
+    });
+
+    storeScrollData();
+  }
+  document.addEventListener('DOMContentLoaded', initHeader);
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<section class="page-banner">
+    <div class="page-banner-img">
+<div style="background-image: url(/jekyll-theme-yat/assets/images/banners/banner.jpg)"></div>
+        <img class="img-placeholder" src="/jekyll-theme-yat/assets/images/banners/banner.jpg">
+</div>
+    <div class="wrapper">
+      <div class="page-banner-inner"><div class="page-banner-default">
+            <h1 class="page-banner-heading">
+              Waka-DS.com
+            </h1>
+            <h2 class="page-banner-subheading">
+              Practical notes on AI agents, system architecture, and data strategy.
+            </h2>
+          </div></div>
+    </div>
+  </section><script>
+  function hashLocate(hashValue) {
+    hashValue = hashValue.replace(/^.*#h-/, '');
+    hashValue = decodeURIComponent(hashValue);
+    var element = document.getElementById(hashValue);
+
+    if (!element) {
+      return;
+    }
+
+    var header = document.querySelector('header.site-header');
+    var headerRect = header.getBoundingClientRect();
+    var headerTop = Math.floor(headerRect.top);
+    var headerHeight = Math.floor(headerRect.height);
+    var scrollPos = getScrollPos();
+    var offsetY = element.offsetTop - (headerTop + headerHeight + 20);
+
+    if (offsetY == scrollPos.y) {
+      return;
+    }
+
+    if (headerTop == 0  && offsetY > scrollPos.y) {
+      offsetY += headerHeight + 2;
+    } else if (headerTop < 0  && offsetY < scrollPos.y) {
+      offsetY -= headerHeight - 2;
+    }
+
+    smoothScrollTo(offsetY);
+  }
+
+  // The first event occurred
+  window.addEventListener('load', function(event) {
+    if (window.location.hash) {
+      hashLocate(window.location.hash);
+    }
+  });
+
+  // The first event occurred
+  window.addEventListener('click', function(event) {
+    if (event.target.tagName.toLowerCase() == 'a') {
+      hashLocate(event.target.getAttribute('href'));
+    }
+  });
+</script>
+<div class="theme-toggle">
+  <input type="checkbox" id="theme-switch">
+  <label for="theme-switch">
+    <div class="toggle"></div>
+    <div class="names">
+      <p class="light">Light</p>
+      <p class="dark">Dark</p>
+    </div>
+  </label>
+</div>
+
+
+
+
+<script>
+  (function() {
+    var sw = document.getElementById('theme-switch');
+    var html = document.getElementsByTagName('html')[0];
+    var nightModeOption = ('auto' || 'auto').toLowerCase();
+    var storage = nightModeOption === 'manual'
+        ? localStorage
+        : sessionStorage;
+    var themeData = loadThemeData();
+
+    function saveThemeData(data) {
+      storage.setItem('theme', JSON.stringify(data));
+    }
+
+    function loadThemeData() {
+      var data = storage.getItem('theme');
+      try {
+        data = JSON.parse(data ? data : '');
+      } catch(e) {
+        data = { nightShift: undefined, autoToggleAt: 0 };
+        saveThemeData(data);
+      }
+      return data;
+    }
+
+    function handleThemeToggle(nightShift) {
+      themeData.nightShift = nightShift;
+      saveThemeData(themeData);
+      html.dataset.theme = nightShift ? 'dark' : 'light';
+      setTimeout(function() {
+        sw.checked = nightShift ? true : false;
+      }, 50);
+    }
+
+    function autoThemeToggle() {
+      // Next time point of theme toggle
+      var now = new Date();
+      var toggleAt = new Date();
+      var hours = now.getHours();
+      var nightShift = hours >= 19 || hours <=7;
+
+      if (nightShift) {
+        if (hours > 7) {
+          toggleAt.setDate(toggleAt.getDate() + 1);
+        }
+        toggleAt.setHours(7);
+      } else {
+        toggleAt.setHours(19);
+      }
+
+      toggleAt.setMinutes(0);
+      toggleAt.setSeconds(0);
+      toggleAt.setMilliseconds(0)
+
+      var delay = toggleAt.getTime() - now.getTime();
+
+      // auto toggle theme mode
+      setTimeout(function() {
+        handleThemeToggle(!nightShift);
+      }, delay);
+
+      return {
+        nightShift: nightShift,
+        toggleAt: toggleAt.getTime()
+      };
+    }
+
+    // Listen the theme toggle event
+    sw.addEventListener('change', function(event) {
+      handleThemeToggle(event.target.checked);
+    });
+
+    if (nightModeOption == 'auto') {
+      var data = autoThemeToggle();
+
+      // Toggle theme by local setting
+      if (data.toggleAt > themeData.autoToggleAt) {
+        themeData.autoToggleAt = data.toggleAt;
+        handleThemeToggle(data.nightShift);
+      } else {
+        handleThemeToggle(themeData.nightShift);
+      }
+    } else if (nightModeOption == 'manual') {
+      handleThemeToggle(themeData.nightShift);
+    } else {
+      var nightShift = themeData.nightShift;
+      if (nightShift === undefined) {
+        nightShift = nightModeOption === 'on';
+      }
+      handleThemeToggle(nightShift);
+    }
+  })();
+</script>
+<main class="page-content" aria-label="Content">
+      <div class="wrapper">
+        <div class="framework">
+  <section class="main">
+
+     <div class="articles">
+  
+
+  
+
+
+
+
+
+  <div class="pagination">
+  <!-- Post list links -->
+  <ul class="post-list">
+<li class="post-list-item">
+      
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="post-summary">
+        <h2 class="post-title">
+          <a class="post-link" href="/jekyll-theme-yat/development/2026/06/08/opencode-guide-en.html">
+            What is opencode ── An Open-Source AI Coding Agent for the Terminal
+          </a>
+        </h2>
+        <div class="post-meta">
+          <span class="post-date"><i class="fa fa-calendar"></i> Jun 08, 2026</span>
+          <span class="post-reading-time left-vsplit"><i class="fa fa-clock-o"></i> About 7 mins</span>
+        </div>
+        <a class="post-excerpt" href="/jekyll-theme-yat/development/2026/06/08/opencode-guide-en.html">
+          <p>
+          Terminal-based AI coding tools are multiplying fast.
+GitHub Copilot, Cursor, Claude Code, Aider… they all share the same idea — call an LLM from the terminal or editor and edit code — but their design choices differ significantly.
+
+opencode is an open-source AI coding agent published in 2025 by the SST (Serverless Stack) team.
+
+
+  TUI (Text User... <span class="read_more">Read More</span>
+          </p>
+        </a>
+        <div class="post-tags">
+<a class="post-tag" href="/jekyll-theme-yat/tags.html#opencode">#opencode</a><a class="post-tag" href="/jekyll-theme-yat/tags.html#AI">#AI</a><a class="post-tag" href="/jekyll-theme-yat/tags.html#Coding%20Agent">#Coding Agent</a><a class="post-tag" href="/jekyll-theme-yat/tags.html#CLI">#CLI</a><a class="post-tag" href="/jekyll-theme-yat/tags.html#OSS">#OSS</a><a class="post-tag" href="/jekyll-theme-yat/tags.html#Claude">#Claude</a><a class="post-tag" href="/jekyll-theme-yat/tags.html#LLM">#LLM</a>
+</div>
+      </div>
+    </li>
+<li class="post-list-item">
+      
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="post-summary">
+        <h2 class="post-title">
+          <a class="post-link" href="/jekyll-theme-yat/development/2026/06/07/python-black-guide-en.html">
+            What Is Black for Python? — Automating Code Formatting in AI-Native Development
+          </a>
+        </h2>
+        <div class="post-meta">
+          <span class="post-date"><i class="fa fa-calendar"></i> Jun 07, 2026</span>
+          <span class="post-reading-time left-vsplit"><i class="fa fa-clock-o"></i> About 17 mins</span>
+        </div>
+        <a class="post-excerpt" href="/jekyll-theme-yat/development/2026/06/07/python-black-guide-en.html">
+          <p>
+          When AI writes Python code, style differences can easily appear within the same project:
+
+
+  Single and double quotes become mixed
+  Function arguments are packed onto one line
+  Line breaks and whitespace differ from file to file
+  Unrelated formatting changes appear whenever a human or AI edits the code
+
+
+Because the code still runs, these iss... <span class="read_more">Read More</span>
+          </p>
+        </a>
+        <div class="post-tags">
+<a class="post-tag" href="/jekyll-theme-yat/tags.html#Python">#Python</a><a class="post-tag" href="/jekyll-theme-yat/tags.html#Black">#Black</a><a class="post-tag" href="/jekyll-theme-yat/tags.html#Code%20Formatter">#Code Formatter</a><a class="post-tag" href="/jekyll-theme-yat/tags.html#AI-Native%20Development">#AI-Native Development</a><a class="post-tag" href="/jekyll-theme-yat/tags.html#Development%20Environment">#Development Environment</a>
+</div>
+      </div>
+    </li>
+<li class="post-list-item">
+      
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="post-summary">
+        <h2 class="post-title">
+          <a class="post-link" href="/jekyll-theme-yat/development/2026/06/07/openapi-guide-en.html">
+            What is OpenAPI? — Making API Specs Readable by Humans and Machines Alike
+          </a>
+        </h2>
+        <div class="post-meta">
+          <span class="post-date"><i class="fa fa-calendar"></i> Jun 07, 2026</span>
+          <span class="post-reading-time left-vsplit"><i class="fa fa-clock-o"></i> About 9 mins</span>
+        </div>
+        <a class="post-excerpt" href="/jekyll-theme-yat/development/2026/06/07/openapi-guide-en.html">
+          <p>
+          Anyone who has worked on API development has run into these situations:
+
+
+  “The parameter name doesn’t match” or “the response shape changed” keeps happening between frontend and backend
+  Manually keeping Postman collections up to date is exhausting
+  API specs were written in a doc, but have drifted from the actual code
+  You want to expose a... <span class="read_more">Read More</span>
+          </p>
+        </a>
+        <div class="post-tags">
+<a class="post-tag" href="/jekyll-theme-yat/tags.html#OpenAPI">#OpenAPI</a><a class="post-tag" href="/jekyll-theme-yat/tags.html#Swagger">#Swagger</a><a class="post-tag" href="/jekyll-theme-yat/tags.html#API">#API</a><a class="post-tag" href="/jekyll-theme-yat/tags.html#REST">#REST</a><a class="post-tag" href="/jekyll-theme-yat/tags.html#Backend">#Backend</a><a class="post-tag" href="/jekyll-theme-yat/tags.html#Documentation">#Documentation</a>
+</div>
+      </div>
+    </li>
+<li class="post-list-item">
+      
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="post-summary">
+        <h2 class="post-title">
+          <a class="post-link" href="/jekyll-theme-yat/development/2026/06/06/vercel-frontend-selection-en.html">
+            Why Choose Vercel for the Frontend? — Comparing Netlify and Cloudflare Pages (2026)
+          </a>
+        </h2>
+        <div class="post-meta">
+          <span class="post-date"><i class="fa fa-calendar"></i> Jun 06, 2026</span>
+          <span class="post-reading-time left-vsplit"><i class="fa fa-clock-o"></i> About 7 mins</span>
+        </div>
+        <a class="post-excerpt" href="/jekyll-theme-yat/development/2026/06/06/vercel-frontend-selection-en.html">
+          <p>
+          In the backend selection article, I summarized the frontend choice as simply Frontend → Vercel, but there are specific reasons behind that decision.
+
+Frontend hosting is now largely a three-way contest between Vercel, Netlify, and Cloudflare Pages, each with different tradeoffs. This article compares them using information current as of June 202... <span class="read_more">Read More</span>
+          </p>
+        </a>
+        <div class="post-tags">
+<a class="post-tag" href="/jekyll-theme-yat/tags.html#Vercel">#Vercel</a><a class="post-tag" href="/jekyll-theme-yat/tags.html#Netlify">#Netlify</a><a class="post-tag" href="/jekyll-theme-yat/tags.html#Cloudflare">#Cloudflare</a><a class="post-tag" href="/jekyll-theme-yat/tags.html#Next.js">#Next.js</a><a class="post-tag" href="/jekyll-theme-yat/tags.html#Frontend">#Frontend</a><a class="post-tag" href="/jekyll-theme-yat/tags.html#Hosting">#Hosting</a>
+</div>
+      </div>
+    </li>
+<li class="post-list-item">
+      
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="post-summary">
+        <h2 class="post-title">
+          <a class="post-link" href="/jekyll-theme-yat/development/2026/06/06/supabase-vs-railway-comparison-en.html">
+            Supabase vs Railway vs Neon — Choosing a Backend for an AI-Native Logging App (2026)
+          </a>
+        </h2>
+        <div class="post-meta">
+          <span class="post-date"><i class="fa fa-calendar"></i> Jun 06, 2026</span>
+          <span class="post-reading-time left-vsplit"><i class="fa fa-clock-o"></i> About 13 mins</span>
+        </div>
+        <a class="post-excerpt" href="/jekyll-theme-yat/development/2026/06/06/supabase-vs-railway-comparison-en.html">
+          <p>
+          I’m building an AI-native logging app as a personal project.
+While evaluating backend options, I found myself torn between Supabase and Railway — and soon Neon and PlanetScale entered the picture as well.
+
+This post organizes the latest information as of June 2026 to compare the characteristics, pricing, and use cases of each service.
+
+
+
+First, ... <span class="read_more">Read More</span>
+          </p>
+        </a>
+        <div class="post-tags">
+<a class="post-tag" href="/jekyll-theme-yat/tags.html#Supabase">#Supabase</a><a class="post-tag" href="/jekyll-theme-yat/tags.html#Railway">#Railway</a><a class="post-tag" href="/jekyll-theme-yat/tags.html#Neon">#Neon</a><a class="post-tag" href="/jekyll-theme-yat/tags.html#BaaS">#BaaS</a><a class="post-tag" href="/jekyll-theme-yat/tags.html#PaaS">#PaaS</a><a class="post-tag" href="/jekyll-theme-yat/tags.html#Backend">#Backend</a>
+</div>
+      </div>
+    </li>
+<li class="post-list-item post-list-item--with-image">
+      
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<a class="post-thumbnail" href="/jekyll-theme-yat/data/engineering/2026/06/05/postgresql-jsonb-guide-en.html" aria-label="The Complete Guide to PostgreSQL JSONB — Flexible Schemas and Fast Queries">
+        <img src="/jekyll-theme-yat/assets/images/posts/2026-06-05-postgresql-jsonb-guide/eyecatch.png" alt="A miniature index searching document branches extending from a card database" loading="lazy" decoding="async">
+      </a><div class="post-summary">
+        <h2 class="post-title">
+          <a class="post-link" href="/jekyll-theme-yat/data/engineering/2026/06/05/postgresql-jsonb-guide-en.html">
+            The Complete Guide to PostgreSQL JSONB — Flexible Schemas and Fast Queries
+          </a>
+        </h2>
+        <div class="post-meta">
+          <span class="post-date"><i class="fa fa-calendar"></i> Jun 05, 2026</span>
+          <span class="post-reading-time left-vsplit"><i class="fa fa-clock-o"></i> About 12 mins</span>
+        </div>
+        <a class="post-excerpt" href="/jekyll-theme-yat/data/engineering/2026/06/05/postgresql-jsonb-guide-en.html">
+          <p>
+          When requirements include “store data before the schema is finalized” or “handle structures whose fields change dynamically,” PostgreSQL’s JSONB type is often a strong option.
+
+This article provides a systematic guide to JSONB, from the fundamentals to practical queries, index design, and performance characteristics.
+
+
+
+JSON vs JSONB — What Is t... <span class="read_more">Read More</span>
+          </p>
+        </a>
+        <div class="post-tags">
+<a class="post-tag" href="/jekyll-theme-yat/tags.html#PostgreSQL">#PostgreSQL</a><a class="post-tag" href="/jekyll-theme-yat/tags.html#JSONB">#JSONB</a><a class="post-tag" href="/jekyll-theme-yat/tags.html#Database">#Database</a><a class="post-tag" href="/jekyll-theme-yat/tags.html#SQL">#SQL</a>
+</div>
+      </div>
+    </li>
+</ul>
+
+  <!-- Pagination links -->
+</div>
+</div>
+
+
+  </section>
+  <section class="sidebar" style="margin-left: 15px;">
+    <!-- Get sidebar items -->
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="common-list">
+  <ul>
+<li>
+      <a href="/jekyll-theme-yat/index.html">
+        All<span>6</span>
+      </a>
+    </li>
+
+    
+      <li>
+        <a href="/jekyll-theme-yat/categories.html#h-Data">
+          Data <span>1</span>
+        </a>
+      </li>
+    
+      <li>
+        <a href="/jekyll-theme-yat/categories.html#h-Development">
+          Development <span>5</span>
+        </a>
+      </li>
+    
+      <li>
+        <a href="/jekyll-theme-yat/categories.html#h-Engineering">
+          Engineering <span>1</span>
+        </a>
+      </li>
+    
+  </ul>
+</div>
+
+</section>
+</div>
+
+      </div>
+    </main><footer class="site-footer h-card">
+  <data class="u-url" href="/jekyll-theme-yat/"></data>
+
+  <div class="wrapper">
+    <div class="site-footer-inner">
+<div>Waka-DS © 2021-2026</div>
+      <div>Powered by <a title="Jekyll is a simple, blog-aware, static site
+      generator." href="http://jekyllrb.com/">Jekyll</a> &amp; <a title="Yat, yet
+      another theme." href="https://github.com/jeffreytse/jekyll-theme-yat">Yat Theme</a>.</div>
+      <div class="footer-col rss-subscribe">Subscribe <a href="/jekyll-theme-yat/feed.xml">via RSS</a>
+</div>
+    </div>
+  </div>
+</footer>
+</body>
+</html>

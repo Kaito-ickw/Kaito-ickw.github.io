@@ -1,0 +1,1185 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <script>
+  (function() {
+    try {
+      var p = localStorage.getItem('preferred_lang');
+      if (!p) return;
+      var path = window.location.pathname;
+      var ja = ['/', '/archives.html', '/categories.html', '/tags.html', '/about.html'];
+      var en = ['/en/', '/en/archives.html', '/en/categories.html', '/en/tags.html', '/en/about.html'];
+      if (p === 'en' && ja.indexOf(path) !== -1) {
+        window.location.replace('/en' + (path === '/' ? '/' : path));
+      } else if (p === 'ja' && en.indexOf(path) !== -1) {
+        window.location.replace(path.slice(3) || '/');
+      }
+    } catch(e) {}
+  })();
+  </script>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="google-translate-customization" content="108d9124921d80c3-80e20d618ff053c8-g4f02ec6f3dba68b7-c">
+<!-- Begin Jekyll SEO tag v2.9.0 -->
+<title>MCPのHost・Client・Serverを整理する | Waka-DS.com</title>
+<meta name="generator" content="Jekyll v4.4.1">
+<meta property="og:title" content="MCPのHost・Client・Serverを整理する">
+<meta name="author" content="Waka-DS">
+<meta property="og:locale" content="ja">
+<meta name="description" content="MCPの構成は「ClientとServerが通信する」と説明される。それ自体は正しいが、Claude CodeやIDEのようなアプリケーションをMCP Clientと呼んでしまうと、実際の接続構造が見えにくくなる。">
+<meta name="twitter:description" property="og:description" content="MCPの構成は「ClientとServerが通信する」と説明される。それ自体は正しいが、Claude CodeやIDEのようなアプリケーションをMCP Clientと呼んでしまうと、実際の接続構造が見えにくくなる。">
+<link rel="canonical" href="/jekyll-theme-yat/ai%E9%96%8B%E7%99%BA/2026/06/18/mcp-host-client-server.html">
+<meta property="og:url" content="/jekyll-theme-yat/ai%E9%96%8B%E7%99%BA/2026/06/18/mcp-host-client-server.html">
+<meta property="og:site_name" content="Waka-DS.com">
+<meta property="og:image" content="/jekyll-theme-yat/assets/images/posts/2026-06-18-mcp-host-client-server/eyecatch.png">
+<meta property="og:image:alt" content="中央の管制卓から二つの工房へ別々の経路が伸びる粘土模型風イラスト">
+<meta property="og:type" content="article">
+<meta property="article:published_time" content="2026-06-18T00:00:00+00:00">
+<meta property="article:modified_time" content="2026-06-18T00:00:00+00:00">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="/jekyll-theme-yat/assets/images/posts/2026-06-18-mcp-host-client-server/eyecatch.png">
+<meta name="twitter:image:alt" content="中央の管制卓から二つの工房へ別々の経路が伸びる粘土模型風イラスト">
+<meta name="twitter:title" content="MCPのHost・Client・Serverを整理する">
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":"Waka-DS"},"dateModified":"2026-06-18T00:00:00+00:00","datePublished":"2026-06-18T00:00:00+00:00","description":"MCPの構成は「ClientとServerが通信する」と説明される。それ自体は正しいが、Claude CodeやIDEのようなアプリケーションをMCP Clientと呼んでしまうと、実際の接続構造が見えにくくなる。","headline":"MCPのHost・Client・Serverを整理する","image":{"alt":"中央の管制卓から二つの工房へ別々の経路が伸びる粘土模型風イラスト","url":"/jekyll-theme-yat/assets/images/posts/2026-06-18-mcp-host-client-server/eyecatch.png","@type":"imageObject"},"mainEntityOfPage":{"@type":"WebPage","@id":"/jekyll-theme-yat/ai%E9%96%8B%E7%99%BA/2026/06/18/mcp-host-client-server.html"},"url":"/jekyll-theme-yat/ai%E9%96%8B%E7%99%BA/2026/06/18/mcp-host-client-server.html"}</script>
+<!-- End Jekyll SEO tag -->
+<link rel="shortcut icon" href="">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=Noto+Sans+JP:wght@400;500;700&amp;display=swap">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+  <link rel="stylesheet" href="/jekyll-theme-yat/assets/css/main.css">
+  <script src="/jekyll-theme-yat/assets/js/main.js"></script><link type="application/atom+xml" rel="alternate" href="/jekyll-theme-yat/feed.xml" title="Waka-DS.com">
+<script>
+  function initGoogleAnalytics() {
+    var doNotTrack = (window.doNotTrack === "1" || navigator.doNotTrack === "1" ||
+      navigator.doNotTrack === "yes" || navigator.msDoNotTrack === "1");
+    var enableDNT = "true" == "true";
+
+    if (!enableDNT || !doNotTrack) {
+      var ga_id = 'G-XNP1RBTG9C';
+
+      var script = document.createElement('script');
+      script.async = true;
+      script.src = 'https://www.googletagmanager.com/gtag/js?id=' + ga_id;
+      document.head.appendChild(script);
+
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', ga_id);
+    }
+  }
+  window.addEventListener("load", initGoogleAnalytics);
+</script>
+<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/styles/default.min.css">
+<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/highlight.min.js"></script>
+<!-- and it's easy to individually load additional languages -->
+<script charset="UTF-8" src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/languages/go.min.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<script>
+// Init highlight js
+document.addEventListener('DOMContentLoaded', function(event) {
+  var els = document.querySelectorAll('pre code')
+
+  function addLangData(block) {
+    var outer = block.parentElement.parentElement.parentElement;
+    var lang = block.getAttribute('data-lang');
+    for (var i = 0; i < outer.classList.length; i++) {
+      var cls = outer.classList[i];
+      if (cls.startsWith('language-')) {
+        lang = cls;
+        break;
+      }
+    }
+    if (!lang) {
+      cls = block.getAttribute('class');
+      lang = cls ? cls.replace('hljs ', '') : '';
+    }
+    if (lang.startsWith('language-')) {
+      lang = lang.substr(9);
+    }
+    block.setAttribute('class', 'hljs ' + lang);
+    block.parentNode.setAttribute('data-lang', lang);
+  }
+
+  function addBadge(block) {
+    var enabled = ('true' || 'true').toLowerCase();
+    if (enabled == 'true') {
+      var pre = block.parentElement;
+      pre.classList.add('badge');
+    }
+  }
+
+  function handle(block) {
+    addLangData(block);
+    addBadge(block)
+    hljs.highlightBlock(block);
+  }
+
+  for (var i = 0; i < els.length; i++) {
+    var el = els[i];
+    handle(el);
+  }
+});
+</script>
+
+<style>
+  /* code language badge */
+  pre.badge::before {
+    content: attr(data-lang);
+    color: #fff;
+    background-color: #0d9488;
+    padding: 0 .5em;
+    border-radius: 0 2px;
+    text-transform: uppercase;
+    text-align: center;
+    min-width: 32px;
+    display: inline-block;
+    position: absolute;
+    right: 0;
+  }
+
+  /* fix wrong badge display for firefox browser */
+  code > table pre::before {
+    display: none;
+  }
+</style>
+</head>
+<body>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<header class="site-header " role="banner">
+
+  <div class="wrapper">
+    <div class="site-header-inner">
+<span class="site-brand"><a class="site-brand-inner" rel="author" href="/jekyll-theme-yat/">
+  <img class="site-favicon" title="Waka-DS.com" src="" onerror="this.style.display='none'">
+  Waka-DS.com
+</a>
+</span><nav class="site-nav">
+          <input type="checkbox" id="nav-trigger" class="nav-trigger">
+          <label for="nav-trigger">
+            <span class="menu-icon">
+              <svg viewbox="0 0 18 15" width="18px" height="15px">
+                <path d="M18,1.484c0,0.82-0.665,1.484-1.484,1.484H1.484C0.665,2.969,0,2.304,0,1.484l0,0C0,0.665,0.665,0,1.484,0 h15.032C17.335,0,18,0.665,18,1.484L18,1.484z M18,7.516C18,8.335,17.335,9,16.516,9H1.484C0.665,9,0,8.335,0,7.516l0,0 c0-0.82,0.665-1.484,1.484-1.484h15.032C17.335,6.031,18,6.696,18,7.516L18,7.516z M18,13.516C18,14.335,17.335,15,16.516,15H1.484 C0.665,15,0,14.335,0,13.516l0,0c0-0.82,0.665-1.483,1.484-1.483h15.032C17.335,12.031,18,12.695,18,13.516L18,13.516z"></path>
+              </svg>
+            </span>
+          </label>
+
+          <div class="trigger">
+<a class="page-link" href="/jekyll-theme-yat/about.html">ABOUT</a><a class="page-link" href="/jekyll-theme-yat/archives.html">ARCHIVES</a><a class="page-link" href="/jekyll-theme-yat/categories.html">CATEGORIES</a><a class="page-link" href="/jekyll-theme-yat/">HOME</a><a class="page-link" href="/jekyll-theme-yat/tags.html">TAGS</a>
+</div>
+        </nav>
+</div>
+  </div>
+</header>
+
+<script>
+  function initHeader() {
+    var lastScrollY = getScrollPos().y;
+    var documentElement = document.documentElement;
+
+    function storeScrollData() {
+      var y = getScrollPos().y;var scrollStatus = "";
+
+      if (y <= 0) {
+        scrollStatus = "top";
+      } else if ((window.innerHeight + y) >= document.body.offsetHeight) {
+        scrollStatus = "bottom";
+      } else {
+        var isScrollDown = (y - lastScrollY > 0) ? true : false;
+        scrollStatus = isScrollDown ? "down" : "up";
+      }
+
+      lastScrollY = y;
+      documentElement.setAttribute("data-scroll-status", scrollStatus);
+    }
+
+    window.addEventListener('scroll', function(e) {
+      storeScrollData();
+    });
+
+    storeScrollData();
+  }
+  document.addEventListener('DOMContentLoaded', initHeader);
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<script>
+  function hashLocate(hashValue) {
+    hashValue = hashValue.replace(/^.*#h-/, '');
+    hashValue = decodeURIComponent(hashValue);
+    var element = document.getElementById(hashValue);
+
+    if (!element) {
+      return;
+    }
+
+    var header = document.querySelector('header.site-header');
+    var headerRect = header.getBoundingClientRect();
+    var headerTop = Math.floor(headerRect.top);
+    var headerHeight = Math.floor(headerRect.height);
+    var scrollPos = getScrollPos();
+    var offsetY = element.offsetTop - (headerTop + headerHeight + 20);
+
+    if (offsetY == scrollPos.y) {
+      return;
+    }
+
+    if (headerTop == 0  && offsetY > scrollPos.y) {
+      offsetY += headerHeight + 2;
+    } else if (headerTop < 0  && offsetY < scrollPos.y) {
+      offsetY -= headerHeight - 2;
+    }
+
+    smoothScrollTo(offsetY);
+  }
+
+  // The first event occurred
+  window.addEventListener('load', function(event) {
+    if (window.location.hash) {
+      hashLocate(window.location.hash);
+    }
+  });
+
+  // The first event occurred
+  window.addEventListener('click', function(event) {
+    if (event.target.tagName.toLowerCase() == 'a') {
+      hashLocate(event.target.getAttribute('href'));
+    }
+  });
+</script>
+<div class="theme-toggle">
+  <input type="checkbox" id="theme-switch">
+  <label for="theme-switch">
+    <div class="toggle"></div>
+    <div class="names">
+      <p class="light">Light</p>
+      <p class="dark">Dark</p>
+    </div>
+  </label>
+</div>
+
+
+
+
+<script>
+  (function() {
+    var sw = document.getElementById('theme-switch');
+    var html = document.getElementsByTagName('html')[0];
+    var nightModeOption = ('auto' || 'auto').toLowerCase();
+    var storage = nightModeOption === 'manual'
+        ? localStorage
+        : sessionStorage;
+    var themeData = loadThemeData();
+
+    function saveThemeData(data) {
+      storage.setItem('theme', JSON.stringify(data));
+    }
+
+    function loadThemeData() {
+      var data = storage.getItem('theme');
+      try {
+        data = JSON.parse(data ? data : '');
+      } catch(e) {
+        data = { nightShift: undefined, autoToggleAt: 0 };
+        saveThemeData(data);
+      }
+      return data;
+    }
+
+    function handleThemeToggle(nightShift) {
+      themeData.nightShift = nightShift;
+      saveThemeData(themeData);
+      html.dataset.theme = nightShift ? 'dark' : 'light';
+      setTimeout(function() {
+        sw.checked = nightShift ? true : false;
+      }, 50);
+    }
+
+    function autoThemeToggle() {
+      // Next time point of theme toggle
+      var now = new Date();
+      var toggleAt = new Date();
+      var hours = now.getHours();
+      var nightShift = hours >= 19 || hours <=7;
+
+      if (nightShift) {
+        if (hours > 7) {
+          toggleAt.setDate(toggleAt.getDate() + 1);
+        }
+        toggleAt.setHours(7);
+      } else {
+        toggleAt.setHours(19);
+      }
+
+      toggleAt.setMinutes(0);
+      toggleAt.setSeconds(0);
+      toggleAt.setMilliseconds(0)
+
+      var delay = toggleAt.getTime() - now.getTime();
+
+      // auto toggle theme mode
+      setTimeout(function() {
+        handleThemeToggle(!nightShift);
+      }, delay);
+
+      return {
+        nightShift: nightShift,
+        toggleAt: toggleAt.getTime()
+      };
+    }
+
+    // Listen the theme toggle event
+    sw.addEventListener('change', function(event) {
+      handleThemeToggle(event.target.checked);
+    });
+
+    if (nightModeOption == 'auto') {
+      var data = autoThemeToggle();
+
+      // Toggle theme by local setting
+      if (data.toggleAt > themeData.autoToggleAt) {
+        themeData.autoToggleAt = data.toggleAt;
+        handleThemeToggle(data.nightShift);
+      } else {
+        handleThemeToggle(themeData.nightShift);
+      }
+    } else if (nightModeOption == 'manual') {
+      handleThemeToggle(themeData.nightShift);
+    } else {
+      var nightShift = themeData.nightShift;
+      if (nightShift === undefined) {
+        nightShift = nightModeOption === 'on';
+      }
+      handleThemeToggle(nightShift);
+    }
+  })();
+</script>
+<main class="page-content" aria-label="Content">
+      <div class="wrapper">
+        <div class="framework">
+  <section class="main">
+
+     <div class="post post--with-image">
+  <section>
+
+
+
+
+
+
+
+
+
+<header class="post-header">
+  <h1 class="post-title p-name" itemprop="name headline">MCPのHost・Client・Serverを整理する</h1>
+  <h2 class="post-subtitle">Tool実行が通る参加者と責任の境界</h2>
+
+  <p class="post-meta">
+    <time class="dt-published" datetime="2026-06-18T00:00:00+00:00" itemprop="datePublished"><i class="fa fa-calendar"></i> Jun 18, 2026
+    </time>
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <span class="post-reading-time left-vsplit"><i class="fa fa-clock-o"></i> About 20 mins</span>
+  </p>
+<div class="post-tags">
+<a class="post-tag" href="/jekyll-theme-yat/tags.html#MCP">#MCP</a><a class="post-tag" href="/jekyll-theme-yat/tags.html#AI%E3%82%A8%E3%83%BC%E3%82%B8%E3%82%A7%E3%83%B3%E3%83%88">#AIエージェント</a><a class="post-tag" href="/jekyll-theme-yat/tags.html#LLM">#LLM</a><a class="post-tag" href="/jekyll-theme-yat/tags.html#API">#API</a><a class="post-tag" href="/jekyll-theme-yat/tags.html#%E8%A8%AD%E8%A8%88">#設計</a>
+</div></header>
+<figure class="post-eyecatch">
+  <img src="/jekyll-theme-yat/assets/images/posts/2026-06-18-mcp-host-client-server/eyecatch.png" alt="中央の管制卓から二つの工房へ別々の経路が伸びる粘土模型風イラスト" decoding="async" fetchpriority="high">
+</figure><article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
+
+    <div class="post-content e-content" itemprop="articleBody">
+
+      <p>MCPの構成は「ClientとServerが通信する」と説明される。それ自体は正しいが、Claude CodeやIDEのようなアプリケーションをMCP Clientと呼んでしまうと、実際の接続構造が見えにくくなる。</p>
+
+<p>ユーザーが操作するAIアプリケーションはMCP Hostであり、その内部にMCP Clientが作られる。Clientは接続先のServerごとに存在する。この区別が分かると、複数ServerのToolが一つの会話に見える理由や、会話履歴をServerへ丸ごと渡さずに済む理由を説明できる。</p>
+
+<p>第1回の<a href="/jekyll-theme-yat/ai%E9%96%8B%E7%99%BA/2026/06/17/mcp-protocol-overview.html">MCPは何を標準化するプロトコルなのか</a>では、MCPがAIアプリケーションと外部機能の接続境界を扱うことを整理した。第2回では、その境界にいる参加者を分解し、一つのToolが実行されて回答へ戻るまでを追う。</p>
+
+<nav class="mcp-series-index" aria-label="MCPサーバー連載">
+  <p><strong>MCPサーバー連載（全7回）</strong></p>
+  <ol>
+    <li>
+      
+        <a href="/jekyll-theme-yat/ai%E9%96%8B%E7%99%BA/2026/06/17/mcp-protocol-overview.html">MCPは何を標準化するプロトコルなのか</a>
+      
+    </li>
+    <li>
+      
+        <strong aria-current="page">MCPのHost・Client・Serverを整理する（この記事）</strong>
+      
+    </li>
+    <li>
+      
+        <a href="/jekyll-theme-yat/ai%E9%96%8B%E7%99%BA/2026/06/19/mcp-tools-resources-prompts.html">MCPのTools・Resources・Promptsを使い分ける</a>
+      
+    </li>
+    <li>
+      
+        <a href="/jekyll-theme-yat/ai%E9%96%8B%E7%99%BA/2026/06/20/mcp-json-rpc-lifecycle.html">MCPの接続と通信をJSON-RPCから理解する</a>
+      
+    </li>
+    <li>
+      
+        <a href="/jekyll-theme-yat/ai%E9%96%8B%E7%99%BA/2026/06/21/build-mcp-server-python.html">Pythonで小さなMCPサーバーを作る</a>
+      
+    </li>
+    <li>
+      
+        <a href="/jekyll-theme-yat/ai%E9%96%8B%E7%99%BA/2026/06/22/mcp-local-remote-transports.html">ローカルMCPとリモートMCPの違い</a>
+      
+    </li>
+    <li>
+      
+        <a href="/jekyll-theme-yat/ai%E9%96%8B%E7%99%BA/2026/06/23/mcp-security-operations.html">MCPサーバーを安全に運用する</a>
+      
+    </li>
+  </ol>
+</nav>
+
+<hr>
+
+<h2 id="全体構造">全体構造</h2>
+
+<p>MCPの中心にいる参加者はHost、Client、Serverの三つである。Serverから先にある外部API、データベース、ファイルシステムは実用上重要だが、MCPプロトコルの参加者ではない。</p>
+
+<p><img class="mermaid" src="https://mermaid.ink/svg/eyJjb2RlIjoiZmxvd2NoYXJ0IFRCXG5Vc2VyW1wi44Om44O844K244O8XCJdIC0tPiBIb3N0W1wiTUNQIEhvc3Q8YnI-QUnjgqLjg5fjg6rjgrHjg7zjgrfjg6fjg7NcIl1cbkhvc3QgLS0-IExMTVtcIkxMTVwiXVxuSG9zdCAtLT4gQ2xpZW50QVtcIk1DUCBDbGllbnQgQVwiXVxuSG9zdCAtLT4gQ2xpZW50QltcIk1DUCBDbGllbnQgQlwiXVxuQ2xpZW50QSA8LS0-fFwi5bCC55So44Gu5o6l57aaXCJ8IFNlcnZlckFbXCJNQ1AgU2VydmVyIEE8YnI-44OV44Kh44Kk44Or5pON5L2cXCJdXG5DbGllbnRCIDwtLT58XCLlsILnlKjjga7mjqXntppcInwgU2VydmVyQltcIk1DUCBTZXJ2ZXIgQjxicj5Jc3N1ZeaTjeS9nFwiXVxuU2VydmVyQSAtLT4gRmlsZXNbXCLjg5XjgqHjgqTjg6vjgrfjgrnjg4bjg6BcIl1cblNlcnZlckIgLS0-IEdpdEh1YltcIuWklumDqEFQSVwiXSIsIm1lcm1haWQiOm51bGx9"></p>
+
+<p>ユーザーから見ると、Hostの画面に複数Serverの機能がまとまって表示される。しかし、プロトコル上はClient AとServer A、Client BとServer Bが独立した接続を持つ。Hostがそれらを束ね、LLMやユーザーインターフェースと調整している。</p>
+
+<hr>
+
+<h2 id="hostは全体を調整するaiアプリケーション">Hostは全体を調整するAIアプリケーション</h2>
+
+<p>Hostは、ユーザーが直接操作するアプリケーションである。IDE、デスクトップAIアプリケーション、コーディングエージェントなどがHostになり得る。</p>
+
+<p>Hostの役割は、MCPメッセージを転送するだけではない。公式アーキテクチャでは、Hostは複数Clientの作成・管理、接続権限とライフサイクル、セキュリティポリシー、ユーザーの認可判断、LLMとの統合、複数接続から得たコンテキストの集約を担う。</p>
+
+<p>たとえばユーザーが「このエラーを調べてIssueを作って」と依頼した場合、Hostは次のような調整を行える。</p>
+
+<ol>
+  <li>ファイルServerのResourceやToolからログを取得する</li>
+  <li>取得結果をLLMへ渡して原因を整理させる</li>
+  <li>Issue Serverの作成ToolをLLMへ選択肢として示す</li>
+  <li>書き込み操作の前にユーザーへ確認する</li>
+  <li>承認後にIssue作成を実行する</li>
+  <li>Tool結果をLLMへ戻し、Issue URLを回答させる</li>
+</ol>
+
+<p>この一連のオーケストレーションは、二つのServerが直接相談して行うのではない。Hostが各Clientから得た情報を管理し、次の処理を決める。</p>
+
+<h3 id="hostの実装とmcp仕様を分ける">Hostの実装とMCP仕様を分ける</h3>
+
+<p>実際のHostがどの操作で承認を求めるか、Toolを何個までLLMへ見せるか、結果を会話履歴へどのように保存するかは製品ごとに異なる。MCP仕様は、Toolの一覧取得や呼び出しのメッセージを定義するが、Hostの画面やエージェントループまでは定義しない。</p>
+
+<p>したがって、あるHostで自動実行されたToolが、別のHostでは確認対象になることがある。これはMCP互換性の問題ではなく、Hostのポリシーや設定の違いである可能性が高い。</p>
+
+<hr>
+
+<h2 id="clientはserverごとの通信担当">ClientはServerごとの通信担当</h2>
+
+<p>MCP ClientはHost内部のプロトコルコンポーネントである。ユーザーがClientを直接操作するとは限らない。</p>
+
+<p>Clientは特定のServerとの接続を確立し、その接続について次の処理を担当する。</p>
+
+<ul>
+  <li>初期化時のプロトコルバージョンとCapabilityの交換</li>
+  <li>JSON-RPCメッセージの送受信</li>
+  <li>Tools、Resources、Promptsの一覧取得</li>
+  <li>RequestとResponseの対応づけ</li>
+  <li>Serverから届くNotificationの処理</li>
+  <li>接続終了までのセッション管理</li>
+</ul>
+
+<p>HostがファイルServerとGitHub Serverへ接続するなら、通常はそれぞれに対応するClientインスタンスを作る。この分離により、一方のServerから届いたメッセージを他方のServerとのセッションへ混ぜずに扱える。</p>
+
+<h3 id="clientとserverは1対1の正確な意味">「ClientとServerは1対1」の正確な意味</h3>
+
+<p>公式ドキュメントでは、各MCP Clientが対応するMCP Serverとの専用接続を維持すると説明されている。この1対1は、「世界にServerが一つしかない」「Serverプロセスが一つのClientからしか使えない」という意味ではない。</p>
+
+<p>ローカルのstdio Serverは、Hostが子プロセスとして起動し、一つのClientへ接続する構成が一般的である。一方、Streamable HTTPで公開されたリモートServerは、複数ユーザー・複数HostからのClient接続を受け付けられる。</p>
+
+<p>1対1なのはClientインスタンスと、そのClientが担当するServer接続の関係だ。一つのリモートServerサービスが多数のClientを処理することとは両立する。</p>
+
+<h3 id="clientはllmそのものではない">ClientはLLMそのものではない</h3>
+
+<p>ClientがToolを一覧取得しても、それだけでLLMがToolを選ぶわけではない。取得したToolをLLMへどう提示し、モデルの出力をどう<code class="language-plaintext highlighter-rouge">tools/call</code>へ変換するかは、Hostの統合処理にあたる。</p>
+
+<p>ClientをLLMと同一視すると、「MCP ServerがLLMと直接会話している」という誤解につながる。Clientはプロトコル通信を担当し、LLMはHostが利用する推論コンポーネントである。</p>
+
+<hr>
+
+<h2 id="serverは機能とコンテキストを公開する">Serverは機能とコンテキストを公開する</h2>
+
+<p>MCP Serverは、MCP Clientへ特定分野の機能やコンテキストを提供するプログラムである。ローカルで起動するプロセスでも、ネットワーク越しのサービスでもServerと呼ぶ。Serverという言葉は配置場所ではなく、MCPにおける役割を表している。</p>
+
+<p>Serverは主に次の要素を公開できる。</p>
+
+<table>
+  <thead>
+    <tr>
+      <th style="text-align: left">要素</th>
+      <th style="text-align: left">Serverの役割</th>
+      <th style="text-align: left">例</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td style="text-align: left">Tools</td>
+      <td style="text-align: left">名前、説明、入力スキーマを公開し、呼び出しを処理する</td>
+      <td style="text-align: left">Issue作成、SQL実行</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">Resources</td>
+      <td style="text-align: left">URIで識別できるデータを公開する</td>
+      <td style="text-align: left">ファイル内容、DBスキーマ</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">Prompts</td>
+      <td style="text-align: left">引数を持つ再利用可能なプロンプトを公開する</td>
+      <td style="text-align: left">コードレビュー手順</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>ServerはCapability Negotiationで、自分がどの機能に対応しているかを宣言する。Clientは宣言されていない機能を利用する前提にしてはならない。Tool一覧の変更通知など、機能内の追加Capabilityもある。</p>
+
+<p>Serverの責務はMCPの外にも及ぶ。外部APIを呼ぶServerなら、入力検証、API認証、レート制限、エラー変換、監査ログなどを実装する必要がある。MCP SDKがTool登録やメッセージ処理を支援しても、接続先固有の業務ロジックまでは代行しない。</p>
+
+<h3 id="serverは会話全体を自動的に見られない">Serverは会話全体を自動的に見られない</h3>
+
+<p>公式アーキテクチャの設計原則では、Serverが会話全体や他Serverの内部を読めないようにし、必要なコンテキストだけを受け取ることが示されている。</p>
+
+<p>Tool呼び出しでServerが受け取るのは、基本的にはTool名、引数、プロトコル上のメタデータなど、そのRequestに含まれた情報である。ユーザーとの全会話が暗黙に転送されるわけではない。会話の一部をTool引数へ含めたり、Resourceの結果を別の処理へ渡したりするのはHost側の調整である。</p>
+
+<p>ただし、Serverへ送信した引数やデータが安全になるという意味ではない。必要以上の会話や機密情報をTool引数へ含めれば、そのServerには届く。Serverごとの分離と、Hostが何を送るかというデータ最小化の両方が必要になる。</p>
+
+<hr>
+
+<h2 id="外部apiとデータベースはserverの向こう側にある">外部APIとデータベースはServerの向こう側にある</h2>
+
+<p>GitHub、Slack、SaaS API、PostgreSQL、ローカルファイルなどは、MCPのHost・Client・Serverとは別の層にある。</p>
+
+<p>たとえばIssue作成Serverは、MCP Clientから次のような呼び出しを受け取る。</p>
+
+<div class="language-json highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">{</span><span class="w">
+  </span><span class="nl">"jsonrpc"</span><span class="p">:</span><span class="w"> </span><span class="s2">"2.0"</span><span class="p">,</span><span class="w">
+  </span><span class="nl">"id"</span><span class="p">:</span><span class="w"> </span><span class="mi">42</span><span class="p">,</span><span class="w">
+  </span><span class="nl">"method"</span><span class="p">:</span><span class="w"> </span><span class="s2">"tools/call"</span><span class="p">,</span><span class="w">
+  </span><span class="nl">"params"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+    </span><span class="nl">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"create_issue"</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"arguments"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+      </span><span class="nl">"title"</span><span class="p">:</span><span class="w"> </span><span class="s2">"ログイン時に500エラーが発生する"</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"body"</span><span class="p">:</span><span class="w"> </span><span class="s2">"再現手順と調査結果..."</span><span class="w">
+    </span><span class="p">}</span><span class="w">
+  </span><span class="p">}</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></code></pre></div></div>
+
+<p>Serverはこの引数を検証し、外部サービス固有のHTTPリクエストへ変換する。外部APIから返ったIssue番号やURLをMCPのTool結果に整形してClientへ返す。</p>
+
+<p>このとき二つの契約が存在する。</p>
+
+<ol>
+  <li>ClientとServerの間にあるMCPの契約</li>
+  <li>ServerとGitHubなどの間にある外部APIの契約</li>
+</ol>
+
+<p>MCPのプロトコル版が変わらなくても、外部APIの仕様変更でServerが壊れることはある。逆に、外部APIが正常でも、ClientとServerのプロトコル版が合意できず接続に失敗することもある。障害調査では、この境界を分けて考える必要がある。</p>
+
+<p>認証情報も同様である。リモートMCP Serverへの接続を認可するトークンと、Serverが外部APIへアクセスする資格情報は、役割が異なる場合がある。どこでどのCredentialを保持するかは、Serverの配置と信頼境界を見て設計する。</p>
+
+<hr>
+
+<h2 id="tool実行が完了するまで">Tool実行が完了するまで</h2>
+
+<p>ここまでの参加者を、接続開始から一つのTool結果が回答へ戻るまでの流れに当てはめる。</p>
+
+<p><img class="mermaid" src="https://mermaid.ink/svg/eyJjb2RlIjoiZmxvd2NoYXJ0IFRCXG5Jbml0W1wiMS4gQ2xpZW5044GMU2VydmVy44G4aW5pdGlhbGl6ZVwiXSAtLT4gTmVnb3RpYXRlW1wiMi4gVmVyc2lvbuOBqENhcGFiaWxpdHnjgpLlkIjmhI9cIl1cbk5lZ290aWF0ZSAtLT4gTGlzdFtcIjMuIENsaWVudOOBjHRvb2xzL2xpc3TjgpLlj5blvpdcIl1cbkxpc3QgLS0-IFJlZ2lzdGVyW1wiNC4gSG9zdOOBjFRvb2zlrprnvqnjgpLnrqHnkIZcIl1cblJlZ2lzdGVyIC0tPiBSZXF1ZXN0W1wiNS4g44Om44O844K244O844GM5L6d6aC8XCJdXG5SZXF1ZXN0IC0tPiBEZWNpZGVbXCI2LiBMTE3jgahIb3N044GMVG9vbOS9v-eUqOOCkuaxuuWumlwiXVxuRGVjaWRlIC0tPiBBcHByb3ZlW1wiNy4g5b-F6KaB44Gq44KJ44Om44O844K244O844GM5om_6KqNXCJdXG5BcHByb3ZlIC0tPiBDYWxsW1wiOC4gQ2xpZW5044GMdG9vbHMvY2FsbOOCkumAgeS_oVwiXVxuQ2FsbCAtLT4gRXhlY3V0ZVtcIjkuIFNlcnZlcuOBjOWHpueQhuODu-WklumDqEFQSeOCkuWun-ihjFwiXVxuRXhlY3V0ZSAtLT4gUmVzdWx0W1wiMTAuIFRvb2zntZDmnpzjgpJDbGllbnTjgbjov5TjgZlcIl1cblJlc3VsdCAtLT4gQW5zd2VyW1wiMTEuIEhvc3TjgYzntZDmnpzjgpJMTE3jgbjmuKHjgZflm57nrZRcIl0iLCJtZXJtYWlkIjpudWxsfQ"></p>
+
+<h3 id="1-clientが初期化を始める">1. Clientが初期化を始める</h3>
+
+<p>Clientは最初のやり取りとして<code class="language-plaintext highlighter-rouge">initialize</code> Requestを送り、対応するプロトコル版、Client Capability、実装情報を伝える。Serverは利用するプロトコル版、Server Capability、実装情報を返す。Clientが<code class="language-plaintext highlighter-rouge">notifications/initialized</code>を送ると、通常の操作へ進める。</p>
+
+<h3 id="2-toolを発見する">2. Toolを発見する</h3>
+
+<p>Serverが<code class="language-plaintext highlighter-rouge">tools</code> Capabilityを宣言していれば、Clientは<code class="language-plaintext highlighter-rouge">tools/list</code>を送ってTool定義を取得できる。定義にはTool名、説明、<code class="language-plaintext highlighter-rouge">inputSchema</code>などが含まれる。</p>
+
+<p>Hostはこの情報を保持し、利用するLLMに合わせてTool候補を提示する。Tool一覧をそのまますべて渡すか、権限や会話に応じて絞るかはHostの実装次第である。</p>
+
+<h3 id="3-tool使用を決める">3. Tool使用を決める</h3>
+
+<p>ユーザーの依頼を受けたLLMは、利用可能なToolの情報からTool名と引数を提案できる。ただし、MCP仕様はモデルの選択アルゴリズムを定義しない。ルールベースでToolを選ぶHostや、人が明示的にToolを選択するHostも構成上は可能である。</p>
+
+<p>書き込みや外部送信を伴う場合、Hostは実行前に承認を求めることがある。承認の粒度や自動許可ルールはHost側のセキュリティ設計であり、Serverが勝手に決めるものではない。</p>
+
+<h3 id="4-clientがtoolscallを送る">4. Clientが<code class="language-plaintext highlighter-rouge">tools/call</code>を送る</h3>
+
+<p>承認後、ClientはTool名と引数を含む<code class="language-plaintext highlighter-rouge">tools/call</code> RequestをServerへ送る。Serverは入力を検証し、ローカル処理や外部API呼び出しを実行する。</p>
+
+<p>Server側で起きたTool実行上の失敗は、Tool結果の<code class="language-plaintext highlighter-rouge">isError</code>で表現される場合がある。一方、未知のTool名やプロトコルとして不正なRequestはJSON-RPC Errorになる。すべての失敗が同じ層のエラーではない。</p>
+
+<h3 id="5-結果を回答へ戻す">5. 結果を回答へ戻す</h3>
+
+<p>Serverはテキストや構造化コンテンツなどをTool結果としてClientへ返す。Hostはその結果をLLMへ渡し、ユーザー向けの回答を生成させる。</p>
+
+<p>ToolがIssueを作った場合、LLMが作成を行ったというより、LLMが呼び出しを提案し、HostとClientがRequestを運び、Serverが外部APIを実行したと表現する方が実態に近い。</p>
+
+<hr>
+
+<h2 id="通信は常にclient起点とは限らない">通信は常にClient起点とは限らない</h2>
+
+<p>Toolの基本フローだけを見ると、ClientがRequestを送り、Serverが返す一方向のAPIに見える。しかしMCPのBase Protocolでは、ClientとServerのどちらもRequestを送信できる。</p>
+
+<p>たとえばServerは、Clientが対応Capabilityを宣言していれば、SamplingでLLM生成を依頼したり、Elicitationでユーザーから追加情報を得るよう求めたりできる。Server側がResourceやTool一覧の変更をNotificationで知らせる機能もある。</p>
+
+<p>ServerからSamplingを要求した場合も、ServerがHost内のLLMを自由に操作するわけではない。ClientとHostがリクエストを確認し、モデル選択、権限制御、ユーザー承認などを管理する。双方向通信であっても、Hostが境界の管理者である点は変わらない。</p>
+
+<p>これらのServer FeaturesとClient Featuresは、次の<a href="/jekyll-theme-yat/ai%E9%96%8B%E7%99%BA/2026/06/19/mcp-tools-resources-prompts.html">第3回「MCPのTools・Resources・Promptsを使い分ける」</a>で整理する。</p>
+
+<hr>
+
+<h2 id="よくある混同を整理する">よくある混同を整理する</h2>
+
+<table>
+  <thead>
+    <tr>
+      <th style="text-align: left">認識</th>
+      <th style="text-align: left">実際の構造</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td style="text-align: left">AIアプリケーションがMCP Clientである</td>
+      <td style="text-align: left">アプリケーション全体はHostで、その内部にServerごとのClientがある</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">LLMがMCP Serverへ直接Requestを送る</td>
+      <td style="text-align: left">HostとClientがモデル出力をMCP Requestへつなぐ</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">一つのServerは一つのClient専用である</td>
+      <td style="text-align: left">Clientは特定Serverとの専用接続を持つが、リモートServerは多数のClientを処理できる</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">MCP Serverは会話全体を読める</td>
+      <td style="text-align: left">ServerはHostがRequestなどで渡した範囲を受け取る</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">Server同士が直接連携する</td>
+      <td style="text-align: left">複数Serverの情報や処理は通常Hostが各Clientを通じて調整する</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">MCPが外部APIを置き換える</td>
+      <td style="text-align: left">Serverが既存APIを呼ぶ構成が多く、外部APIの契約は残る</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">MCP対応なら承認方法も同じである</td>
+      <td style="text-align: left">承認UIや自動実行ポリシーはHost実装に依存する</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>Host・Client・Serverを分けて見ると、問題が起きた場所も切り分けやすくなる。接続できないならClientとServerの初期化、Toolが見えないならCapabilityと<code class="language-plaintext highlighter-rouge">tools/list</code>、外部操作だけ失敗するならServerから先のAPI、意図しないToolが選ばれるならHostとLLMの統合を調べる、といった具合だ。</p>
+
+<hr>
+
+<h2 id="参考">参考</h2>
+
+<ul>
+  <li>
+<a href="https://modelcontextprotocol.io/docs/learn/architecture">Architecture overview - Model Context Protocol</a> ── Host・Client・Serverの関係とTool実行例</li>
+  <li>
+<a href="https://modelcontextprotocol.io/specification/2025-06-18/architecture">Architecture - Model Context Protocol Specification</a> ── 各参加者の責務と1対1のClient・Server関係</li>
+  <li>
+<a href="https://modelcontextprotocol.io/docs/learn/client-concepts">Understanding MCP clients - Model Context Protocol</a> ── Clientの役割とClient Features</li>
+  <li>
+<a href="https://modelcontextprotocol.io/docs/learn/server-concepts">Understanding MCP servers - Model Context Protocol</a> ── Serverが公開するTools、Resources、Prompts</li>
+  <li>
+<a href="https://modelcontextprotocol.io/specification/2025-11-25/basic/lifecycle">Lifecycle - Model Context Protocol Specification</a> ── 初期化、Capability Negotiation、接続のライフサイクル</li>
+  <li>
+<a href="https://modelcontextprotocol.io/specification/2025-11-25/server/tools">Tools - Model Context Protocol Specification</a> ── <code class="language-plaintext highlighter-rouge">tools/list</code>と<code class="language-plaintext highlighter-rouge">tools/call</code>の仕様、エラーの扱い</li>
+</ul>
+
+
+    </div>
+
+</article>
+<div class="post-nav">
+<a class="previous" href="/jekyll-theme-yat/ai%E9%96%8B%E7%99%BA/2026/06/18/google-workspace-studio-guide.html" title="Google Workspace Studio の活用アイデア">Google Workspace Studio の活用アイデア</a><a class="next" href="/jekyll-theme-yat/ai%E9%96%8B%E7%99%BA/2026/06/19/mcp-tools-resources-prompts.html" title="MCPのTools・Resources・Promptsを使い分ける">MCPのTools・Resources・Promptsを使い分ける</a>
+</div>
+<div class="post-related">
+      <div>Related Articles</div>
+      <ul>
+        <li><a class="post-link" href="/jekyll-theme-yat/%E9%96%8B%E7%99%BA/2026/06/13/nodejs-basics-for-vibe-coding.html" title="MCPのTools・Resources・Promptsを使い分ける">バイブコーディングする人が知っておきたい Node.js 周辺の基礎知識</a></li>
+<li><a class="post-link" href="/jekyll-theme-yat/%E9%96%8B%E7%99%BA/2026/06/06/supabase-vs-railway-comparison.html" title="MCPのTools・Resources・Promptsを使い分ける">Supabase vs Railway vs Neon バックエンド選定 (2026年版)</a></li>
+<li><a class="post-link" href="/jekyll-theme-yat/%E9%96%8B%E7%99%BA/2024/05/13/python-dev01.html" title="MCPのTools・Resources・Promptsを使い分ける">Docker ComposeとDockerfileでPython開発環境を構築する</a></li>
+<li><a class="post-link" href="/jekyll-theme-yat/%E3%83%87%E3%83%BC%E3%82%BF%E3%82%A8%E3%83%B3%E3%82%B8%E3%83%8B%E3%82%A2%E3%83%AA%E3%83%B3%E3%82%B0/2026/06/12/2026-world-cup-soccer-data-revolution.html" title="MCPのTools・Resources・Promptsを使い分ける">2026ワールドカップで見るサッカーのデータ革命</a></li>
+</ul>
+    </div>
+<div class="post-comments"></div></section>
+</div>
+
+
+  </section>
+  <section class="sidebar" style="margin-left: 15px;">
+    <!-- Get sidebar items --><style type="text/css" media="screen">
+.post-menu ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+</style>
+
+<div class="post-menu">
+  <div class="post-menu-title">TOC</div>
+  <div class="post-menu-content"></div>
+</div>
+
+<script>
+  function generateContent() {
+    var menu = document.querySelector(".post-menu");
+    var menuContent =  menu.querySelector(".post-menu-content");
+    var headings = document.querySelector(".post-content").querySelectorAll("h2, h3, h4, h5, h6");
+
+    // Hide menu when no headings
+    if (headings.length === 0) {
+      return menu.style.display = "none";
+    }
+
+    // Generate post menu
+    var menuHTML = '';
+    for (var i = 0; i < headings.length; i++) {
+      var h = headings[i];
+      menuHTML += (
+        '<li class="h-' + h.tagName.toLowerCase() + '">'
+        + '<a href="#h-' + h.getAttribute('id') + '">' + h.textContent + '</a></li>');
+    }
+
+    menuContent.innerHTML = '<ul>' + menuHTML + '</ul>';
+
+    // The header element
+    var header = document.querySelector('header.site-header');
+
+    function doMenuCollapse(index, over_items) {
+      var items = menuContent.firstChild.children;
+
+      if (over_items == undefined) {
+        over_items = 20;
+      }
+
+      if (items.length < over_items) {
+        return;
+      }
+
+      var activeItem = items[index];
+      var beginItem = activeItem
+      var endItem = activeItem
+      var beginIndex = index;
+      var endIndex = index + 1;
+      while (beginIndex >= 0
+        && !items[beginIndex].classList.contains('h-h2')) {
+        beginIndex -= 1;
+      }
+      while (endIndex < items.length
+        && !items[endIndex].classList.contains('h-h2')) {
+        endIndex += 1;
+      }
+      for (var i = 0; i < beginIndex; i++) {
+        item = items[i]
+        if (!item.classList.contains('h-h2')) {
+          item.style.display = 'none';
+        }
+      }
+      for (var i = beginIndex + 1; i < endIndex; i++) {
+        item = items[i]
+        // if (!item.classList.contains('h-h2')) {
+          item.style.display = '';
+        // }
+      }
+      for (var i = endIndex; i < items.length; i++) {
+        item = items[i]
+        if (!item.classList.contains('h-h2')) {
+          item.style.display = 'none';
+        }
+      }
+    }
+
+    // Init menu collapsed
+    doMenuCollapse(-1);
+
+    // Active the menu item
+    window.addEventListener('scroll', function (event) {
+      var lastActive = menuContent.querySelector('.active');
+      var changed = true;
+      var activeIndex = -1;
+      for (var i = headings.length - 1; i >= 0; i--) {
+        var h = headings[i];
+        var headingRect = h.getBoundingClientRect();
+        var headerRect = header.getBoundingClientRect();
+        var headerTop = Math.floor(headerRect.top);
+        var headerHeight = Math.floor(headerRect.height);
+        var headerHeight = headerTop + headerHeight + 20;
+        if (headingRect.top <= headerHeight) {
+          var id = 'h-' + h.getAttribute('id');
+          var a = menuContent.querySelector('a[href="#' + id  + '"]');
+          var curActive = a.parentNode;
+          if (curActive) {
+            curActive.classList.add('active');
+            activeIndex = i;
+          }
+          if (lastActive == curActive) {
+            changed = false;
+          }
+          break;
+        }
+      }
+      if (changed) {
+        if (lastActive) {
+          lastActive.classList.remove('active');
+        }
+        doMenuCollapse(activeIndex);
+      }
+      event.preventDefault();
+    });
+  }
+  generateContent();
+</script>
+</section>
+</div>
+
+      </div>
+    </main><footer class="site-footer h-card">
+  <data class="u-url" href="/jekyll-theme-yat/"></data>
+
+  <div class="wrapper">
+    <div class="site-footer-inner">
+<div>Waka-DS © 2021-2026</div>
+      <div>Powered by <a title="Jekyll is a simple, blog-aware, static site
+      generator." href="http://jekyllrb.com/">Jekyll</a> &amp; <a title="Yat, yet
+      another theme." href="https://github.com/jeffreytse/jekyll-theme-yat">Yat Theme</a>.</div>
+      <div class="footer-col rss-subscribe">Subscribe <a href="/jekyll-theme-yat/feed.xml">via RSS</a>
+</div>
+    </div>
+  </div>
+</footer>
+</body>
+</html>

@@ -1,0 +1,1979 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <script>
+  (function() {
+    try {
+      var p = localStorage.getItem('preferred_lang');
+      if (!p) return;
+      var path = window.location.pathname;
+      var ja = ['/', '/archives.html', '/categories.html', '/tags.html', '/about.html'];
+      var en = ['/en/', '/en/archives.html', '/en/categories.html', '/en/tags.html', '/en/about.html'];
+      if (p === 'en' && ja.indexOf(path) !== -1) {
+        window.location.replace('/en' + (path === '/' ? '/' : path));
+      } else if (p === 'ja' && en.indexOf(path) !== -1) {
+        window.location.replace(path.slice(3) || '/');
+      }
+    } catch(e) {}
+  })();
+  </script>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="google-translate-customization" content="108d9124921d80c3-80e20d618ff053c8-g4f02ec6f3dba68b7-c">
+<!-- Begin Jekyll SEO tag v2.9.0 -->
+<title>Alembic でデータベーススキーマの変更を管理する | Waka-DS.com</title>
+<meta name="generator" content="Jekyll v4.4.1">
+<meta property="og:title" content="Alembic でデータベーススキーマの変更を管理する">
+<meta name="author" content="Waka-DS">
+<meta property="og:locale" content="ja">
+<meta name="description" content="AI ネイティブなログアプリの Phase 2 では、テーブル追加やカラム変更が増えてくる。">
+<meta name="twitter:description" property="og:description" content="AI ネイティブなログアプリの Phase 2 では、テーブル追加やカラム変更が増えてくる。">
+<link rel="canonical" href="/jekyll-theme-yat/%E9%96%8B%E7%99%BA/2026/06/07/alembic-database-migration-guide.html">
+<meta property="og:url" content="/jekyll-theme-yat/%E9%96%8B%E7%99%BA/2026/06/07/alembic-database-migration-guide.html">
+<meta property="og:site_name" content="Waka-DS.com">
+<meta property="og:type" content="article">
+<meta property="article:published_time" content="2026-06-07T00:00:00+00:00">
+<meta property="article:modified_time" content="2026-06-07T00:00:00+00:00">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Alembic でデータベーススキーマの変更を管理する">
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":"Waka-DS"},"dateModified":"2026-06-07T00:00:00+00:00","datePublished":"2026-06-07T00:00:00+00:00","description":"AI ネイティブなログアプリの Phase 2 では、テーブル追加やカラム変更が増えてくる。","headline":"Alembic でデータベーススキーマの変更を管理する","mainEntityOfPage":{"@type":"WebPage","@id":"/jekyll-theme-yat/%E9%96%8B%E7%99%BA/2026/06/07/alembic-database-migration-guide.html"},"url":"/jekyll-theme-yat/%E9%96%8B%E7%99%BA/2026/06/07/alembic-database-migration-guide.html"}</script>
+<!-- End Jekyll SEO tag -->
+<link rel="shortcut icon" href="">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=Noto+Sans+JP:wght@400;500;700&amp;display=swap">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+  <link rel="stylesheet" href="/jekyll-theme-yat/assets/css/main.css">
+  <script src="/jekyll-theme-yat/assets/js/main.js"></script><link type="application/atom+xml" rel="alternate" href="/jekyll-theme-yat/feed.xml" title="Waka-DS.com">
+<script>
+  function initGoogleAnalytics() {
+    var doNotTrack = (window.doNotTrack === "1" || navigator.doNotTrack === "1" ||
+      navigator.doNotTrack === "yes" || navigator.msDoNotTrack === "1");
+    var enableDNT = "true" == "true";
+
+    if (!enableDNT || !doNotTrack) {
+      var ga_id = 'G-XNP1RBTG9C';
+
+      var script = document.createElement('script');
+      script.async = true;
+      script.src = 'https://www.googletagmanager.com/gtag/js?id=' + ga_id;
+      document.head.appendChild(script);
+
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', ga_id);
+    }
+  }
+  window.addEventListener("load", initGoogleAnalytics);
+</script>
+<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/styles/default.min.css">
+<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/highlight.min.js"></script>
+<!-- and it's easy to individually load additional languages -->
+<script charset="UTF-8" src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/languages/go.min.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<script>
+// Init highlight js
+document.addEventListener('DOMContentLoaded', function(event) {
+  var els = document.querySelectorAll('pre code')
+
+  function addLangData(block) {
+    var outer = block.parentElement.parentElement.parentElement;
+    var lang = block.getAttribute('data-lang');
+    for (var i = 0; i < outer.classList.length; i++) {
+      var cls = outer.classList[i];
+      if (cls.startsWith('language-')) {
+        lang = cls;
+        break;
+      }
+    }
+    if (!lang) {
+      cls = block.getAttribute('class');
+      lang = cls ? cls.replace('hljs ', '') : '';
+    }
+    if (lang.startsWith('language-')) {
+      lang = lang.substr(9);
+    }
+    block.setAttribute('class', 'hljs ' + lang);
+    block.parentNode.setAttribute('data-lang', lang);
+  }
+
+  function addBadge(block) {
+    var enabled = ('true' || 'true').toLowerCase();
+    if (enabled == 'true') {
+      var pre = block.parentElement;
+      pre.classList.add('badge');
+    }
+  }
+
+  function handle(block) {
+    addLangData(block);
+    addBadge(block)
+    hljs.highlightBlock(block);
+  }
+
+  for (var i = 0; i < els.length; i++) {
+    var el = els[i];
+    handle(el);
+  }
+});
+</script>
+
+<style>
+  /* code language badge */
+  pre.badge::before {
+    content: attr(data-lang);
+    color: #fff;
+    background-color: #0d9488;
+    padding: 0 .5em;
+    border-radius: 0 2px;
+    text-transform: uppercase;
+    text-align: center;
+    min-width: 32px;
+    display: inline-block;
+    position: absolute;
+    right: 0;
+  }
+
+  /* fix wrong badge display for firefox browser */
+  code > table pre::before {
+    display: none;
+  }
+</style>
+</head>
+<body>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<header class="site-header " role="banner">
+
+  <div class="wrapper">
+    <div class="site-header-inner">
+<span class="site-brand"><a class="site-brand-inner" rel="author" href="/jekyll-theme-yat/">
+  <img class="site-favicon" title="Waka-DS.com" src="" onerror="this.style.display='none'">
+  Waka-DS.com
+</a>
+</span><nav class="site-nav">
+          <input type="checkbox" id="nav-trigger" class="nav-trigger">
+          <label for="nav-trigger">
+            <span class="menu-icon">
+              <svg viewbox="0 0 18 15" width="18px" height="15px">
+                <path d="M18,1.484c0,0.82-0.665,1.484-1.484,1.484H1.484C0.665,2.969,0,2.304,0,1.484l0,0C0,0.665,0.665,0,1.484,0 h15.032C17.335,0,18,0.665,18,1.484L18,1.484z M18,7.516C18,8.335,17.335,9,16.516,9H1.484C0.665,9,0,8.335,0,7.516l0,0 c0-0.82,0.665-1.484,1.484-1.484h15.032C17.335,6.031,18,6.696,18,7.516L18,7.516z M18,13.516C18,14.335,17.335,15,16.516,15H1.484 C0.665,15,0,14.335,0,13.516l0,0c0-0.82,0.665-1.483,1.484-1.483h15.032C17.335,12.031,18,12.695,18,13.516L18,13.516z"></path>
+              </svg>
+            </span>
+          </label>
+
+          <div class="trigger">
+<a class="page-link" href="/jekyll-theme-yat/about.html">ABOUT</a><a class="page-link" href="/jekyll-theme-yat/archives.html">ARCHIVES</a><a class="page-link" href="/jekyll-theme-yat/categories.html">CATEGORIES</a><a class="page-link" href="/jekyll-theme-yat/">HOME</a><a class="page-link" href="/jekyll-theme-yat/tags.html">TAGS</a>
+</div>
+        </nav>
+</div>
+  </div>
+</header>
+
+<script>
+  function initHeader() {
+    var lastScrollY = getScrollPos().y;
+    var documentElement = document.documentElement;
+
+    function storeScrollData() {
+      var y = getScrollPos().y;var scrollStatus = "";
+
+      if (y <= 0) {
+        scrollStatus = "top";
+      } else if ((window.innerHeight + y) >= document.body.offsetHeight) {
+        scrollStatus = "bottom";
+      } else {
+        var isScrollDown = (y - lastScrollY > 0) ? true : false;
+        scrollStatus = isScrollDown ? "down" : "up";
+      }
+
+      lastScrollY = y;
+      documentElement.setAttribute("data-scroll-status", scrollStatus);
+    }
+
+    window.addEventListener('scroll', function(e) {
+      storeScrollData();
+    });
+
+    storeScrollData();
+  }
+  document.addEventListener('DOMContentLoaded', initHeader);
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<script>
+  function hashLocate(hashValue) {
+    hashValue = hashValue.replace(/^.*#h-/, '');
+    hashValue = decodeURIComponent(hashValue);
+    var element = document.getElementById(hashValue);
+
+    if (!element) {
+      return;
+    }
+
+    var header = document.querySelector('header.site-header');
+    var headerRect = header.getBoundingClientRect();
+    var headerTop = Math.floor(headerRect.top);
+    var headerHeight = Math.floor(headerRect.height);
+    var scrollPos = getScrollPos();
+    var offsetY = element.offsetTop - (headerTop + headerHeight + 20);
+
+    if (offsetY == scrollPos.y) {
+      return;
+    }
+
+    if (headerTop == 0  && offsetY > scrollPos.y) {
+      offsetY += headerHeight + 2;
+    } else if (headerTop < 0  && offsetY < scrollPos.y) {
+      offsetY -= headerHeight - 2;
+    }
+
+    smoothScrollTo(offsetY);
+  }
+
+  // The first event occurred
+  window.addEventListener('load', function(event) {
+    if (window.location.hash) {
+      hashLocate(window.location.hash);
+    }
+  });
+
+  // The first event occurred
+  window.addEventListener('click', function(event) {
+    if (event.target.tagName.toLowerCase() == 'a') {
+      hashLocate(event.target.getAttribute('href'));
+    }
+  });
+</script>
+<div class="theme-toggle">
+  <input type="checkbox" id="theme-switch">
+  <label for="theme-switch">
+    <div class="toggle"></div>
+    <div class="names">
+      <p class="light">Light</p>
+      <p class="dark">Dark</p>
+    </div>
+  </label>
+</div>
+
+
+
+
+<script>
+  (function() {
+    var sw = document.getElementById('theme-switch');
+    var html = document.getElementsByTagName('html')[0];
+    var nightModeOption = ('auto' || 'auto').toLowerCase();
+    var storage = nightModeOption === 'manual'
+        ? localStorage
+        : sessionStorage;
+    var themeData = loadThemeData();
+
+    function saveThemeData(data) {
+      storage.setItem('theme', JSON.stringify(data));
+    }
+
+    function loadThemeData() {
+      var data = storage.getItem('theme');
+      try {
+        data = JSON.parse(data ? data : '');
+      } catch(e) {
+        data = { nightShift: undefined, autoToggleAt: 0 };
+        saveThemeData(data);
+      }
+      return data;
+    }
+
+    function handleThemeToggle(nightShift) {
+      themeData.nightShift = nightShift;
+      saveThemeData(themeData);
+      html.dataset.theme = nightShift ? 'dark' : 'light';
+      setTimeout(function() {
+        sw.checked = nightShift ? true : false;
+      }, 50);
+    }
+
+    function autoThemeToggle() {
+      // Next time point of theme toggle
+      var now = new Date();
+      var toggleAt = new Date();
+      var hours = now.getHours();
+      var nightShift = hours >= 19 || hours <=7;
+
+      if (nightShift) {
+        if (hours > 7) {
+          toggleAt.setDate(toggleAt.getDate() + 1);
+        }
+        toggleAt.setHours(7);
+      } else {
+        toggleAt.setHours(19);
+      }
+
+      toggleAt.setMinutes(0);
+      toggleAt.setSeconds(0);
+      toggleAt.setMilliseconds(0)
+
+      var delay = toggleAt.getTime() - now.getTime();
+
+      // auto toggle theme mode
+      setTimeout(function() {
+        handleThemeToggle(!nightShift);
+      }, delay);
+
+      return {
+        nightShift: nightShift,
+        toggleAt: toggleAt.getTime()
+      };
+    }
+
+    // Listen the theme toggle event
+    sw.addEventListener('change', function(event) {
+      handleThemeToggle(event.target.checked);
+    });
+
+    if (nightModeOption == 'auto') {
+      var data = autoThemeToggle();
+
+      // Toggle theme by local setting
+      if (data.toggleAt > themeData.autoToggleAt) {
+        themeData.autoToggleAt = data.toggleAt;
+        handleThemeToggle(data.nightShift);
+      } else {
+        handleThemeToggle(themeData.nightShift);
+      }
+    } else if (nightModeOption == 'manual') {
+      handleThemeToggle(themeData.nightShift);
+    } else {
+      var nightShift = themeData.nightShift;
+      if (nightShift === undefined) {
+        nightShift = nightModeOption === 'on';
+      }
+      handleThemeToggle(nightShift);
+    }
+  })();
+</script>
+<main class="page-content" aria-label="Content">
+      <div class="wrapper">
+        <div class="framework">
+  <section class="main">
+
+     <div class="post">
+  <section>
+
+
+
+
+
+
+
+
+
+<header class="post-header">
+  <h1 class="post-title p-name" itemprop="name headline">Alembic でデータベーススキーマの変更を管理する</h1>
+  <h2 class="post-subtitle">SQLAlchemy との関係、マイグレーションの仕組み、既存DBへの導入までやさしく解説</h2>
+
+  <p class="post-meta">
+    <time class="dt-published" datetime="2026-06-07T00:00:00+00:00" itemprop="datePublished"><i class="fa fa-calendar"></i> Jun 07, 2026
+    </time>
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <span class="post-reading-time left-vsplit"><i class="fa fa-clock-o"></i> About 51 mins</span>
+  </p>
+<div class="post-tags">
+<a class="post-tag" href="/jekyll-theme-yat/tags.html#Alembic">#Alembic</a><a class="post-tag" href="/jekyll-theme-yat/tags.html#SQLAlchemy">#SQLAlchemy</a><a class="post-tag" href="/jekyll-theme-yat/tags.html#PostgreSQL">#PostgreSQL</a><a class="post-tag" href="/jekyll-theme-yat/tags.html#%E3%83%87%E3%83%BC%E3%82%BF%E3%83%99%E3%83%BC%E3%82%B9">#データベース</a><a class="post-tag" href="/jekyll-theme-yat/tags.html#%E3%83%9E%E3%82%A4%E3%82%B0%E3%83%AC%E3%83%BC%E3%82%B7%E3%83%A7%E3%83%B3">#マイグレーション</a><a class="post-tag" href="/jekyll-theme-yat/tags.html#AI%E3%83%8D%E3%82%A4%E3%83%86%E3%82%A3%E3%83%96%E9%96%8B%E7%99%BA">#AIネイティブ開発</a>
+</div></header>
+<article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
+
+    <div class="post-content e-content" itemprop="articleBody">
+
+      <p>AI ネイティブなログアプリの Phase 2 では、テーブル追加やカラム変更が増えてくる。</p>
+
+<p>開発初期は Supabase の SQL Editor や <code class="language-plaintext highlighter-rouge">psql</code> で直接 DDL を実行しても進められる。しかし、環境や開発者が増えると、次の問題が起きやすい。</p>
+
+<ul>
+  <li>開発環境と本番環境でテーブル構造が違う</li>
+  <li>誰が、いつ、何のためにカラムを追加したのか分からない</li>
+  <li>新しい環境に同じスキーマを再現できない</li>
+  <li>AI が生成した SQL をどこまで適用したのか追跡できない</li>
+  <li>アプリケーションと DB のどちらを先に更新すべきか判断できない</li>
+</ul>
+
+<p>そこで Phase 2 では、データベース変更をコードとして管理するために <strong>Alembic</strong> を導入する予定である。</p>
+
+<p>ただ、「Alembic は何者なのか」「SQLAlchemy と何が違うのか」「DDL の正本にするとはどういう意味か」がまだ曖昧だったため、この記事で基礎から整理する。</p>
+
+<hr>
+
+<h2 id="結論を先に">結論を先に</h2>
+
+<p>Alembic は、Python の SQL ツールキットである SQLAlchemy と組み合わせて使う、<strong>データベースマイグレーションツール</strong>である。</p>
+
+<p>データベースに対して実行する変更を、次のような Python ファイルとして Git で管理する。</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">def</span> <span class="nf">upgrade</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="bp">None</span><span class="p">:</span>
+    <span class="n">op</span><span class="p">.</span><span class="nf">add_column</span><span class="p">(</span>
+        <span class="sh">"</span><span class="s">events</span><span class="sh">"</span><span class="p">,</span>
+        <span class="n">sa</span><span class="p">.</span><span class="nc">Column</span><span class="p">(</span><span class="sh">"</span><span class="s">trace_id</span><span class="sh">"</span><span class="p">,</span> <span class="n">sa</span><span class="p">.</span><span class="nc">String</span><span class="p">(</span><span class="n">length</span><span class="o">=</span><span class="mi">64</span><span class="p">),</span> <span class="n">nullable</span><span class="o">=</span><span class="bp">True</span><span class="p">),</span>
+    <span class="p">)</span>
+
+
+<span class="k">def</span> <span class="nf">downgrade</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="bp">None</span><span class="p">:</span>
+    <span class="n">op</span><span class="p">.</span><span class="nf">drop_column</span><span class="p">(</span><span class="sh">"</span><span class="s">events</span><span class="sh">"</span><span class="p">,</span> <span class="sh">"</span><span class="s">trace_id</span><span class="sh">"</span><span class="p">)</span>
+</code></pre></div></div>
+
+<p>このファイルを使って、開発・テスト・ステージング・本番の各 DB に同じ変更を順番に適用する。</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>alembic upgrade <span class="nb">head</span>
+</code></pre></div></div>
+
+<p>一言で表すなら、Alembic の役割は次のとおりである。</p>
+
+<blockquote>
+  <p>データベースを直接書き換えるのではなく、再現可能な変更手順をコードとして残し、すべての環境へ同じ順序で適用する。</p>
+</blockquote>
+
+<p>Alembic はデータベースそのものではない。ORM でもバックアップツールでもない。<strong>DB スキーマの変更履歴と適用状態を管理するツール</strong>である。</p>
+
+<hr>
+
+<h2 id="そもそも-ddl-とは">そもそも DDL とは</h2>
+
+<p>DDL は <strong>Data Definition Language</strong> の略で、テーブル・カラム・インデックスなど、データベースの構造を定義する SQL を指す。</p>
+
+<p>代表的な DDL は次のとおり。</p>
+
+<div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">CREATE</span> <span class="k">TABLE</span> <span class="n">events</span> <span class="p">(...);</span>
+
+<span class="k">ALTER</span> <span class="k">TABLE</span> <span class="n">events</span>
+<span class="k">ADD</span> <span class="k">COLUMN</span> <span class="n">trace_id</span> <span class="nb">VARCHAR</span><span class="p">(</span><span class="mi">64</span><span class="p">);</span>
+
+<span class="k">CREATE</span> <span class="k">INDEX</span> <span class="n">ix_events_trace_id</span>
+<span class="k">ON</span> <span class="n">events</span> <span class="p">(</span><span class="n">trace_id</span><span class="p">);</span>
+
+<span class="k">DROP</span> <span class="k">TABLE</span> <span class="n">old_events</span><span class="p">;</span>
+</code></pre></div></div>
+
+<p>一方、行データを追加・更新・削除する <code class="language-plaintext highlighter-rouge">INSERT</code>、<code class="language-plaintext highlighter-rouge">UPDATE</code>、<code class="language-plaintext highlighter-rouge">DELETE</code> は DML (Data Manipulation Language) と呼ばれる。</p>
+
+<table>
+  <thead>
+    <tr>
+      <th style="text-align: left">分類</th>
+      <th style="text-align: left">主な命令</th>
+      <th style="text-align: left">対象</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td style="text-align: left">DDL</td>
+      <td style="text-align: left">
+<code class="language-plaintext highlighter-rouge">CREATE</code>、<code class="language-plaintext highlighter-rouge">ALTER</code>、<code class="language-plaintext highlighter-rouge">DROP</code>
+</td>
+      <td style="text-align: left">テーブルやカラムなどの構造</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">DML</td>
+      <td style="text-align: left">
+<code class="language-plaintext highlighter-rouge">INSERT</code>、<code class="language-plaintext highlighter-rouge">UPDATE</code>、<code class="language-plaintext highlighter-rouge">DELETE</code>
+</td>
+      <td style="text-align: left">テーブル内のデータ</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">DQL</td>
+      <td style="text-align: left"><code class="language-plaintext highlighter-rouge">SELECT</code></td>
+      <td style="text-align: left">データの検索</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>Alembic の中心的な役割は DDL の変更管理だが、必要に応じてデータ移行用の SQL や Python 処理も migration に含められる。</p>
+
+<hr>
+
+<h2 id="マイグレーションとは">マイグレーションとは</h2>
+
+<p>マイグレーションは、DB をある状態から次の状態へ移すための変更手順である。</p>
+
+<p>たとえば、最初は次の <code class="language-plaintext highlighter-rouge">events</code> テーブルだけがあったとする。</p>
+
+<div class="language-text highlighter-rouge"><div class="highlight"><pre class="highlight"><code>events
+├── id
+├── occurred_at
+└── payload
+</code></pre></div></div>
+
+<p>Phase 2 で AI エージェントの実行単位を追跡するため、<code class="language-plaintext highlighter-rouge">trace_id</code> を追加する。</p>
+
+<div class="language-text highlighter-rouge"><div class="highlight"><pre class="highlight"><code>events
+├── id
+├── occurred_at
+├── trace_id       ← 追加
+└── payload
+</code></pre></div></div>
+
+<p>SQL を手作業で実行するだけなら、その瞬間の DB は更新できる。しかし、別の環境で同じ変更を再現するには、実行した SQL・順序・前提条件を人間が覚えておかなければならない。</p>
+
+<p>Alembic では、この変更を revision ファイルとして残す。</p>
+
+<div class="language-text highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;base&gt;
+  ↓
+001_create_events
+  ↓
+002_add_trace_id
+  ↓
+003_add_trace_id_index
+</code></pre></div></div>
+
+<p>各ファイルが DB の変更を一段ずつ表すため、どの環境でも同じ履歴をたどれる。</p>
+
+<hr>
+
+<h2 id="ddl-の正本にするとはどういうことか">「DDL の正本」にするとはどういうことか</h2>
+
+<p>「Alembic を DDL の正本にする」という表現は、少し分解して理解した方がよい。</p>
+
+<p>Alembic を導入しても、SQLAlchemy のモデルや実際の DB が不要になるわけではない。それぞれ役割が異なる。</p>
+
+<table>
+  <thead>
+    <tr>
+      <th style="text-align: left">対象</th>
+      <th style="text-align: left">役割</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td style="text-align: left">SQLAlchemy モデル</td>
+      <td style="text-align: left">アプリが期待する<strong>現在のスキーマ</strong>を表す</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">Alembic revision</td>
+      <td style="text-align: left">現在のスキーマへ至る<strong>変更手順と履歴</strong>を表す</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">実際の DB</td>
+      <td style="text-align: left">migration を適用した<strong>実行時の状態</strong>
+</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>たとえば SQLAlchemy モデルは、現在の完成形を表現する。</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">class</span> <span class="nc">Event</span><span class="p">(</span><span class="n">Base</span><span class="p">):</span>
+    <span class="n">__tablename__</span> <span class="o">=</span> <span class="sh">"</span><span class="s">events</span><span class="sh">"</span>
+
+    <span class="nb">id</span><span class="p">:</span> <span class="n">Mapped</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="nf">mapped_column</span><span class="p">(</span><span class="n">primary_key</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+    <span class="n">trace_id</span><span class="p">:</span> <span class="n">Mapped</span><span class="p">[</span><span class="nb">str</span> <span class="o">|</span> <span class="bp">None</span><span class="p">]</span> <span class="o">=</span> <span class="nf">mapped_column</span><span class="p">(</span><span class="nc">String</span><span class="p">(</span><span class="mi">64</span><span class="p">),</span> <span class="n">index</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+</code></pre></div></div>
+
+<p>しかし、このモデルだけを見ても次のことは分からない。</p>
+
+<ul>
+  <li>
+<code class="language-plaintext highlighter-rouge">trace_id</code> は最初からあったのか</li>
+  <li>既存データをどう移行したのか</li>
+  <li>一時的に nullable にしてから必須化したのか</li>
+  <li>本番環境へどの順序で適用するのか</li>
+</ul>
+
+<p>この時間軸を持つのが Alembic revision である。</p>
+
+<p>したがって、Phase 2 での「DDL の正本」は、次の運用を意味する。</p>
+
+<blockquote>
+  <p>DB 構造を変更するときは必ず Alembic revision を作成し、Git に保存された migration を通して各環境へ適用する。</p>
+</blockquote>
+
+<p>本番 DB の管理画面で直接 DDL を実行したり、アプリ起動時に <code class="language-plaintext highlighter-rouge">Base.metadata.create_all()</code> で不足テーブルを作ったりすると、Alembic の履歴に残らない変更が生まれる。これを <strong>スキーマドリフト</strong> と呼ぶ。</p>
+
+<p>厳密には、Alembic は「完成形を1ファイルで宣言する正本」ではない。<strong>DB を再現するための正式な変更履歴</strong>が正本になる、と考えると分かりやすい。</p>
+
+<hr>
+
+<h2 id="alembic-と-sqlalchemy-の違い">Alembic と SQLAlchemy の違い</h2>
+
+<p>両者は密接に連携するが、担当範囲は別である。</p>
+
+<table>
+  <thead>
+    <tr>
+      <th style="text-align: left"> </th>
+      <th style="text-align: left">SQLAlchemy</th>
+      <th style="text-align: left">Alembic</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td style="text-align: left">主な役割</td>
+      <td style="text-align: left">Python から DB を操作する</td>
+      <td style="text-align: left">DB スキーマの変更履歴を管理する</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">ORM</td>
+      <td style="text-align: left">ある</td>
+      <td style="text-align: left">ない</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">クエリ実行</td>
+      <td style="text-align: left">する</td>
+      <td style="text-align: left">migration 内で限定的に行う</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">モデル定義</td>
+      <td style="text-align: left">する</td>
+      <td style="text-align: left">モデルを参照できる</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">スキーマ差分</td>
+      <td style="text-align: left">
+<code class="language-plaintext highlighter-rouge">MetaData</code> に現在形を持つ</td>
+      <td style="text-align: left">DB と <code class="language-plaintext highlighter-rouge">MetaData</code> を比較できる</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">バージョン管理</td>
+      <td style="text-align: left">しない</td>
+      <td style="text-align: left">revision と適用状態を管理する</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>SQLAlchemy が「アプリケーションと DB をつなぐ道具」なら、Alembic は「DB の構造変更を安全に運ぶ道具」である。</p>
+
+<p>Alembic は内部で SQLAlchemy を利用するため、Python コードで書いた操作を PostgreSQL など各 DB 向けの DDL に変換できる。</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">op</span><span class="p">.</span><span class="nf">create_index</span><span class="p">(</span>
+    <span class="sh">"</span><span class="s">ix_events_trace_id</span><span class="sh">"</span><span class="p">,</span>
+    <span class="sh">"</span><span class="s">events</span><span class="sh">"</span><span class="p">,</span>
+    <span class="p">[</span><span class="sh">"</span><span class="s">trace_id</span><span class="sh">"</span><span class="p">],</span>
+    <span class="n">unique</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span>
+<span class="p">)</span>
+</code></pre></div></div>
+
+<p>PostgreSQL では、おおむね次の SQL として実行される。</p>
+
+<div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">CREATE</span> <span class="k">INDEX</span> <span class="n">ix_events_trace_id</span>
+<span class="k">ON</span> <span class="n">events</span> <span class="p">(</span><span class="n">trace_id</span><span class="p">);</span>
+</code></pre></div></div>
+
+<hr>
+
+<h2 id="alembic-の構成ファイル">Alembic の構成ファイル</h2>
+
+<p>Alembic を初期化すると、migration を管理するためのディレクトリと設定ファイルが作られる。</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>uv add alembic
+alembic init migrations
+</code></pre></div></div>
+
+<p>典型的な構成は次のとおり。</p>
+
+<div class="language-text highlighter-rouge"><div class="highlight"><pre class="highlight"><code>project/
+├── alembic.ini
+├── pyproject.toml
+├── migrations/
+│   ├── env.py
+│   ├── script.py.mako
+│   └── versions/
+│       ├── 8a32_create_events.py
+│       └── b51f_add_trace_id.py
+└── src/
+    └── models/
+</code></pre></div></div>
+
+<h3 id="alembicini"><code class="language-plaintext highlighter-rouge">alembic.ini</code></h3>
+
+<p>Alembic の基本設定を持つ。</p>
+
+<ul>
+  <li>migration ディレクトリの場所</li>
+  <li>DB 接続設定</li>
+  <li>ログ設定</li>
+  <li>revision ファイル名の形式</li>
+</ul>
+
+<p>DB のパスワードを Git 管理する <code class="language-plaintext highlighter-rouge">alembic.ini</code> に直接書くのは避け、通常は <code class="language-plaintext highlighter-rouge">env.py</code> で環境変数から接続 URL を渡す。</p>
+
+<h3 id="migrationsenvpy"><code class="language-plaintext highlighter-rouge">migrations/env.py</code></h3>
+
+<p>Alembic の実行方法を決める中心ファイル。</p>
+
+<p>SQLAlchemy モデルから migration を自動生成する場合は、モデルの <code class="language-plaintext highlighter-rouge">MetaData</code> を <code class="language-plaintext highlighter-rouge">target_metadata</code> に設定する。</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">from</span> <span class="n">app.db.base</span> <span class="kn">import</span> <span class="n">Base</span>
+
+<span class="n">target_metadata</span> <span class="o">=</span> <span class="n">Base</span><span class="p">.</span><span class="n">metadata</span>
+</code></pre></div></div>
+
+<h3 id="migrationsversions"><code class="language-plaintext highlighter-rouge">migrations/versions/</code></h3>
+
+<p>revision ファイルを保存する場所。</p>
+
+<p>このディレクトリのファイルが DB の変更履歴になるため、アプリケーションコードと一緒に Git へコミットする。</p>
+
+<hr>
+
+<h2 id="revision-ファイルの中身">revision ファイルの中身</h2>
+
+<p>revision ファイルには、識別子と変更処理が記録される。</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="sh">"""</span><span class="s">add trace id to events
+
+Revision ID: b51f0c2a914e
+Revises: 8a32fd69c102
+</span><span class="sh">"""</span>
+
+<span class="kn">from</span> <span class="n">alembic</span> <span class="kn">import</span> <span class="n">op</span>
+<span class="kn">import</span> <span class="n">sqlalchemy</span> <span class="k">as</span> <span class="n">sa</span>
+
+
+<span class="n">revision</span> <span class="o">=</span> <span class="sh">"</span><span class="s">b51f0c2a914e</span><span class="sh">"</span>
+<span class="n">down_revision</span> <span class="o">=</span> <span class="sh">"</span><span class="s">8a32fd69c102</span><span class="sh">"</span>
+<span class="n">branch_labels</span> <span class="o">=</span> <span class="bp">None</span>
+<span class="n">depends_on</span> <span class="o">=</span> <span class="bp">None</span>
+
+
+<span class="k">def</span> <span class="nf">upgrade</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="bp">None</span><span class="p">:</span>
+    <span class="n">op</span><span class="p">.</span><span class="nf">add_column</span><span class="p">(</span>
+        <span class="sh">"</span><span class="s">events</span><span class="sh">"</span><span class="p">,</span>
+        <span class="n">sa</span><span class="p">.</span><span class="nc">Column</span><span class="p">(</span><span class="sh">"</span><span class="s">trace_id</span><span class="sh">"</span><span class="p">,</span> <span class="n">sa</span><span class="p">.</span><span class="nc">String</span><span class="p">(</span><span class="n">length</span><span class="o">=</span><span class="mi">64</span><span class="p">),</span> <span class="n">nullable</span><span class="o">=</span><span class="bp">True</span><span class="p">),</span>
+    <span class="p">)</span>
+    <span class="n">op</span><span class="p">.</span><span class="nf">create_index</span><span class="p">(</span>
+        <span class="sh">"</span><span class="s">ix_events_trace_id</span><span class="sh">"</span><span class="p">,</span>
+        <span class="sh">"</span><span class="s">events</span><span class="sh">"</span><span class="p">,</span>
+        <span class="p">[</span><span class="sh">"</span><span class="s">trace_id</span><span class="sh">"</span><span class="p">],</span>
+        <span class="n">unique</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span>
+    <span class="p">)</span>
+
+
+<span class="k">def</span> <span class="nf">downgrade</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="bp">None</span><span class="p">:</span>
+    <span class="n">op</span><span class="p">.</span><span class="nf">drop_index</span><span class="p">(</span><span class="sh">"</span><span class="s">ix_events_trace_id</span><span class="sh">"</span><span class="p">,</span> <span class="n">table_name</span><span class="o">=</span><span class="sh">"</span><span class="s">events</span><span class="sh">"</span><span class="p">)</span>
+    <span class="n">op</span><span class="p">.</span><span class="nf">drop_column</span><span class="p">(</span><span class="sh">"</span><span class="s">events</span><span class="sh">"</span><span class="p">,</span> <span class="sh">"</span><span class="s">trace_id</span><span class="sh">"</span><span class="p">)</span>
+</code></pre></div></div>
+
+<p>重要な要素は次の4つ。</p>
+
+<table>
+  <thead>
+    <tr>
+      <th style="text-align: left">要素</th>
+      <th style="text-align: left">意味</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td style="text-align: left"><code class="language-plaintext highlighter-rouge">revision</code></td>
+      <td style="text-align: left">この変更を識別する一意な ID</td>
+    </tr>
+    <tr>
+      <td style="text-align: left"><code class="language-plaintext highlighter-rouge">down_revision</code></td>
+      <td style="text-align: left">一つ前の revision ID</td>
+    </tr>
+    <tr>
+      <td style="text-align: left"><code class="language-plaintext highlighter-rouge">upgrade()</code></td>
+      <td style="text-align: left">新しい状態へ進める処理</td>
+    </tr>
+    <tr>
+      <td style="text-align: left"><code class="language-plaintext highlighter-rouge">downgrade()</code></td>
+      <td style="text-align: left">前の状態へ戻す処理</td>
+    </tr>
+  </tbody>
+</table>
+
+<p><code class="language-plaintext highlighter-rouge">down_revision</code> によって revision 同士がつながり、変更履歴が構成される。</p>
+
+<hr>
+
+<h2 id="alembic_version-テーブル">
+<code class="language-plaintext highlighter-rouge">alembic_version</code> テーブル</h2>
+
+<p>Alembic を DB に適用すると、通常は <code class="language-plaintext highlighter-rouge">alembic_version</code> という管理用テーブルが作られる。</p>
+
+<div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">SELECT</span> <span class="o">*</span> <span class="k">FROM</span> <span class="n">alembic_version</span><span class="p">;</span>
+</code></pre></div></div>
+
+<div class="language-text highlighter-rouge"><div class="highlight"><pre class="highlight"><code> version_num
+--------------
+ b51f0c2a914e
+</code></pre></div></div>
+
+<p>この値は「この DB がどの revision まで適用済みか」を示す。</p>
+
+<p>Alembic は次の2つを比較して、未適用の変更を判断する。</p>
+
+<div class="language-text highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Git にある revision 履歴
+            +
+DB の alembic_version
+            ↓
+次に実行すべき migration
+</code></pre></div></div>
+
+<p><code class="language-plaintext highlighter-rouge">alembic_version</code> はテーブル定義そのものを保存する場所ではない。現在位置を示すポインタに近い。</p>
+
+<hr>
+
+<h2 id="基本コマンド">基本コマンド</h2>
+
+<p>よく使うコマンドをまとめる。</p>
+
+<table>
+  <thead>
+    <tr>
+      <th style="text-align: left">コマンド</th>
+      <th style="text-align: left">用途</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td style="text-align: left"><code class="language-plaintext highlighter-rouge">alembic init migrations</code></td>
+      <td style="text-align: left">migration 環境を初期化する</td>
+    </tr>
+    <tr>
+      <td style="text-align: left"><code class="language-plaintext highlighter-rouge">alembic revision -m "message"</code></td>
+      <td style="text-align: left">空の revision を作る</td>
+    </tr>
+    <tr>
+      <td style="text-align: left"><code class="language-plaintext highlighter-rouge">alembic revision --autogenerate -m "message"</code></td>
+      <td style="text-align: left">モデルと DB の差分から候補を作る</td>
+    </tr>
+    <tr>
+      <td style="text-align: left"><code class="language-plaintext highlighter-rouge">alembic upgrade head</code></td>
+      <td style="text-align: left">最新 revision まで適用する</td>
+    </tr>
+    <tr>
+      <td style="text-align: left"><code class="language-plaintext highlighter-rouge">alembic downgrade -1</code></td>
+      <td style="text-align: left">一つ前へ戻す</td>
+    </tr>
+    <tr>
+      <td style="text-align: left"><code class="language-plaintext highlighter-rouge">alembic current</code></td>
+      <td style="text-align: left">DB の現在 revision を確認する</td>
+    </tr>
+    <tr>
+      <td style="text-align: left"><code class="language-plaintext highlighter-rouge">alembic history</code></td>
+      <td style="text-align: left">revision 履歴を表示する</td>
+    </tr>
+    <tr>
+      <td style="text-align: left"><code class="language-plaintext highlighter-rouge">alembic heads</code></td>
+      <td style="text-align: left">最新 revision を確認する</td>
+    </tr>
+    <tr>
+      <td style="text-align: left"><code class="language-plaintext highlighter-rouge">alembic check</code></td>
+      <td style="text-align: left">未作成のスキーマ差分があるか確認する</td>
+    </tr>
+    <tr>
+      <td style="text-align: left"><code class="language-plaintext highlighter-rouge">alembic stamp head</code></td>
+      <td style="text-align: left">DDL を実行せず、適用済み位置だけを記録する</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>普段の開発で中心になるのは、次の3つである。</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>alembic revision <span class="nt">--autogenerate</span> <span class="nt">-m</span> <span class="s2">"add trace id to events"</span>
+alembic upgrade <span class="nb">head
+</span>alembic current
+</code></pre></div></div>
+
+<hr>
+
+<h2 id="autogenerate-は何をしているのか">autogenerate は何をしているのか</h2>
+
+<p><code class="language-plaintext highlighter-rouge">--autogenerate</code> を付けると、Alembic は次の2つを比較する。</p>
+
+<ol>
+  <li>接続先 DB の現在のスキーマ</li>
+  <li>SQLAlchemy モデルの <code class="language-plaintext highlighter-rouge">MetaData</code>
+</li>
+</ol>
+
+<div class="language-text highlighter-rouge"><div class="highlight"><pre class="highlight"><code>現在の DB
+    ↕ 差分比較
+SQLAlchemy MetaData
+    ↓
+revision の候補を生成
+</code></pre></div></div>
+
+<p>たとえばモデルに <code class="language-plaintext highlighter-rouge">trace_id</code> を追加してから、次のコマンドを実行する。</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>alembic revision <span class="nt">--autogenerate</span> <span class="nt">-m</span> <span class="s2">"add trace id to events"</span>
+</code></pre></div></div>
+
+<p>Alembic はカラム追加を検出し、<code class="language-plaintext highlighter-rouge">op.add_column()</code> を含む revision を生成する。</p>
+
+<p>ただし、公式ドキュメントでも autogenerate の出力は <strong>candidate migrations</strong>、つまり候補として扱われている。生成されたファイルは必ず人間が確認・修正する必要がある。</p>
+
+<h3 id="検出しやすい変更">検出しやすい変更</h3>
+
+<ul>
+  <li>テーブルの追加・削除</li>
+  <li>カラムの追加・削除</li>
+  <li>nullable の変更</li>
+  <li>基本的なインデックス変更</li>
+  <li>名前付き UNIQUE 制約</li>
+  <li>基本的な外部キー変更</li>
+  <li>主なカラム型の変更</li>
+</ul>
+
+<h3 id="自動判断できないまたは注意が必要な変更">自動判断できない、または注意が必要な変更</h3>
+
+<ul>
+  <li>テーブル名の変更</li>
+  <li>カラム名の変更</li>
+  <li>匿名の制約</li>
+  <li>複雑な型変更</li>
+  <li>データの変換や補完</li>
+  <li>PostgreSQL の extension</li>
+  <li>view、function、trigger</li>
+  <li>Row Level Security の policy</li>
+  <li>DB 固有の高度なオブジェクト</li>
+</ul>
+
+<p>たとえば <code class="language-plaintext highlighter-rouge">old_name</code> を <code class="language-plaintext highlighter-rouge">new_name</code> に変更しても、Alembic は「名前変更」と判断できず、次のような危険な差分を作ることがある。</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">op</span><span class="p">.</span><span class="nf">add_column</span><span class="p">(</span><span class="sh">"</span><span class="s">events</span><span class="sh">"</span><span class="p">,</span> <span class="n">sa</span><span class="p">.</span><span class="nc">Column</span><span class="p">(</span><span class="sh">"</span><span class="s">new_name</span><span class="sh">"</span><span class="p">,</span> <span class="n">sa</span><span class="p">.</span><span class="nc">Text</span><span class="p">()))</span>
+<span class="n">op</span><span class="p">.</span><span class="nf">drop_column</span><span class="p">(</span><span class="sh">"</span><span class="s">events</span><span class="sh">"</span><span class="p">,</span> <span class="sh">"</span><span class="s">old_name</span><span class="sh">"</span><span class="p">)</span>
+</code></pre></div></div>
+
+<p>このまま適用すると <code class="language-plaintext highlighter-rouge">old_name</code> のデータを失う。</p>
+
+<p>正しくは、生成結果を次のように修正する。</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">op</span><span class="p">.</span><span class="nf">alter_column</span><span class="p">(</span>
+    <span class="sh">"</span><span class="s">events</span><span class="sh">"</span><span class="p">,</span>
+    <span class="sh">"</span><span class="s">old_name</span><span class="sh">"</span><span class="p">,</span>
+    <span class="n">new_column_name</span><span class="o">=</span><span class="sh">"</span><span class="s">new_name</span><span class="sh">"</span><span class="p">,</span>
+<span class="p">)</span>
+</code></pre></div></div>
+
+<blockquote>
+  <p><code class="language-plaintext highlighter-rouge">--autogenerate</code> は migration の自動実行ではない。差分を推測して、レビュー対象の Python ファイルを作る機能である。</p>
+</blockquote>
+
+<hr>
+
+<h2 id="制約名を決めておく">制約名を決めておく</h2>
+
+<p>PRIMARY KEY、FOREIGN KEY、UNIQUE、CHECK などの制約は、名前がないと DB が自動命名する場合がある。</p>
+
+<p>環境ごとに名前が異なると、後の migration で制約を削除しにくい。SQLAlchemy の <code class="language-plaintext highlighter-rouge">MetaData.naming_convention</code> を使って、最初から命名規則を統一しておくとよい。</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">from</span> <span class="n">sqlalchemy</span> <span class="kn">import</span> <span class="n">MetaData</span>
+<span class="kn">from</span> <span class="n">sqlalchemy.orm</span> <span class="kn">import</span> <span class="n">DeclarativeBase</span>
+
+
+<span class="n">NAMING_CONVENTION</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="sh">"</span><span class="s">ix</span><span class="sh">"</span><span class="p">:</span> <span class="sh">"</span><span class="s">ix_%(column_0_label)s</span><span class="sh">"</span><span class="p">,</span>
+    <span class="sh">"</span><span class="s">uq</span><span class="sh">"</span><span class="p">:</span> <span class="sh">"</span><span class="s">uq_%(table_name)s_%(column_0_name)s</span><span class="sh">"</span><span class="p">,</span>
+    <span class="sh">"</span><span class="s">ck</span><span class="sh">"</span><span class="p">:</span> <span class="sh">"</span><span class="s">ck_%(table_name)s_%(constraint_name)s</span><span class="sh">"</span><span class="p">,</span>
+    <span class="sh">"</span><span class="s">fk</span><span class="sh">"</span><span class="p">:</span> <span class="sh">"</span><span class="s">fk_%(table_name)s_%(column_0_name)s_%(referred_table_name)s</span><span class="sh">"</span><span class="p">,</span>
+    <span class="sh">"</span><span class="s">pk</span><span class="sh">"</span><span class="p">:</span> <span class="sh">"</span><span class="s">pk_%(table_name)s</span><span class="sh">"</span><span class="p">,</span>
+<span class="p">}</span>
+
+
+<span class="k">class</span> <span class="nc">Base</span><span class="p">(</span><span class="n">DeclarativeBase</span><span class="p">):</span>
+    <span class="n">metadata</span> <span class="o">=</span> <span class="nc">MetaData</span><span class="p">(</span><span class="n">naming_convention</span><span class="o">=</span><span class="n">NAMING_CONVENTION</span><span class="p">)</span>
+</code></pre></div></div>
+
+<p>この規則は Alembic の autogenerate とも連携する。</p>
+
+<p>Phase 2 の開始時に命名規則を決めておく方が、テーブル数が増えてから既存制約を改名するより負担が小さい。</p>
+
+<hr>
+
+<h2 id="postgresqlsupabase-固有の-ddl-はどうするか">PostgreSQL・Supabase 固有の DDL はどうするか</h2>
+
+<p>ログアプリでは、通常のテーブル定義以外にも PostgreSQL 固有機能を使う可能性がある。</p>
+
+<ul>
+  <li>
+<code class="language-plaintext highlighter-rouge">pgvector</code> などの extension</li>
+  <li>Row Level Security</li>
+  <li>policy</li>
+  <li>trigger</li>
+  <li>function</li>
+  <li>view</li>
+  <li>部分インデックス</li>
+  <li>GIN インデックス</li>
+</ul>
+
+<p>autogenerate が扱えない DDL は、revision を手動で作成して <code class="language-plaintext highlighter-rouge">op.execute()</code> などで明示する。</p>
+
+<p>たとえば Supabase の <code class="language-plaintext highlighter-rouge">events</code> テーブルへ RLS policy を追加する場合は、次のように履歴へ残せる。</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">from</span> <span class="n">alembic</span> <span class="kn">import</span> <span class="n">op</span>
+
+
+<span class="k">def</span> <span class="nf">upgrade</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="bp">None</span><span class="p">:</span>
+    <span class="n">op</span><span class="p">.</span><span class="nf">execute</span><span class="p">(</span><span class="sh">"</span><span class="s">ALTER TABLE events ENABLE ROW LEVEL SECURITY</span><span class="sh">"</span><span class="p">)</span>
+    <span class="n">op</span><span class="p">.</span><span class="nf">execute</span><span class="p">(</span>
+        <span class="sh">"""</span><span class="s">
+        CREATE POLICY events_select_own
+        ON events
+        FOR SELECT
+        USING (user_id = auth.uid())
+        </span><span class="sh">"""</span>
+    <span class="p">)</span>
+
+
+<span class="k">def</span> <span class="nf">downgrade</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="bp">None</span><span class="p">:</span>
+    <span class="n">op</span><span class="p">.</span><span class="nf">execute</span><span class="p">(</span><span class="sh">"</span><span class="s">DROP POLICY events_select_own ON events</span><span class="sh">"</span><span class="p">)</span>
+    <span class="n">op</span><span class="p">.</span><span class="nf">execute</span><span class="p">(</span><span class="sh">"</span><span class="s">ALTER TABLE events DISABLE ROW LEVEL SECURITY</span><span class="sh">"</span><span class="p">)</span>
+</code></pre></div></div>
+
+<p>重要なのは、Supabase の SQL Editor で実行するか Alembic で実行するかではなく、<strong>正式な DB 変更を一つの経路へ統一すること</strong>である。</p>
+
+<p>Alembic を正本にするなら、SQL Editor は調査や一時的な検証に限定し、正式な DDL は revision に書いて適用する。</p>
+
+<hr>
+
+<h2 id="既存-db-に-alembic-を導入する方法">既存 DB に Alembic を導入する方法</h2>
+
+<p>Phase 2 から導入する場合、すでに開発 DB や Supabase 上にテーブルが存在している。</p>
+
+<p>ここで、既存 DB に対していきなり初期 migration を実行すると、存在済みテーブルの <code class="language-plaintext highlighter-rouge">CREATE TABLE</code> が衝突する。</p>
+
+<p>必要なのは <strong>baseline</strong>、つまり「Alembic 管理を開始する基準点」を作ることだ。</p>
+
+<h3 id="基本手順">基本手順</h3>
+
+<ol>
+  <li>現在の DB と SQLAlchemy モデルを一致させる</li>
+  <li>現在の全スキーマを作れる初期 revision を用意する</li>
+  <li>空の一時 DB で <code class="language-plaintext highlighter-rouge">alembic upgrade head</code> を実行する</li>
+  <li>作成されたスキーマが既存 DB と一致することを確認する</li>
+  <li>既存 DB には DDL を実行せず <code class="language-plaintext highlighter-rouge">alembic stamp head</code> を実行する</li>
+  <li>以後の変更はすべて新しい revision として追加する</li>
+</ol>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># 空の検証用 DB では実際に初期スキーマを作る</span>
+alembic upgrade <span class="nb">head</span>
+
+<span class="c"># 既存 DB では「ここまで適用済み」と記録するだけ</span>
+alembic stamp <span class="nb">head</span>
+</code></pre></div></div>
+
+<p><code class="language-plaintext highlighter-rouge">stamp</code> は migration を実行しない。<code class="language-plaintext highlighter-rouge">alembic_version</code> の位置だけを更新する。</p>
+
+<p>そのため、既存 DB と baseline が本当に同じ構造であることを確認せずに <code class="language-plaintext highlighter-rouge">stamp head</code> すると、Alembic は一致していると思っているのに実際には違う、という危険な状態になる。</p>
+
+<p>また、既存 DB とモデルが一致した状態で <code class="language-plaintext highlighter-rouge">--autogenerate</code> を実行すると、差分がないため初期 revision は空になる。初期 revision を自動生成するなら、<strong>空の DB とモデルを比較する</strong>必要がある。</p>
+
+<hr>
+
+<h2 id="phase-2-での標準ワークフロー">Phase 2 での標準ワークフロー</h2>
+
+<p>テーブル変更を行う Pull Request は、次の流れに統一すると分かりやすい。</p>
+
+<h3 id="1-手元の-db-を最新化する">1. 手元の DB を最新化する</h3>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>alembic upgrade <span class="nb">head</span>
+</code></pre></div></div>
+
+<p>古い DB を基準に revision を作ると、不要な差分や競合が生まれやすい。</p>
+
+<h3 id="2-sqlalchemy-モデルを変更する">2. SQLAlchemy モデルを変更する</h3>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">trace_id</span><span class="p">:</span> <span class="n">Mapped</span><span class="p">[</span><span class="nb">str</span> <span class="o">|</span> <span class="bp">None</span><span class="p">]</span> <span class="o">=</span> <span class="nf">mapped_column</span><span class="p">(</span><span class="nc">String</span><span class="p">(</span><span class="mi">64</span><span class="p">),</span> <span class="n">index</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+</code></pre></div></div>
+
+<h3 id="3-revision-候補を生成する">3. revision 候補を生成する</h3>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>alembic revision <span class="nt">--autogenerate</span> <span class="nt">-m</span> <span class="s2">"add trace id to events"</span>
+</code></pre></div></div>
+
+<h3 id="4-revision-をレビューする">4. revision をレビューする</h3>
+
+<p>最低限、次を確認する。</p>
+
+<ul>
+  <li>意図しない <code class="language-plaintext highlighter-rouge">drop_table</code> や <code class="language-plaintext highlighter-rouge">drop_column</code> がないか</li>
+  <li>カラム名変更が add + drop になっていないか</li>
+  <li>nullable、default、型が正しいか</li>
+  <li>index と constraint の名前が正しいか</li>
+  <li>
+<code class="language-plaintext highlighter-rouge">downgrade()</code> の順序が正しいか</li>
+  <li>既存データがある状態で成功するか</li>
+  <li>長時間のロックやテーブル全体の書き換えが起きないか</li>
+</ul>
+
+<h3 id="5-migration-を適用してテストする">5. migration を適用してテストする</h3>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>alembic upgrade <span class="nb">head
+</span>pytest
+</code></pre></div></div>
+
+<p>空の一時 DB でも先頭から適用できることを確認する。</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>alembic upgrade <span class="nb">head</span>
+</code></pre></div></div>
+
+<h3 id="6-モデルと-revision-を同じ-pr-に含める">6. モデルと revision を同じ PR に含める</h3>
+
+<p>モデルだけ、または revision だけを先にマージすると、アプリと DB の期待がずれる。</p>
+
+<h3 id="7-デプロイ時に一度だけ適用する">7. デプロイ時に一度だけ適用する</h3>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>alembic upgrade <span class="nb">head</span>
+</code></pre></div></div>
+
+<p>複数の Web コンテナが同時に migration を実行する構成は避ける。デプロイジョブなど、実行主体を一つに決める。</p>
+
+<hr>
+
+<h2 id="ci-で確認したいこと">CI で確認したいこと</h2>
+
+<p>AI や人間がモデルだけを変更し、revision を作り忘れる可能性がある。Alembic にはその差分を検出する <code class="language-plaintext highlighter-rouge">check</code> コマンドがある。</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>alembic check
+</code></pre></div></div>
+
+<p><code class="language-plaintext highlighter-rouge">alembic revision --autogenerate</code> と同じ比較処理を行うが、revision ファイルは生成しない。未反映のスキーマ差分があれば CI を失敗させられる。</p>
+
+<p>Phase 2 の最小 CI は次の構成が現実的である。</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># 空の PostgreSQL に全 migration を適用</span>
+alembic upgrade <span class="nb">head</span>
+
+<span class="c"># モデルと適用後 DB に差分がないことを確認</span>
+alembic check
+
+<span class="c"># アプリケーションの振る舞いを確認</span>
+pytest
+</code></pre></div></div>
+
+<p>さらに <code class="language-plaintext highlighter-rouge">alembic heads</code> の結果が一つだけであることも確認すると、複数ブランチで同時に作られた revision の競合を早く検出できる。</p>
+
+<hr>
+
+<h2 id="migration-の競合と複数-head">migration の競合と複数 head</h2>
+
+<p>2人または複数の AI エージェントが、同じ親 revision から別々の revision を作ることがある。</p>
+
+<div class="language-text highlighter-rouge"><div class="highlight"><pre class="highlight"><code>             ┌─ 002_add_trace_id
+001_events ──┤
+             └─ 003_add_agent_name
+</code></pre></div></div>
+
+<p>この状態では最新地点が2つあり、<code class="language-plaintext highlighter-rouge">alembic upgrade head</code> の行き先が一意に決まらない。</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>alembic heads
+</code></pre></div></div>
+
+<p>通常は merge revision を作って、履歴を一つにまとめる。</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>alembic merge heads <span class="nt">-m</span> <span class="s2">"merge migration heads"</span>
+</code></pre></div></div>
+
+<div class="language-text highlighter-rouge"><div class="highlight"><pre class="highlight"><code>             ┌─ 002_add_trace_id ──┐
+001_events ──┤                     ├─ 004_merge_heads
+             └─ 003_add_agent_name ┘
+</code></pre></div></div>
+
+<p>既に共有された revision の <code class="language-plaintext highlighter-rouge">down_revision</code> を書き換えて直線化すると、適用済み環境の履歴と食い違う可能性がある。公開・共有済みの revision は原則として変更せず、merge revision で解決する方が安全である。</p>
+
+<hr>
+
+<h2 id="本番変更は-expand--migrate--contract-で考える">本番変更は expand / migrate / contract で考える</h2>
+
+<p>開発 DB では一度に成功する変更でも、本番では旧バージョンと新バージョンのアプリが一時的に同時稼働する。</p>
+
+<p>たとえば既存カラムをいきなり削除すると、古いコンテナがそのカラムを参照してエラーになる。</p>
+
+<p>大きな変更は3段階に分ける。</p>
+
+<h3 id="1-expand">1. Expand</h3>
+
+<p>新しい構造を追加し、古いアプリでも動く状態を保つ。</p>
+
+<div class="language-text highlighter-rouge"><div class="highlight"><pre class="highlight"><code>nullable な新カラムを追加
+新テーブルを追加
+新旧どちらでも読めるようにする
+</code></pre></div></div>
+
+<h3 id="2-migrate">2. Migrate</h3>
+
+<p>既存データを移し、アプリを新しい構造へ切り替える。</p>
+
+<div class="language-text highlighter-rouge"><div class="highlight"><pre class="highlight"><code>バックフィルを実行
+新旧カラムへ二重書き
+読み取り先を新カラムへ変更
+</code></pre></div></div>
+
+<h3 id="3-contract">3. Contract</h3>
+
+<p>古いコードが使われなくなってから、不要な構造を削除する。</p>
+
+<div class="language-text highlighter-rouge"><div class="highlight"><pre class="highlight"><code>NOT NULL 制約を追加
+旧カラムを削除
+一時的な互換コードを削除
+</code></pre></div></div>
+
+<p>この分割により、スキーマ変更とアプリのデプロイ順序に余裕を持たせられる。</p>
+
+<hr>
+
+<h2 id="データ-migration-は分けて考える">データ migration は分けて考える</h2>
+
+<p>カラム追加のような schema migration と、何百万行もの既存データを書き換える data migration は性質が違う。</p>
+
+<p>小規模なデータ補正なら revision に含められる。</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">def</span> <span class="nf">upgrade</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="bp">None</span><span class="p">:</span>
+    <span class="n">op</span><span class="p">.</span><span class="nf">add_column</span><span class="p">(</span>
+        <span class="sh">"</span><span class="s">events</span><span class="sh">"</span><span class="p">,</span>
+        <span class="n">sa</span><span class="p">.</span><span class="nc">Column</span><span class="p">(</span><span class="sh">"</span><span class="s">status</span><span class="sh">"</span><span class="p">,</span> <span class="n">sa</span><span class="p">.</span><span class="nc">String</span><span class="p">(</span><span class="n">length</span><span class="o">=</span><span class="mi">20</span><span class="p">),</span> <span class="n">nullable</span><span class="o">=</span><span class="bp">True</span><span class="p">),</span>
+    <span class="p">)</span>
+    <span class="n">op</span><span class="p">.</span><span class="nf">execute</span><span class="p">(</span><span class="sh">"</span><span class="s">UPDATE events SET status = </span><span class="sh">'</span><span class="s">completed</span><span class="sh">'</span><span class="s"> WHERE status IS NULL</span><span class="sh">"</span><span class="p">)</span>
+    <span class="n">op</span><span class="p">.</span><span class="nf">alter_column</span><span class="p">(</span><span class="sh">"</span><span class="s">events</span><span class="sh">"</span><span class="p">,</span> <span class="sh">"</span><span class="s">status</span><span class="sh">"</span><span class="p">,</span> <span class="n">nullable</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
+</code></pre></div></div>
+
+<p>しかし、大量データの更新を migration のトランザクション内で行うと、長時間ロックやタイムアウトが起きる可能性がある。</p>
+
+<p>大規模なバックフィルは、次のように分離した方がよい。</p>
+
+<ol>
+  <li>revision で nullable なカラムを追加する</li>
+  <li>専用ジョブで少量ずつバックフィルする</li>
+  <li>未移行データがないことを確認する</li>
+  <li>別 revision で <code class="language-plaintext highlighter-rouge">NOT NULL</code> を追加する</li>
+</ol>
+
+<p>Alembic があるから、すべてのデータ処理を Alembic の中へ入れるべき、というわけではない。</p>
+
+<hr>
+
+<h2 id="downgrade-を過信しない">downgrade を過信しない</h2>
+
+<p><code class="language-plaintext highlighter-rouge">downgrade()</code> があると、いつでも安全に元へ戻せるように見える。</p>
+
+<p>しかし、次の変更は完全には元に戻せない。</p>
+
+<ul>
+  <li>カラム削除</li>
+  <li>テーブル削除</li>
+  <li>データ型変換による情報欠落</li>
+  <li>データの集約</li>
+  <li>外部システムと連動した更新</li>
+</ul>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">def</span> <span class="nf">downgrade</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="bp">None</span><span class="p">:</span>
+    <span class="n">op</span><span class="p">.</span><span class="nf">add_column</span><span class="p">(</span><span class="sh">"</span><span class="s">events</span><span class="sh">"</span><span class="p">,</span> <span class="n">sa</span><span class="p">.</span><span class="nc">Column</span><span class="p">(</span><span class="sh">"</span><span class="s">deleted_value</span><span class="sh">"</span><span class="p">,</span> <span class="n">sa</span><span class="p">.</span><span class="nc">Text</span><span class="p">()))</span>
+</code></pre></div></div>
+
+<p>カラム自体は再作成できても、削除前の値は戻らない。</p>
+
+<p>本番障害では、古い migration へ戻すより、問題を修正する新しい revision を前向きに追加する <strong>roll forward</strong> の方が安全な場合も多い。</p>
+
+<p><code class="language-plaintext highlighter-rouge">downgrade()</code> は検証環境で役立つが、バックアップの代わりにはならない。</p>
+
+<hr>
+
+<h2 id="alembic-が担当しないこと">Alembic が担当しないこと</h2>
+
+<p>Alembic を導入しても、データベース運用のすべてが解決するわけではない。</p>
+
+<table>
+  <thead>
+    <tr>
+      <th style="text-align: left">対象</th>
+      <th style="text-align: left">Alembic の担当</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td style="text-align: left">DB スキーマの変更履歴</td>
+      <td style="text-align: left">担当する</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">migration の適用順序</td>
+      <td style="text-align: left">担当する</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">DB バックアップ</td>
+      <td style="text-align: left">担当しない</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">データ損失からの復旧</td>
+      <td style="text-align: left">担当しない</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">SQL の性能保証</td>
+      <td style="text-align: left">担当しない</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">migration の安全性レビュー</td>
+      <td style="text-align: left">自動では保証しない</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">アプリとの互換性</td>
+      <td style="text-align: left">テストとデプロイ設計が必要</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">シークレット管理</td>
+      <td style="text-align: left">担当しない</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>特にバックアップと migration は別物である。</p>
+
+<p>Alembic は「何を変更したか」を再現する。バックアップは「その時点でどんなデータが入っていたか」を復元する。</p>
+
+<hr>
+
+<h2 id="ai-ネイティブ開発で-alembic-が重要な理由">AI ネイティブ開発で Alembic が重要な理由</h2>
+
+<p>AI エージェントは、SQLAlchemy モデルや SQL を高速に生成できる。一方で、生成量が増えるほど DB 変更の統制が重要になる。</p>
+
+<h3 id="1-ai-の変更をレビュー可能な差分にする">1. AI の変更をレビュー可能な差分にする</h3>
+
+<p>AI が DB へ直接 SQL を実行すると、変更の意図と結果が会話ログに埋もれる。</p>
+
+<p>revision ファイルとして出力させれば、通常のコードと同じように Git diff で確認できる。</p>
+
+<h3 id="2-環境ごとの再現性を持たせる">2. 環境ごとの再現性を持たせる</h3>
+
+<p>どの AI や開発者が変更しても、適用経路を <code class="language-plaintext highlighter-rouge">alembic upgrade head</code> に統一できる。</p>
+
+<h3 id="3-危険な変更を-ci-で止める">3. 危険な変更を CI で止める</h3>
+
+<p>モデルだけが変更された状態は <code class="language-plaintext highlighter-rouge">alembic check</code> で検出できる。空 DB への全 migration 適用も自動テストできる。</p>
+
+<h3 id="4-ai-に任せてはいけない判断を明確にする">4. AI に任せてはいけない判断を明確にする</h3>
+
+<p>AI が autogenerate の結果を説明・修正することはできる。しかし、次の判断には本番データと運用条件の理解が必要である。</p>
+
+<ul>
+  <li>この <code class="language-plaintext highlighter-rouge">DROP COLUMN</code> は本当に不要か</li>
+  <li>既存行に NULL がないか</li>
+  <li>インデックス作成で書き込みが止まらないか</li>
+  <li>RLS policy が意図せずデータを公開しないか</li>
+  <li>旧アプリとの互換性が保たれるか</li>
+</ul>
+
+<p>Alembic は AI に DB 変更を自由に任せるための道具ではない。<strong>AI が作った変更を、レビュー・テスト・再実行できる形へ固定するための基盤</strong>である。</p>
+
+<hr>
+
+<h2 id="phase-2-で決めておきたい運用ルール">Phase 2 で決めておきたい運用ルール</h2>
+
+<p>今回のログアプリでは、最初から次のルールを置くと管理しやすい。</p>
+
+<ol>
+  <li>DB スキーマ変更は必ず Alembic revision にする</li>
+  <li>SQLAlchemy モデルと revision を同じ PR で変更する</li>
+  <li>本番や Supabase の管理画面で正式な DDL を直接実行しない</li>
+  <li>アプリ起動時に <code class="language-plaintext highlighter-rouge">Base.metadata.create_all()</code> を実行しない</li>
+  <li>autogenerate の結果をそのまま信用せず、必ずレビューする</li>
+  <li>適用済み・共有済み revision は原則として書き換えない</li>
+  <li>
+<code class="language-plaintext highlighter-rouge">alembic heads</code> は通常一つに保つ</li>
+  <li>CI で空 DB への <code class="language-plaintext highlighter-rouge">upgrade head</code> と <code class="language-plaintext highlighter-rouge">alembic check</code> を実行する</li>
+  <li>migration はデプロイ処理の中で一度だけ実行する</li>
+  <li>大量データのバックフィルは schema migration と分離する</li>
+</ol>
+
+<p>これらを守ることで、Alembic のファイルと実 DB の履歴が一致しやすくなる。</p>
+
+<hr>
+
+<h2 id="導入時の最小構成">導入時の最小構成</h2>
+
+<p>Phase 2 の最初から複雑な仕組みを作る必要はない。</p>
+
+<h3 id="1-alembic-を追加する">1. Alembic を追加する</h3>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>uv add alembic
+</code></pre></div></div>
+
+<h3 id="2-migration-環境を作る">2. migration 環境を作る</h3>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>alembic init migrations
+</code></pre></div></div>
+
+<h3 id="3-envpy-にモデルの-metadata-を設定する">3. <code class="language-plaintext highlighter-rouge">env.py</code> にモデルの MetaData を設定する</h3>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">from</span> <span class="n">app.db.base</span> <span class="kn">import</span> <span class="n">Base</span>
+
+<span class="n">target_metadata</span> <span class="o">=</span> <span class="n">Base</span><span class="p">.</span><span class="n">metadata</span>
+</code></pre></div></div>
+
+<h3 id="4-既存-db-の-baseline-を作る">4. 既存 DB の baseline を作る</h3>
+
+<p>空 DB への <code class="language-plaintext highlighter-rouge">upgrade head</code> と既存 DB との差分を確認し、既存 DB を <code class="language-plaintext highlighter-rouge">stamp head</code> する。</p>
+
+<h3 id="5-ci-に最低限の検証を追加する">5. CI に最低限の検証を追加する</h3>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>alembic upgrade <span class="nb">head
+</span>alembic check
+pytest
+</code></pre></div></div>
+
+<h3 id="6-以後の変更経路を統一する">6. 以後の変更経路を統一する</h3>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># モデル変更後</span>
+alembic revision <span class="nt">--autogenerate</span> <span class="nt">-m</span> <span class="s2">"describe schema change"</span>
+
+<span class="c"># 生成ファイルをレビュー</span>
+
+<span class="c"># 開発 DB へ適用</span>
+alembic upgrade <span class="nb">head</span>
+</code></pre></div></div>
+
+<p>この構成だけでも、手作業の DDL と環境差分を大きく減らせる。</p>
+
+<hr>
+
+<h2 id="まとめ">まとめ</h2>
+
+<table>
+  <thead>
+    <tr>
+      <th style="text-align: left">ポイント</th>
+      <th style="text-align: left">内容</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td style="text-align: left">Alembic の正体</td>
+      <td style="text-align: left">SQLAlchemy と連携する DB migration ツール</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">主な役割</td>
+      <td style="text-align: left">DDL の変更手順・順序・適用状態を管理する</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">SQLAlchemy との違い</td>
+      <td style="text-align: left">モデルは現在形、Alembic はそこへ至る変更履歴</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">基本単位</td>
+      <td style="text-align: left">
+<code class="language-plaintext highlighter-rouge">upgrade()</code> と <code class="language-plaintext highlighter-rouge">downgrade()</code> を持つ revision ファイル</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">現在位置</td>
+      <td style="text-align: left">DB の <code class="language-plaintext highlighter-rouge">alembic_version</code> テーブルで追跡する</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">自動生成</td>
+      <td style="text-align: left">モデルと DB の差分から候補を作るが、レビューは必須</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">既存 DB への導入</td>
+      <td style="text-align: left">baseline を作り、検証後に <code class="language-plaintext highlighter-rouge">stamp</code> する</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">PostgreSQL 固有機能</td>
+      <td style="text-align: left">手書き revision と <code class="language-plaintext highlighter-rouge">op.execute()</code> で管理する</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">AI 開発での価値</td>
+      <td style="text-align: left">AI が生成した DB 変更をレビュー可能・再現可能にする</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>Alembic の価値は、単に <code class="language-plaintext highlighter-rouge">ALTER TABLE</code> を Python で書けることではない。</p>
+
+<p><strong>データベース変更を会話・手作業・管理画面から切り離し、アプリケーションコードと同じようにレビュー、テスト、バージョン管理できること</strong>にある。</p>
+
+<p>Phase 1 の個人開発では、直接 SQL を実行する方が速い場面もある。しかし、Phase 2 で環境・機能・開発主体が増えるなら、DB の変更履歴を正式な資産として管理する必要がある。</p>
+
+<p>Alembic を DDL の正本にするとは、ツールを一つ追加することではない。<strong>DB を変更する正式な経路を一つに決めること</strong>である。</p>
+
+<hr>
+
+<h2 id="参考">参考</h2>
+
+<ul>
+  <li><a href="https://alembic.sqlalchemy.org/en/latest/">Alembic 公式ドキュメント</a></li>
+  <li><a href="https://alembic.sqlalchemy.org/en/latest/tutorial.html">Alembic Tutorial</a></li>
+  <li><a href="https://alembic.sqlalchemy.org/en/latest/autogenerate.html">Auto Generating Migrations</a></li>
+  <li><a href="https://alembic.sqlalchemy.org/en/latest/api/commands.html">Alembic Command Reference</a></li>
+  <li><a href="https://alembic.sqlalchemy.org/en/latest/naming.html">The Importance of Naming Constraints</a></li>
+  <li><a href="https://alembic.sqlalchemy.org/en/latest/branches.html">Working with Branches</a></li>
+  <li><a href="https://alembic.sqlalchemy.org/en/latest/ops.html">Alembic Operation Reference</a></li>
+  <li><a href="https://docs.sqlalchemy.org/en/20/core/constraints.html">SQLAlchemy ── Defining Constraints and Indexes</a></li>
+</ul>
+
+
+    </div>
+
+</article>
+<div class="post-nav">
+<a class="previous" href="/jekyll-theme-yat/ai%E9%96%8B%E7%99%BA/2026/06/07/agent-context-management-2026.html" title="エージェントを長く自律動作させるためのコンテキスト設計">エージェントを長く自律動作させるためのコンテキスト設計</a><a class="next" href="/jekyll-theme-yat/ai%E9%96%8B%E7%99%BA/2026/06/07/multi-agent-asymmetric-handoff.html" title="Claude と Codex のマルチエージェント引き継ぎ問題と解消パターン">Claude と Codex のマルチエージェント引き継ぎ問題と解消パターン</a>
+</div>
+<div class="post-related">
+      <div>Related Articles</div>
+      <ul>
+        <li><a class="post-link" href="/jekyll-theme-yat/ai%E9%96%8B%E7%99%BA/2026/06/13/openclaw-personal-ai-agent.html" title="Claude と Codex のマルチエージェント引き継ぎ問題と解消パターン">OpenClawで自分専用のAIエージェントを動かす</a></li>
+<li><a class="post-link" href="/jekyll-theme-yat/ai%E9%96%8B%E7%99%BA/2026/06/07/agent-context-management-2026.html" title="Claude と Codex のマルチエージェント引き継ぎ問題と解消パターン">エージェントを長く自律動作させるためのコンテキスト設計</a></li>
+<li><a class="post-link" href="/jekyll-theme-yat/ai%E9%96%8B%E7%99%BA/2026/06/24/ai-subscription-telehodai.html" title="Claude と Codex のマルチエージェント引き継ぎ問題と解消パターン">AIサブスクのレートリミットは令和のテレホーダイか</a></li>
+<li><a class="post-link" href="/jekyll-theme-yat/ai%E9%96%8B%E7%99%BA/2026/06/18/mcp-host-client-server.html" title="Claude と Codex のマルチエージェント引き継ぎ問題と解消パターン">MCPのHost・Client・Serverを整理する</a></li>
+</ul>
+    </div>
+<div class="post-comments"></div></section>
+</div>
+
+
+  </section>
+  <section class="sidebar" style="margin-left: 15px;">
+    <!-- Get sidebar items --><style type="text/css" media="screen">
+.post-menu ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+</style>
+
+<div class="post-menu">
+  <div class="post-menu-title">TOC</div>
+  <div class="post-menu-content"></div>
+</div>
+
+<script>
+  function generateContent() {
+    var menu = document.querySelector(".post-menu");
+    var menuContent =  menu.querySelector(".post-menu-content");
+    var headings = document.querySelector(".post-content").querySelectorAll("h2, h3, h4, h5, h6");
+
+    // Hide menu when no headings
+    if (headings.length === 0) {
+      return menu.style.display = "none";
+    }
+
+    // Generate post menu
+    var menuHTML = '';
+    for (var i = 0; i < headings.length; i++) {
+      var h = headings[i];
+      menuHTML += (
+        '<li class="h-' + h.tagName.toLowerCase() + '">'
+        + '<a href="#h-' + h.getAttribute('id') + '">' + h.textContent + '</a></li>');
+    }
+
+    menuContent.innerHTML = '<ul>' + menuHTML + '</ul>';
+
+    // The header element
+    var header = document.querySelector('header.site-header');
+
+    function doMenuCollapse(index, over_items) {
+      var items = menuContent.firstChild.children;
+
+      if (over_items == undefined) {
+        over_items = 20;
+      }
+
+      if (items.length < over_items) {
+        return;
+      }
+
+      var activeItem = items[index];
+      var beginItem = activeItem
+      var endItem = activeItem
+      var beginIndex = index;
+      var endIndex = index + 1;
+      while (beginIndex >= 0
+        && !items[beginIndex].classList.contains('h-h2')) {
+        beginIndex -= 1;
+      }
+      while (endIndex < items.length
+        && !items[endIndex].classList.contains('h-h2')) {
+        endIndex += 1;
+      }
+      for (var i = 0; i < beginIndex; i++) {
+        item = items[i]
+        if (!item.classList.contains('h-h2')) {
+          item.style.display = 'none';
+        }
+      }
+      for (var i = beginIndex + 1; i < endIndex; i++) {
+        item = items[i]
+        // if (!item.classList.contains('h-h2')) {
+          item.style.display = '';
+        // }
+      }
+      for (var i = endIndex; i < items.length; i++) {
+        item = items[i]
+        if (!item.classList.contains('h-h2')) {
+          item.style.display = 'none';
+        }
+      }
+    }
+
+    // Init menu collapsed
+    doMenuCollapse(-1);
+
+    // Active the menu item
+    window.addEventListener('scroll', function (event) {
+      var lastActive = menuContent.querySelector('.active');
+      var changed = true;
+      var activeIndex = -1;
+      for (var i = headings.length - 1; i >= 0; i--) {
+        var h = headings[i];
+        var headingRect = h.getBoundingClientRect();
+        var headerRect = header.getBoundingClientRect();
+        var headerTop = Math.floor(headerRect.top);
+        var headerHeight = Math.floor(headerRect.height);
+        var headerHeight = headerTop + headerHeight + 20;
+        if (headingRect.top <= headerHeight) {
+          var id = 'h-' + h.getAttribute('id');
+          var a = menuContent.querySelector('a[href="#' + id  + '"]');
+          var curActive = a.parentNode;
+          if (curActive) {
+            curActive.classList.add('active');
+            activeIndex = i;
+          }
+          if (lastActive == curActive) {
+            changed = false;
+          }
+          break;
+        }
+      }
+      if (changed) {
+        if (lastActive) {
+          lastActive.classList.remove('active');
+        }
+        doMenuCollapse(activeIndex);
+      }
+      event.preventDefault();
+    });
+  }
+  generateContent();
+</script>
+</section>
+</div>
+
+      </div>
+    </main><footer class="site-footer h-card">
+  <data class="u-url" href="/jekyll-theme-yat/"></data>
+
+  <div class="wrapper">
+    <div class="site-footer-inner">
+<div>Waka-DS © 2021-2026</div>
+      <div>Powered by <a title="Jekyll is a simple, blog-aware, static site
+      generator." href="http://jekyllrb.com/">Jekyll</a> &amp; <a title="Yat, yet
+      another theme." href="https://github.com/jeffreytse/jekyll-theme-yat">Yat Theme</a>.</div>
+      <div class="footer-col rss-subscribe">Subscribe <a href="/jekyll-theme-yat/feed.xml">via RSS</a>
+</div>
+    </div>
+  </div>
+</footer>
+</body>
+</html>

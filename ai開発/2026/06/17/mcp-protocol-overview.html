@@ -1,0 +1,1154 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <script>
+  (function() {
+    try {
+      var p = localStorage.getItem('preferred_lang');
+      if (!p) return;
+      var path = window.location.pathname;
+      var ja = ['/', '/archives.html', '/categories.html', '/tags.html', '/about.html'];
+      var en = ['/en/', '/en/archives.html', '/en/categories.html', '/en/tags.html', '/en/about.html'];
+      if (p === 'en' && ja.indexOf(path) !== -1) {
+        window.location.replace('/en' + (path === '/' ? '/' : path));
+      } else if (p === 'ja' && en.indexOf(path) !== -1) {
+        window.location.replace(path.slice(3) || '/');
+      }
+    } catch(e) {}
+  })();
+  </script>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="google-translate-customization" content="108d9124921d80c3-80e20d618ff053c8-g4f02ec6f3dba68b7-c">
+<!-- Begin Jekyll SEO tag v2.9.0 -->
+<title>MCPは何を標準化するプロトコルなのか | Waka-DS.com</title>
+<meta name="generator" content="Jekyll v4.4.1">
+<meta property="og:title" content="MCPは何を標準化するプロトコルなのか">
+<meta name="author" content="Waka-DS">
+<meta property="og:locale" content="ja">
+<meta name="description" content="MCP（Model Context Protocol）について調べると、「AI向けのUSB」「LLMとツールをつなぐ共通規格」といった説明をよく見かける。入口としては分かりやすいが、その比喩だけでは、APIやFunction Callingと何が違うのか、MCPサーバーを入れると誰が何を実行するのかが曖昧なまま残る。">
+<meta name="twitter:description" property="og:description" content="MCP（Model Context Protocol）について調べると、「AI向けのUSB」「LLMとツールをつなぐ共通規格」といった説明をよく見かける。入口としては分かりやすいが、その比喩だけでは、APIやFunction Callingと何が違うのか、MCPサーバーを入れると誰が何を実行するのかが曖昧なまま残る。">
+<link rel="canonical" href="/jekyll-theme-yat/ai%E9%96%8B%E7%99%BA/2026/06/17/mcp-protocol-overview.html">
+<meta property="og:url" content="/jekyll-theme-yat/ai%E9%96%8B%E7%99%BA/2026/06/17/mcp-protocol-overview.html">
+<meta property="og:site_name" content="Waka-DS.com">
+<meta property="og:image" content="/jekyll-theme-yat/assets/images/posts/2026-06-17-mcp-protocol-overview/eyecatch.png">
+<meta property="og:image:alt" content="形の異なる外部装置が共通の接続窓口を通じてAI作業台へつながる紙コラージュ風イラスト">
+<meta property="og:type" content="article">
+<meta property="article:published_time" content="2026-06-17T00:00:00+00:00">
+<meta property="article:modified_time" content="2026-06-17T00:00:00+00:00">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="/jekyll-theme-yat/assets/images/posts/2026-06-17-mcp-protocol-overview/eyecatch.png">
+<meta name="twitter:image:alt" content="形の異なる外部装置が共通の接続窓口を通じてAI作業台へつながる紙コラージュ風イラスト">
+<meta name="twitter:title" content="MCPは何を標準化するプロトコルなのか">
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":"Waka-DS"},"dateModified":"2026-06-17T00:00:00+00:00","datePublished":"2026-06-17T00:00:00+00:00","description":"MCP（Model Context Protocol）について調べると、「AI向けのUSB」「LLMとツールをつなぐ共通規格」といった説明をよく見かける。入口としては分かりやすいが、その比喩だけでは、APIやFunction Callingと何が違うのか、MCPサーバーを入れると誰が何を実行するのかが曖昧なまま残る。","headline":"MCPは何を標準化するプロトコルなのか","image":{"alt":"形の異なる外部装置が共通の接続窓口を通じてAI作業台へつながる紙コラージュ風イラスト","url":"/jekyll-theme-yat/assets/images/posts/2026-06-17-mcp-protocol-overview/eyecatch.png","@type":"imageObject"},"mainEntityOfPage":{"@type":"WebPage","@id":"/jekyll-theme-yat/ai%E9%96%8B%E7%99%BA/2026/06/17/mcp-protocol-overview.html"},"url":"/jekyll-theme-yat/ai%E9%96%8B%E7%99%BA/2026/06/17/mcp-protocol-overview.html"}</script>
+<!-- End Jekyll SEO tag -->
+<link rel="shortcut icon" href="">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=Noto+Sans+JP:wght@400;500;700&amp;display=swap">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+  <link rel="stylesheet" href="/jekyll-theme-yat/assets/css/main.css">
+  <script src="/jekyll-theme-yat/assets/js/main.js"></script><link type="application/atom+xml" rel="alternate" href="/jekyll-theme-yat/feed.xml" title="Waka-DS.com">
+<script>
+  function initGoogleAnalytics() {
+    var doNotTrack = (window.doNotTrack === "1" || navigator.doNotTrack === "1" ||
+      navigator.doNotTrack === "yes" || navigator.msDoNotTrack === "1");
+    var enableDNT = "true" == "true";
+
+    if (!enableDNT || !doNotTrack) {
+      var ga_id = 'G-XNP1RBTG9C';
+
+      var script = document.createElement('script');
+      script.async = true;
+      script.src = 'https://www.googletagmanager.com/gtag/js?id=' + ga_id;
+      document.head.appendChild(script);
+
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', ga_id);
+    }
+  }
+  window.addEventListener("load", initGoogleAnalytics);
+</script>
+<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/styles/default.min.css">
+<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/highlight.min.js"></script>
+<!-- and it's easy to individually load additional languages -->
+<script charset="UTF-8" src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/languages/go.min.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<script>
+// Init highlight js
+document.addEventListener('DOMContentLoaded', function(event) {
+  var els = document.querySelectorAll('pre code')
+
+  function addLangData(block) {
+    var outer = block.parentElement.parentElement.parentElement;
+    var lang = block.getAttribute('data-lang');
+    for (var i = 0; i < outer.classList.length; i++) {
+      var cls = outer.classList[i];
+      if (cls.startsWith('language-')) {
+        lang = cls;
+        break;
+      }
+    }
+    if (!lang) {
+      cls = block.getAttribute('class');
+      lang = cls ? cls.replace('hljs ', '') : '';
+    }
+    if (lang.startsWith('language-')) {
+      lang = lang.substr(9);
+    }
+    block.setAttribute('class', 'hljs ' + lang);
+    block.parentNode.setAttribute('data-lang', lang);
+  }
+
+  function addBadge(block) {
+    var enabled = ('true' || 'true').toLowerCase();
+    if (enabled == 'true') {
+      var pre = block.parentElement;
+      pre.classList.add('badge');
+    }
+  }
+
+  function handle(block) {
+    addLangData(block);
+    addBadge(block)
+    hljs.highlightBlock(block);
+  }
+
+  for (var i = 0; i < els.length; i++) {
+    var el = els[i];
+    handle(el);
+  }
+});
+</script>
+
+<style>
+  /* code language badge */
+  pre.badge::before {
+    content: attr(data-lang);
+    color: #fff;
+    background-color: #0d9488;
+    padding: 0 .5em;
+    border-radius: 0 2px;
+    text-transform: uppercase;
+    text-align: center;
+    min-width: 32px;
+    display: inline-block;
+    position: absolute;
+    right: 0;
+  }
+
+  /* fix wrong badge display for firefox browser */
+  code > table pre::before {
+    display: none;
+  }
+</style>
+</head>
+<body>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<header class="site-header " role="banner">
+
+  <div class="wrapper">
+    <div class="site-header-inner">
+<span class="site-brand"><a class="site-brand-inner" rel="author" href="/jekyll-theme-yat/">
+  <img class="site-favicon" title="Waka-DS.com" src="" onerror="this.style.display='none'">
+  Waka-DS.com
+</a>
+</span><nav class="site-nav">
+          <input type="checkbox" id="nav-trigger" class="nav-trigger">
+          <label for="nav-trigger">
+            <span class="menu-icon">
+              <svg viewbox="0 0 18 15" width="18px" height="15px">
+                <path d="M18,1.484c0,0.82-0.665,1.484-1.484,1.484H1.484C0.665,2.969,0,2.304,0,1.484l0,0C0,0.665,0.665,0,1.484,0 h15.032C17.335,0,18,0.665,18,1.484L18,1.484z M18,7.516C18,8.335,17.335,9,16.516,9H1.484C0.665,9,0,8.335,0,7.516l0,0 c0-0.82,0.665-1.484,1.484-1.484h15.032C17.335,6.031,18,6.696,18,7.516L18,7.516z M18,13.516C18,14.335,17.335,15,16.516,15H1.484 C0.665,15,0,14.335,0,13.516l0,0c0-0.82,0.665-1.483,1.484-1.483h15.032C17.335,12.031,18,12.695,18,13.516L18,13.516z"></path>
+              </svg>
+            </span>
+          </label>
+
+          <div class="trigger">
+<a class="page-link" href="/jekyll-theme-yat/about.html">ABOUT</a><a class="page-link" href="/jekyll-theme-yat/archives.html">ARCHIVES</a><a class="page-link" href="/jekyll-theme-yat/categories.html">CATEGORIES</a><a class="page-link" href="/jekyll-theme-yat/">HOME</a><a class="page-link" href="/jekyll-theme-yat/tags.html">TAGS</a>
+</div>
+        </nav>
+</div>
+  </div>
+</header>
+
+<script>
+  function initHeader() {
+    var lastScrollY = getScrollPos().y;
+    var documentElement = document.documentElement;
+
+    function storeScrollData() {
+      var y = getScrollPos().y;var scrollStatus = "";
+
+      if (y <= 0) {
+        scrollStatus = "top";
+      } else if ((window.innerHeight + y) >= document.body.offsetHeight) {
+        scrollStatus = "bottom";
+      } else {
+        var isScrollDown = (y - lastScrollY > 0) ? true : false;
+        scrollStatus = isScrollDown ? "down" : "up";
+      }
+
+      lastScrollY = y;
+      documentElement.setAttribute("data-scroll-status", scrollStatus);
+    }
+
+    window.addEventListener('scroll', function(e) {
+      storeScrollData();
+    });
+
+    storeScrollData();
+  }
+  document.addEventListener('DOMContentLoaded', initHeader);
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<script>
+  function hashLocate(hashValue) {
+    hashValue = hashValue.replace(/^.*#h-/, '');
+    hashValue = decodeURIComponent(hashValue);
+    var element = document.getElementById(hashValue);
+
+    if (!element) {
+      return;
+    }
+
+    var header = document.querySelector('header.site-header');
+    var headerRect = header.getBoundingClientRect();
+    var headerTop = Math.floor(headerRect.top);
+    var headerHeight = Math.floor(headerRect.height);
+    var scrollPos = getScrollPos();
+    var offsetY = element.offsetTop - (headerTop + headerHeight + 20);
+
+    if (offsetY == scrollPos.y) {
+      return;
+    }
+
+    if (headerTop == 0  && offsetY > scrollPos.y) {
+      offsetY += headerHeight + 2;
+    } else if (headerTop < 0  && offsetY < scrollPos.y) {
+      offsetY -= headerHeight - 2;
+    }
+
+    smoothScrollTo(offsetY);
+  }
+
+  // The first event occurred
+  window.addEventListener('load', function(event) {
+    if (window.location.hash) {
+      hashLocate(window.location.hash);
+    }
+  });
+
+  // The first event occurred
+  window.addEventListener('click', function(event) {
+    if (event.target.tagName.toLowerCase() == 'a') {
+      hashLocate(event.target.getAttribute('href'));
+    }
+  });
+</script>
+<div class="theme-toggle">
+  <input type="checkbox" id="theme-switch">
+  <label for="theme-switch">
+    <div class="toggle"></div>
+    <div class="names">
+      <p class="light">Light</p>
+      <p class="dark">Dark</p>
+    </div>
+  </label>
+</div>
+
+
+
+
+<script>
+  (function() {
+    var sw = document.getElementById('theme-switch');
+    var html = document.getElementsByTagName('html')[0];
+    var nightModeOption = ('auto' || 'auto').toLowerCase();
+    var storage = nightModeOption === 'manual'
+        ? localStorage
+        : sessionStorage;
+    var themeData = loadThemeData();
+
+    function saveThemeData(data) {
+      storage.setItem('theme', JSON.stringify(data));
+    }
+
+    function loadThemeData() {
+      var data = storage.getItem('theme');
+      try {
+        data = JSON.parse(data ? data : '');
+      } catch(e) {
+        data = { nightShift: undefined, autoToggleAt: 0 };
+        saveThemeData(data);
+      }
+      return data;
+    }
+
+    function handleThemeToggle(nightShift) {
+      themeData.nightShift = nightShift;
+      saveThemeData(themeData);
+      html.dataset.theme = nightShift ? 'dark' : 'light';
+      setTimeout(function() {
+        sw.checked = nightShift ? true : false;
+      }, 50);
+    }
+
+    function autoThemeToggle() {
+      // Next time point of theme toggle
+      var now = new Date();
+      var toggleAt = new Date();
+      var hours = now.getHours();
+      var nightShift = hours >= 19 || hours <=7;
+
+      if (nightShift) {
+        if (hours > 7) {
+          toggleAt.setDate(toggleAt.getDate() + 1);
+        }
+        toggleAt.setHours(7);
+      } else {
+        toggleAt.setHours(19);
+      }
+
+      toggleAt.setMinutes(0);
+      toggleAt.setSeconds(0);
+      toggleAt.setMilliseconds(0)
+
+      var delay = toggleAt.getTime() - now.getTime();
+
+      // auto toggle theme mode
+      setTimeout(function() {
+        handleThemeToggle(!nightShift);
+      }, delay);
+
+      return {
+        nightShift: nightShift,
+        toggleAt: toggleAt.getTime()
+      };
+    }
+
+    // Listen the theme toggle event
+    sw.addEventListener('change', function(event) {
+      handleThemeToggle(event.target.checked);
+    });
+
+    if (nightModeOption == 'auto') {
+      var data = autoThemeToggle();
+
+      // Toggle theme by local setting
+      if (data.toggleAt > themeData.autoToggleAt) {
+        themeData.autoToggleAt = data.toggleAt;
+        handleThemeToggle(data.nightShift);
+      } else {
+        handleThemeToggle(themeData.nightShift);
+      }
+    } else if (nightModeOption == 'manual') {
+      handleThemeToggle(themeData.nightShift);
+    } else {
+      var nightShift = themeData.nightShift;
+      if (nightShift === undefined) {
+        nightShift = nightModeOption === 'on';
+      }
+      handleThemeToggle(nightShift);
+    }
+  })();
+</script>
+<main class="page-content" aria-label="Content">
+      <div class="wrapper">
+        <div class="framework">
+  <section class="main">
+
+     <div class="post post--with-image">
+  <section>
+
+
+
+
+
+
+
+
+
+<header class="post-header">
+  <h1 class="post-title p-name" itemprop="name headline">MCPは何を標準化するプロトコルなのか</h1>
+  <h2 class="post-subtitle">AIアプリケーションと外部機能の接続境界を整理する</h2>
+
+  <p class="post-meta">
+    <time class="dt-published" datetime="2026-06-17T00:00:00+00:00" itemprop="datePublished"><i class="fa fa-calendar"></i> Jun 17, 2026
+    </time>
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <span class="post-reading-time left-vsplit"><i class="fa fa-clock-o"></i> About 17 mins</span>
+  </p>
+<div class="post-tags">
+<a class="post-tag" href="/jekyll-theme-yat/tags.html#MCP">#MCP</a><a class="post-tag" href="/jekyll-theme-yat/tags.html#AI%E3%82%A8%E3%83%BC%E3%82%B8%E3%82%A7%E3%83%B3%E3%83%88">#AIエージェント</a><a class="post-tag" href="/jekyll-theme-yat/tags.html#LLM">#LLM</a><a class="post-tag" href="/jekyll-theme-yat/tags.html#API">#API</a><a class="post-tag" href="/jekyll-theme-yat/tags.html#%E8%A8%AD%E8%A8%88">#設計</a>
+</div></header>
+<figure class="post-eyecatch">
+  <img src="/jekyll-theme-yat/assets/images/posts/2026-06-17-mcp-protocol-overview/eyecatch.png" alt="形の異なる外部装置が共通の接続窓口を通じてAI作業台へつながる紙コラージュ風イラスト" decoding="async" fetchpriority="high">
+</figure><article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
+
+    <div class="post-content e-content" itemprop="articleBody">
+
+      <p>MCP（Model Context Protocol）について調べると、「AI向けのUSB」「LLMとツールをつなぐ共通規格」といった説明をよく見かける。入口としては分かりやすいが、その比喩だけでは、APIやFunction Callingと何が違うのか、MCPサーバーを入れると誰が何を実行するのかが曖昧なまま残る。</p>
+
+<p>MCPを理解するには、機能の一覧より先に「どの境界を標準化しているか」を押さえる必要がある。MCPが扱うのは、AIアプリケーションと外部のデータ・機能を提供するプログラムとの通信だ。LLMそのものの仕様でも、外部サービスのAPIを置き換える仕組みでもない。</p>
+
+<p>全7回の連載では、概念、通信、実装、リモート運用、セキュリティの順にMCPを分解する。第1回では、MCPの責任範囲をAPI、Function Calling、プラグインと比較しながら整理する。</p>
+
+<nav class="mcp-series-index" aria-label="MCPサーバー連載">
+  <p><strong>MCPサーバー連載（全7回）</strong></p>
+  <ol>
+    <li>
+      
+        <strong aria-current="page">MCPは何を標準化するプロトコルなのか（この記事）</strong>
+      
+    </li>
+    <li>
+      
+        <a href="/jekyll-theme-yat/ai%E9%96%8B%E7%99%BA/2026/06/18/mcp-host-client-server.html">MCPのHost・Client・Serverを整理する</a>
+      
+    </li>
+    <li>
+      
+        <a href="/jekyll-theme-yat/ai%E9%96%8B%E7%99%BA/2026/06/19/mcp-tools-resources-prompts.html">MCPのTools・Resources・Promptsを使い分ける</a>
+      
+    </li>
+    <li>
+      
+        <a href="/jekyll-theme-yat/ai%E9%96%8B%E7%99%BA/2026/06/20/mcp-json-rpc-lifecycle.html">MCPの接続と通信をJSON-RPCから理解する</a>
+      
+    </li>
+    <li>
+      
+        <a href="/jekyll-theme-yat/ai%E9%96%8B%E7%99%BA/2026/06/21/build-mcp-server-python.html">Pythonで小さなMCPサーバーを作る</a>
+      
+    </li>
+    <li>
+      
+        <a href="/jekyll-theme-yat/ai%E9%96%8B%E7%99%BA/2026/06/22/mcp-local-remote-transports.html">ローカルMCPとリモートMCPの違い</a>
+      
+    </li>
+    <li>
+      
+        <a href="/jekyll-theme-yat/ai%E9%96%8B%E7%99%BA/2026/06/23/mcp-security-operations.html">MCPサーバーを安全に運用する</a>
+      
+    </li>
+  </ol>
+</nav>
+
+<hr>
+
+<h2 id="結論を先に">結論を先に</h2>
+
+<p>MCPは、AIアプリケーションと外部機能の間で、次のようなやり取りを共通化するプロトコルである。</p>
+
+<ul>
+  <li>接続時に、互いのプロトコルバージョンと対応機能を確認する</li>
+  <li>サーバーが提供するTool、Resource、Promptを発見する</li>
+  <li>Toolを名前と構造化された引数で呼び出し、結果を受け取る</li>
+  <li>ResourceをURIで参照し、Promptのテンプレートを取得する</li>
+  <li>必要に応じて、サーバーからAIアプリケーション側の機能を利用する</li>
+</ul>
+
+<p>これらは、JSON-RPC 2.0のメッセージとしてやり取りされる。ローカルプロセスとの接続にはstdio、リモートサービスとの接続にはStreamable HTTPという標準トランスポートが用意されている。</p>
+
+<p>一方で、どのLLMを使うか、LLMに何を渡すか、どのToolを選ばせるか、実行前にどのような承認画面を出すかまではMCPが一律に決めない。そこはMCP Host、つまりAIアプリケーションの設計範囲である。</p>
+
+<p><img class="mermaid" src="https://mermaid.ink/svg/eyJjb2RlIjoiZmxvd2NoYXJ0IFRCXG5Vc2VyW1wi44Om44O844K244O8XCJdIC0tPiBIb3N0W1wiQUnjgqLjg5fjg6rjgrHjg7zjgrfjg6fjg7M8YnI-TUNQIEhvc3RcIl1cbkhvc3QgLS0-IENsaWVudFtcIk1DUCBDbGllbnRcIl1cbkNsaWVudCA8LS0-fFwiTUNQ44Gn5qiZ5rqW5YyW44GV44KM44Gf6YCa5L-hXCJ8IFNlcnZlcltcIk1DUCBTZXJ2ZXJcIl1cblNlcnZlciAtLT4gQVBJW1wi5pei5a2YQVBJXCJdXG5TZXJ2ZXIgLS0-IERCW1wi44OH44O844K_44OZ44O844K5XCJdXG5TZXJ2ZXIgLS0-IEZpbGVzW1wi44Ot44O844Kr44Or44OV44Kh44Kk44OrXCJdXG5Ib3N0IC0uLT4gTExNW1wiTExNXCJdIiwibWVybWFpZCI6bnVsbH0"></p>
+
+<p>図の中央にあるClientとServerの境界がMCPの主な対象だ。ClientはHost内部にあり、接続先Serverとの通信を担当する。LLMとの接続や、Serverから先にあるAPI・DB・ファイル操作は、別の契約と実装で動いている。</p>
+
+<hr>
+
+<h2 id="なぜ共通プロトコルが必要なのか">なぜ共通プロトコルが必要なのか</h2>
+
+<p>MCPがない場合でも、AIアプリケーションから外部サービスを使うことはできる。GitHub APIを呼ぶコードを書き、データベース用のドライバーを入れ、ファイル操作用の関数を用意すればよい。</p>
+
+<p>問題は、AIアプリケーションと外部サービスの組み合わせごとに接続部分を作る必要があることだ。AIアプリケーションが3種類、接続先が5種類あれば、単純には最大15通りの統合を保守することになる。それぞれが独自のTool定義、設定方法、エラー表現を持つと、接続先を追加するたびにHost側の実装も増えていく。</p>
+
+<p>共通プロトコルがあれば、Hostは「MCP Serverと通信する方法」を実装し、Serverは「MCP Clientへ機能を公開する方法」を実装すればよい。実際の互換性は、対応するプロトコル版、任意機能、認証、Toolの品質などにも左右されるため、MCP対応だけで無条件に接続できるわけではない。それでも、接続ごとに独自仕様を作る状態から、共通の発見・呼び出し手順を使う状態へ移せる。</p>
+
+<p>この構造は、接続先をAI専用に作り直すことも要求しない。たとえば既存のGitHub APIを利用するMCP Serverは、APIを廃止するのではなく、その手前でMCPのToolとして操作を公開するアダプターになる。</p>
+
+<hr>
+
+<h2 id="mcpが標準化するもの">MCPが標準化するもの</h2>
+
+<p>MCPの仕様は、一枚のTool呼び出し形式だけではない。大きく分けると、次の層を扱っている。</p>
+
+<table>
+  <thead>
+    <tr>
+      <th style="text-align: left">層</th>
+      <th style="text-align: left">標準化される内容</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td style="text-align: left">Base Protocol</td>
+      <td style="text-align: left">JSON-RPC 2.0を使ったRequest、Response、Notification</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">Lifecycle</td>
+      <td style="text-align: left">初期化、プロトコルバージョンの合意、Capability Negotiation、終了</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">Transport</td>
+      <td style="text-align: left">stdio、Streamable HTTPでメッセージを運ぶ方法</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">Server Features</td>
+      <td style="text-align: left">Tools、Resources、Promptsなど、Serverが提供する機能</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">Client Features</td>
+      <td style="text-align: left">Sampling、Roots、Elicitationなど、Client側が提供できる機能</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">Utilities</td>
+      <td style="text-align: left">Logging、Completion、進捗通知、キャンセルなどの横断的な機能</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">Authorization</td>
+      <td style="text-align: left">HTTPベースの接続で使う認可の枠組み</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>すべての実装が全機能を持つわけではない。Base ProtocolとLifecycleは土台になるが、ToolsやResourcesなどは必要に応じて実装される。接続時にはClientとServerがCapabilityを交換し、そのセッションで利用できる機能を確認する。</p>
+
+<p>2026年6月に公式サイトでCurrentとされているプロトコル版は<code class="language-plaintext highlighter-rouge">2025-11-25</code>である。MCPの版は、後方互換性のない変更が入った日を<code class="language-plaintext highlighter-rouge">YYYY-MM-DD</code>形式で表す。ClientとServerが同じ最新版を実装している前提ではなく、初期化時に1つの版へ合意する設計になっている。</p>
+
+<h3 id="contextは文章だけではない">「Context」は文章だけではない</h3>
+
+<p>名前にContextとあるため、MCPを「LLMへ文書を渡す規格」と考えると範囲を狭く捉えすぎる。</p>
+
+<p>Serverが公開する基本要素には、データを読むResourcesだけでなく、処理を実行するTools、再利用可能な指示を提供するPromptsがある。反対方向には、ServerがClientへLLM生成を依頼するSamplingや、ユーザーへの追加情報入力を求めるElicitationなどもある。</p>
+
+<p>MCPのメッセージはClientからServerへの一方通行ではない。Requestは両方向に送ることができ、Notificationも使える。この点は、単純な「関数の一覧を取得して呼ぶだけの規格」という理解では抜けやすい。</p>
+
+<p>Tools、Resources、Promptsの違いは<a href="/jekyll-theme-yat/ai%E9%96%8B%E7%99%BA/2026/06/19/mcp-tools-resources-prompts.html">第3回「MCPのTools・Resources・Promptsを使い分ける」</a>で詳しく扱う。</p>
+
+<hr>
+
+<h2 id="apiとの違い">APIとの違い</h2>
+
+<p>APIは、あるソフトウェアの機能を別のソフトウェアから利用するための接点を指す広い言葉だ。REST API、GraphQL API、ライブラリのAPIなど、形も用途もさまざまである。</p>
+
+<p>MCPも広い意味ではAPIの一種といえるが、目的と利用者が絞られている。AIアプリケーションが外部の機能やコンテキストを発見し、共通の手順で利用するためのプロトコルである。</p>
+
+<table>
+  <thead>
+    <tr>
+      <th style="text-align: left">観点</th>
+      <th style="text-align: left">一般的なWeb API</th>
+      <th style="text-align: left">MCP</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td style="text-align: left">主な目的</td>
+      <td style="text-align: left">サービス固有のデータ・操作を公開する</td>
+      <td style="text-align: left">AIアプリケーション向けに機能・コンテキストを公開する</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">操作の発見</td>
+      <td style="text-align: left">OpenAPIなど別仕様を使う場合がある</td>
+      <td style="text-align: left">Tools、Resources、Promptsの一覧取得をプロトコルに含む</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">接続開始</td>
+      <td style="text-align: left">APIごとの方式に従う</td>
+      <td style="text-align: left">初期化とCapability Negotiationを行う</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">通信</td>
+      <td style="text-align: left">HTTPに限らず多様</td>
+      <td style="text-align: left">JSON-RPCメッセージをstdioまたはStreamable HTTPなどで運ぶ</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">関係</td>
+      <td style="text-align: left">接続先の本来のAPIになり得る</td>
+      <td style="text-align: left">既存APIを内側で呼ぶアダプターになり得る</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>たとえば天気サービスのREST APIは、地域コードを受け取って予報JSONを返すかもしれない。そのAPIを利用するMCP Serverは、<code class="language-plaintext highlighter-rouge">get_forecast</code>というToolの名前、説明、入力スキーマをClientへ公開し、呼び出されたら内部でREST APIへ変換して結果を返す。</p>
+
+<p>MCPを導入しても、APIキー、レート制限、外部API固有のエラー処理は消えない。Server側でそれらを扱い、MCPの結果としてClientへ返す必要がある。</p>
+
+<hr>
+
+<h2 id="function-callingとの違い">Function Callingとの違い</h2>
+
+<p>Function CallingやTool Callingは一般に、LLMへ利用可能な関数の名前・説明・引数スキーマを渡し、モデルに「この関数をこの引数で呼びたい」という構造化出力を生成させる仕組みを指す。</p>
+
+<p>MCPのToolにも名前、説明、入力スキーマがあるため、見た目はよく似ている。しかし、両者が受け持つ境界は異なる。</p>
+
+<p><img class="mermaid" src="https://mermaid.ink/svg/eyJjb2RlIjoiZmxvd2NoYXJ0IFRCXG5TZXJ2ZXJbXCJNQ1AgU2VydmVyXCJdIC0tPnxcInRvb2xzL2xpc3RcInwgSG9zdFtcIk1DUCBIb3N0XCJdXG5Ib3N0IC0tPnxcIlRvb2zlrprnvqnjgpLliKnnlKjlj6_og73jgavjgZnjgotcInwgTW9kZWxbXCJMTE1cIl1cbk1vZGVsIC0tPnxcIlRvb2zkvb_nlKjjgpLmj5DmoYhcInwgSG9zdFxuSG9zdCAtLT58XCJ0b29scy9jYWxsXCJ8IFNlcnZlclxuU2VydmVyIC0tPnxcIlRvb2zntZDmnpxcInwgSG9zdFxuSG9zdCAtLT58XCLntZDmnpzjgpLmuKHjgZlcInwgTW9kZWwiLCJtZXJtYWlkIjpudWxsfQ"></p>
+
+<p>Function Callingは、主にアプリケーションとモデル推論の間で、モデルが構造化されたTool呼び出しを出力する部分に関係する。MCPは、Host内のClientとMCP Serverの間で、Toolを発見して実行結果を交換する部分に関係する。</p>
+
+<p>実際のHostは、MCP Serverから取得したTool定義を、利用中のLLMが理解できるTool形式へ変換することがある。ただし、その変換方法、モデルへ見せるToolの絞り込み、Tool選択の制御はHostの実装であり、MCP仕様そのものではない。MCP ServerがLLMベンダーごとのFunction Calling形式を直接扱う必要はない、という分離が利点になる。</p>
+
+<p>もう一つ注意したいのは、「モデルがToolを呼び出す」という表現だ。モデルが生成するのは通常、Toolを使う意図と引数である。実際に<code class="language-plaintext highlighter-rouge">tools/call</code>を送り、外部処理を動かすのはHostとServerを含むソフトウェア側だ。承認画面を挟むHostであれば、モデルが提案してもユーザーが拒否できる。</p>
+
+<hr>
+
+<h2 id="プラグインとの違い">プラグインとの違い</h2>
+
+<p>プラグインは、既存アプリケーションへ機能を追加する配布・拡張の仕組みを指すことが多い。どのファイルを配置するか、どのAPIを実装するか、どの権限を宣言するかは、プラグインを受け入れる製品ごとに決まる。</p>
+
+<p>MCPは特定製品向けのプラグイン形式ではない。同じMCP Serverを複数のHostから利用できる可能性を作る通信プロトコルである。Serverをどのようにインストールし、設定画面へ登録し、更新するかはHostや配布手段に依存する。</p>
+
+<p>そのため、「MCP Serverを追加する操作」が見た目上プラグインのインストールに似ていても、概念は分けた方がよい。プラグインはアプリケーションへの組み込み方、MCPは実行時のClientとServerの会話を主に扱う。MCP Serverを内包したプラグインや、MCP Serverの設定を配布するパッケージも作れるため、両者は排他的ではない。</p>
+
+<hr>
+
+<h2 id="mcpが決めないもの">MCPが決めないもの</h2>
+
+<p>MCP対応という表示から、賢さや安全性まで共通化されていると考えるのは危険である。公式のアーキテクチャ解説も、MCPはコンテキスト交換のプロトコルに焦点を当て、AIアプリケーションがLLMや提供されたコンテキストをどう使うかは規定しないとしている。</p>
+
+<p>具体的には、次のような判断はMCPの外側に残る。</p>
+
+<h3 id="llmと推論方法">LLMと推論方法</h3>
+
+<p>どのモデルを利用するか、Tool定義をどのプロンプトへ含めるか、Tool結果を何件・何文字まで会話へ戻すかはHostが決める。同じServerへ接続しても、Hostやモデルが違えばToolの選択結果や回答は変わり得る。</p>
+
+<h3 id="ユーザー体験と承認方針">ユーザー体験と承認方針</h3>
+
+<p>Toolを自動実行するか、読み取りだけ自動許可するか、毎回確認するかといった方針もHost側の責任である。MCPのTools仕様は、人間がTool呼び出しを拒否でき、実行前に確認できる設計を推奨しているが、具体的なUIを一つに固定してはいない。</p>
+
+<h3 id="外部サービスの権限設計">外部サービスの権限設計</h3>
+
+<p>ServerがGitHubやデータベースへ接続するなら、その認証情報が何を許可するかは外部サービス側の設定に依存する。MCPの認可仕様があっても、Serverから先の権限が自動的に最小化されるわけではない。</p>
+
+<h3 id="toolの品質と安全性">Toolの品質と安全性</h3>
+
+<p>Tool名や入力スキーマが共通形式でも、その説明が正確か、入力検証が十分か、処理が冪等か、機密情報を結果へ含めないかはServer実装次第だ。MCP対応は品質保証の印ではない。</p>
+
+<h3 id="業務上の意味">業務上の意味</h3>
+
+<p><code class="language-plaintext highlighter-rouge">delete_issue</code>というToolの呼び出し方は標準化できても、どのIssueを削除してよいかという業務ルールまではプロトコルから決められない。実運用では、Hostの承認、Server側の認可、外部APIの権限を重ねて考える必要がある。</p>
+
+<hr>
+
+<h2 id="mcpを理解するときの確認軸">MCPを理解するときの確認軸</h2>
+
+<p>新しいMCP ServerやHostを見るときは、単に「何ができるか」だけでなく、次の順番で見ると構造を把握しやすい。</p>
+
+<ol>
+  <li>どのアプリケーションがHostなのか</li>
+  <li>どのServerへ、ローカルとリモートのどちらで接続するのか</li>
+  <li>ServerはTools、Resources、Promptsの何を公開するのか</li>
+  <li>Serverの内側で、どのファイル、API、データベースへアクセスするのか</li>
+  <li>Toolの提案、承認、実行を誰が制御するのか</li>
+  <li>認証情報と実行権限をどこが持つのか</li>
+  <li>Tool結果がどの範囲でLLMのコンテキストへ入るのか</li>
+</ol>
+
+<p>この軸を持つと、「MCPだからLLMがデータベースへ直接つながる」「MCP Serverが会話全体を読んで自律的に動く」といった誤解を避けられる。</p>
+
+<p>次の<a href="/jekyll-theme-yat/ai%E9%96%8B%E7%99%BA/2026/06/18/mcp-host-client-server.html">第2回「MCPのHost・Client・Serverを整理する」</a>では、Host内部にあるClientを含め、1回のTool実行がどの参加者を通るのかを追う。</p>
+
+<hr>
+
+<h2 id="参考">参考</h2>
+
+<ul>
+  <li>
+<a href="https://modelcontextprotocol.io/docs/learn/architecture">Architecture overview - Model Context Protocol</a> ── MCPの対象範囲、Host・Client・Server、基本的なデータ層</li>
+  <li>
+<a href="https://modelcontextprotocol.io/specification/2025-11-25/basic">Overview - Model Context Protocol Specification</a> ── Base Protocol、JSON-RPCメッセージ、主要コンポーネント</li>
+  <li>
+<a href="https://modelcontextprotocol.io/specification/2025-11-25/basic/lifecycle">Lifecycle - Model Context Protocol Specification</a> ── 初期化、バージョンとCapabilityの合意</li>
+  <li>
+<a href="https://modelcontextprotocol.io/specification/versioning">Versioning - Model Context Protocol Specification</a> ── Current版とバージョン識別子の規則</li>
+  <li>
+<a href="https://modelcontextprotocol.io/specification/2025-11-25/server/tools">Tools - Model Context Protocol Specification</a> ── Toolの発見、呼び出し、ユーザー操作に関する原則</li>
+</ul>
+
+
+    </div>
+
+</article>
+<div class="post-nav">
+<a class="previous" href="/jekyll-theme-yat/%E9%96%8B%E7%99%BA/2026/06/16/spacex-ipo-kardashev-scale.html" title="SpaceXのIPOとカルダシェフ・スケール">SpaceXのIPOとカルダシェフ・スケール</a><a class="next" href="/jekyll-theme-yat/ai%E9%96%8B%E7%99%BA/2026/06/18/claude-code-grill-me.html" title="Claude Code の /grill-me: 実装前に設計を問い詰める">Claude Code の /grill-me: 実装前に設計を問い詰める</a>
+</div>
+<div class="post-related">
+      <div>Related Articles</div>
+      <ul>
+        <li><a class="post-link" href="/jekyll-theme-yat/ai%E9%96%8B%E7%99%BA/2026/06/19/mcp-tools-resources-prompts.html" title="Claude Code の /grill-me: 実装前に設計を問い詰める">MCPのTools・Resources・Promptsを使い分ける</a></li>
+<li><a class="post-link" href="/jekyll-theme-yat/ai%E9%96%8B%E7%99%BA/2026/06/24/ai-subscription-telehodai.html" title="Claude Code の /grill-me: 実装前に設計を問い詰める">AIサブスクのレートリミットは令和のテレホーダイか</a></li>
+<li><a class="post-link" href="/jekyll-theme-yat/ai%E9%96%8B%E7%99%BA/2026/06/11/goose-agent-pyramid-hierarchy.html" title="Claude Code の /grill-me: 実装前に設計を問い詰める">GooseとAI開発が解体するピラミッド型組織</a></li>
+<li><a class="post-link" href="/jekyll-theme-yat/ai%E9%96%8B%E7%99%BA/2026/06/20/mcp-json-rpc-lifecycle.html" title="Claude Code の /grill-me: 実装前に設計を問い詰める">MCPの接続と通信をJSON-RPCから理解する</a></li>
+</ul>
+    </div>
+<div class="post-comments"></div></section>
+</div>
+
+
+  </section>
+  <section class="sidebar" style="margin-left: 15px;">
+    <!-- Get sidebar items --><style type="text/css" media="screen">
+.post-menu ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+</style>
+
+<div class="post-menu">
+  <div class="post-menu-title">TOC</div>
+  <div class="post-menu-content"></div>
+</div>
+
+<script>
+  function generateContent() {
+    var menu = document.querySelector(".post-menu");
+    var menuContent =  menu.querySelector(".post-menu-content");
+    var headings = document.querySelector(".post-content").querySelectorAll("h2, h3, h4, h5, h6");
+
+    // Hide menu when no headings
+    if (headings.length === 0) {
+      return menu.style.display = "none";
+    }
+
+    // Generate post menu
+    var menuHTML = '';
+    for (var i = 0; i < headings.length; i++) {
+      var h = headings[i];
+      menuHTML += (
+        '<li class="h-' + h.tagName.toLowerCase() + '">'
+        + '<a href="#h-' + h.getAttribute('id') + '">' + h.textContent + '</a></li>');
+    }
+
+    menuContent.innerHTML = '<ul>' + menuHTML + '</ul>';
+
+    // The header element
+    var header = document.querySelector('header.site-header');
+
+    function doMenuCollapse(index, over_items) {
+      var items = menuContent.firstChild.children;
+
+      if (over_items == undefined) {
+        over_items = 20;
+      }
+
+      if (items.length < over_items) {
+        return;
+      }
+
+      var activeItem = items[index];
+      var beginItem = activeItem
+      var endItem = activeItem
+      var beginIndex = index;
+      var endIndex = index + 1;
+      while (beginIndex >= 0
+        && !items[beginIndex].classList.contains('h-h2')) {
+        beginIndex -= 1;
+      }
+      while (endIndex < items.length
+        && !items[endIndex].classList.contains('h-h2')) {
+        endIndex += 1;
+      }
+      for (var i = 0; i < beginIndex; i++) {
+        item = items[i]
+        if (!item.classList.contains('h-h2')) {
+          item.style.display = 'none';
+        }
+      }
+      for (var i = beginIndex + 1; i < endIndex; i++) {
+        item = items[i]
+        // if (!item.classList.contains('h-h2')) {
+          item.style.display = '';
+        // }
+      }
+      for (var i = endIndex; i < items.length; i++) {
+        item = items[i]
+        if (!item.classList.contains('h-h2')) {
+          item.style.display = 'none';
+        }
+      }
+    }
+
+    // Init menu collapsed
+    doMenuCollapse(-1);
+
+    // Active the menu item
+    window.addEventListener('scroll', function (event) {
+      var lastActive = menuContent.querySelector('.active');
+      var changed = true;
+      var activeIndex = -1;
+      for (var i = headings.length - 1; i >= 0; i--) {
+        var h = headings[i];
+        var headingRect = h.getBoundingClientRect();
+        var headerRect = header.getBoundingClientRect();
+        var headerTop = Math.floor(headerRect.top);
+        var headerHeight = Math.floor(headerRect.height);
+        var headerHeight = headerTop + headerHeight + 20;
+        if (headingRect.top <= headerHeight) {
+          var id = 'h-' + h.getAttribute('id');
+          var a = menuContent.querySelector('a[href="#' + id  + '"]');
+          var curActive = a.parentNode;
+          if (curActive) {
+            curActive.classList.add('active');
+            activeIndex = i;
+          }
+          if (lastActive == curActive) {
+            changed = false;
+          }
+          break;
+        }
+      }
+      if (changed) {
+        if (lastActive) {
+          lastActive.classList.remove('active');
+        }
+        doMenuCollapse(activeIndex);
+      }
+      event.preventDefault();
+    });
+  }
+  generateContent();
+</script>
+</section>
+</div>
+
+      </div>
+    </main><footer class="site-footer h-card">
+  <data class="u-url" href="/jekyll-theme-yat/"></data>
+
+  <div class="wrapper">
+    <div class="site-footer-inner">
+<div>Waka-DS © 2021-2026</div>
+      <div>Powered by <a title="Jekyll is a simple, blog-aware, static site
+      generator." href="http://jekyllrb.com/">Jekyll</a> &amp; <a title="Yat, yet
+      another theme." href="https://github.com/jeffreytse/jekyll-theme-yat">Yat Theme</a>.</div>
+      <div class="footer-col rss-subscribe">Subscribe <a href="/jekyll-theme-yat/feed.xml">via RSS</a>
+</div>
+    </div>
+  </div>
+</footer>
+</body>
+</html>

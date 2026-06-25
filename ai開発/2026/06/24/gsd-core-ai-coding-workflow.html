@@ -1,0 +1,1192 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <script>
+  (function() {
+    try {
+      var p = localStorage.getItem('preferred_lang');
+      if (!p) return;
+      var path = window.location.pathname;
+      var ja = ['/', '/archives.html', '/categories.html', '/tags.html', '/about.html'];
+      var en = ['/en/', '/en/archives.html', '/en/categories.html', '/en/tags.html', '/en/about.html'];
+      if (p === 'en' && ja.indexOf(path) !== -1) {
+        window.location.replace('/en' + (path === '/' ? '/' : path));
+      } else if (p === 'ja' && en.indexOf(path) !== -1) {
+        window.location.replace(path.slice(3) || '/');
+      }
+    } catch(e) {}
+  })();
+  </script>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="google-translate-customization" content="108d9124921d80c3-80e20d618ff053c8-g4f02ec6f3dba68b7-c">
+<!-- Begin Jekyll SEO tag v2.9.0 -->
+<title>GSD CoreでAIコーディングを仕様駆動の工程に変える | Waka-DS.com</title>
+<meta name="generator" content="Jekyll v4.4.1">
+<meta property="og:title" content="GSD CoreでAIコーディングを仕様駆動の工程に変える">
+<meta name="author" content="Waka-DS">
+<meta property="og:locale" content="ja">
+<meta name="description" content="Claude CodeやCodexに機能実装を頼むと、短い変更は驚くほど速く終わる。一方で、数時間にわたる機能開発では様子が変わる。会話の序盤で決めた要件が抜け、途中のエラー対応が本来の目的を押し流し、最後には「コードはできたが、欲しかったものとは違う」という状態になりやすい。">
+<meta name="twitter:description" property="og:description" content="Claude CodeやCodexに機能実装を頼むと、短い変更は驚くほど速く終わる。一方で、数時間にわたる機能開発では様子が変わる。会話の序盤で決めた要件が抜け、途中のエラー対応が本来の目的を押し流し、最後には「コードはできたが、欲しかったものとは違う」という状態になりやすい。">
+<link rel="canonical" href="/jekyll-theme-yat/ai%E9%96%8B%E7%99%BA/2026/06/24/gsd-core-ai-coding-workflow.html">
+<meta property="og:url" content="/jekyll-theme-yat/ai%E9%96%8B%E7%99%BA/2026/06/24/gsd-core-ai-coding-workflow.html">
+<meta property="og:site_name" content="Waka-DS.com">
+<meta property="og:image" content="/jekyll-theme-yat/assets/images/posts/2026-06-24-gsd-core-ai-coding-workflow/eyecatch.png">
+<meta property="og:image:alt" content="赤いプロジェクトフォルダが工程別の作業場をコンベヤーで進み、検証ループを通る様子を表したアイキャッチ">
+<meta property="og:type" content="article">
+<meta property="article:published_time" content="2026-06-24T00:00:00+00:00">
+<meta property="article:modified_time" content="2026-06-24T00:00:00+00:00">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="/jekyll-theme-yat/assets/images/posts/2026-06-24-gsd-core-ai-coding-workflow/eyecatch.png">
+<meta name="twitter:image:alt" content="赤いプロジェクトフォルダが工程別の作業場をコンベヤーで進み、検証ループを通る様子を表したアイキャッチ">
+<meta name="twitter:title" content="GSD CoreでAIコーディングを仕様駆動の工程に変える">
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":"Waka-DS"},"dateModified":"2026-06-24T00:00:00+00:00","datePublished":"2026-06-24T00:00:00+00:00","description":"Claude CodeやCodexに機能実装を頼むと、短い変更は驚くほど速く終わる。一方で、数時間にわたる機能開発では様子が変わる。会話の序盤で決めた要件が抜け、途中のエラー対応が本来の目的を押し流し、最後には「コードはできたが、欲しかったものとは違う」という状態になりやすい。","headline":"GSD CoreでAIコーディングを仕様駆動の工程に変える","image":{"alt":"赤いプロジェクトフォルダが工程別の作業場をコンベヤーで進み、検証ループを通る様子を表したアイキャッチ","url":"/jekyll-theme-yat/assets/images/posts/2026-06-24-gsd-core-ai-coding-workflow/eyecatch.png","@type":"imageObject"},"mainEntityOfPage":{"@type":"WebPage","@id":"/jekyll-theme-yat/ai%E9%96%8B%E7%99%BA/2026/06/24/gsd-core-ai-coding-workflow.html"},"url":"/jekyll-theme-yat/ai%E9%96%8B%E7%99%BA/2026/06/24/gsd-core-ai-coding-workflow.html"}</script>
+<!-- End Jekyll SEO tag -->
+<link rel="shortcut icon" href="">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=Noto+Sans+JP:wght@400;500;700&amp;display=swap">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+  <link rel="stylesheet" href="/jekyll-theme-yat/assets/css/main.css">
+  <script src="/jekyll-theme-yat/assets/js/main.js"></script><link type="application/atom+xml" rel="alternate" href="/jekyll-theme-yat/feed.xml" title="Waka-DS.com">
+<script>
+  function initGoogleAnalytics() {
+    var doNotTrack = (window.doNotTrack === "1" || navigator.doNotTrack === "1" ||
+      navigator.doNotTrack === "yes" || navigator.msDoNotTrack === "1");
+    var enableDNT = "true" == "true";
+
+    if (!enableDNT || !doNotTrack) {
+      var ga_id = 'G-XNP1RBTG9C';
+
+      var script = document.createElement('script');
+      script.async = true;
+      script.src = 'https://www.googletagmanager.com/gtag/js?id=' + ga_id;
+      document.head.appendChild(script);
+
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', ga_id);
+    }
+  }
+  window.addEventListener("load", initGoogleAnalytics);
+</script>
+<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/styles/default.min.css">
+<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/highlight.min.js"></script>
+<!-- and it's easy to individually load additional languages -->
+<script charset="UTF-8" src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/languages/go.min.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<script>
+// Init highlight js
+document.addEventListener('DOMContentLoaded', function(event) {
+  var els = document.querySelectorAll('pre code')
+
+  function addLangData(block) {
+    var outer = block.parentElement.parentElement.parentElement;
+    var lang = block.getAttribute('data-lang');
+    for (var i = 0; i < outer.classList.length; i++) {
+      var cls = outer.classList[i];
+      if (cls.startsWith('language-')) {
+        lang = cls;
+        break;
+      }
+    }
+    if (!lang) {
+      cls = block.getAttribute('class');
+      lang = cls ? cls.replace('hljs ', '') : '';
+    }
+    if (lang.startsWith('language-')) {
+      lang = lang.substr(9);
+    }
+    block.setAttribute('class', 'hljs ' + lang);
+    block.parentNode.setAttribute('data-lang', lang);
+  }
+
+  function addBadge(block) {
+    var enabled = ('true' || 'true').toLowerCase();
+    if (enabled == 'true') {
+      var pre = block.parentElement;
+      pre.classList.add('badge');
+    }
+  }
+
+  function handle(block) {
+    addLangData(block);
+    addBadge(block)
+    hljs.highlightBlock(block);
+  }
+
+  for (var i = 0; i < els.length; i++) {
+    var el = els[i];
+    handle(el);
+  }
+});
+</script>
+
+<style>
+  /* code language badge */
+  pre.badge::before {
+    content: attr(data-lang);
+    color: #fff;
+    background-color: #0d9488;
+    padding: 0 .5em;
+    border-radius: 0 2px;
+    text-transform: uppercase;
+    text-align: center;
+    min-width: 32px;
+    display: inline-block;
+    position: absolute;
+    right: 0;
+  }
+
+  /* fix wrong badge display for firefox browser */
+  code > table pre::before {
+    display: none;
+  }
+</style>
+</head>
+<body>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<header class="site-header " role="banner">
+
+  <div class="wrapper">
+    <div class="site-header-inner">
+<span class="site-brand"><a class="site-brand-inner" rel="author" href="/jekyll-theme-yat/">
+  <img class="site-favicon" title="Waka-DS.com" src="" onerror="this.style.display='none'">
+  Waka-DS.com
+</a>
+</span><nav class="site-nav">
+          <input type="checkbox" id="nav-trigger" class="nav-trigger">
+          <label for="nav-trigger">
+            <span class="menu-icon">
+              <svg viewbox="0 0 18 15" width="18px" height="15px">
+                <path d="M18,1.484c0,0.82-0.665,1.484-1.484,1.484H1.484C0.665,2.969,0,2.304,0,1.484l0,0C0,0.665,0.665,0,1.484,0 h15.032C17.335,0,18,0.665,18,1.484L18,1.484z M18,7.516C18,8.335,17.335,9,16.516,9H1.484C0.665,9,0,8.335,0,7.516l0,0 c0-0.82,0.665-1.484,1.484-1.484h15.032C17.335,6.031,18,6.696,18,7.516L18,7.516z M18,13.516C18,14.335,17.335,15,16.516,15H1.484 C0.665,15,0,14.335,0,13.516l0,0c0-0.82,0.665-1.483,1.484-1.483h15.032C17.335,12.031,18,12.695,18,13.516L18,13.516z"></path>
+              </svg>
+            </span>
+          </label>
+
+          <div class="trigger">
+<a class="page-link" href="/jekyll-theme-yat/about.html">ABOUT</a><a class="page-link" href="/jekyll-theme-yat/archives.html">ARCHIVES</a><a class="page-link" href="/jekyll-theme-yat/categories.html">CATEGORIES</a><a class="page-link" href="/jekyll-theme-yat/">HOME</a><a class="page-link" href="/jekyll-theme-yat/tags.html">TAGS</a>
+</div>
+        </nav>
+</div>
+  </div>
+</header>
+
+<script>
+  function initHeader() {
+    var lastScrollY = getScrollPos().y;
+    var documentElement = document.documentElement;
+
+    function storeScrollData() {
+      var y = getScrollPos().y;var scrollStatus = "";
+
+      if (y <= 0) {
+        scrollStatus = "top";
+      } else if ((window.innerHeight + y) >= document.body.offsetHeight) {
+        scrollStatus = "bottom";
+      } else {
+        var isScrollDown = (y - lastScrollY > 0) ? true : false;
+        scrollStatus = isScrollDown ? "down" : "up";
+      }
+
+      lastScrollY = y;
+      documentElement.setAttribute("data-scroll-status", scrollStatus);
+    }
+
+    window.addEventListener('scroll', function(e) {
+      storeScrollData();
+    });
+
+    storeScrollData();
+  }
+  document.addEventListener('DOMContentLoaded', initHeader);
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<script>
+  function hashLocate(hashValue) {
+    hashValue = hashValue.replace(/^.*#h-/, '');
+    hashValue = decodeURIComponent(hashValue);
+    var element = document.getElementById(hashValue);
+
+    if (!element) {
+      return;
+    }
+
+    var header = document.querySelector('header.site-header');
+    var headerRect = header.getBoundingClientRect();
+    var headerTop = Math.floor(headerRect.top);
+    var headerHeight = Math.floor(headerRect.height);
+    var scrollPos = getScrollPos();
+    var offsetY = element.offsetTop - (headerTop + headerHeight + 20);
+
+    if (offsetY == scrollPos.y) {
+      return;
+    }
+
+    if (headerTop == 0  && offsetY > scrollPos.y) {
+      offsetY += headerHeight + 2;
+    } else if (headerTop < 0  && offsetY < scrollPos.y) {
+      offsetY -= headerHeight - 2;
+    }
+
+    smoothScrollTo(offsetY);
+  }
+
+  // The first event occurred
+  window.addEventListener('load', function(event) {
+    if (window.location.hash) {
+      hashLocate(window.location.hash);
+    }
+  });
+
+  // The first event occurred
+  window.addEventListener('click', function(event) {
+    if (event.target.tagName.toLowerCase() == 'a') {
+      hashLocate(event.target.getAttribute('href'));
+    }
+  });
+</script>
+<div class="theme-toggle">
+  <input type="checkbox" id="theme-switch">
+  <label for="theme-switch">
+    <div class="toggle"></div>
+    <div class="names">
+      <p class="light">Light</p>
+      <p class="dark">Dark</p>
+    </div>
+  </label>
+</div>
+
+
+
+
+<script>
+  (function() {
+    var sw = document.getElementById('theme-switch');
+    var html = document.getElementsByTagName('html')[0];
+    var nightModeOption = ('auto' || 'auto').toLowerCase();
+    var storage = nightModeOption === 'manual'
+        ? localStorage
+        : sessionStorage;
+    var themeData = loadThemeData();
+
+    function saveThemeData(data) {
+      storage.setItem('theme', JSON.stringify(data));
+    }
+
+    function loadThemeData() {
+      var data = storage.getItem('theme');
+      try {
+        data = JSON.parse(data ? data : '');
+      } catch(e) {
+        data = { nightShift: undefined, autoToggleAt: 0 };
+        saveThemeData(data);
+      }
+      return data;
+    }
+
+    function handleThemeToggle(nightShift) {
+      themeData.nightShift = nightShift;
+      saveThemeData(themeData);
+      html.dataset.theme = nightShift ? 'dark' : 'light';
+      setTimeout(function() {
+        sw.checked = nightShift ? true : false;
+      }, 50);
+    }
+
+    function autoThemeToggle() {
+      // Next time point of theme toggle
+      var now = new Date();
+      var toggleAt = new Date();
+      var hours = now.getHours();
+      var nightShift = hours >= 19 || hours <=7;
+
+      if (nightShift) {
+        if (hours > 7) {
+          toggleAt.setDate(toggleAt.getDate() + 1);
+        }
+        toggleAt.setHours(7);
+      } else {
+        toggleAt.setHours(19);
+      }
+
+      toggleAt.setMinutes(0);
+      toggleAt.setSeconds(0);
+      toggleAt.setMilliseconds(0)
+
+      var delay = toggleAt.getTime() - now.getTime();
+
+      // auto toggle theme mode
+      setTimeout(function() {
+        handleThemeToggle(!nightShift);
+      }, delay);
+
+      return {
+        nightShift: nightShift,
+        toggleAt: toggleAt.getTime()
+      };
+    }
+
+    // Listen the theme toggle event
+    sw.addEventListener('change', function(event) {
+      handleThemeToggle(event.target.checked);
+    });
+
+    if (nightModeOption == 'auto') {
+      var data = autoThemeToggle();
+
+      // Toggle theme by local setting
+      if (data.toggleAt > themeData.autoToggleAt) {
+        themeData.autoToggleAt = data.toggleAt;
+        handleThemeToggle(data.nightShift);
+      } else {
+        handleThemeToggle(themeData.nightShift);
+      }
+    } else if (nightModeOption == 'manual') {
+      handleThemeToggle(themeData.nightShift);
+    } else {
+      var nightShift = themeData.nightShift;
+      if (nightShift === undefined) {
+        nightShift = nightModeOption === 'on';
+      }
+      handleThemeToggle(nightShift);
+    }
+  })();
+</script>
+<main class="page-content" aria-label="Content">
+      <div class="wrapper">
+        <div class="framework">
+  <section class="main">
+
+     <div class="post post--with-image">
+  <section>
+
+
+
+
+
+
+
+
+
+<header class="post-header">
+  <h1 class="post-title p-name" itemprop="name headline">GSD CoreでAIコーディングを仕様駆動の工程に変える</h1>
+  <h2 class="post-subtitle">Discuss・Plan・Execute・Verify・Shipを分離する開発ワークフロー</h2>
+
+  <p class="post-meta">
+    <time class="dt-published" datetime="2026-06-24T00:00:00+00:00" itemprop="datePublished"><i class="fa fa-calendar"></i> Jun 24, 2026
+    </time>
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <span class="post-reading-time left-vsplit"><i class="fa fa-clock-o"></i> About 19 mins</span>
+  </p>
+<div class="post-tags">
+<a class="post-tag" href="/jekyll-theme-yat/tags.html#AI%E3%82%A8%E3%83%BC%E3%82%B8%E3%82%A7%E3%83%B3%E3%83%88">#AIエージェント</a><a class="post-tag" href="/jekyll-theme-yat/tags.html#%E3%82%B3%E3%83%BC%E3%83%87%E3%82%A3%E3%83%B3%E3%82%B0%E3%82%A8%E3%83%BC%E3%82%B8%E3%82%A7%E3%83%B3%E3%83%88">#コーディングエージェント</a><a class="post-tag" href="/jekyll-theme-yat/tags.html#AI%E3%83%8D%E3%82%A4%E3%83%86%E3%82%A3%E3%83%96%E9%96%8B%E7%99%BA">#AIネイティブ開発</a><a class="post-tag" href="/jekyll-theme-yat/tags.html#%E3%82%B3%E3%83%B3%E3%83%86%E3%82%AD%E3%82%B9%E3%83%88%E7%AE%A1%E7%90%86">#コンテキスト管理</a><a class="post-tag" href="/jekyll-theme-yat/tags.html#%E8%87%AA%E5%8B%95%E5%8C%96">#自動化</a><a class="post-tag" href="/jekyll-theme-yat/tags.html#OSS">#OSS</a><a class="post-tag" href="/jekyll-theme-yat/tags.html#CLI">#CLI</a>
+</div></header>
+<figure class="post-eyecatch">
+  <img src="/jekyll-theme-yat/assets/images/posts/2026-06-24-gsd-core-ai-coding-workflow/eyecatch.png" alt="赤いプロジェクトフォルダが工程別の作業場をコンベヤーで進み、検証ループを通る様子を表したアイキャッチ" decoding="async" fetchpriority="high">
+</figure><article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
+
+    <div class="post-content e-content" itemprop="articleBody">
+
+      <p>Claude CodeやCodexに機能実装を頼むと、短い変更は驚くほど速く終わる。一方で、数時間にわたる機能開発では様子が変わる。会話の序盤で決めた要件が抜け、途中のエラー対応が本来の目的を押し流し、最後には「コードはできたが、欲しかったものとは違う」という状態になりやすい。</p>
+
+<p>GSD（旧称Get Shit Done、現在のプロジェクト名はGSD Core）は、この問題をモデルの賢さではなく開発工程の問題として扱う。要件の議論、調査と計画、実装、検証、Pull Request作成を分け、それぞれを必要な情報だけ持つサブエージェントへ渡す仕組みだ。</p>
+
+<p>この記事では、GSD Coreが何をするツールなのか、通常のAIコーディングと何が違うのか、どのような案件に向くのかを整理する。</p>
+
+<blockquote>
+  <p>GSDは更新が速く、旧リポジトリや旧パッケージ名を使った記事も検索結果に残っている。本記事のコマンドと構成は、2026年6月24日に<code class="language-plaintext highlighter-rouge">open-gsd/gsd-core</code>の公式ドキュメントで確認した。</p>
+</blockquote>
+
+<hr>
+
+<h2 id="結論を先に">結論を先に</h2>
+
+<p>GSD CoreはAIコーディングエージェントそのものではない。Claude Code、Codex、Gemini CLIなどの上に載せる、メタプロンプティングとコンテキスト管理のフレームワークである。</p>
+
+<p>主な役割は次の3つに分けられる。</p>
+
+<ol>
+  <li>作りたいものを要件、ロードマップ、実行可能なタスクへ分解する</li>
+  <li>調査、計画、実装、検証を新しいコンテキストのサブエージェントへ任せる</li>
+  <li>会話で決めた内容を<code class="language-plaintext highlighter-rouge">.planning/</code>以下のMarkdownとJSONへ保存する</li>
+</ol>
+
+<p>普通のAIコーディングが「一つの長い会話の中で設計から実装まで進める」方式だとすれば、GSD Coreは「成果物をファイルで引き継ぎながら、工程ごとに担当を交代する」方式である。</p>
+
+<p>この違いは、複数ファイルにまたがる機能、既存コードを踏まえた設計、数回のセッションをまたぐ開発で効いてくる。反対に、誤字修正や小さなリファクタリングにフルの工程を使うと、準備の方が重くなる。</p>
+
+<hr>
+
+<h2 id="gsdが解こうとしている問題">GSDが解こうとしている問題</h2>
+
+<h3 id="長い会話では重要な情報が埋もれる">長い会話では重要な情報が埋もれる</h3>
+
+<p>AIのコンテキストウィンドウには上限がある。ただし、問題は上限に達した瞬間だけに起きるわけではない。会話、ログ、コード、ツールの実行結果が増えるほど、序盤の制約と現在の作業に必要な情報が大量の履歴の中で競合する。</p>
+
+<p>GSD Coreのドキュメントでは、この品質劣化をcontext rotと呼んでいる。以前に合意した設計と矛盾する、存在しないファイル名を使う、要件の一部を計画から落とす、といった形で現れる。</p>
+
+<p>単にセッションをクリアすればノイズは消えるが、今度は経緯も消える。そこでGSD Coreは、会話の内容をそのまま保持する代わりに、決定事項と進捗を構造化したファイルへ移す。</p>
+
+<p><a href="/jekyll-theme-yat/ai%E9%96%8B%E7%99%BA/2026/06/07/agent-context-management-2026.html">エージェントを長く自律動作させるためのコンテキスト設計</a>で扱った「会話ではなく外部状態へ進捗を残す」という考え方を、開発ワークフローとして実装したものと捉えると分かりやすい。</p>
+
+<h3 id="実装開始が早すぎる">実装開始が早すぎる</h3>
+
+<p>コーディングエージェントは、依頼を受けるとすぐにコードを書ける。これは小さな作業では長所だが、前提が曖昧な機能では手戻りの原因になる。</p>
+
+<p>たとえば「ユーザー認証を追加する」という依頼だけでは、セッションの保存方法、失効条件、既存ユーザーの移行、エラー時の画面などが決まっていない。AIが妥当そうな案を選べばコードは完成しても、プロダクトとして正しいとは限らない。</p>
+
+<p>GSD Coreは、何を作るかをロードマップへ分解した後、各フェーズで「どう作るか」をDiscuss工程で確認する。実装上の判断を計画より先に記録し、プランナーが勝手に補完する範囲を減らす設計だ。</p>
+
+<p>設計上の曖昧さを質問で減らす点は<a href="/jekyll-theme-yat/ai%E9%96%8B%E7%99%BA/2026/06/18/claude-code-grill-me.html">Claude Codeの/grill-me: 実装前に設計を問い詰める</a>に近い。GSD Coreは、その後の計画、実行、検証、PR作成までを一つの工程にしている点が異なる。</p>
+
+<hr>
+
+<h2 id="5段階のフェーズループ">5段階のフェーズループ</h2>
+
+<p>GSD Coreは開発をmilestone、phase、plan、taskの階層へ分ける。milestoneはリリース可能な一つの区切り、phaseはその中で一度に扱える作業単位である。</p>
+
+<p>各phaseは、同じループを順番に通る。</p>
+
+<p><img class="mermaid" src="https://mermaid.ink/svg/eyJjb2RlIjoiZmxvd2NoYXJ0IFRCXG5EaXNjdXNzW1wiRGlzY3Vzczxicj7lrp_oo4XkuIrjga7liKTmlq3jgpLmsbrjgoHjgotcIl1cblBsYW5bXCJQbGFuPGJyPuiqv-afu-OBl-OBpuOCv-OCueOCr-OBuOWIhuino-OBmeOCi1wiXVxuRXhlY3V0ZVtcIkV4ZWN1dGU8YnI-6KiI55S75Y2Y5L2N44Gn5a6f6KOF44GZ44KLXCJdXG5WZXJpZnlbXCJWZXJpZnk8YnI-6KaB5Lu244Go5YuV5L2c44KS56K66KqN44GZ44KLXCJdXG5TaGlwW1wiU2hpcDxicj5QdWxsIFJlcXVlc3TjgpLkvZzjgotcIl1cbk5leHRbXCLmrKHjga5waGFzZVwiXVxuJSUtXG5EaXNjdXNzIC0tPiBQbGFuXG5QbGFuIC0tPiBFeGVjdXRlXG5FeGVjdXRlIC0tPiBWZXJpZnlcblZlcmlmeSAtLT585LiN5YW35ZCI44GC44KKfCBQbGFuXG5WZXJpZnkgLS0-fOWQiOagvHwgU2hpcFxuU2hpcCAtLT4gTmV4dFxuTmV4dCAtLT4gRGlzY3VzcyIsIm1lcm1haWQiOm51bGx9"></p>
+
+<h3 id="discuss-実装上の判断を確定する">Discuss: 実装上の判断を確定する</h3>
+
+<p>Discussでは、phaseのゴールそのものではなく、実装方法に影響する選択を扱う。利用するライブラリ、エラー処理、UIの振る舞い、既存構成との整合などを質問し、結果をphaseディレクトリの<code class="language-plaintext highlighter-rouge">CONTEXT.md</code>へ保存する。</p>
+
+<p>ここで重要なのは、会話を長く残すことではない。後続のエージェントが必要とする決定だけを、読み直せる形に変換することだ。</p>
+
+<h3 id="plan-調査し検証可能な単位へ分解する">Plan: 調査し、検証可能な単位へ分解する</h3>
+
+<p>Planでは、リサーチャー、プランナー、プランチェッカーが順に動く。公式ドキュメントの標準フローでは、対象領域の調査結果を<code class="language-plaintext highlighter-rouge">RESEARCH.md</code>へ書き、依存順に並んだ<code class="language-plaintext highlighter-rouge">PLAN.md</code>を作り、実行前に計画の品質を検査する。</p>
+
+<p>計画には変更対象のファイル、実装手順、確認コマンド、完了条件が含まれる。抽象的なTODOリストではなく、別のエージェントがそのまま実行できる仕様書に近い。</p>
+
+<h3 id="execute-独立した計画をwaveで実行する">Execute: 独立した計画をwaveで実行する</h3>
+
+<p>Executeでは、依存関係のないplanを同じwaveとして並列実行する。それぞれのexecutorは新しいコンテキストで起動し、担当planと必要な成果物を読んで実装する。完了後は<code class="language-plaintext highlighter-rouge">SUMMARY.md</code>へ変更内容を残す。</p>
+
+<p>一つの巨大なエージェントに全ファイルを触らせるのではなく、境界を付けた作業へ分割するため、途中の試行錯誤が別タスクの判断を埋めにくい。</p>
+
+<h3 id="verify-テスト成功だけで完了にしない">Verify: テスト成功だけで完了にしない</h3>
+
+<p>Verifyは、テストコマンドが成功したかだけを見る工程ではない。要求IDがすべて実装されたか、<code class="language-plaintext highlighter-rouge">CONTEXT.md</code>の決定が反映されたか、phaseのゴールを満たしたかを確認する。</p>
+
+<p>さらに<code class="language-plaintext highlighter-rouge">/gsd-verify-work</code>では、人が実際の振る舞いを確認するUATを進める。失敗を報告すると、原因調査と修正planの作成へ戻る。実装がエラーなく終了したことと、欲しかった機能が完成したことを分けている。</p>
+
+<h3 id="ship-証跡からpull-requestを作る">Ship: 証跡からPull Requestを作る</h3>
+
+<p>検証に合格したら、Shipがbranch、remote、GitHub CLIの認証などを事前確認し、pushとPull Request作成を行う。PR本文はphaseのゴール、実装サマリー、対応した要件、検証結果、主要な決定から組み立てられる。</p>
+
+<p><code class="language-plaintext highlighter-rouge">/gsd-ship</code>は外部へ変更を送るコマンドである。実行前に差分、コミット、対象branch、remoteを人が確認する運用は残した方がよい。</p>
+
+<hr>
+
+<h2 id="planningがセッションをまたぐ記憶になる">
+<code class="language-plaintext highlighter-rouge">.planning/</code>がセッションをまたぐ記憶になる</h2>
+
+<p>GSD Coreの状態は、専用の外部データベースではなくリポジトリ内の<code class="language-plaintext highlighter-rouge">.planning/</code>へ保存される。代表的なファイルは次のとおりだ。</p>
+
+<table>
+  <thead>
+    <tr>
+      <th style="text-align: left">ファイル</th>
+      <th style="text-align: left">役割</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td style="text-align: left"><code class="language-plaintext highlighter-rouge">PROJECT.md</code></td>
+      <td style="text-align: left">プロジェクトの目的、前提、対象範囲</td>
+    </tr>
+    <tr>
+      <td style="text-align: left"><code class="language-plaintext highlighter-rouge">REQUIREMENTS.md</code></td>
+      <td style="text-align: left">要求と要求ID</td>
+    </tr>
+    <tr>
+      <td style="text-align: left"><code class="language-plaintext highlighter-rouge">ROADMAP.md</code></td>
+      <td style="text-align: left">milestoneとphaseの構成、進捗</td>
+    </tr>
+    <tr>
+      <td style="text-align: left"><code class="language-plaintext highlighter-rouge">STATE.md</code></td>
+      <td style="text-align: left">現在位置、決定、ブロッカー</td>
+    </tr>
+    <tr>
+      <td style="text-align: left"><code class="language-plaintext highlighter-rouge">config.json</code></td>
+      <td style="text-align: left">ワークフローとモデルの設定</td>
+    </tr>
+    <tr>
+      <td style="text-align: left"><code class="language-plaintext highlighter-rouge">CONTEXT.md</code></td>
+      <td style="text-align: left">Discussで確定した実装判断</td>
+    </tr>
+    <tr>
+      <td style="text-align: left"><code class="language-plaintext highlighter-rouge">RESEARCH.md</code></td>
+      <td style="text-align: left">phase固有の調査結果</td>
+    </tr>
+    <tr>
+      <td style="text-align: left"><code class="language-plaintext highlighter-rouge">PLAN.md</code></td>
+      <td style="text-align: left">実行手順、対象ファイル、検証、完了条件</td>
+    </tr>
+    <tr>
+      <td style="text-align: left"><code class="language-plaintext highlighter-rouge">SUMMARY.md</code></td>
+      <td style="text-align: left">executorが行った変更の記録</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">
+<code class="language-plaintext highlighter-rouge">VERIFICATION.md</code> / <code class="language-plaintext highlighter-rouge">UAT.md</code>
+</td>
+      <td style="text-align: left">要件検証と人による動作確認</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>この構成なら、セッションを終了しても次のエージェントが<code class="language-plaintext highlighter-rouge">STATE.md</code>と対象phaseの成果物を読んで再開できる。人間もMarkdownを直接確認し、間違っている計画を実装前に修正できる。</p>
+
+<p>一方で、計画ファイルにもレビューは必要だ。誤った前提が<code class="language-plaintext highlighter-rouge">CONTEXT.md</code>や<code class="language-plaintext highlighter-rouge">PLAN.md</code>へ整理されると、後続のエージェントはその誤りを一貫して実行する。構造化されていることと、内容が正しいことは別である。</p>
+
+<hr>
+
+<h2 id="gsd-coreの内部構造">GSD Coreの内部構造</h2>
+
+<p>GSD Coreの中心は、重い作業をしないオーケストレーターと、役割ごとに起動するサブエージェントの組み合わせである。</p>
+
+<p><img class="mermaid" src="https://mermaid.ink/svg/eyJjb2RlIjoiZmxvd2NoYXJ0IFRCXG5Vc2VyW1wi44Om44O844K244O8XCJdIC0tPiBDb21tYW5kW1wiR1NE44Kz44Oe44Oz44OJXCJdXG5Db21tYW5kIC0tPiBPcmNoZXN0cmF0b3JbXCLjgqrjg7zjgrHjgrnjg4jjg6zjg7zjgr_jg7w8YnI-54q25oWL56K66KqN44Go5Yem55CG44Gu5oyv44KK5YiG44GRXCJdXG5PcmNoZXN0cmF0b3IgLS0-IFJlc2VhcmNoZXJbXCJyZXNlYXJjaGVyXCJdXG5PcmNoZXN0cmF0b3IgLS0-IFBsYW5uZXJbXCJwbGFubmVyXCJdXG5PcmNoZXN0cmF0b3IgLS0-IEV4ZWN1dG9yW1wiZXhlY3V0b3JcIl1cbk9yY2hlc3RyYXRvciAtLT4gVmVyaWZpZXJbXCJ2ZXJpZmllclwiXVxuJSUtXG5SZXNlYXJjaGVyIC0tPiBQbGFubmluZ1tcIi5wbGFubmluZy9cIl1cblBsYW5uZXIgLS0-IFBsYW5uaW5nXG5QbGFubmluZyAtLT4gRXhlY3V0b3JcbkV4ZWN1dG9yIC0tPiBSZXBvc2l0b3J5W1wi44K944O844K544Kz44O844OJ44GoR2l0XCJdXG5SZXBvc2l0b3J5IC0tPiBWZXJpZmllclxuVmVyaWZpZXIgLS0-IFBsYW5uaW5nIiwibWVybWFpZCI6bnVsbH0"></p>
+
+<p>オーケストレーターは、現在の状態を読み、適切な担当を起動し、結果を次へ渡す。調査や実装を自分で抱えないため、メインセッションのコンテキスト増加を抑えられる。</p>
+
+<p>この設計は<a href="/jekyll-theme-yat/ai%E9%96%8B%E7%99%BA/2026/06/08/harness-engineering-guide.html">ハーネスエンジニアリングとは何か</a>で説明した、モデルの外側にルール、権限、状態、検証を置く考え方の具体例でもある。GSD Coreがモデル自体を強化するわけではない。モデルが作業しやすく、逸脱を検出しやすい環境を作っている。</p>
+
+<hr>
+
+<h2 id="導入と基本的な使い方">導入と基本的な使い方</h2>
+
+<p>現行の標準インストーラーにはNode.js 18以上が必要である。リポジトリのルートで次を実行すると、利用するランタイムとglobal/localのインストール先を選べる。</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>npx @opengsd/gsd-core@latest
+</code></pre></div></div>
+
+<p>インストーラーを使う理由は、ランタイムごとにコマンド名、front matter、ファイル配置が異なるためだ。公式ドキュメントは、リポジトリ内の<code class="language-plaintext highlighter-rouge">agents/</code>や<code class="language-plaintext highlighter-rouge">commands/</code>を手作業でコピーしないよう案内している。</p>
+
+<p>Claude Codeで新規プロジェクトを始める基本形は次のようになる。</p>
+
+<div class="language-text highlighter-rouge"><div class="highlight"><pre class="highlight"><code>/gsd-new-project
+/clear
+/gsd-discuss-phase 1
+/gsd-plan-phase 1
+/gsd-execute-phase 1
+/gsd-verify-work 1
+/gsd-ship 1 --draft
+</code></pre></div></div>
+
+<p>既存のコードベースへ導入する場合は、プロジェクト作成の前に<code class="language-plaintext highlighter-rouge">/gsd-map-codebase</code>を実行する。技術スタック、アーキテクチャ、ディレクトリ構成、規約、テスト、外部連携、懸念点を<code class="language-plaintext highlighter-rouge">.planning/codebase/</code>へ記録し、その後の質問とplanの材料にする。</p>
+
+<div class="language-text highlighter-rouge"><div class="highlight"><pre class="highlight"><code>/gsd-map-codebase
+/clear
+/gsd-new-project
+</code></pre></div></div>
+
+<p>コマンドの表記はランタイムやインストール方式で変わる場合がある。たとえば公式ドキュメントでは、Claude Codeのネイティブプラグイン経由で入れた場合に<code class="language-plaintext highlighter-rouge">/gsd-core:&lt;command&gt;</code>というnamespaceを使う構成も説明されている。導入後に表示されるhelpと現行ドキュメントを正として確認したい。</p>
+
+<p>また、公式チュートリアルにはClaude Codeを<code class="language-plaintext highlighter-rouge">--dangerously-skip-permissions</code>で起動する例があるが、これは確認プロンプトを省略する強い権限設定である。GSD Coreの利用に伴って無条件に採用する設定ではない。隔離したworktreeやコンテナ、許可範囲を限定した環境を用意し、対象リポジトリとコマンドの影響を理解した上で判断すべきだ。</p>
+
+<hr>
+
+<h2 id="どのような開発に向くか">どのような開発に向くか</h2>
+
+<p>GSD Coreの工程が効果を出しやすいのは、次のような作業である。</p>
+
+<ul>
+  <li>複数の機能やphaseを持つ新規プロジェクト</li>
+  <li>複数ファイル、複数レイヤーへ影響する機能追加</li>
+  <li>調査や設計判断を挟む必要がある変更</li>
+  <li>数時間または複数セッションにまたがる作業</li>
+  <li>要件と実装の対応関係を後から確認したい開発</li>
+  <li>一人開発でも計画とレビューの証跡を残したい場合</li>
+</ul>
+
+<p>特に、プロンプトへ毎回同じ背景を貼り直している、エージェントが途中で以前の判断を忘れる、実装後の確認が場当たり的になる、といった状況には合いやすい。</p>
+
+<h3 id="フルのphase-loopが重すぎる場合">フルのphase loopが重すぎる場合</h3>
+
+<p>変数名の変更、誤字修正、明確な一行のバグ修正に、DiscussからShipまでを適用する必要はない。公式ドキュメントも、短い作業向けに<code class="language-plaintext highlighter-rouge">/gsd-quick</code>や<code class="language-plaintext highlighter-rouge">/gsd-fast</code>を用意している。</p>
+
+<p>一つの短い依頼で仕様を十分に表現でき、追加の調査や判断なしに一度で終わるなら、通常のエージェント操作か軽量コマンドで十分だ。GSD Coreの価値は儀式を増やすことではなく、複雑さに応じて工程を外部化することにある。</p>
+
+<hr>
+
+<h2 id="導入前に考えておくこと">導入前に考えておくこと</h2>
+
+<h3 id="トークンと待ち時間は増える">トークンと待ち時間は増える</h3>
+
+<p>リサーチャー、プランナー、チェッカー、executor、verifierを個別に動かすため、一つの会話だけで実装する場合より呼び出し回数は多くなる。並列化できる工程はあっても、調査と計画を順番に通す時間は必要だ。</p>
+
+<p>失敗時の手戻りを減らす代わりに、着手前のコストを払う仕組みである。小さな変更へ常用すると割に合わない。</p>
+
+<h3 id="自動コミットとpushの境界を確認する">自動コミットとpushの境界を確認する</h3>
+
+<p>標準フローではExecuteがタスク単位のコミットを作り、ShipがbranchをpushしてPRを作る。既存のコミット規則、署名、branch protection、CI、PRテンプレートと整合するかを導入前に確認した方がよい。</p>
+
+<p><code class="language-plaintext highlighter-rouge">.planning/</code>をGitへ含めるかもチームの判断になる。計画をレビュー可能な証跡として残す利点がある一方、PRの差分量や社内情報の扱いには注意が必要だ。GSD Coreには計画関連のコミットを除いたPR用branchを作るコマンドもあるが、何を履歴へ残すかは先に決めておきたい。</p>
+
+<h3 id="インストールするコードと権限を監査する">インストールするコードと権限を監査する</h3>
+
+<p>GSD Coreはコマンド、エージェント定義、hookなどをAIランタイムの設定先へ追加する。<code class="language-plaintext highlighter-rouge">npx ...@latest</code>は常にその時点の最新版を取得するため、再現性が必要な環境では採用するversionを固定し、更新差分を確認する運用が適している。</p>
+
+<p>また、エージェントへシェル、Git、ネットワーク、本番環境の資格情報を広く渡せば、GSD Coreの計画工程があっても影響範囲は大きいままだ。自動化の深さと権限の広さを同じものとして扱わず、sandbox、worktree、CI、承認ゲートを組み合わせる必要がある。</p>
+
+<hr>
+
+<h2 id="まとめ">まとめ</h2>
+
+<table>
+  <thead>
+    <tr>
+      <th style="text-align: left">観点</th>
+      <th style="text-align: left">通常の長いAIコーディングセッション</th>
+      <th style="text-align: left">GSD Core</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td style="text-align: left">要件と判断</td>
+      <td style="text-align: left">会話履歴に残る</td>
+      <td style="text-align: left">Markdownの成果物へ保存する</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">コンテキスト</td>
+      <td style="text-align: left">一つのセッションへ蓄積する</td>
+      <td style="text-align: left">工程ごとに新しいサブエージェントを使う</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">実装</td>
+      <td style="text-align: left">依頼から直接始まりやすい</td>
+      <td style="text-align: left">DiscussとPlanを先に通す</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">進捗</td>
+      <td style="text-align: left">会話とGit差分から読み取る</td>
+      <td style="text-align: left">
+<code class="language-plaintext highlighter-rouge">STATE.md</code>と<code class="language-plaintext highlighter-rouge">ROADMAP.md</code>へ記録する</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">完了判定</td>
+      <td style="text-align: left">テスト成功やエージェントの自己申告に寄りやすい</td>
+      <td style="text-align: left">要件検証とUATを分ける</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">提出</td>
+      <td style="text-align: left">人がPRを組み立てる</td>
+      <td style="text-align: left">計画と検証の成果物からPRを作る</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>GSD Coreの中心にあるのは、優れた一発のプロンプトではない。決定をファイルへ残し、作業を小さく区切り、新しいコンテキストで実行し、要件へ戻って検証する工程である。</p>
+
+<p>AIコーディングで短い変更は進むのに、長い開発になると完成度が安定しない場合、モデルを替える前にワークフローを見直す余地がある。GSD Coreはそのための選択肢だ。ただし、すべてを自動化する道具としてではなく、複雑な作業にだけ適用する開発ハーネスとして導入する方が扱いやすい。</p>
+
+<hr>
+
+<h2 id="参考">参考</h2>
+
+<ul>
+  <li>
+<a href="https://github.com/open-gsd/gsd-core">open-gsd/gsd-core - GitHub</a> ── 現在の開発リポジトリ、README、ソースコード</li>
+  <li>
+<a href="https://github.com/open-gsd/gsd-core/blob/next/docs/tutorials/your-first-project.md">GSD Core: Your first project</a> ── インストールからPR作成までの公式チュートリアル</li>
+  <li>
+<a href="https://github.com/open-gsd/gsd-core/blob/next/docs/explanation/context-engineering.md">GSD Core: Context engineering</a> ── context rotとfresh-context subagentの設計</li>
+  <li>
+<a href="https://github.com/open-gsd/gsd-core/blob/next/docs/explanation/the-phase-loop.md">GSD Core: The phase loop</a> ── Discuss・Plan・Execute・Verify・Shipの役割</li>
+  <li>
+<a href="https://github.com/open-gsd/gsd-core/blob/next/docs/how-to/install-on-your-runtime.md">GSD Core: Install on your runtime</a> ── ランタイム別の導入方法とコマンド表記</li>
+  <li>
+<a href="https://github.com/open-gsd/gsd-core/blob/next/docs/tutorials/onboarding-an-existing-codebase.md">GSD Core: Onboarding an existing codebase</a> ── 既存リポジトリのcodebase map作成手順</li>
+  <li>
+<a href="https://github.com/gsd-build/get-shit-done">旧gsd-build/get-shit-doneリポジトリ</a> ── 現在の開発先がGSD Coreへ移ったことを案内している</li>
+</ul>
+
+
+    </div>
+
+</article>
+<div class="post-nav">
+<a class="previous" href="/jekyll-theme-yat/ai%E9%96%8B%E7%99%BA/2026/06/24/ai-subscription-telehodai.html" title="AIサブスクのレートリミットは令和のテレホーダイか">AIサブスクのレートリミットは令和のテレホーダイか</a><span></span>
+</div>
+<div class="post-related">
+      <div>Related Articles</div>
+      <ul>
+        <li><a class="post-link" href="/jekyll-theme-yat/%E9%96%8B%E7%99%BA/2026/06/07/openapi-guide.html" title="">OpenAPI で API の仕様とドキュメントを同期させる</a></li>
+<li><a class="post-link" href="/jekyll-theme-yat/%E3%83%96%E3%83%AD%E3%82%B0/2023/05/26/google-analytics.html" title="">JekyllとGitHub PagesでGoogle Analyticsを導入する</a></li>
+<li><a class="post-link" href="/jekyll-theme-yat/%E9%96%8B%E7%99%BA/2026/06/16/notion-database-personal-backend.html" title="">なぜ個人開発のバックエンドに Notion データベースを選ぶのか</a></li>
+<li><a class="post-link" href="/jekyll-theme-yat/%E9%96%8B%E7%99%BA/2026/06/16/spacex-ipo-kardashev-scale.html" title="">SpaceXのIPOとカルダシェフ・スケール</a></li>
+</ul>
+    </div>
+<div class="post-comments"></div></section>
+</div>
+
+
+  </section>
+  <section class="sidebar" style="margin-left: 15px;">
+    <!-- Get sidebar items --><style type="text/css" media="screen">
+.post-menu ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+</style>
+
+<div class="post-menu">
+  <div class="post-menu-title">TOC</div>
+  <div class="post-menu-content"></div>
+</div>
+
+<script>
+  function generateContent() {
+    var menu = document.querySelector(".post-menu");
+    var menuContent =  menu.querySelector(".post-menu-content");
+    var headings = document.querySelector(".post-content").querySelectorAll("h2, h3, h4, h5, h6");
+
+    // Hide menu when no headings
+    if (headings.length === 0) {
+      return menu.style.display = "none";
+    }
+
+    // Generate post menu
+    var menuHTML = '';
+    for (var i = 0; i < headings.length; i++) {
+      var h = headings[i];
+      menuHTML += (
+        '<li class="h-' + h.tagName.toLowerCase() + '">'
+        + '<a href="#h-' + h.getAttribute('id') + '">' + h.textContent + '</a></li>');
+    }
+
+    menuContent.innerHTML = '<ul>' + menuHTML + '</ul>';
+
+    // The header element
+    var header = document.querySelector('header.site-header');
+
+    function doMenuCollapse(index, over_items) {
+      var items = menuContent.firstChild.children;
+
+      if (over_items == undefined) {
+        over_items = 20;
+      }
+
+      if (items.length < over_items) {
+        return;
+      }
+
+      var activeItem = items[index];
+      var beginItem = activeItem
+      var endItem = activeItem
+      var beginIndex = index;
+      var endIndex = index + 1;
+      while (beginIndex >= 0
+        && !items[beginIndex].classList.contains('h-h2')) {
+        beginIndex -= 1;
+      }
+      while (endIndex < items.length
+        && !items[endIndex].classList.contains('h-h2')) {
+        endIndex += 1;
+      }
+      for (var i = 0; i < beginIndex; i++) {
+        item = items[i]
+        if (!item.classList.contains('h-h2')) {
+          item.style.display = 'none';
+        }
+      }
+      for (var i = beginIndex + 1; i < endIndex; i++) {
+        item = items[i]
+        // if (!item.classList.contains('h-h2')) {
+          item.style.display = '';
+        // }
+      }
+      for (var i = endIndex; i < items.length; i++) {
+        item = items[i]
+        if (!item.classList.contains('h-h2')) {
+          item.style.display = 'none';
+        }
+      }
+    }
+
+    // Init menu collapsed
+    doMenuCollapse(-1);
+
+    // Active the menu item
+    window.addEventListener('scroll', function (event) {
+      var lastActive = menuContent.querySelector('.active');
+      var changed = true;
+      var activeIndex = -1;
+      for (var i = headings.length - 1; i >= 0; i--) {
+        var h = headings[i];
+        var headingRect = h.getBoundingClientRect();
+        var headerRect = header.getBoundingClientRect();
+        var headerTop = Math.floor(headerRect.top);
+        var headerHeight = Math.floor(headerRect.height);
+        var headerHeight = headerTop + headerHeight + 20;
+        if (headingRect.top <= headerHeight) {
+          var id = 'h-' + h.getAttribute('id');
+          var a = menuContent.querySelector('a[href="#' + id  + '"]');
+          var curActive = a.parentNode;
+          if (curActive) {
+            curActive.classList.add('active');
+            activeIndex = i;
+          }
+          if (lastActive == curActive) {
+            changed = false;
+          }
+          break;
+        }
+      }
+      if (changed) {
+        if (lastActive) {
+          lastActive.classList.remove('active');
+        }
+        doMenuCollapse(activeIndex);
+      }
+      event.preventDefault();
+    });
+  }
+  generateContent();
+</script>
+</section>
+</div>
+
+      </div>
+    </main><footer class="site-footer h-card">
+  <data class="u-url" href="/jekyll-theme-yat/"></data>
+
+  <div class="wrapper">
+    <div class="site-footer-inner">
+<div>Waka-DS © 2021-2026</div>
+      <div>Powered by <a title="Jekyll is a simple, blog-aware, static site
+      generator." href="http://jekyllrb.com/">Jekyll</a> &amp; <a title="Yat, yet
+      another theme." href="https://github.com/jeffreytse/jekyll-theme-yat">Yat Theme</a>.</div>
+      <div class="footer-col rss-subscribe">Subscribe <a href="/jekyll-theme-yat/feed.xml">via RSS</a>
+</div>
+    </div>
+  </div>
+</footer>
+</body>
+</html>

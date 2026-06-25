@@ -1,0 +1,1601 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <script>
+  (function() {
+    try {
+      var p = localStorage.getItem('preferred_lang');
+      if (!p) return;
+      var path = window.location.pathname;
+      var ja = ['/', '/archives.html', '/categories.html', '/tags.html', '/about.html'];
+      var en = ['/en/', '/en/archives.html', '/en/categories.html', '/en/tags.html', '/en/about.html'];
+      if (p === 'en' && ja.indexOf(path) !== -1) {
+        window.location.replace('/en' + (path === '/' ? '/' : path));
+      } else if (p === 'ja' && en.indexOf(path) !== -1) {
+        window.location.replace(path.slice(3) || '/');
+      }
+    } catch(e) {}
+  })();
+  </script>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="google-translate-customization" content="108d9124921d80c3-80e20d618ff053c8-g4f02ec6f3dba68b7-c">
+<!-- Begin Jekyll SEO tag v2.9.0 -->
+<title>ハーネスエンジニアリングとは何か | Waka-DS.com</title>
+<meta name="generator" content="Jekyll v4.4.1">
+<meta property="og:title" content="ハーネスエンジニアリングとは何か">
+<meta name="author" content="Waka-DS">
+<meta property="og:locale" content="ja">
+<meta name="description" content="AIエージェントを実際の開発に使い込んでいくと、ある転換点に気づく。">
+<meta name="twitter:description" property="og:description" content="AIエージェントを実際の開発に使い込んでいくと、ある転換点に気づく。">
+<link rel="canonical" href="/jekyll-theme-yat/ai%E9%96%8B%E7%99%BA/2026/06/08/harness-engineering-guide.html">
+<meta property="og:url" content="/jekyll-theme-yat/ai%E9%96%8B%E7%99%BA/2026/06/08/harness-engineering-guide.html">
+<meta property="og:site_name" content="Waka-DS.com">
+<meta property="og:type" content="article">
+<meta property="article:published_time" content="2026-06-08T00:00:00+00:00">
+<meta property="article:modified_time" content="2026-06-08T00:00:00+00:00">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="ハーネスエンジニアリングとは何か">
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":"Waka-DS"},"dateModified":"2026-06-08T00:00:00+00:00","datePublished":"2026-06-08T00:00:00+00:00","description":"AIエージェントを実際の開発に使い込んでいくと、ある転換点に気づく。","headline":"ハーネスエンジニアリングとは何か","mainEntityOfPage":{"@type":"WebPage","@id":"/jekyll-theme-yat/ai%E9%96%8B%E7%99%BA/2026/06/08/harness-engineering-guide.html"},"url":"/jekyll-theme-yat/ai%E9%96%8B%E7%99%BA/2026/06/08/harness-engineering-guide.html"}</script>
+<!-- End Jekyll SEO tag -->
+<link rel="shortcut icon" href="">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=Noto+Sans+JP:wght@400;500;700&amp;display=swap">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+  <link rel="stylesheet" href="/jekyll-theme-yat/assets/css/main.css">
+  <script src="/jekyll-theme-yat/assets/js/main.js"></script><link type="application/atom+xml" rel="alternate" href="/jekyll-theme-yat/feed.xml" title="Waka-DS.com">
+<script>
+  function initGoogleAnalytics() {
+    var doNotTrack = (window.doNotTrack === "1" || navigator.doNotTrack === "1" ||
+      navigator.doNotTrack === "yes" || navigator.msDoNotTrack === "1");
+    var enableDNT = "true" == "true";
+
+    if (!enableDNT || !doNotTrack) {
+      var ga_id = 'G-XNP1RBTG9C';
+
+      var script = document.createElement('script');
+      script.async = true;
+      script.src = 'https://www.googletagmanager.com/gtag/js?id=' + ga_id;
+      document.head.appendChild(script);
+
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', ga_id);
+    }
+  }
+  window.addEventListener("load", initGoogleAnalytics);
+</script>
+<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/styles/default.min.css">
+<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/highlight.min.js"></script>
+<!-- and it's easy to individually load additional languages -->
+<script charset="UTF-8" src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/languages/go.min.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<script>
+// Init highlight js
+document.addEventListener('DOMContentLoaded', function(event) {
+  var els = document.querySelectorAll('pre code')
+
+  function addLangData(block) {
+    var outer = block.parentElement.parentElement.parentElement;
+    var lang = block.getAttribute('data-lang');
+    for (var i = 0; i < outer.classList.length; i++) {
+      var cls = outer.classList[i];
+      if (cls.startsWith('language-')) {
+        lang = cls;
+        break;
+      }
+    }
+    if (!lang) {
+      cls = block.getAttribute('class');
+      lang = cls ? cls.replace('hljs ', '') : '';
+    }
+    if (lang.startsWith('language-')) {
+      lang = lang.substr(9);
+    }
+    block.setAttribute('class', 'hljs ' + lang);
+    block.parentNode.setAttribute('data-lang', lang);
+  }
+
+  function addBadge(block) {
+    var enabled = ('true' || 'true').toLowerCase();
+    if (enabled == 'true') {
+      var pre = block.parentElement;
+      pre.classList.add('badge');
+    }
+  }
+
+  function handle(block) {
+    addLangData(block);
+    addBadge(block)
+    hljs.highlightBlock(block);
+  }
+
+  for (var i = 0; i < els.length; i++) {
+    var el = els[i];
+    handle(el);
+  }
+});
+</script>
+
+<style>
+  /* code language badge */
+  pre.badge::before {
+    content: attr(data-lang);
+    color: #fff;
+    background-color: #0d9488;
+    padding: 0 .5em;
+    border-radius: 0 2px;
+    text-transform: uppercase;
+    text-align: center;
+    min-width: 32px;
+    display: inline-block;
+    position: absolute;
+    right: 0;
+  }
+
+  /* fix wrong badge display for firefox browser */
+  code > table pre::before {
+    display: none;
+  }
+</style>
+</head>
+<body>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<header class="site-header " role="banner">
+
+  <div class="wrapper">
+    <div class="site-header-inner">
+<span class="site-brand"><a class="site-brand-inner" rel="author" href="/jekyll-theme-yat/">
+  <img class="site-favicon" title="Waka-DS.com" src="" onerror="this.style.display='none'">
+  Waka-DS.com
+</a>
+</span><nav class="site-nav">
+          <input type="checkbox" id="nav-trigger" class="nav-trigger">
+          <label for="nav-trigger">
+            <span class="menu-icon">
+              <svg viewbox="0 0 18 15" width="18px" height="15px">
+                <path d="M18,1.484c0,0.82-0.665,1.484-1.484,1.484H1.484C0.665,2.969,0,2.304,0,1.484l0,0C0,0.665,0.665,0,1.484,0 h15.032C17.335,0,18,0.665,18,1.484L18,1.484z M18,7.516C18,8.335,17.335,9,16.516,9H1.484C0.665,9,0,8.335,0,7.516l0,0 c0-0.82,0.665-1.484,1.484-1.484h15.032C17.335,6.031,18,6.696,18,7.516L18,7.516z M18,13.516C18,14.335,17.335,15,16.516,15H1.484 C0.665,15,0,14.335,0,13.516l0,0c0-0.82,0.665-1.483,1.484-1.483h15.032C17.335,12.031,18,12.695,18,13.516L18,13.516z"></path>
+              </svg>
+            </span>
+          </label>
+
+          <div class="trigger">
+<a class="page-link" href="/jekyll-theme-yat/about.html">ABOUT</a><a class="page-link" href="/jekyll-theme-yat/archives.html">ARCHIVES</a><a class="page-link" href="/jekyll-theme-yat/categories.html">CATEGORIES</a><a class="page-link" href="/jekyll-theme-yat/">HOME</a><a class="page-link" href="/jekyll-theme-yat/tags.html">TAGS</a>
+</div>
+        </nav>
+</div>
+  </div>
+</header>
+
+<script>
+  function initHeader() {
+    var lastScrollY = getScrollPos().y;
+    var documentElement = document.documentElement;
+
+    function storeScrollData() {
+      var y = getScrollPos().y;var scrollStatus = "";
+
+      if (y <= 0) {
+        scrollStatus = "top";
+      } else if ((window.innerHeight + y) >= document.body.offsetHeight) {
+        scrollStatus = "bottom";
+      } else {
+        var isScrollDown = (y - lastScrollY > 0) ? true : false;
+        scrollStatus = isScrollDown ? "down" : "up";
+      }
+
+      lastScrollY = y;
+      documentElement.setAttribute("data-scroll-status", scrollStatus);
+    }
+
+    window.addEventListener('scroll', function(e) {
+      storeScrollData();
+    });
+
+    storeScrollData();
+  }
+  document.addEventListener('DOMContentLoaded', initHeader);
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<script>
+  function hashLocate(hashValue) {
+    hashValue = hashValue.replace(/^.*#h-/, '');
+    hashValue = decodeURIComponent(hashValue);
+    var element = document.getElementById(hashValue);
+
+    if (!element) {
+      return;
+    }
+
+    var header = document.querySelector('header.site-header');
+    var headerRect = header.getBoundingClientRect();
+    var headerTop = Math.floor(headerRect.top);
+    var headerHeight = Math.floor(headerRect.height);
+    var scrollPos = getScrollPos();
+    var offsetY = element.offsetTop - (headerTop + headerHeight + 20);
+
+    if (offsetY == scrollPos.y) {
+      return;
+    }
+
+    if (headerTop == 0  && offsetY > scrollPos.y) {
+      offsetY += headerHeight + 2;
+    } else if (headerTop < 0  && offsetY < scrollPos.y) {
+      offsetY -= headerHeight - 2;
+    }
+
+    smoothScrollTo(offsetY);
+  }
+
+  // The first event occurred
+  window.addEventListener('load', function(event) {
+    if (window.location.hash) {
+      hashLocate(window.location.hash);
+    }
+  });
+
+  // The first event occurred
+  window.addEventListener('click', function(event) {
+    if (event.target.tagName.toLowerCase() == 'a') {
+      hashLocate(event.target.getAttribute('href'));
+    }
+  });
+</script>
+<div class="theme-toggle">
+  <input type="checkbox" id="theme-switch">
+  <label for="theme-switch">
+    <div class="toggle"></div>
+    <div class="names">
+      <p class="light">Light</p>
+      <p class="dark">Dark</p>
+    </div>
+  </label>
+</div>
+
+
+
+
+<script>
+  (function() {
+    var sw = document.getElementById('theme-switch');
+    var html = document.getElementsByTagName('html')[0];
+    var nightModeOption = ('auto' || 'auto').toLowerCase();
+    var storage = nightModeOption === 'manual'
+        ? localStorage
+        : sessionStorage;
+    var themeData = loadThemeData();
+
+    function saveThemeData(data) {
+      storage.setItem('theme', JSON.stringify(data));
+    }
+
+    function loadThemeData() {
+      var data = storage.getItem('theme');
+      try {
+        data = JSON.parse(data ? data : '');
+      } catch(e) {
+        data = { nightShift: undefined, autoToggleAt: 0 };
+        saveThemeData(data);
+      }
+      return data;
+    }
+
+    function handleThemeToggle(nightShift) {
+      themeData.nightShift = nightShift;
+      saveThemeData(themeData);
+      html.dataset.theme = nightShift ? 'dark' : 'light';
+      setTimeout(function() {
+        sw.checked = nightShift ? true : false;
+      }, 50);
+    }
+
+    function autoThemeToggle() {
+      // Next time point of theme toggle
+      var now = new Date();
+      var toggleAt = new Date();
+      var hours = now.getHours();
+      var nightShift = hours >= 19 || hours <=7;
+
+      if (nightShift) {
+        if (hours > 7) {
+          toggleAt.setDate(toggleAt.getDate() + 1);
+        }
+        toggleAt.setHours(7);
+      } else {
+        toggleAt.setHours(19);
+      }
+
+      toggleAt.setMinutes(0);
+      toggleAt.setSeconds(0);
+      toggleAt.setMilliseconds(0)
+
+      var delay = toggleAt.getTime() - now.getTime();
+
+      // auto toggle theme mode
+      setTimeout(function() {
+        handleThemeToggle(!nightShift);
+      }, delay);
+
+      return {
+        nightShift: nightShift,
+        toggleAt: toggleAt.getTime()
+      };
+    }
+
+    // Listen the theme toggle event
+    sw.addEventListener('change', function(event) {
+      handleThemeToggle(event.target.checked);
+    });
+
+    if (nightModeOption == 'auto') {
+      var data = autoThemeToggle();
+
+      // Toggle theme by local setting
+      if (data.toggleAt > themeData.autoToggleAt) {
+        themeData.autoToggleAt = data.toggleAt;
+        handleThemeToggle(data.nightShift);
+      } else {
+        handleThemeToggle(themeData.nightShift);
+      }
+    } else if (nightModeOption == 'manual') {
+      handleThemeToggle(themeData.nightShift);
+    } else {
+      var nightShift = themeData.nightShift;
+      if (nightShift === undefined) {
+        nightShift = nightModeOption === 'on';
+      }
+      handleThemeToggle(nightShift);
+    }
+  })();
+</script>
+<main class="page-content" aria-label="Content">
+      <div class="wrapper">
+        <div class="framework">
+  <section class="main">
+
+     <div class="post">
+  <section>
+
+
+
+
+
+
+
+
+
+<header class="post-header">
+  <h1 class="post-title p-name" itemprop="name headline">ハーネスエンジニアリングとは何か</h1>
+  <h2 class="post-subtitle">Claude Code の Hooks・Ralph Loop・Supervisor Pattern の設計と実装</h2>
+
+  <p class="post-meta">
+    <time class="dt-published" datetime="2026-06-08T00:00:00+00:00" itemprop="datePublished"><i class="fa fa-calendar"></i> Jun 08, 2026
+    </time>
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <span class="post-reading-time left-vsplit"><i class="fa fa-clock-o"></i> About 39 mins</span>
+  </p>
+<div class="post-tags">
+<a class="post-tag" href="/jekyll-theme-yat/tags.html#%E3%83%8F%E3%83%BC%E3%83%8D%E3%82%B9%E3%82%A8%E3%83%B3%E3%82%B8%E3%83%8B%E3%82%A2%E3%83%AA%E3%83%B3%E3%82%B0">#ハーネスエンジニアリング</a><a class="post-tag" href="/jekyll-theme-yat/tags.html#AI%E3%82%A8%E3%83%BC%E3%82%B8%E3%82%A7%E3%83%B3%E3%83%88">#AIエージェント</a><a class="post-tag" href="/jekyll-theme-yat/tags.html#Claude%20Code">#Claude Code</a><a class="post-tag" href="/jekyll-theme-yat/tags.html#Ralph%20Loop">#Ralph Loop</a><a class="post-tag" href="/jekyll-theme-yat/tags.html#%E8%87%AA%E5%8B%95%E5%8C%96">#自動化</a><a class="post-tag" href="/jekyll-theme-yat/tags.html#AI%E9%96%8B%E7%99%BA">#AI開発</a>
+</div></header>
+<article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
+
+    <div class="post-content e-content" itemprop="articleBody">
+
+      <p>AIエージェントを実際の開発に使い込んでいくと、ある転換点に気づく。</p>
+
+<p><strong>問題は、モデルが賢くないことではない。モデルを「どう使わせるか」の設計が追いついていないことだ。</strong></p>
+
+<ul>
+  <li>エージェントが意図していない操作をファイルに加える</li>
+  <li>ループして同じ失敗を繰り返す</li>
+  <li>テストを消して「成功」とみなす</li>
+  <li>承認なしに外部サービスを呼び出す</li>
+  <li>何をやったか追跡できない</li>
+</ul>
+
+<p>これらは全部、モデルの問題ではない。モデルの周りに「どういう制約で、どういう情報を渡して、どう評価するか」を設計していないことが原因だ。</p>
+
+<p>この設計領域を <strong>ハーネスエンジニアリング（Harness Engineering）</strong> と呼ぶ。</p>
+
+<hr>
+
+<h2 id="結論を先に">結論を先に</h2>
+
+<p>ハーネスエンジニアリングとは、<strong>AIエージェントが動作する実行環境そのものを設計・制御する技術</strong>だ。</p>
+
+<p>モデルの「外側」を作る作業と言ってもいい。</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>ハーネス（囲い）の中で
+  ↓ 情報を制御する（何を見せるか）
+  ↓ 行動を制御する（何をさせるか）
+  ↓ 結果を評価する（何が達成されたかを判定する）
+</code></pre></div></div>
+
+<p>ハーネスエンジニアリングの主な実装手段は次のとおりだ。</p>
+
+<table>
+  <thead>
+    <tr>
+      <th style="text-align: left">手段</th>
+      <th style="text-align: left">役割</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td style="text-align: left">CLAUDE.md / AGENTS.md</td>
+      <td style="text-align: left">エージェントへの静的な指示・文脈注入</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">Hooks</td>
+      <td style="text-align: left">ライフサイクルイベントへのスクリプト介入</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">権限モデル</td>
+      <td style="text-align: left">ツール実行の許可・拒否・確認</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">ツールサーフェス</td>
+      <td style="text-align: left">エージェントに公開するツールの範囲</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">エージェントループ設計</td>
+      <td style="text-align: left">いつ・どう繰り返すかの制御</td>
+    </tr>
+  </tbody>
+</table>
+
+<blockquote>
+  <p>2026年に入り、企業がAIエージェントを本番導入した結果、「モデルを賢くすること」より「囲いを正しく作ること」の方が難しいという認識が業界で共有されはじめた。</p>
+</blockquote>
+
+<hr>
+
+<h2 id="ハーネスとは何か">ハーネスとは何か</h2>
+
+<p>「ハーネス」という言葉は、もともとソフトウェアテストの文脈で使われていた。テスト対象コードを制御された環境で動かすための「テストハーネス」だ。</p>
+
+<p>AIエージェントに対して使われる場合は、意味が広がっている。</p>
+
+<p><strong>モデルが動作する環境全体 ── 何を見られるか、何ができるか、何を返すか ── を制御するシステム</strong>のことを指す。</p>
+
+<p>たとえば Claude Code を例に取ると、ユーザーが直接触っているのは「モデル」だが、その周囲には次のような構造がある。</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>┌──────────────────────────────────────────────┐
+│  ハーネス                                       │
+│  ┌─────────────────────────────────────────┐  │
+│  │  CLAUDE.md / AGENTS.md                   │  │
+│  │  （エージェントへの指示・コンテキスト）          │  │
+│  ├─────────────────────────────────────────┤  │
+│  │  Hooks                                   │  │
+│  │  （PreToolUse / PostToolUse / Stop etc.）│  │
+│  ├─────────────────────────────────────────┤  │
+│  │  Permissions                             │  │
+│  │  （ツール実行ポリシー）                        │  │
+│  ├─────────────────────────────────────────┤  │
+│  │  Tool Surface                            │  │
+│  │  （公開するツールの範囲）                       │  │
+│  └─────────────────────────────────────────┘  │
+│                    ↕                            │
+│           [ モデル / LLM ]                       │
+│                    ↕                            │
+│  ┌─────────────────────────────────────────┐  │
+│  │  Evaluation                              │  │
+│  │  （テスト・トレース・Human-in-the-loop）    │  │
+│  └─────────────────────────────────────────┘  │
+└──────────────────────────────────────────────┘
+</code></pre></div></div>
+
+<p>モデルはこのハーネスの中で動く。ハーネスがないと、モデルは「何でも見られて、何でもできる状態」で動くことになる。</p>
+
+<hr>
+
+<h2 id="ハーネスの3層アーキテクチャ">ハーネスの3層アーキテクチャ</h2>
+
+<p>2026年時点で、ハーネスの実務設計は3つの層に整理されている。</p>
+
+<h3 id="layer-1-情報層information-layer">Layer 1: 情報層（Information Layer）</h3>
+
+<p>エージェントが<strong>何を見るか</strong>を制御する層だ。</p>
+
+<ul>
+  <li>どの過去情報がコンテキストに含まれるか</li>
+  <li>どのツールが公開されているか（ツールのスキーマも含む）</li>
+  <li>CLAUDE.md や AGENTS.md で何を事前に教えるか</li>
+  <li>コンテキスト圧縮・フィルタリング</li>
+</ul>
+
+<p>エージェントの推論品質は、ここで決まる部分が大きい。良いコンテキストを作れば、プロンプトを精緻化するよりずっと効果が高い。</p>
+
+<h3 id="layer-2-行動層action-layer">Layer 2: 行動層（Action Layer）</h3>
+
+<p>エージェントが<strong>何をするか</strong>を制御する層だ。</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Plan → Tool Call → Guardrail Check → Parse → Retry or Complete
+</code></pre></div></div>
+
+<p>この層の中心はエージェントループの設計だ。何度繰り返すか、どういう条件で止まるか、失敗したらどうするか。</p>
+
+<p>Hooks はこの層に属する。PreToolUse で特定の操作を止めたり、PostToolUse で結果をログに残したりできる。</p>
+
+<h3 id="layer-3-評価層evaluation-layer">Layer 3: 評価層（Evaluation Layer）</h3>
+
+<p><strong>何が達成されたかを判定する</strong>層だ。</p>
+
+<ul>
+  <li>テスト・lint・型チェックによる自動検証</li>
+  <li>トレーシング（エージェントが何を見て・何をしたかの記録）</li>
+  <li>Human-in-the-loop（人間による確認・承認）</li>
+</ul>
+
+<p>評価層がなければ、エージェントが「やった」と言っても本当にやったかどうか確認できない。</p>
+
+<hr>
+
+<h2 id="実装要素-claudemd-と-agentsmd">実装要素①: CLAUDE.md と AGENTS.md</h2>
+
+<h3 id="claudemd">CLAUDE.md</h3>
+
+<p>Claude Code が自動的に読み込む設定ファイルだ。プロジェクトルートに置くことで、セッション開始時にエージェントのコンテキストへ自動注入される。</p>
+
+<div class="language-markdown highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="gh"># プロジェクト概要</span>
+このプロジェクトは Python 3.11 / FastAPI / PostgreSQL を使用する。
+
+<span class="gh"># 開発コンベンション</span>
+<span class="p">-</span> テストは pytest を使う
+<span class="p">-</span> コードフォーマットは Black
+<span class="p">-</span> 型注釈は必須（mypy strict）
+<span class="p">-</span> マイグレーションは Alembic で管理する
+
+<span class="gh"># 実行手順</span>
+<span class="p">-</span> 開発サーバー起動: <span class="sb">`docker compose up`</span>
+<span class="p">-</span> テスト実行: <span class="sb">`pytest`</span>
+<span class="p">-</span> マイグレーション適用: <span class="sb">`alembic upgrade head`</span>
+
+<span class="gh"># 注意事項</span>
+<span class="p">-</span> データベースへの直接 DROP は行わない
+<span class="p">-</span> 本番環境の設定ファイルは編集しない
+<span class="p">-</span> secrets.env は絶対にコミットしない
+</code></pre></div></div>
+
+<p>CLAUDE.md に書かれた内容は毎回プロンプトに書かなくて済む。エージェントが「知っておくべきこと」を一元管理する場所だ。</p>
+
+<h3 id="agentsmd">AGENTS.md</h3>
+
+<p>CLAUDE.md がClaude Code 専用なのに対して、AGENTS.md はより広いエージェントツール向けのコンベンションだ。複数のエージェント（Claude Code、Codex など）が同じリポジトリを使う場合に、ツール横断的な指示を置く場所として機能する。</p>
+
+<p>重要な違いは、<strong>CLAUDE.md は指示だが、AGENTS.md はエージェント間の合意</strong>という側面が強いことだ。</p>
+
+<div class="language-markdown highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="gh"># AGENTS.md</span>
+
+<span class="gu">## エージェント間の役割分担</span>
+<span class="p">-</span> architect (Claude Code): タスク設計・レビュー・マージ判断
+<span class="p">-</span> backend (Codex): API・DB・テストの実装
+
+<span class="gu">## コミュニケーションプロトコル</span>
+<span class="p">-</span> タスク完了時: <span class="sb">`DONE &lt;task-id&gt; -&gt; architect`</span>
+<span class="p">-</span> ブロック時: <span class="sb">`BLOCKED &lt;task-id&gt; by &lt;理由&gt;`</span>
+<span class="p">-</span> レビュー指摘: <span class="sb">`CHANGES &lt;task-id&gt; -&gt; backend`</span>
+
+<span class="gu">## 実行してはいけないコマンド</span>
+<span class="p">-</span> git push --force
+<span class="p">-</span> DROP TABLE / DROP DATABASE
+<span class="p">-</span> rm -rf（ワークスペース外）
+</code></pre></div></div>
+
+<hr>
+
+<h2 id="実装要素-hooks">実装要素②: Hooks</h2>
+
+<p>Claude Code の Hooks は、エージェントのライフサイクルイベントにシェルスクリプトや HTTP エンドポイントを差し込む仕組みだ。</p>
+
+<h3 id="主なフックイベント2026年6月時点">主なフックイベント（2026年6月時点）</h3>
+
+<table>
+  <thead>
+    <tr>
+      <th style="text-align: left">イベント</th>
+      <th style="text-align: left">タイミング</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td style="text-align: left"><code class="language-plaintext highlighter-rouge">PreToolUse</code></td>
+      <td style="text-align: left">ツール実行の直前</td>
+    </tr>
+    <tr>
+      <td style="text-align: left"><code class="language-plaintext highlighter-rouge">PostToolUse</code></td>
+      <td style="text-align: left">ツール実行の直後</td>
+    </tr>
+    <tr>
+      <td style="text-align: left"><code class="language-plaintext highlighter-rouge">PostToolUseFailure</code></td>
+      <td style="text-align: left">ツール実行が失敗した直後</td>
+    </tr>
+    <tr>
+      <td style="text-align: left"><code class="language-plaintext highlighter-rouge">Stop</code></td>
+      <td style="text-align: left">エージェントが停止する直前</td>
+    </tr>
+    <tr>
+      <td style="text-align: left"><code class="language-plaintext highlighter-rouge">SessionStart</code></td>
+      <td style="text-align: left">セッション開始時</td>
+    </tr>
+    <tr>
+      <td style="text-align: left"><code class="language-plaintext highlighter-rouge">UserPromptSubmit</code></td>
+      <td style="text-align: left">ユーザーがプロンプトを送信した直後</td>
+    </tr>
+    <tr>
+      <td style="text-align: left"><code class="language-plaintext highlighter-rouge">SubagentStart / SubagentStop</code></td>
+      <td style="text-align: left">サブエージェントの起動・停止</td>
+    </tr>
+  </tbody>
+</table>
+
+<h3 id="pretooluse-の重要性">PreToolUse の重要性</h3>
+
+<p><strong>PreToolUse はハーネスにおける最強の防御ラインだ。</strong></p>
+
+<p>CLAUDE.md に書いた「やってはいけないこと」は、モデルの判断次第で上書きされうる。しかし、PreToolUse を終了コード <code class="language-plaintext highlighter-rouge">2</code> で終了させると、ツール呼び出しが<strong>無条件に</strong>ブロックされる。指示よりコードが強い。</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c">#!/bin/bash</span>
+<span class="c"># pre_tool_use.sh</span>
+<span class="c"># PreToolUse hook: 危険なコマンドをブロックする</span>
+
+<span class="nv">TOOL_NAME</span><span class="o">=</span><span class="s2">"</span><span class="nv">$1</span><span class="s2">"</span>
+<span class="nv">TOOL_INPUT</span><span class="o">=</span><span class="s2">"</span><span class="nv">$2</span><span class="s2">"</span>
+
+<span class="k">if</span> <span class="o">[</span> <span class="s2">"</span><span class="nv">$TOOL_NAME</span><span class="s2">"</span> <span class="o">=</span> <span class="s2">"Bash"</span> <span class="o">]</span><span class="p">;</span> <span class="k">then</span>
+  <span class="c"># git push --force のブロック</span>
+  <span class="k">if </span><span class="nb">echo</span> <span class="s2">"</span><span class="nv">$TOOL_INPUT</span><span class="s2">"</span> | <span class="nb">grep</span> <span class="nt">-qE</span> <span class="s1">'git\s+push\s+.*--force'</span><span class="p">;</span> <span class="k">then
+    </span><span class="nb">echo</span> <span class="s2">"BLOCKED: git push --force は禁止されています"</span> <span class="o">&gt;</span>&amp;2
+    <span class="nb">exit </span>2
+  <span class="k">fi</span>
+
+  <span class="c"># rm -rf のブロック</span>
+  <span class="k">if </span><span class="nb">echo</span> <span class="s2">"</span><span class="nv">$TOOL_INPUT</span><span class="s2">"</span> | <span class="nb">grep</span> <span class="nt">-qE</span> <span class="s1">'rm\s+-rf\s+/'</span><span class="p">;</span> <span class="k">then
+    </span><span class="nb">echo</span> <span class="s2">"BLOCKED: ルートへの rm -rf は禁止されています"</span> <span class="o">&gt;</span>&amp;2
+    <span class="nb">exit </span>2
+  <span class="k">fi</span>
+
+  <span class="c"># secrets ファイルへのアクセスのブロック</span>
+  <span class="k">if </span><span class="nb">echo</span> <span class="s2">"</span><span class="nv">$TOOL_INPUT</span><span class="s2">"</span> | <span class="nb">grep</span> <span class="nt">-qE</span> <span class="s1">'\.env\.prod|secrets\.env'</span><span class="p">;</span> <span class="k">then
+    </span><span class="nb">echo</span> <span class="s2">"BLOCKED: 本番secrets ファイルへのアクセスは禁止されています"</span> <span class="o">&gt;</span>&amp;2
+    <span class="nb">exit </span>2
+  <span class="k">fi
+fi
+
+</span><span class="nb">exit </span>0
+</code></pre></div></div>
+
+<p>Claude Code の <code class="language-plaintext highlighter-rouge">settings.json</code> にフックを登録する。</p>
+
+<div class="language-json highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">{</span><span class="w">
+  </span><span class="nl">"hooks"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+    </span><span class="nl">"PreToolUse"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
+      </span><span class="p">{</span><span class="w">
+        </span><span class="nl">"matcher"</span><span class="p">:</span><span class="w"> </span><span class="s2">""</span><span class="p">,</span><span class="w">
+        </span><span class="nl">"hooks"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
+          </span><span class="p">{</span><span class="w">
+            </span><span class="nl">"type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"command"</span><span class="p">,</span><span class="w">
+            </span><span class="nl">"command"</span><span class="p">:</span><span class="w"> </span><span class="s2">"bash /path/to/pre_tool_use.sh"</span><span class="w">
+          </span><span class="p">}</span><span class="w">
+        </span><span class="p">]</span><span class="w">
+      </span><span class="p">}</span><span class="w">
+    </span><span class="p">]</span><span class="w">
+  </span><span class="p">}</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></code></pre></div></div>
+
+<h3 id="stop-フックの活用">Stop フックの活用</h3>
+
+<p>Stop フックは、エージェントが作業を終えたタイミングで何かを実行したい場合に使う。</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c">#!/bin/bash</span>
+<span class="c"># stop_hook.sh</span>
+<span class="c"># エージェント停止時にテストを実行して品質を確認する</span>
+
+<span class="nb">echo</span> <span class="s2">"=== エージェント停止 → 自動テスト実行 ==="</span> <span class="o">&gt;</span>&amp;2
+<span class="nb">cd</span> <span class="s2">"</span><span class="nv">$PROJECT_ROOT</span><span class="s2">"</span>
+
+<span class="c"># テスト実行</span>
+<span class="k">if</span> <span class="o">!</span> pytest <span class="nt">--tb</span><span class="o">=</span>short <span class="nt">-q</span> 2&gt;&amp;1<span class="p">;</span> <span class="k">then
+  </span><span class="nb">echo</span> <span class="s2">"WARNING: テストが失敗しています"</span> <span class="o">&gt;</span>&amp;2
+<span class="k">fi</span>
+
+<span class="c"># 整形チェック</span>
+<span class="k">if</span> <span class="o">!</span> black <span class="nt">--check</span> <span class="nb">.</span> 2&gt;/dev/null<span class="p">;</span> <span class="k">then
+  </span><span class="nb">echo</span> <span class="s2">"WARNING: Black 整形が必要なファイルがあります"</span> <span class="o">&gt;</span>&amp;2
+<span class="k">fi</span>
+</code></pre></div></div>
+
+<hr>
+
+<h2 id="実装要素-権限モデル">実装要素③: 権限モデル</h2>
+
+<p>Claude Code の権限モデルは、エージェントが実行できる操作を3段階で制御する。</p>
+
+<table>
+  <thead>
+    <tr>
+      <th style="text-align: left">設定</th>
+      <th style="text-align: left">動作</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td style="text-align: left">自動許可（allowlist）</td>
+      <td style="text-align: left">確認なしで実行</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">手動確認（default）</td>
+      <td style="text-align: left">ユーザーに確認を求める</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">ブロック（denylist）</td>
+      <td style="text-align: left">実行を拒否</td>
+    </tr>
+  </tbody>
+</table>
+
+<p><code class="language-plaintext highlighter-rouge">settings.json</code> で細かく設定できる。</p>
+
+<div class="language-json highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">{</span><span class="w">
+  </span><span class="nl">"permissions"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+    </span><span class="nl">"allow"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
+      </span><span class="s2">"Bash(git status)"</span><span class="p">,</span><span class="w">
+      </span><span class="s2">"Bash(git diff*)"</span><span class="p">,</span><span class="w">
+      </span><span class="s2">"Bash(pytest*)"</span><span class="p">,</span><span class="w">
+      </span><span class="s2">"Bash(black*)"</span><span class="p">,</span><span class="w">
+      </span><span class="s2">"Read(*)"</span><span class="w">
+    </span><span class="p">],</span><span class="w">
+    </span><span class="nl">"deny"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
+      </span><span class="s2">"Bash(git push --force*)"</span><span class="p">,</span><span class="w">
+      </span><span class="s2">"Bash(rm -rf*)"</span><span class="p">,</span><span class="w">
+      </span><span class="s2">"Bash(curl* --upload*)"</span><span class="w">
+    </span><span class="p">]</span><span class="w">
+  </span><span class="p">}</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></code></pre></div></div>
+
+<p><strong>最小権限の原則</strong>がここでも基本だ。エージェントには「今やるべきタスクに必要な権限だけ」を与える。開発時は広め、本番に近い環境では狭める。</p>
+
+<hr>
+
+<h2 id="実装パターン-ralph-loop">実装パターン①: Ralph Loop</h2>
+
+<p>Ralph Loop は、<strong>エージェントを繰り返し実行してゴール条件が満たされるまで自律的に作業させる</strong>パターンだ。</p>
+
+<p>名前の由来はアニメ「シンプソンズ」のキャラクター、Ralph Wiggum だ。無邪気に何度でも同じことを試みる姿から来ている。元々は Geoffrey Huntley 氏が考案したコミュニティパターンで、後に Claude Code の <code class="language-plaintext highlighter-rouge">/goal</code> コマンドとして公式実装された。</p>
+
+<h3 id="ralph-loop-の核心的な考え方">Ralph Loop の核心的な考え方</h3>
+
+<p>通常のエージェントは1回動いて止まる。Ralph Loop は次の考え方で動く。</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>1. ゴール条件（exit condition）を定義する
+2. エージェントを1ターン実行する（新規コンテキストで）
+3. ゴール条件を確認する（テスト・lint・マーカーファイルなど）
+4. 満たされていなければ 2. に戻る
+5. 満たされたら終了する
+</code></pre></div></div>
+
+<p>重要なのは「<strong>新規コンテキストで</strong>」という部分だ。毎回コンテキストをリセットすることで、長時間実行時の「context rot（コンテキスト汚染）」を防ぐ。状態はファイルシステムや git に永続化し、次のターンでそれを読んで再構築する。</p>
+
+<h3 id="シェルスクリプトによる最小実装">シェルスクリプトによる最小実装</h3>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c">#!/usr/bin/env bash</span>
+<span class="c"># ralph.sh ── Claude Code を繰り返し実行するループ</span>
+
+<span class="nv">GOAL_FILE</span><span class="o">=</span><span class="s2">"GOAL.md"</span>         <span class="c"># ゴール条件を書いたファイル</span>
+<span class="nv">PROGRESS_FILE</span><span class="o">=</span><span class="s2">"progress.md"</span> <span class="c"># 進捗状態のファイル</span>
+<span class="nv">MAX_ITERATIONS</span><span class="o">=</span>20           <span class="c"># 最大繰り返し回数</span>
+<span class="nv">ITERATION</span><span class="o">=</span>0
+
+<span class="c"># ゴール達成の判定関数（プロジェクトに合わせてカスタマイズする）</span>
+check_goal<span class="o">()</span> <span class="o">{</span>
+  <span class="c"># テストが全部通っているか</span>
+  pytest <span class="nt">--tb</span><span class="o">=</span>no <span class="nt">-q</span> 2&gt;&amp;1 | <span class="nb">grep</span> <span class="nt">-q</span> <span class="s2">"passed"</span> <span class="o">||</span> <span class="k">return </span>1
+  <span class="c"># lint がクリーンか</span>
+  ruff check <span class="nb">.</span> <span class="nt">--quiet</span> 2&gt;&amp;1 | <span class="nb">grep</span> <span class="nt">-q</span> <span class="s2">"^$"</span> <span class="o">||</span> <span class="k">return </span>1
+  <span class="k">return </span>0
+<span class="o">}</span>
+
+<span class="k">while</span> <span class="o">[</span> <span class="nv">$ITERATION</span> <span class="nt">-lt</span> <span class="nv">$MAX_ITERATIONS</span> <span class="o">]</span><span class="p">;</span> <span class="k">do
+  </span><span class="nv">ITERATION</span><span class="o">=</span><span class="k">$((</span>ITERATION <span class="o">+</span> <span class="m">1</span><span class="k">))</span>
+  <span class="nb">echo</span> <span class="s2">"=== Iteration </span><span class="nv">$ITERATION</span><span class="s2"> / </span><span class="nv">$MAX_ITERATIONS</span><span class="s2"> ==="</span>
+
+  <span class="c"># ゴール達成確認</span>
+  <span class="k">if </span>check_goal<span class="p">;</span> <span class="k">then
+    </span><span class="nb">echo</span> <span class="s2">"✓ ゴール達成。ループを終了します。"</span>
+    <span class="nb">exit </span>0
+  <span class="k">fi</span>
+
+  <span class="c"># git log と進捗ファイルを読んでコンテキストを再構築させる</span>
+  <span class="nv">PROMPT</span><span class="o">=</span><span class="s2">"</span><span class="si">$(</span><span class="nb">cat</span> <span class="s2">"</span><span class="nv">$GOAL_FILE</span><span class="s2">"</span><span class="si">)</span><span class="s2">
+
+現在の状態:
+</span><span class="si">$(</span><span class="nb">cat</span> <span class="s2">"</span><span class="nv">$PROGRESS_FILE</span><span class="s2">"</span> 2&gt;/dev/null <span class="o">||</span> <span class="nb">echo</span> <span class="s1">'（進捗なし）'</span><span class="si">)</span><span class="s2">
+
+直近のコミット:
+</span><span class="si">$(</span>git log <span class="nt">--oneline</span> <span class="nt">-5</span><span class="si">)</span><span class="s2">
+
+テスト状況:
+</span><span class="si">$(</span>pytest <span class="nt">--tb</span><span class="o">=</span>short <span class="nt">-q</span> 2&gt;&amp;1 | <span class="nb">tail</span> <span class="nt">-20</span><span class="si">)</span><span class="s2">
+
+上記の状態を踏まえて、ゴールに近づくための次のステップを実行してください。
+完了したらその内容を progress.md に追記してください。"</span>
+
+  <span class="c"># Claude Code をヘッドレスモードで1ターン実行</span>
+  claude <span class="nt">--print</span> <span class="s2">"</span><span class="nv">$PROMPT</span><span class="s2">"</span>
+
+  <span class="c"># 短いウェイト（API レート制限への配慮）</span>
+  <span class="nb">sleep </span>3
+<span class="k">done
+
+</span><span class="nb">echo</span> <span class="s2">"最大繰り返し回数に達しました。手動で確認してください。"</span>
+<span class="nb">exit </span>1
+</code></pre></div></div>
+
+<h3 id="goalmd-の例">GOAL.md の例</h3>
+
+<div class="language-markdown highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="gh"># ゴール条件</span>
+
+以下をすべて満たすこと。
+<span class="p">
+1.</span> <span class="sb">`pytest`</span> が全テスト通過する
+<span class="p">2.</span> <span class="sb">`ruff check .`</span> がエラーなしで通る
+<span class="p">3.</span> <span class="sb">`black --check .`</span> が整形済みと判定する
+<span class="p">4.</span> 認証エンドポイント <span class="sb">`/auth/login`</span> と <span class="sb">`/auth/logout`</span> が実装されている
+<span class="p">5.</span> OpenAPI ドキュメントが更新されている
+
+ゴール達成時は <span class="sb">`DONE`</span> とだけ書いた progress.md を作成すること。
+</code></pre></div></div>
+
+<hr>
+
+<h2 id="実装パターン-goal-コマンド公式実装">実装パターン②: /goal コマンド（公式実装）</h2>
+
+<p><code class="language-plaintext highlighter-rouge">/goal</code> は Ralph Loop の公式 Claude Code 実装だ。2025年末頃に導入され、シェルスクリプト不要でループを実現できる。</p>
+
+<h3 id="基本的な使い方">基本的な使い方</h3>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>/goal &lt;完了条件&gt;（最大4000文字）
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>/goal
+認証APIの実装が完了すること。
+条件:
+- pytest が全テスト通過する
+- /auth/login と /auth/logout が実装されている
+- 型注釈がすべてついている
+- APIドキュメントが更新されている
+</code></pre></div></div>
+
+<p>実行すると Claude Code は次のように動く。</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>1. ゴール条件を記憶する
+2. 通常通り作業を行う
+3. 各ターンの終了時に、専用の軽量モデルがゴール条件を評価する
+4. 未達成なら次のターンを開始する
+5. 達成されたらゴールをクリアして停止する
+</code></pre></div></div>
+
+<p>シェルスクリプトと違い、<strong>ゴール評価はモデルが行う</strong>。コード実行ではなくLLMによる判断だ。これは長所でも短所でもある。コードで機械的に判定できる条件（テスト通過・lint クリア）はスクリプトで判定する方が確実だが、「適切に実装されているか」のような判断はLLMの方が得意だ。</p>
+
+<table>
+  <thead>
+    <tr>
+      <th style="text-align: left">特徴</th>
+      <th style="text-align: left"><code class="language-plaintext highlighter-rouge">/goal</code></th>
+      <th style="text-align: left">シェルスクリプト Ralph Loop</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td style="text-align: left">設定の手間</td>
+      <td style="text-align: left">ほぼゼロ</td>
+      <td style="text-align: left">スクリプト作成が必要</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">ゴール評価</td>
+      <td style="text-align: left">LLMが判断</td>
+      <td style="text-align: left">コードで機械的に判定可</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">カスタマイズ</td>
+      <td style="text-align: left">限られる</td>
+      <td style="text-align: left">自由</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">再現性</td>
+      <td style="text-align: left">やや低い</td>
+      <td style="text-align: left">高い</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">適用範囲</td>
+      <td style="text-align: left">定性的な完了条件に向く</td>
+      <td style="text-align: left">定量的な条件（テスト等）に向く</td>
+    </tr>
+  </tbody>
+</table>
+
+<hr>
+
+<h2 id="実装パターン-supervisor-pattern">実装パターン③: Supervisor Pattern</h2>
+
+<p><strong>Supervisor Pattern</strong> は、上位のエージェント（Supervisor）が下位のエージェント（Worker）の作業を指示・確認・承認する構造だ。</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Supervisor (Claude / orchestrator)
+  ├─ Worker A (Codex / backend)  ← タスク実装
+  ├─ Worker B (agy / reviewer)   ← レビュー
+  └─ Worker C (specialist)       ← 特定ドメイン
+</code></pre></div></div>
+
+<p>Supervisor の役割は次のとおりだ。</p>
+
+<ul>
+  <li>タスクを定義して Worker に割り当てる</li>
+  <li>Worker の成果物を受け取ってレビューする</li>
+  <li>品質基準を満たさなければ差し戻す</li>
+  <li>複数 Worker の作業を統合する</li>
+</ul>
+
+<p>重要なのは、<strong>Supervisor が「判断」を持ち、Worker は「実行」だけを担う</strong>という役割分担だ。Worker が自律的に判断の範囲を広げると、Supervisor の制御が機能しなくなる。</p>
+
+<h3 id="phase-gating">Phase-gating</h3>
+
+<p>Phase-gating は Supervisor Pattern と組み合わせて使われるパターンで、作業フェーズ間に明示的なゲートを設ける。</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Phase 1: 設計（DESIGN）
+  → Gate: アーキテクチャ承認
+Phase 2: 実装（IMPLEMENT）
+  → Gate: テスト通過・レビュー承認
+Phase 3: 統合（INTEGRATE）
+  → Gate: E2Eテスト通過
+Phase 4: リリース（RELEASE）
+  → Gate: 人間による最終確認
+</code></pre></div></div>
+
+<p>各ゲートを通過しなければ次のフェーズに進めない。「リリースフェーズに進んでいいのに設計が終わっていない」という状態を構造的に防ぐ。</p>
+
+<p>コスト的に大きい操作（本番デプロイ・データベース変更など）の前には必ず人間承認のゲートを置く。</p>
+
+<hr>
+
+<h2 id="実装パターン-circuit-breaker">実装パターン④: Circuit Breaker</h2>
+
+<p><strong>Circuit Breaker（サーキットブレーカー）</strong> は、エージェントが「ドゥームループ」に陥るのを防ぐパターンだ。</p>
+
+<p>ドゥームループとは、同じ失敗を繰り返し続ける状態だ。エージェントが「なぜ失敗しているか」を理解しないまま同じアプローチを試み続けると、コストと時間だけが消費される。</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>ドゥームループの例:
+iteration 1: ファイルAを修正 → テスト失敗
+iteration 2: ファイルAを修正（同じアプローチ）→ テスト失敗
+iteration 3: ファイルAを修正（同じアプローチ）→ テスト失敗
+...（繰り返す）
+</code></pre></div></div>
+
+<h3 id="circuit-breaker-の実装">Circuit Breaker の実装</h3>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c">#!/usr/bin/env bash</span>
+<span class="c"># circuit_breaker.sh</span>
+
+<span class="nv">FAILURE_LOG</span><span class="o">=</span><span class="s2">"/tmp/agent_failures.log"</span>
+<span class="nv">MAX_CONSECUTIVE_FAILURES</span><span class="o">=</span>3
+<span class="nv">SAME_FILE_EDIT_LIMIT</span><span class="o">=</span>5
+
+<span class="c"># 同一ファイルへの連続編集回数をカウント</span>
+check_edit_count<span class="o">()</span> <span class="o">{</span>
+  <span class="nb">local </span><span class="nv">file</span><span class="o">=</span><span class="s2">"</span><span class="nv">$1</span><span class="s2">"</span>
+  <span class="nb">local </span>count
+  <span class="nv">count</span><span class="o">=</span><span class="si">$(</span><span class="nb">grep</span> <span class="nt">-c</span> <span class="s2">"EDIT:</span><span class="nv">$file</span><span class="s2">"</span> <span class="s2">"</span><span class="nv">$FAILURE_LOG</span><span class="s2">"</span> 2&gt;/dev/null <span class="o">||</span> <span class="nb">echo </span>0<span class="si">)</span>
+  <span class="k">if</span> <span class="o">[</span> <span class="s2">"</span><span class="nv">$count</span><span class="s2">"</span> <span class="nt">-ge</span> <span class="s2">"</span><span class="nv">$SAME_FILE_EDIT_LIMIT</span><span class="s2">"</span> <span class="o">]</span><span class="p">;</span> <span class="k">then
+    </span><span class="nb">echo</span> <span class="s2">"CIRCUIT_OPEN: </span><span class="nv">$file</span><span class="s2"> への編集が </span><span class="nv">$count</span><span class="s2"> 回に達しました"</span> <span class="o">&gt;</span>&amp;2
+    <span class="nb">echo</span> <span class="s2">"異なるアプローチを検討してください。人間の判断が必要かもしれません。"</span> <span class="o">&gt;</span>&amp;2
+    <span class="nb">exit </span>2  <span class="c"># PreToolUse hook としてブロック</span>
+  <span class="k">fi
+  </span><span class="nb">echo</span> <span class="s2">"EDIT:</span><span class="nv">$file</span><span class="s2">"</span> <span class="o">&gt;&gt;</span> <span class="s2">"</span><span class="nv">$FAILURE_LOG</span><span class="s2">"</span>
+<span class="o">}</span>
+
+<span class="c"># 連続失敗回数をカウント</span>
+check_failure_count<span class="o">()</span> <span class="o">{</span>
+  <span class="nb">local </span>count
+  <span class="nv">count</span><span class="o">=</span><span class="si">$(</span><span class="nb">grep</span> <span class="nt">-c</span> <span class="s2">"FAIL:"</span> <span class="s2">"</span><span class="nv">$FAILURE_LOG</span><span class="s2">"</span> 2&gt;/dev/null <span class="o">||</span> <span class="nb">echo </span>0<span class="si">)</span>
+  <span class="k">if</span> <span class="o">[</span> <span class="s2">"</span><span class="nv">$count</span><span class="s2">"</span> <span class="nt">-ge</span> <span class="s2">"</span><span class="nv">$MAX_CONSECUTIVE_FAILURES</span><span class="s2">"</span> <span class="o">]</span><span class="p">;</span> <span class="k">then
+    </span><span class="nb">echo</span> <span class="s2">"CIRCUIT_OPEN: </span><span class="nv">$count</span><span class="s2"> 回連続で失敗しました"</span> <span class="o">&gt;</span>&amp;2
+    <span class="nb">echo</span> <span class="s2">"BLOCKED: 手動確認が必要です"</span> <span class="o">&gt;</span>&amp;2
+    <span class="nb">exit </span>2
+  <span class="k">fi</span>
+<span class="o">}</span>
+</code></pre></div></div>
+
+<p>Circuit Breaker が発動したら、エージェントはタスクを <code class="language-plaintext highlighter-rouge">BLOCKED</code> として人間に戻す。「頑張り続けること」よりも「詰まったと報告すること」の方が設計として正しい。</p>
+
+<hr>
+
+<h2 id="ハーネス設計の原則">ハーネス設計の原則</h2>
+
+<p>ここまで個別の実装手段を見てきた。最後に設計の原則を整理する。</p>
+
+<h3 id="1-指示よりコードを信頼する">1. 指示よりコードを信頼する</h3>
+
+<p>「やってはいけない」を CLAUDE.md に書くだけでは不十分だ。PreToolUse hook で終了コード <code class="language-plaintext highlighter-rouge">2</code> を返す方が確実だ。指示はモデルの判断で上書きされうるが、コードは上書きされない。</p>
+
+<h3 id="2-最小権限で始める">2. 最小権限で始める</h3>
+
+<p>エージェントに最初から広い権限を与えない。「今のタスクに必要な権限」だけを与え、必要に応じて広げる。後から狭めるより、最初から狭い方が安全だ。</p>
+
+<h3 id="3-ループは有限にする">3. ループは有限にする</h3>
+
+<p>Ralph Loop も自動起動スクリプトも、必ず最大回数・最大時間を設ける。「エージェントが自律的に動き続ける」状態は、問題が起きたときに発見が遅れる。</p>
+
+<h3 id="4-評価はモデルと独立させる">4. 評価はモデルと独立させる</h3>
+
+<p>「テストが通ったか」の判断をモデル自身にさせない。テスト実行・lint・型チェックは独立したプロセスで行う。「成功した」という報告よりも、実際に成功しているかの確認が必要だ。</p>
+
+<h3 id="5-人間が止められるようにする">5. 人間が止められるようにする</h3>
+
+<p>どんな自動化でも、人間がいつでも止められる仕組みを用意する。完全自動化が目標でも、非常停止手段がなければ問題発生時の被害が拡大する。</p>
+
+<hr>
+
+<h2 id="まとめ">まとめ</h2>
+
+<table>
+  <thead>
+    <tr>
+      <th style="text-align: left">ポイント</th>
+      <th style="text-align: left">内容</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td style="text-align: left"><strong>ハーネスとは</strong></td>
+      <td style="text-align: left">エージェントの情報・行動・評価を制御する実行環境の設計</td>
+    </tr>
+    <tr>
+      <td style="text-align: left"><strong>3層構造</strong></td>
+      <td style="text-align: left">情報層（何を見る）・行動層（何をする）・評価層（何が達成されたか）</td>
+    </tr>
+    <tr>
+      <td style="text-align: left"><strong>CLAUDE.md</strong></td>
+      <td style="text-align: left">セッション開始時に自動注入される静的コンテキスト</td>
+    </tr>
+    <tr>
+      <td style="text-align: left"><strong>Hooks</strong></td>
+      <td style="text-align: left">PreToolUse が最強の防御ライン。コードはプロンプトより強い</td>
+    </tr>
+    <tr>
+      <td style="text-align: left"><strong>Ralph Loop</strong></td>
+      <td style="text-align: left">コンテキストをリセットしながらゴール達成まで繰り返すパターン</td>
+    </tr>
+    <tr>
+      <td style="text-align: left"><strong>/goal</strong></td>
+      <td style="text-align: left">Ralph Loop の公式実装。LLMがゴール達成を判断する</td>
+    </tr>
+    <tr>
+      <td style="text-align: left"><strong>Supervisor Pattern</strong></td>
+      <td style="text-align: left">判断を持つ上位エージェントが実行する下位エージェントを管理</td>
+    </tr>
+    <tr>
+      <td style="text-align: left"><strong>Circuit Breaker</strong></td>
+      <td style="text-align: left">ドゥームループを検出して自動停止し、人間に戻す</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>ハーネスエンジニアリングは「エージェントに良いコードを書かせるための呪文集」ではない。</p>
+
+<p><strong>「エージェントが何をしても、意図した範囲を超えられない構造を作ること」</strong> だ。</p>
+
+<p>モデルが賢くなるほど、この構造の重要性は増す。なぜなら賢いモデルほど、意図していない方法で目標を達成しようとする能力も高くなるからだ。その問題については続篇で詳しく扱う。</p>
+
+<hr>
+
+<h2 id="参考">参考</h2>
+
+<ul>
+  <li>
+<a href="https://www.humanlayer.dev/blog/skill-issue-harness-engineering-for-coding-agents">Skill Issue: Harness Engineering for Coding Agents</a> — HumanLayer による実践的な解説</li>
+  <li>
+<a href="https://medium.com/@adnanmasood/agent-harness-engineering-the-rise-of-the-ai-control-plane-938ead884b1d">Agent Harness Engineering — The Rise of the AI Control Plane</a> — Adnan Masood によるコントロールプレーンとしてのハーネス論</li>
+  <li>
+<a href="https://addyosmani.com/blog/agent-harness-engineering/">AddyOsmani.com — Agent Harness Engineering</a> — Addy Osmani によるハーネスエンジニアリング解説</li>
+  <li>
+<a href="https://dev.to/shipwithaiio/the-complete-claude-code-harness-engineering-guide-5-layers-8-deep-dives-3d4j">The Complete Claude Code Harness Engineering Guide</a> — DEV Community での5層・8詳解ガイド</li>
+  <li>
+<a href="https://mer.vin/2026/05/claude-code-architecture-explained-six-harness-layers-beyond-the-llm/">Claude Code Architecture Explained: Six Harness Layers</a> — Mervin Praison によるClaudeハーネス6層解説</li>
+  <li>
+<a href="https://theaiarchitects.com/blog/claude-code-ralph-loop">Ralph Wiggum Loop and /goal in Claude Code</a> — /goal コマンドとRalph Loopの実践解説</li>
+  <li>
+<a href="https://github.com/snarktank/ralph">GitHub: snarktank/ralph</a> — Ralph の元実装リポジトリ</li>
+  <li>
+<a href="https://github.com/frankbria/ralph-claude-code">GitHub: frankbria/ralph-claude-code</a> — Claude Code 向けのRalph実装</li>
+  <li>
+<a href="https://docs.anthropic.com/en/docs/claude-code/hooks">Claude Code Hooks reference</a> — Claude Code 公式Hooksドキュメント</li>
+  <li>
+<a href="https://github.com/ai-boost/awesome-harness-engineering">GitHub: ai-boost/awesome-harness-engineering</a> — ハーネスエンジニアリングのAwesomeリスト</li>
+</ul>
+
+
+    </div>
+
+</article>
+<div class="post-nav">
+<a class="previous" href="/jekyll-theme-yat/ai%E9%96%8B%E7%99%BA/2026/06/08/claude-code-thinking-words.html" title="Claude Code が「考え中」に表示する英単語を全部調べた">Claude Code が「考え中」に表示する英単語を全部調べた</a><span></span>
+</div>
+<div class="post-related">
+      <div>Related Articles</div>
+      <ul>
+        <li><a class="post-link" href="/jekyll-theme-yat/ai%E9%96%8B%E7%99%BA/2026/06/09/rlhf-model-training.html" title="What is opencode ── An Open-Source AI Coding Agent for the Terminal">RLHFがモデルの返答をどう変えるか</a></li>
+<li><a class="post-link" href="/jekyll-theme-yat/%E9%96%8B%E7%99%BA/2026/06/07/openapi-guide.html" title="What is opencode ── An Open-Source AI Coding Agent for the Terminal">OpenAPI で API の仕様とドキュメントを同期させる</a></li>
+<li><a class="post-link" href="/jekyll-theme-yat/%E9%96%8B%E7%99%BA/2026/06/13/nodejs-basics-for-vibe-coding.html" title="What is opencode ── An Open-Source AI Coding Agent for the Terminal">バイブコーディングする人が知っておきたい Node.js 周辺の基礎知識</a></li>
+<li><a class="post-link" href="/jekyll-theme-yat/%E9%96%8B%E7%99%BA/2026/06/10/git-submodule-subtree.html" title="What is opencode ── An Open-Source AI Coding Agent for the Terminal">Git submodule と Git subtree の違いと使い分け</a></li>
+</ul>
+    </div>
+<div class="post-comments"></div></section>
+</div>
+
+
+  </section>
+  <section class="sidebar" style="margin-left: 15px;">
+    <!-- Get sidebar items --><style type="text/css" media="screen">
+.post-menu ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+</style>
+
+<div class="post-menu">
+  <div class="post-menu-title">TOC</div>
+  <div class="post-menu-content"></div>
+</div>
+
+<script>
+  function generateContent() {
+    var menu = document.querySelector(".post-menu");
+    var menuContent =  menu.querySelector(".post-menu-content");
+    var headings = document.querySelector(".post-content").querySelectorAll("h2, h3, h4, h5, h6");
+
+    // Hide menu when no headings
+    if (headings.length === 0) {
+      return menu.style.display = "none";
+    }
+
+    // Generate post menu
+    var menuHTML = '';
+    for (var i = 0; i < headings.length; i++) {
+      var h = headings[i];
+      menuHTML += (
+        '<li class="h-' + h.tagName.toLowerCase() + '">'
+        + '<a href="#h-' + h.getAttribute('id') + '">' + h.textContent + '</a></li>');
+    }
+
+    menuContent.innerHTML = '<ul>' + menuHTML + '</ul>';
+
+    // The header element
+    var header = document.querySelector('header.site-header');
+
+    function doMenuCollapse(index, over_items) {
+      var items = menuContent.firstChild.children;
+
+      if (over_items == undefined) {
+        over_items = 20;
+      }
+
+      if (items.length < over_items) {
+        return;
+      }
+
+      var activeItem = items[index];
+      var beginItem = activeItem
+      var endItem = activeItem
+      var beginIndex = index;
+      var endIndex = index + 1;
+      while (beginIndex >= 0
+        && !items[beginIndex].classList.contains('h-h2')) {
+        beginIndex -= 1;
+      }
+      while (endIndex < items.length
+        && !items[endIndex].classList.contains('h-h2')) {
+        endIndex += 1;
+      }
+      for (var i = 0; i < beginIndex; i++) {
+        item = items[i]
+        if (!item.classList.contains('h-h2')) {
+          item.style.display = 'none';
+        }
+      }
+      for (var i = beginIndex + 1; i < endIndex; i++) {
+        item = items[i]
+        // if (!item.classList.contains('h-h2')) {
+          item.style.display = '';
+        // }
+      }
+      for (var i = endIndex; i < items.length; i++) {
+        item = items[i]
+        if (!item.classList.contains('h-h2')) {
+          item.style.display = 'none';
+        }
+      }
+    }
+
+    // Init menu collapsed
+    doMenuCollapse(-1);
+
+    // Active the menu item
+    window.addEventListener('scroll', function (event) {
+      var lastActive = menuContent.querySelector('.active');
+      var changed = true;
+      var activeIndex = -1;
+      for (var i = headings.length - 1; i >= 0; i--) {
+        var h = headings[i];
+        var headingRect = h.getBoundingClientRect();
+        var headerRect = header.getBoundingClientRect();
+        var headerTop = Math.floor(headerRect.top);
+        var headerHeight = Math.floor(headerRect.height);
+        var headerHeight = headerTop + headerHeight + 20;
+        if (headingRect.top <= headerHeight) {
+          var id = 'h-' + h.getAttribute('id');
+          var a = menuContent.querySelector('a[href="#' + id  + '"]');
+          var curActive = a.parentNode;
+          if (curActive) {
+            curActive.classList.add('active');
+            activeIndex = i;
+          }
+          if (lastActive == curActive) {
+            changed = false;
+          }
+          break;
+        }
+      }
+      if (changed) {
+        if (lastActive) {
+          lastActive.classList.remove('active');
+        }
+        doMenuCollapse(activeIndex);
+      }
+      event.preventDefault();
+    });
+  }
+  generateContent();
+</script>
+</section>
+</div>
+
+      </div>
+    </main><footer class="site-footer h-card">
+  <data class="u-url" href="/jekyll-theme-yat/"></data>
+
+  <div class="wrapper">
+    <div class="site-footer-inner">
+<div>Waka-DS © 2021-2026</div>
+      <div>Powered by <a title="Jekyll is a simple, blog-aware, static site
+      generator." href="http://jekyllrb.com/">Jekyll</a> &amp; <a title="Yat, yet
+      another theme." href="https://github.com/jeffreytse/jekyll-theme-yat">Yat Theme</a>.</div>
+      <div class="footer-col rss-subscribe">Subscribe <a href="/jekyll-theme-yat/feed.xml">via RSS</a>
+</div>
+    </div>
+  </div>
+</footer>
+</body>
+</html>

@@ -1,0 +1,1189 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <script>
+  (function() {
+    try {
+      var p = localStorage.getItem('preferred_lang');
+      if (!p) return;
+      var path = window.location.pathname;
+      var ja = ['/', '/archives.html', '/categories.html', '/tags.html', '/about.html'];
+      var en = ['/en/', '/en/archives.html', '/en/categories.html', '/en/tags.html', '/en/about.html'];
+      if (p === 'en' && ja.indexOf(path) !== -1) {
+        window.location.replace('/en' + (path === '/' ? '/' : path));
+      } else if (p === 'ja' && en.indexOf(path) !== -1) {
+        window.location.replace(path.slice(3) || '/');
+      }
+    } catch(e) {}
+  })();
+  </script>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="google-translate-customization" content="108d9124921d80c3-80e20d618ff053c8-g4f02ec6f3dba68b7-c">
+<!-- Begin Jekyll SEO tag v2.9.0 -->
+<title>なぜフロントエンドに Vercel を選ぶのか | Waka-DS.com</title>
+<meta name="generator" content="Jekyll v4.4.1">
+<meta property="og:title" content="なぜフロントエンドに Vercel を選ぶのか">
+<meta name="author" content="Waka-DS">
+<meta property="og:locale" content="ja">
+<meta name="description" content="バックエンド選定の記事では フロントエンド → Vercel と一言で済ませたが、これにも選定理由がある。">
+<meta name="twitter:description" property="og:description" content="バックエンド選定の記事では フロントエンド → Vercel と一言で済ませたが、これにも選定理由がある。">
+<link rel="canonical" href="/jekyll-theme-yat/%E9%96%8B%E7%99%BA/2026/06/06/vercel-frontend-selection.html">
+<meta property="og:url" content="/jekyll-theme-yat/%E9%96%8B%E7%99%BA/2026/06/06/vercel-frontend-selection.html">
+<meta property="og:site_name" content="Waka-DS.com">
+<meta property="og:type" content="article">
+<meta property="article:published_time" content="2026-06-06T00:00:00+00:00">
+<meta property="article:modified_time" content="2026-06-06T00:00:00+00:00">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="なぜフロントエンドに Vercel を選ぶのか">
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":"Waka-DS"},"dateModified":"2026-06-06T00:00:00+00:00","datePublished":"2026-06-06T00:00:00+00:00","description":"バックエンド選定の記事では フロントエンド → Vercel と一言で済ませたが、これにも選定理由がある。","headline":"なぜフロントエンドに Vercel を選ぶのか","mainEntityOfPage":{"@type":"WebPage","@id":"/jekyll-theme-yat/%E9%96%8B%E7%99%BA/2026/06/06/vercel-frontend-selection.html"},"url":"/jekyll-theme-yat/%E9%96%8B%E7%99%BA/2026/06/06/vercel-frontend-selection.html"}</script>
+<!-- End Jekyll SEO tag -->
+<link rel="shortcut icon" href="">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=Noto+Sans+JP:wght@400;500;700&amp;display=swap">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+  <link rel="stylesheet" href="/jekyll-theme-yat/assets/css/main.css">
+  <script src="/jekyll-theme-yat/assets/js/main.js"></script><link type="application/atom+xml" rel="alternate" href="/jekyll-theme-yat/feed.xml" title="Waka-DS.com">
+<script>
+  function initGoogleAnalytics() {
+    var doNotTrack = (window.doNotTrack === "1" || navigator.doNotTrack === "1" ||
+      navigator.doNotTrack === "yes" || navigator.msDoNotTrack === "1");
+    var enableDNT = "true" == "true";
+
+    if (!enableDNT || !doNotTrack) {
+      var ga_id = 'G-XNP1RBTG9C';
+
+      var script = document.createElement('script');
+      script.async = true;
+      script.src = 'https://www.googletagmanager.com/gtag/js?id=' + ga_id;
+      document.head.appendChild(script);
+
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', ga_id);
+    }
+  }
+  window.addEventListener("load", initGoogleAnalytics);
+</script>
+<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/styles/default.min.css">
+<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/highlight.min.js"></script>
+<!-- and it's easy to individually load additional languages -->
+<script charset="UTF-8" src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/languages/go.min.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<script>
+// Init highlight js
+document.addEventListener('DOMContentLoaded', function(event) {
+  var els = document.querySelectorAll('pre code')
+
+  function addLangData(block) {
+    var outer = block.parentElement.parentElement.parentElement;
+    var lang = block.getAttribute('data-lang');
+    for (var i = 0; i < outer.classList.length; i++) {
+      var cls = outer.classList[i];
+      if (cls.startsWith('language-')) {
+        lang = cls;
+        break;
+      }
+    }
+    if (!lang) {
+      cls = block.getAttribute('class');
+      lang = cls ? cls.replace('hljs ', '') : '';
+    }
+    if (lang.startsWith('language-')) {
+      lang = lang.substr(9);
+    }
+    block.setAttribute('class', 'hljs ' + lang);
+    block.parentNode.setAttribute('data-lang', lang);
+  }
+
+  function addBadge(block) {
+    var enabled = ('true' || 'true').toLowerCase();
+    if (enabled == 'true') {
+      var pre = block.parentElement;
+      pre.classList.add('badge');
+    }
+  }
+
+  function handle(block) {
+    addLangData(block);
+    addBadge(block)
+    hljs.highlightBlock(block);
+  }
+
+  for (var i = 0; i < els.length; i++) {
+    var el = els[i];
+    handle(el);
+  }
+});
+</script>
+
+<style>
+  /* code language badge */
+  pre.badge::before {
+    content: attr(data-lang);
+    color: #fff;
+    background-color: #0d9488;
+    padding: 0 .5em;
+    border-radius: 0 2px;
+    text-transform: uppercase;
+    text-align: center;
+    min-width: 32px;
+    display: inline-block;
+    position: absolute;
+    right: 0;
+  }
+
+  /* fix wrong badge display for firefox browser */
+  code > table pre::before {
+    display: none;
+  }
+</style>
+</head>
+<body>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<header class="site-header " role="banner">
+
+  <div class="wrapper">
+    <div class="site-header-inner">
+<span class="site-brand"><a class="site-brand-inner" rel="author" href="/jekyll-theme-yat/">
+  <img class="site-favicon" title="Waka-DS.com" src="" onerror="this.style.display='none'">
+  Waka-DS.com
+</a>
+</span><nav class="site-nav">
+          <input type="checkbox" id="nav-trigger" class="nav-trigger">
+          <label for="nav-trigger">
+            <span class="menu-icon">
+              <svg viewbox="0 0 18 15" width="18px" height="15px">
+                <path d="M18,1.484c0,0.82-0.665,1.484-1.484,1.484H1.484C0.665,2.969,0,2.304,0,1.484l0,0C0,0.665,0.665,0,1.484,0 h15.032C17.335,0,18,0.665,18,1.484L18,1.484z M18,7.516C18,8.335,17.335,9,16.516,9H1.484C0.665,9,0,8.335,0,7.516l0,0 c0-0.82,0.665-1.484,1.484-1.484h15.032C17.335,6.031,18,6.696,18,7.516L18,7.516z M18,13.516C18,14.335,17.335,15,16.516,15H1.484 C0.665,15,0,14.335,0,13.516l0,0c0-0.82,0.665-1.483,1.484-1.483h15.032C17.335,12.031,18,12.695,18,13.516L18,13.516z"></path>
+              </svg>
+            </span>
+          </label>
+
+          <div class="trigger">
+<a class="page-link" href="/jekyll-theme-yat/about.html">ABOUT</a><a class="page-link" href="/jekyll-theme-yat/archives.html">ARCHIVES</a><a class="page-link" href="/jekyll-theme-yat/categories.html">CATEGORIES</a><a class="page-link" href="/jekyll-theme-yat/">HOME</a><a class="page-link" href="/jekyll-theme-yat/tags.html">TAGS</a><span class="page-link">
+                <span class="lang-switcher lang-switcher--nav"><span class="lang-btn lang-btn--active">日本語</span><a class="lang-btn" href="/jekyll-theme-yat/development/2026/06/06/vercel-frontend-selection-en.html">English</a></span>
+              </span>
+</div>
+        </nav>
+</div>
+  </div>
+</header>
+
+<script>
+  function initHeader() {
+    var lastScrollY = getScrollPos().y;
+    var documentElement = document.documentElement;
+
+    function storeScrollData() {
+      var y = getScrollPos().y;var scrollStatus = "";
+
+      if (y <= 0) {
+        scrollStatus = "top";
+      } else if ((window.innerHeight + y) >= document.body.offsetHeight) {
+        scrollStatus = "bottom";
+      } else {
+        var isScrollDown = (y - lastScrollY > 0) ? true : false;
+        scrollStatus = isScrollDown ? "down" : "up";
+      }
+
+      lastScrollY = y;
+      documentElement.setAttribute("data-scroll-status", scrollStatus);
+    }
+
+    window.addEventListener('scroll', function(e) {
+      storeScrollData();
+    });
+
+    storeScrollData();
+  }
+  document.addEventListener('DOMContentLoaded', initHeader);
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<script>
+  function hashLocate(hashValue) {
+    hashValue = hashValue.replace(/^.*#h-/, '');
+    hashValue = decodeURIComponent(hashValue);
+    var element = document.getElementById(hashValue);
+
+    if (!element) {
+      return;
+    }
+
+    var header = document.querySelector('header.site-header');
+    var headerRect = header.getBoundingClientRect();
+    var headerTop = Math.floor(headerRect.top);
+    var headerHeight = Math.floor(headerRect.height);
+    var scrollPos = getScrollPos();
+    var offsetY = element.offsetTop - (headerTop + headerHeight + 20);
+
+    if (offsetY == scrollPos.y) {
+      return;
+    }
+
+    if (headerTop == 0  && offsetY > scrollPos.y) {
+      offsetY += headerHeight + 2;
+    } else if (headerTop < 0  && offsetY < scrollPos.y) {
+      offsetY -= headerHeight - 2;
+    }
+
+    smoothScrollTo(offsetY);
+  }
+
+  // The first event occurred
+  window.addEventListener('load', function(event) {
+    if (window.location.hash) {
+      hashLocate(window.location.hash);
+    }
+  });
+
+  // The first event occurred
+  window.addEventListener('click', function(event) {
+    if (event.target.tagName.toLowerCase() == 'a') {
+      hashLocate(event.target.getAttribute('href'));
+    }
+  });
+</script>
+<div class="theme-toggle">
+  <input type="checkbox" id="theme-switch">
+  <label for="theme-switch">
+    <div class="toggle"></div>
+    <div class="names">
+      <p class="light">Light</p>
+      <p class="dark">Dark</p>
+    </div>
+  </label>
+</div>
+
+
+
+
+<script>
+  (function() {
+    var sw = document.getElementById('theme-switch');
+    var html = document.getElementsByTagName('html')[0];
+    var nightModeOption = ('auto' || 'auto').toLowerCase();
+    var storage = nightModeOption === 'manual'
+        ? localStorage
+        : sessionStorage;
+    var themeData = loadThemeData();
+
+    function saveThemeData(data) {
+      storage.setItem('theme', JSON.stringify(data));
+    }
+
+    function loadThemeData() {
+      var data = storage.getItem('theme');
+      try {
+        data = JSON.parse(data ? data : '');
+      } catch(e) {
+        data = { nightShift: undefined, autoToggleAt: 0 };
+        saveThemeData(data);
+      }
+      return data;
+    }
+
+    function handleThemeToggle(nightShift) {
+      themeData.nightShift = nightShift;
+      saveThemeData(themeData);
+      html.dataset.theme = nightShift ? 'dark' : 'light';
+      setTimeout(function() {
+        sw.checked = nightShift ? true : false;
+      }, 50);
+    }
+
+    function autoThemeToggle() {
+      // Next time point of theme toggle
+      var now = new Date();
+      var toggleAt = new Date();
+      var hours = now.getHours();
+      var nightShift = hours >= 19 || hours <=7;
+
+      if (nightShift) {
+        if (hours > 7) {
+          toggleAt.setDate(toggleAt.getDate() + 1);
+        }
+        toggleAt.setHours(7);
+      } else {
+        toggleAt.setHours(19);
+      }
+
+      toggleAt.setMinutes(0);
+      toggleAt.setSeconds(0);
+      toggleAt.setMilliseconds(0)
+
+      var delay = toggleAt.getTime() - now.getTime();
+
+      // auto toggle theme mode
+      setTimeout(function() {
+        handleThemeToggle(!nightShift);
+      }, delay);
+
+      return {
+        nightShift: nightShift,
+        toggleAt: toggleAt.getTime()
+      };
+    }
+
+    // Listen the theme toggle event
+    sw.addEventListener('change', function(event) {
+      handleThemeToggle(event.target.checked);
+    });
+
+    if (nightModeOption == 'auto') {
+      var data = autoThemeToggle();
+
+      // Toggle theme by local setting
+      if (data.toggleAt > themeData.autoToggleAt) {
+        themeData.autoToggleAt = data.toggleAt;
+        handleThemeToggle(data.nightShift);
+      } else {
+        handleThemeToggle(themeData.nightShift);
+      }
+    } else if (nightModeOption == 'manual') {
+      handleThemeToggle(themeData.nightShift);
+    } else {
+      var nightShift = themeData.nightShift;
+      if (nightShift === undefined) {
+        nightShift = nightModeOption === 'on';
+      }
+      handleThemeToggle(nightShift);
+    }
+  })();
+</script>
+<main class="page-content" aria-label="Content">
+      <div class="wrapper">
+        <div class="framework">
+  <section class="main">
+
+     <div class="post">
+  <section>
+
+
+
+
+
+
+
+
+
+<header class="post-header">
+  <h1 class="post-title p-name" itemprop="name headline">なぜフロントエンドに Vercel を選ぶのか</h1>
+  <h2 class="post-subtitle">AI ネイティブなログアプリのフロントエンド選定</h2>
+
+  <p class="post-meta">
+    <time class="dt-published" datetime="2026-06-06T00:00:00+00:00" itemprop="datePublished"><i class="fa fa-calendar"></i> Jun 06, 2026
+    </time>
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <span class="post-reading-time left-vsplit"><i class="fa fa-clock-o"></i> About 12 mins</span>
+  </p>
+<div class="post-tags">
+<a class="post-tag" href="/jekyll-theme-yat/tags.html#Vercel">#Vercel</a><a class="post-tag" href="/jekyll-theme-yat/tags.html#Netlify">#Netlify</a><a class="post-tag" href="/jekyll-theme-yat/tags.html#Cloudflare">#Cloudflare</a><a class="post-tag" href="/jekyll-theme-yat/tags.html#Next.js">#Next.js</a><a class="post-tag" href="/jekyll-theme-yat/tags.html#%E3%83%95%E3%83%AD%E3%83%B3%E3%83%88%E3%82%A8%E3%83%B3%E3%83%89">#フロントエンド</a><a class="post-tag" href="/jekyll-theme-yat/tags.html#%E3%83%9B%E3%82%B9%E3%83%86%E3%82%A3%E3%83%B3%E3%82%B0">#ホスティング</a>
+</div></header>
+<article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
+
+    <div class="post-content e-content" itemprop="articleBody">
+
+      <p><a href="/jekyll-theme-yat/%E9%96%8B%E7%99%BA/2026/06/06/supabase-vs-railway-comparison.html">バックエンド選定の記事</a>では <code class="language-plaintext highlighter-rouge">フロントエンド → Vercel</code> と一言で済ませたが、これにも選定理由がある。</p>
+
+<p>フロントエンドのホスティングは <strong>Vercel / Netlify / Cloudflare Pages</strong> の三つ巴になっており、それぞれトレードオフが違う。この記事では 2026年6月時点の最新情報をもとに整理する。</p>
+
+<hr>
+
+<h2 id="結論を先に">結論を先に</h2>
+
+<table>
+  <thead>
+    <tr>
+      <th style="text-align: left">条件</th>
+      <th style="text-align: left">選ぶべきサービス</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td style="text-align: left">Next.js App Router を使う</td>
+      <td style="text-align: left">
+<strong>Vercel</strong> 一択に近い</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">静的サイト・帯域コストを極限まで下げたい</td>
+      <td style="text-align: left"><strong>Cloudflare Pages</strong></td>
+    </tr>
+    <tr>
+      <td style="text-align: left">Jamstack・フォーム等の組み込み機能が欲しい</td>
+      <td style="text-align: left"><strong>Netlify</strong></td>
+    </tr>
+    <tr>
+      <td style="text-align: left">今回のログアプリ (Next.js + AI機能)</td>
+      <td style="text-align: left"><strong>Vercel</strong></td>
+    </tr>
+  </tbody>
+</table>
+
+<hr>
+
+<h2 id="各サービスの概要">各サービスの概要</h2>
+
+<h3 id="vercel--nextjs-の本家">Vercel ── Next.js の本家</h3>
+
+<p>Next.js を作った Vercel 社のホスティングサービス。
+フレームワークとプラットフォームが一体設計されているため、App Router の高度な機能が<strong>設定なしで動く</strong>のが最大の強み。</p>
+
+<p>2025〜2026年の主要アップデート：</p>
+
+<ul>
+  <li>
+<strong>Fluid Compute</strong> 導入：サーバーレス関数がウォームを保ち、複数リクエストを並列処理。コールドスタートを大幅削減。</li>
+  <li>
+<strong>AI Gateway</strong> 統合：OpenAI / Anthropic 等へのルーティング・コスト追跡がダッシュボードから可能。</li>
+  <li>
+<strong>非 US リージョンのレイテンシ改善</strong>：2025年比で p99 レイテンシが約 25% 向上。</li>
+</ul>
+
+<h4 id="料金-2026年6月時点">料金 (2026年6月時点)</h4>
+
+<table>
+  <thead>
+    <tr>
+      <th style="text-align: left">プラン</th>
+      <th style="text-align: left">月額</th>
+      <th style="text-align: left">主な内容</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td style="text-align: left"><strong>Hobby</strong></td>
+      <td style="text-align: left">$0</td>
+      <td style="text-align: left">100GB 転送、関数 100万回/月、商用利用不可</td>
+    </tr>
+    <tr>
+      <td style="text-align: left"><strong>Pro</strong></td>
+      <td style="text-align: left">$20/ユーザー</td>
+      <td style="text-align: left">1TB 転送、Edge リクエスト 1,000万回、商用利用可</td>
+    </tr>
+    <tr>
+      <td style="text-align: left"><strong>Enterprise</strong></td>
+      <td style="text-align: left">要相談</td>
+      <td style="text-align: left">SAML SSO、SLA 99.99%、専任サポート</td>
+    </tr>
+  </tbody>
+</table>
+
+<blockquote>
+  <p>Pro の帯域超過は $0.15/GB。Edge ミドルウェアは<strong>全プラン無料</strong>。</p>
+</blockquote>
+
+<hr>
+
+<h3 id="cloudflare-pages--コストと速度のチャンピオン">Cloudflare Pages ── コストと速度のチャンピオン</h3>
+
+<p>Cloudflare の 300+ エッジロケーションを活かした静的ホスティング。
+<strong>帯域が実質無制限</strong> ($5/月の Workers プランに含まれる) なのが圧倒的な差別化点。</p>
+
+<ul>
+  <li>エッジは V8 Isolates を使用 → コールドスタートほぼゼロ (&lt; 1ms)</li>
+  <li>2026年に Docker コンテナサポートを追加 → Node.js 完全互換へ前進</li>
+  <li>
+<strong>OpenNext</strong> アダプターの成熟で Next.js App Router の大部分が動作するように</li>
+</ul>
+
+<h4 id="vercel-との比較でのデメリット">Vercel との比較でのデメリット</h4>
+
+<ul>
+  <li>ISR (Incremental Static Regeneration) の一部挙動が Vercel と異なる</li>
+  <li>Server Actions や Next.js 独自の最適化機能の完全対応は Vercel に遅れる</li>
+  <li>AI Gateway 等 Vercel 独自エコシステムとの統合がない</li>
+</ul>
+
+<h4 id="料金">料金</h4>
+
+<table>
+  <thead>
+    <tr>
+      <th style="text-align: left">プラン</th>
+      <th style="text-align: left">月額</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td style="text-align: left"><strong>Pages Free</strong></td>
+      <td style="text-align: left">$0 (帯域・リクエスト数は無制限)</td>
+    </tr>
+    <tr>
+      <td style="text-align: left"><strong>Workers Pro</strong></td>
+      <td style="text-align: left">$5 (Pages + Workers の全機能)</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>帯域 1TB/月 の場合、Vercel Pro が $150 程度になるのに対し Cloudflare Pages は $5 固定。<strong>コスト差は数十倍になりうる。</strong></p>
+
+<hr>
+
+<h3 id="netlify--jamstack-の老舗">Netlify ── Jamstack の老舗</h3>
+
+<p>静的サイトジェネレーター時代のリーダーだったが、2026年現在は Vercel・Cloudflare と比べてパフォーマンス・コスト両面で見劣りする。</p>
+
+<ul>
+  <li>
+<strong>Form・Identity・Analytics</strong> などのオールインワン機能は競合より充実</li>
+  <li>Build Plugin エコシステムが成熟</li>
+  <li>グローバルの平均レイテンシは 3 サービス中最も高い</li>
+</ul>
+
+<h4 id="料金-1">料金</h4>
+
+<table>
+  <thead>
+    <tr>
+      <th style="text-align: left">プラン</th>
+      <th style="text-align: left">月額</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td style="text-align: left"><strong>Free</strong></td>
+      <td style="text-align: left">$0 (100GB 帯域)</td>
+    </tr>
+    <tr>
+      <td style="text-align: left"><strong>Pro</strong></td>
+      <td style="text-align: left">$19/ユーザー</td>
+    </tr>
+    <tr>
+      <td style="text-align: left"><strong>Enterprise</strong></td>
+      <td style="text-align: left">要相談</td>
+    </tr>
+  </tbody>
+</table>
+
+<hr>
+
+<h2 id="三つを並べて比較">三つを並べて比較</h2>
+
+<table>
+  <thead>
+    <tr>
+      <th style="text-align: left"> </th>
+      <th style="text-align: center">Vercel</th>
+      <th style="text-align: center">Cloudflare Pages</th>
+      <th style="text-align: center">Netlify</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td style="text-align: left"><strong>Next.js 完全対応</strong></td>
+      <td style="text-align: center">✅</td>
+      <td style="text-align: center">⚠️ (ほぼ対応)</td>
+      <td style="text-align: center">⚠️ (ほぼ対応)</td>
+    </tr>
+    <tr>
+      <td style="text-align: left"><strong>エッジパフォーマンス</strong></td>
+      <td style="text-align: center">◎ (改善中)</td>
+      <td style="text-align: center">◎ (最速クラス)</td>
+      <td style="text-align: center">△</td>
+    </tr>
+    <tr>
+      <td style="text-align: left"><strong>帯域コスト</strong></td>
+      <td style="text-align: center">⚠️ (高め)</td>
+      <td style="text-align: center">✅ (無制限)</td>
+      <td style="text-align: center">⚠️</td>
+    </tr>
+    <tr>
+      <td style="text-align: left"><strong>コールドスタート</strong></td>
+      <td style="text-align: center">◎ (Fluid Compute)</td>
+      <td style="text-align: center">✅ (V8 Isolates)</td>
+      <td style="text-align: center">△</td>
+    </tr>
+    <tr>
+      <td style="text-align: left"><strong>AI 機能統合</strong></td>
+      <td style="text-align: center">✅ (AI Gateway)</td>
+      <td style="text-align: center">❌</td>
+      <td style="text-align: center">❌</td>
+    </tr>
+    <tr>
+      <td style="text-align: left"><strong>Preview URL</strong></td>
+      <td style="text-align: center">✅ PR ごと自動</td>
+      <td style="text-align: center">✅</td>
+      <td style="text-align: center">✅</td>
+    </tr>
+    <tr>
+      <td style="text-align: left"><strong>無料枠の商用利用</strong></td>
+      <td style="text-align: center">❌</td>
+      <td style="text-align: center">✅</td>
+      <td style="text-align: center">✅</td>
+    </tr>
+    <tr>
+      <td style="text-align: left"><strong>月額最低 (有料)</strong></td>
+      <td style="text-align: center">$20/ユーザー</td>
+      <td style="text-align: center">$5</td>
+      <td style="text-align: center">$19/ユーザー</td>
+    </tr>
+  </tbody>
+</table>
+
+<hr>
+
+<h2 id="なぜ今回は-vercel-を選ぶのか">なぜ今回は Vercel を選ぶのか</h2>
+
+<p>ログアプリの具体的な要件で判断する。</p>
+
+<h3 id="-nextjs-app-router-を使う">① Next.js App Router を使う</h3>
+
+<p>Server Components・Server Actions・Streaming を最大限活用したい。
+Cloudflare Pages の OpenNext 対応は成熟しつつあるが、<strong>Vercel 以外でのトラブル対応コストが読めない</strong>という実際的なリスクがある。個人開発でこのリスクを取りに行く必要はない。</p>
+
+<h3 id="-ai-機能との統合">② AI 機能との統合</h3>
+
+<p>Vercel AI Gateway を使うと、複数 LLM プロバイダーへのルーティング・レート制限・コスト追跡がワンストップで管理できる。ログアプリがAIを呼ぶ場面 (ログの要約・異常検知など) では、この統合が効いてくる。</p>
+
+<h3 id="-プレビュー-url-でのチーム確認">③ プレビュー URL でのチーム確認</h3>
+
+<p>PR のたびにプレビュー URL が自動生成される機能は三者とも持っているが、Vercel のそれが最も成熟している。バックエンド (Supabase / Railway) の環境切り替えとの連携も簡単。</p>
+
+<h3 id="-帯域コスト問題について">④ 帯域コスト問題について</h3>
+
+<p>Vercel Pro の 1TB を超えると $0.15/GB かかるのは事実で、高トラフィックになると課題になる。ただしログアプリのフロントエンドが帯域 1TB を超える規模は「Phase 3〜4」の話。その段階になったら Cloudflare Pages + OpenNext への移行を改めて検討すればよい。</p>
+
+<hr>
+
+<h2 id="スケールに合わせた見直し軸">スケールに合わせた見直し軸</h2>
+
+<p>バックエンド記事と同様に、フロントエンドのスイッチングも規模に合わせて考えておく。</p>
+
+<table>
+  <thead>
+    <tr>
+      <th style="text-align: left">フェーズ</th>
+      <th style="text-align: left">推奨</th>
+      <th style="text-align: left">理由</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td style="text-align: left"><strong>個人・検証</strong></td>
+      <td style="text-align: left">Vercel Hobby (無料)</td>
+      <td style="text-align: left">商用でなければ無料で全機能使える</td>
+    </tr>
+    <tr>
+      <td style="text-align: left"><strong>有料化・チーム</strong></td>
+      <td style="text-align: left">Vercel Pro ($20/人〜)</td>
+      <td style="text-align: left">商用利用のため。Preview URLや分析も使える</td>
+    </tr>
+    <tr>
+      <td style="text-align: left"><strong>帯域 1TB を安定的に超えてきた</strong></td>
+      <td style="text-align: left">Cloudflare Pages に移行を検討</td>
+      <td style="text-align: left">コスト差が数十倍になるため</td>
+    </tr>
+    <tr>
+      <td style="text-align: left"><strong>エンタープライズ / コンプライアンス</strong></td>
+      <td style="text-align: left">Vercel Enterprise</td>
+      <td style="text-align: left">SLA・SAML SSO・専任サポートが必要なら</td>
+    </tr>
+  </tbody>
+</table>
+
+<hr>
+
+<h2 id="まとめ">まとめ</h2>
+
+<p>Next.js + AI 機能の組み合わせで個人〜スモールチームが開発するなら <strong>Vercel は現状ベストな選択肢</strong>。
+コストが問題になってくる規模になったら Cloudflare Pages への移行パスは現実的になっており、2026年時点でその移行難易度は下がっている。</p>
+
+<p>Netlify は特定の組み込み機能 (Forms / Identity 等) が必要なケース以外では選ぶ積極的な理由が薄くなっている。</p>
+
+<hr>
+
+<h2 id="参考情報">参考情報</h2>
+
+<ul>
+  <li><a href="https://vercel.com/pricing">Vercel Pricing</a></li>
+  <li><a href="https://www.devtoolreviews.com/reviews/vercel-vs-netlify-vs-cloudflare-pages-2026">Vercel vs Netlify vs Cloudflare Pages 2026 — DevToolReviews</a></li>
+  <li><a href="https://blog.vibecoder.me/vercel-vs-netlify-vs-cloudflare-pages">Vercel vs Netlify vs Cloudflare Pages — Vibe Coder Blog</a></li>
+  <li><a href="https://danubedata.ro/blog/cloudflare-pages-vs-netlify-vs-vercel-static-hosting-2026">Cloudflare Pages vs Netlify vs Vercel 2026 — DanubeData</a></li>
+  <li><a href="https://makerkit.dev/blog/saas/vercel-cost">Vercel Cost 2026 — makerkit.dev</a></li>
+</ul>
+
+
+    </div>
+
+</article>
+<div class="post-nav">
+<span></span><a class="next" href="/jekyll-theme-yat/ai%E9%96%8B%E7%99%BA/2026/06/07/agent-context-management-2026.html" title="エージェントを長く自律動作させるためのコンテキスト設計">エージェントを長く自律動作させるためのコンテキスト設計</a>
+</div>
+<div class="post-related">
+      <div>Related Articles</div>
+      <ul>
+        <li><a class="post-link" href="/jekyll-theme-yat/ai%E9%96%8B%E7%99%BA/2026/06/22/mcp-local-remote-transports.html" title="エージェントを長く自律動作させるためのコンテキスト設計">ローカルMCPとリモートMCPの違い</a></li>
+<li><a class="post-link" href="/jekyll-theme-yat/%E9%96%8B%E7%99%BA/2026/06/07/openapi-guide.html" title="エージェントを長く自律動作させるためのコンテキスト設計">OpenAPI で API の仕様とドキュメントを同期させる</a></li>
+<li><a class="post-link" href="/jekyll-theme-yat/%E9%96%8B%E7%99%BA/2026/06/13/github-secrets-guide.html" title="エージェントを長く自律動作させるためのコンテキスト設計">GitHub Secrets で API キーを安全にワークフローへ渡す</a></li>
+<li><a class="post-link" href="/jekyll-theme-yat/%E9%96%8B%E7%99%BA/2026/06/13/nodejs-basics-for-vibe-coding.html" title="エージェントを長く自律動作させるためのコンテキスト設計">バイブコーディングする人が知っておきたい Node.js 周辺の基礎知識</a></li>
+</ul>
+    </div>
+<div class="post-comments"></div></section>
+</div>
+
+
+  </section>
+  <section class="sidebar" style="margin-left: 15px;">
+    <!-- Get sidebar items --><style type="text/css" media="screen">
+.post-menu ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+</style>
+
+<div class="post-menu">
+  <div class="post-menu-title">TOC</div>
+  <div class="post-menu-content"></div>
+</div>
+
+<script>
+  function generateContent() {
+    var menu = document.querySelector(".post-menu");
+    var menuContent =  menu.querySelector(".post-menu-content");
+    var headings = document.querySelector(".post-content").querySelectorAll("h2, h3, h4, h5, h6");
+
+    // Hide menu when no headings
+    if (headings.length === 0) {
+      return menu.style.display = "none";
+    }
+
+    // Generate post menu
+    var menuHTML = '';
+    for (var i = 0; i < headings.length; i++) {
+      var h = headings[i];
+      menuHTML += (
+        '<li class="h-' + h.tagName.toLowerCase() + '">'
+        + '<a href="#h-' + h.getAttribute('id') + '">' + h.textContent + '</a></li>');
+    }
+
+    menuContent.innerHTML = '<ul>' + menuHTML + '</ul>';
+
+    // The header element
+    var header = document.querySelector('header.site-header');
+
+    function doMenuCollapse(index, over_items) {
+      var items = menuContent.firstChild.children;
+
+      if (over_items == undefined) {
+        over_items = 20;
+      }
+
+      if (items.length < over_items) {
+        return;
+      }
+
+      var activeItem = items[index];
+      var beginItem = activeItem
+      var endItem = activeItem
+      var beginIndex = index;
+      var endIndex = index + 1;
+      while (beginIndex >= 0
+        && !items[beginIndex].classList.contains('h-h2')) {
+        beginIndex -= 1;
+      }
+      while (endIndex < items.length
+        && !items[endIndex].classList.contains('h-h2')) {
+        endIndex += 1;
+      }
+      for (var i = 0; i < beginIndex; i++) {
+        item = items[i]
+        if (!item.classList.contains('h-h2')) {
+          item.style.display = 'none';
+        }
+      }
+      for (var i = beginIndex + 1; i < endIndex; i++) {
+        item = items[i]
+        // if (!item.classList.contains('h-h2')) {
+          item.style.display = '';
+        // }
+      }
+      for (var i = endIndex; i < items.length; i++) {
+        item = items[i]
+        if (!item.classList.contains('h-h2')) {
+          item.style.display = 'none';
+        }
+      }
+    }
+
+    // Init menu collapsed
+    doMenuCollapse(-1);
+
+    // Active the menu item
+    window.addEventListener('scroll', function (event) {
+      var lastActive = menuContent.querySelector('.active');
+      var changed = true;
+      var activeIndex = -1;
+      for (var i = headings.length - 1; i >= 0; i--) {
+        var h = headings[i];
+        var headingRect = h.getBoundingClientRect();
+        var headerRect = header.getBoundingClientRect();
+        var headerTop = Math.floor(headerRect.top);
+        var headerHeight = Math.floor(headerRect.height);
+        var headerHeight = headerTop + headerHeight + 20;
+        if (headingRect.top <= headerHeight) {
+          var id = 'h-' + h.getAttribute('id');
+          var a = menuContent.querySelector('a[href="#' + id  + '"]');
+          var curActive = a.parentNode;
+          if (curActive) {
+            curActive.classList.add('active');
+            activeIndex = i;
+          }
+          if (lastActive == curActive) {
+            changed = false;
+          }
+          break;
+        }
+      }
+      if (changed) {
+        if (lastActive) {
+          lastActive.classList.remove('active');
+        }
+        doMenuCollapse(activeIndex);
+      }
+      event.preventDefault();
+    });
+  }
+  generateContent();
+</script>
+</section>
+</div>
+
+      </div>
+    </main><footer class="site-footer h-card">
+  <data class="u-url" href="/jekyll-theme-yat/"></data>
+
+  <div class="wrapper">
+    <div class="site-footer-inner">
+<div>Waka-DS © 2021-2026</div>
+      <div>Powered by <a title="Jekyll is a simple, blog-aware, static site
+      generator." href="http://jekyllrb.com/">Jekyll</a> &amp; <a title="Yat, yet
+      another theme." href="https://github.com/jeffreytse/jekyll-theme-yat">Yat Theme</a>.</div>
+      <div class="footer-col rss-subscribe">Subscribe <a href="/jekyll-theme-yat/feed.xml">via RSS</a>
+</div>
+    </div>
+  </div>
+</footer>
+</body>
+</html>

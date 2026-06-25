@@ -1,0 +1,978 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <script>
+  (function() {
+    try {
+      var p = localStorage.getItem('preferred_lang');
+      if (!p) return;
+      var path = window.location.pathname;
+      var ja = ['/', '/archives.html', '/categories.html', '/tags.html', '/about.html'];
+      var en = ['/en/', '/en/archives.html', '/en/categories.html', '/en/tags.html', '/en/about.html'];
+      if (p === 'en' && ja.indexOf(path) !== -1) {
+        window.location.replace('/en' + (path === '/' ? '/' : path));
+      } else if (p === 'ja' && en.indexOf(path) !== -1) {
+        window.location.replace(path.slice(3) || '/');
+      }
+    } catch(e) {}
+  })();
+  </script>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="google-translate-customization" content="108d9124921d80c3-80e20d618ff053c8-g4f02ec6f3dba68b7-c">
+<!-- Begin Jekyll SEO tag v2.9.0 -->
+<title>Android から Claude Code を使うパターンと選び方 | Waka-DS.com</title>
+<meta name="generator" content="Jekyll v4.4.1">
+<meta property="og:title" content="Android から Claude Code を使うパターンと選び方">
+<meta name="author" content="Waka-DS">
+<meta property="og:locale" content="ja">
+<meta name="description" content="メインのスマホが Galaxy Z Fold 7 になってから、移動中や自宅のソファでコードのレビューや軽い修正をスマホだけでこなせるかどうかを試してきた。">
+<meta name="twitter:description" property="og:description" content="メインのスマホが Galaxy Z Fold 7 になってから、移動中や自宅のソファでコードのレビューや軽い修正をスマホだけでこなせるかどうかを試してきた。">
+<link rel="canonical" href="/jekyll-theme-yat/ai%E9%96%8B%E7%99%BA/2026/06/09/claude-code-android-patterns.html">
+<meta property="og:url" content="/jekyll-theme-yat/ai%E9%96%8B%E7%99%BA/2026/06/09/claude-code-android-patterns.html">
+<meta property="og:site_name" content="Waka-DS.com">
+<meta property="og:type" content="article">
+<meta property="article:published_time" content="2026-06-09T00:00:00+00:00">
+<meta property="article:modified_time" content="2026-06-09T00:00:00+00:00">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Android から Claude Code を使うパターンと選び方">
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":"Waka-DS"},"dateModified":"2026-06-09T00:00:00+00:00","datePublished":"2026-06-09T00:00:00+00:00","description":"メインのスマホが Galaxy Z Fold 7 になってから、移動中や自宅のソファでコードのレビューや軽い修正をスマホだけでこなせるかどうかを試してきた。","headline":"Android から Claude Code を使うパターンと選び方","mainEntityOfPage":{"@type":"WebPage","@id":"/jekyll-theme-yat/ai%E9%96%8B%E7%99%BA/2026/06/09/claude-code-android-patterns.html"},"url":"/jekyll-theme-yat/ai%E9%96%8B%E7%99%BA/2026/06/09/claude-code-android-patterns.html"}</script>
+<!-- End Jekyll SEO tag -->
+<link rel="shortcut icon" href="">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=Noto+Sans+JP:wght@400;500;700&amp;display=swap">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+  <link rel="stylesheet" href="/jekyll-theme-yat/assets/css/main.css">
+  <script src="/jekyll-theme-yat/assets/js/main.js"></script><link type="application/atom+xml" rel="alternate" href="/jekyll-theme-yat/feed.xml" title="Waka-DS.com">
+<script>
+  function initGoogleAnalytics() {
+    var doNotTrack = (window.doNotTrack === "1" || navigator.doNotTrack === "1" ||
+      navigator.doNotTrack === "yes" || navigator.msDoNotTrack === "1");
+    var enableDNT = "true" == "true";
+
+    if (!enableDNT || !doNotTrack) {
+      var ga_id = 'G-XNP1RBTG9C';
+
+      var script = document.createElement('script');
+      script.async = true;
+      script.src = 'https://www.googletagmanager.com/gtag/js?id=' + ga_id;
+      document.head.appendChild(script);
+
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', ga_id);
+    }
+  }
+  window.addEventListener("load", initGoogleAnalytics);
+</script>
+<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/styles/default.min.css">
+<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/highlight.min.js"></script>
+<!-- and it's easy to individually load additional languages -->
+<script charset="UTF-8" src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/languages/go.min.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<script>
+// Init highlight js
+document.addEventListener('DOMContentLoaded', function(event) {
+  var els = document.querySelectorAll('pre code')
+
+  function addLangData(block) {
+    var outer = block.parentElement.parentElement.parentElement;
+    var lang = block.getAttribute('data-lang');
+    for (var i = 0; i < outer.classList.length; i++) {
+      var cls = outer.classList[i];
+      if (cls.startsWith('language-')) {
+        lang = cls;
+        break;
+      }
+    }
+    if (!lang) {
+      cls = block.getAttribute('class');
+      lang = cls ? cls.replace('hljs ', '') : '';
+    }
+    if (lang.startsWith('language-')) {
+      lang = lang.substr(9);
+    }
+    block.setAttribute('class', 'hljs ' + lang);
+    block.parentNode.setAttribute('data-lang', lang);
+  }
+
+  function addBadge(block) {
+    var enabled = ('true' || 'true').toLowerCase();
+    if (enabled == 'true') {
+      var pre = block.parentElement;
+      pre.classList.add('badge');
+    }
+  }
+
+  function handle(block) {
+    addLangData(block);
+    addBadge(block)
+    hljs.highlightBlock(block);
+  }
+
+  for (var i = 0; i < els.length; i++) {
+    var el = els[i];
+    handle(el);
+  }
+});
+</script>
+
+<style>
+  /* code language badge */
+  pre.badge::before {
+    content: attr(data-lang);
+    color: #fff;
+    background-color: #0d9488;
+    padding: 0 .5em;
+    border-radius: 0 2px;
+    text-transform: uppercase;
+    text-align: center;
+    min-width: 32px;
+    display: inline-block;
+    position: absolute;
+    right: 0;
+  }
+
+  /* fix wrong badge display for firefox browser */
+  code > table pre::before {
+    display: none;
+  }
+</style>
+</head>
+<body>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<header class="site-header " role="banner">
+
+  <div class="wrapper">
+    <div class="site-header-inner">
+<span class="site-brand"><a class="site-brand-inner" rel="author" href="/jekyll-theme-yat/">
+  <img class="site-favicon" title="Waka-DS.com" src="" onerror="this.style.display='none'">
+  Waka-DS.com
+</a>
+</span><nav class="site-nav">
+          <input type="checkbox" id="nav-trigger" class="nav-trigger">
+          <label for="nav-trigger">
+            <span class="menu-icon">
+              <svg viewbox="0 0 18 15" width="18px" height="15px">
+                <path d="M18,1.484c0,0.82-0.665,1.484-1.484,1.484H1.484C0.665,2.969,0,2.304,0,1.484l0,0C0,0.665,0.665,0,1.484,0 h15.032C17.335,0,18,0.665,18,1.484L18,1.484z M18,7.516C18,8.335,17.335,9,16.516,9H1.484C0.665,9,0,8.335,0,7.516l0,0 c0-0.82,0.665-1.484,1.484-1.484h15.032C17.335,6.031,18,6.696,18,7.516L18,7.516z M18,13.516C18,14.335,17.335,15,16.516,15H1.484 C0.665,15,0,14.335,0,13.516l0,0c0-0.82,0.665-1.483,1.484-1.483h15.032C17.335,12.031,18,12.695,18,13.516L18,13.516z"></path>
+              </svg>
+            </span>
+          </label>
+
+          <div class="trigger">
+<a class="page-link" href="/jekyll-theme-yat/about.html">ABOUT</a><a class="page-link" href="/jekyll-theme-yat/archives.html">ARCHIVES</a><a class="page-link" href="/jekyll-theme-yat/categories.html">CATEGORIES</a><a class="page-link" href="/jekyll-theme-yat/">HOME</a><a class="page-link" href="/jekyll-theme-yat/tags.html">TAGS</a>
+</div>
+        </nav>
+</div>
+  </div>
+</header>
+
+<script>
+  function initHeader() {
+    var lastScrollY = getScrollPos().y;
+    var documentElement = document.documentElement;
+
+    function storeScrollData() {
+      var y = getScrollPos().y;var scrollStatus = "";
+
+      if (y <= 0) {
+        scrollStatus = "top";
+      } else if ((window.innerHeight + y) >= document.body.offsetHeight) {
+        scrollStatus = "bottom";
+      } else {
+        var isScrollDown = (y - lastScrollY > 0) ? true : false;
+        scrollStatus = isScrollDown ? "down" : "up";
+      }
+
+      lastScrollY = y;
+      documentElement.setAttribute("data-scroll-status", scrollStatus);
+    }
+
+    window.addEventListener('scroll', function(e) {
+      storeScrollData();
+    });
+
+    storeScrollData();
+  }
+  document.addEventListener('DOMContentLoaded', initHeader);
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<script>
+  function hashLocate(hashValue) {
+    hashValue = hashValue.replace(/^.*#h-/, '');
+    hashValue = decodeURIComponent(hashValue);
+    var element = document.getElementById(hashValue);
+
+    if (!element) {
+      return;
+    }
+
+    var header = document.querySelector('header.site-header');
+    var headerRect = header.getBoundingClientRect();
+    var headerTop = Math.floor(headerRect.top);
+    var headerHeight = Math.floor(headerRect.height);
+    var scrollPos = getScrollPos();
+    var offsetY = element.offsetTop - (headerTop + headerHeight + 20);
+
+    if (offsetY == scrollPos.y) {
+      return;
+    }
+
+    if (headerTop == 0  && offsetY > scrollPos.y) {
+      offsetY += headerHeight + 2;
+    } else if (headerTop < 0  && offsetY < scrollPos.y) {
+      offsetY -= headerHeight - 2;
+    }
+
+    smoothScrollTo(offsetY);
+  }
+
+  // The first event occurred
+  window.addEventListener('load', function(event) {
+    if (window.location.hash) {
+      hashLocate(window.location.hash);
+    }
+  });
+
+  // The first event occurred
+  window.addEventListener('click', function(event) {
+    if (event.target.tagName.toLowerCase() == 'a') {
+      hashLocate(event.target.getAttribute('href'));
+    }
+  });
+</script>
+<div class="theme-toggle">
+  <input type="checkbox" id="theme-switch">
+  <label for="theme-switch">
+    <div class="toggle"></div>
+    <div class="names">
+      <p class="light">Light</p>
+      <p class="dark">Dark</p>
+    </div>
+  </label>
+</div>
+
+
+
+
+<script>
+  (function() {
+    var sw = document.getElementById('theme-switch');
+    var html = document.getElementsByTagName('html')[0];
+    var nightModeOption = ('auto' || 'auto').toLowerCase();
+    var storage = nightModeOption === 'manual'
+        ? localStorage
+        : sessionStorage;
+    var themeData = loadThemeData();
+
+    function saveThemeData(data) {
+      storage.setItem('theme', JSON.stringify(data));
+    }
+
+    function loadThemeData() {
+      var data = storage.getItem('theme');
+      try {
+        data = JSON.parse(data ? data : '');
+      } catch(e) {
+        data = { nightShift: undefined, autoToggleAt: 0 };
+        saveThemeData(data);
+      }
+      return data;
+    }
+
+    function handleThemeToggle(nightShift) {
+      themeData.nightShift = nightShift;
+      saveThemeData(themeData);
+      html.dataset.theme = nightShift ? 'dark' : 'light';
+      setTimeout(function() {
+        sw.checked = nightShift ? true : false;
+      }, 50);
+    }
+
+    function autoThemeToggle() {
+      // Next time point of theme toggle
+      var now = new Date();
+      var toggleAt = new Date();
+      var hours = now.getHours();
+      var nightShift = hours >= 19 || hours <=7;
+
+      if (nightShift) {
+        if (hours > 7) {
+          toggleAt.setDate(toggleAt.getDate() + 1);
+        }
+        toggleAt.setHours(7);
+      } else {
+        toggleAt.setHours(19);
+      }
+
+      toggleAt.setMinutes(0);
+      toggleAt.setSeconds(0);
+      toggleAt.setMilliseconds(0)
+
+      var delay = toggleAt.getTime() - now.getTime();
+
+      // auto toggle theme mode
+      setTimeout(function() {
+        handleThemeToggle(!nightShift);
+      }, delay);
+
+      return {
+        nightShift: nightShift,
+        toggleAt: toggleAt.getTime()
+      };
+    }
+
+    // Listen the theme toggle event
+    sw.addEventListener('change', function(event) {
+      handleThemeToggle(event.target.checked);
+    });
+
+    if (nightModeOption == 'auto') {
+      var data = autoThemeToggle();
+
+      // Toggle theme by local setting
+      if (data.toggleAt > themeData.autoToggleAt) {
+        themeData.autoToggleAt = data.toggleAt;
+        handleThemeToggle(data.nightShift);
+      } else {
+        handleThemeToggle(themeData.nightShift);
+      }
+    } else if (nightModeOption == 'manual') {
+      handleThemeToggle(themeData.nightShift);
+    } else {
+      var nightShift = themeData.nightShift;
+      if (nightShift === undefined) {
+        nightShift = nightModeOption === 'on';
+      }
+      handleThemeToggle(nightShift);
+    }
+  })();
+</script>
+<main class="page-content" aria-label="Content">
+      <div class="wrapper">
+        <div class="framework">
+  <section class="main">
+
+     <div class="post">
+  <section>
+
+
+
+
+
+
+
+
+
+<header class="post-header">
+  <h1 class="post-title p-name" itemprop="name headline">Android から Claude Code を使うパターンと選び方</h1>
+  <h2 class="post-subtitle">Remote Control・SSH・Termux それぞれの特徴と使い分け</h2>
+
+  <p class="post-meta">
+    <time class="dt-published" datetime="2026-06-09T00:00:00+00:00" itemprop="datePublished"><i class="fa fa-calendar"></i> Jun 09, 2026
+    </time>
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <span class="post-reading-time left-vsplit"><i class="fa fa-clock-o"></i> About 8 mins</span>
+  </p>
+<div class="post-tags">
+<a class="post-tag" href="/jekyll-theme-yat/tags.html#Claude%20Code">#Claude Code</a><a class="post-tag" href="/jekyll-theme-yat/tags.html#%E3%82%B3%E3%83%BC%E3%83%87%E3%82%A3%E3%83%B3%E3%82%B0%E3%82%A8%E3%83%BC%E3%82%B8%E3%82%A7%E3%83%B3%E3%83%88">#コーディングエージェント</a><a class="post-tag" href="/jekyll-theme-yat/tags.html#%E9%96%8B%E7%99%BA%E7%92%B0%E5%A2%83">#開発環境</a>
+</div></header>
+<article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
+
+    <div class="post-content e-content" itemprop="articleBody">
+
+      <p>メインのスマホが Galaxy Z Fold 7 になってから、移動中や自宅のソファでコードのレビューや軽い修正をスマホだけでこなせるかどうかを試してきた。</p>
+
+<p>AI コーディングが広まるにつれて、「エージェントに作業を投げておき、スマホで進捗確認・指示出し・レビューをする」という使い方が現実的になってきている。Claude Code を Android から使うパターンはいくつかあり、それぞれに前提と制約が異なる。実際の利用事例をもとに整理する。</p>
+
+<h2 id="パターンの全体像">パターンの全体像</h2>
+
+<table>
+  <thead>
+    <tr>
+      <th style="text-align: left">パターン</th>
+      <th style="text-align: left">前提</th>
+      <th style="text-align: center">セットアップ</th>
+      <th style="text-align: center">安定性</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td style="text-align: left">A. Remote Control（公式）</td>
+      <td style="text-align: left">PC / VPS が常時起動</td>
+      <td style="text-align: center">低</td>
+      <td style="text-align: center">高</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">B. SSH + tmux</td>
+      <td style="text-align: left">PC / VPS + Tailscale</td>
+      <td style="text-align: center">中</td>
+      <td style="text-align: center">高</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">C. Termux ネイティブ</td>
+      <td style="text-align: left">Android のみ</td>
+      <td style="text-align: center">中</td>
+      <td style="text-align: center">中</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">D. proot-Ubuntu</td>
+      <td style="text-align: left">Android のみ</td>
+      <td style="text-align: center">高</td>
+      <td style="text-align: center">中</td>
+    </tr>
+  </tbody>
+</table>
+
+<hr>
+
+<h2 id="a-remote-control公式機能">A. Remote Control（公式機能）</h2>
+
+<p>2026年2月に Anthropic がリリースした機能。PC 上で動いている Claude Code セッションを、スマホの <code class="language-plaintext highlighter-rouge">claude.ai/code</code> またはモバイルアプリから操作できる。</p>
+
+<p>仕組みはシンプルで、PC 側のローカル環境はそのまま維持される。ファイルシステム・MCP サーバー・プロジェクト設定はすべて PC に残り、スマホはその「窓」として機能する。接続中も Claude はローカルで動き続けるため、クラウドに何かが移動するわけではない。</p>
+
+<p>セットアップは Claude Code v2.1.51 以降で有効になる。PC でセッションを開始すると QR コードが表示され、スキャンするだけで接続できる。既存の設定を変える必要はほぼない。</p>
+
+<p>制約は明確だ。PC の電源とターミナルが開いていることが前提で、1 セッションに同時接続できるのは 1 つだけ。ネットワーク復帰後はセッションが自動再接続される。</p>
+
+<p>Z Fold 7 の内側ディスプレイ（約 7.6 インチ）であれば、ターミナル出力を確認しながら右半分でブラウザを表示するマルチウィンドウ構成が自然に使える。</p>
+
+<hr>
+
+<h2 id="b-ssh--tmuxtailscale-経由">B. SSH + tmux（Tailscale 経由）</h2>
+
+<p>Remote Control が登場する前から実績のある方法で、安定性では今も最も信頼できる。</p>
+
+<p>構成は「デスクトップ / VPS → Tailscale → Termux(Android) → SSH → tmux → Claude Code」となる。tmux を挟むことで、接続が切れても作業が保持される。移動中に Claude Code を走らせておき、目的地に着いてから続きを確認する、という使い方に合っている。</p>
+
+<p>Harper Reed が「2000年代初期のプログラミング体験が戻ってきた」と書いたように、このパターンは枯れた技術の組み合わせで動作が安定している。初期セットアップに 20 分程度かかるが、以降はほぼメンテナンス不要だ。VPS を使う場合は月数百〜数千円の費用が発生する。</p>
+
+<hr>
+
+<h2 id="c-termux-ネイティブ">C. Termux ネイティブ</h2>
+
+<p>Android 上の Termux で直接 Claude Code を動かすパターン。npm のグローバルインストールではなく、linux-arm64 バイナリを glibc-runner 経由で実行する形が現在の主流になっている。</p>
+
+<p>インストール容量はバイナリ単体で約 233MB、推奨パッケージ込みで約 433MB。セットアップ時間は 5〜10 分程度と軽い。</p>
+
+<p>注意が必要なのが Android 15 の Phantom Process Killer だ。バックグラウンドの長時間プロセスを強制終了するため、tmux 内で実行することが前提になる。また Java コンパイルなど重いビルド処理は現実的でない。Z Fold 7 は Snapdragon 8 Elite を積んでいるため処理性能に余裕はあるが、OS 側の制約が先に来る。</p>
+
+<p>PC なしで完結させたい場面や、外出先でちょっとした確認作業をしたいときに使える。</p>
+
+<hr>
+
+<h2 id="d-proot-ubuntu">D. proot-Ubuntu</h2>
+
+<p>Termux 内に proot で Ubuntu 環境を構築してその中で実行するパターン。<code class="language-plaintext highlighter-rouge">process.platform</code> が <code class="language-plaintext highlighter-rouge">linux</code> を返すため、Linux 向けツールとの互換性が高い。Java や Go など複雑なビルドツールも動かせる。</p>
+
+<p>容量は約 2GB 必要で起動も重い。C のネイティブ実行で制約が出る場面への対処として検討する程度でよく、最初から選ぶパターンではない。</p>
+
+<hr>
+
+<h2 id="どのパターンを選ぶか">どのパターンを選ぶか</h2>
+
+<p>自宅に常時起動している PC があるなら、まず <strong>A. Remote Control</strong> を試す。セットアップが最小で公式サポートがあり、既存の開発環境をそのまま使える。</p>
+
+<p>PC が常時起動していない、または外出先からも同じ環境を使いたい場合は <strong>B. SSH + tmux</strong> を本線にする。Tailscale の設定を一度やってしまえば、あとはどこからでもつながる。</p>
+
+<p><strong>C. Termux ネイティブ</strong> は補助的に持っておくと便利だ。PC が使えない状況でも、軽い作業や確認程度なら動く。</p>
+
+<p>Z Fold 7 の大画面とマルチウィンドウは、どのパターンでも活きる。特に Remote Control と SSH では、ターミナルとブラウザを並べた PC に近い作業環境が作れる。</p>
+
+<h2 id="参考">参考</h2>
+
+<ul>
+  <li><a href="https://code.claude.com/docs/en/remote-control">Continue local sessions from any device with Remote Control — Claude Code 公式ドキュメント</a></li>
+  <li><a href="https://sealos.io/blog/claude-code-on-phone/">Claude Code Mobile: iPhone, Android &amp; SSH (2026) — Sealos Blog</a></li>
+  <li><a href="https://www.skeptrune.com/posts/claude-code-on-mobile-termux-tailscale/">How I Use Claude Code on My Phone with Termux and Tailscale</a></li>
+  <li><a href="https://github.com/ferrumclaudepilgrim/claude-code-android">GitHub - ferrumclaudepilgrim/claude-code-android</a></li>
+  <li><a href="https://harper.blog/2026/01/05/claude-code-is-better-on-your-phone/">Remote Claude Code: programing like it was the early 2000s — Harper Reed’s Blog</a></li>
+  <li><a href="https://docs.bswen.com/blog/2026-03-24-mobile-usage/">How to Use Claude Code on Mobile: Android Termux and iOS SSH Setup — BSWEN</a></li>
+</ul>
+
+
+    </div>
+
+</article>
+<div class="post-nav">
+<a class="previous" href="/jekyll-theme-yat/ai%E9%96%8B%E7%99%BA/2026/06/09/beast-mode-ai-tools.html" title="「Beast モード」でAIはどこまで変わるか">「Beast モード」でAIはどこまで変わるか</a><a class="next" href="/jekyll-theme-yat/ai%E9%96%8B%E7%99%BA/2026/06/09/rlhf-model-training.html" title="RLHFがモデルの返答をどう変えるか">RLHFがモデルの返答をどう変えるか</a>
+</div>
+<div class="post-related">
+      <div>Related Articles</div>
+      <ul>
+        <li><a class="post-link" href="/jekyll-theme-yat/ai%E9%96%8B%E7%99%BA/2026/06/08/opencode-guide.html" title="RLHFがモデルの返答をどう変えるか">LLM を選べる OSS コーディングエージェント opencode</a></li>
+<li><a class="post-link" href="/jekyll-theme-yat/%E3%82%A4%E3%83%B3%E3%83%95%E3%83%A9/2026/06/10/tailscale-guide.html" title="RLHFがモデルの返答をどう変えるか">Tailscaleの仕組みと使いどころ</a></li>
+<li><a class="post-link" href="/jekyll-theme-yat/ai%E9%96%8B%E7%99%BA/2026/06/11/goose-agent-pyramid-hierarchy.html" title="RLHFがモデルの返答をどう変えるか">GooseとAI開発が解体するピラミッド型組織</a></li>
+<li><a class="post-link" href="/jekyll-theme-yat/%E9%96%8B%E7%99%BA/2026/06/09/state-transition-diagram-guide.html" title="RLHFがモデルの返答をどう変えるか">状態遷移図の書き方と使いどころ</a></li>
+</ul>
+    </div>
+<div class="post-comments"></div></section>
+</div>
+
+
+  </section>
+  <section class="sidebar" style="margin-left: 15px;">
+    <!-- Get sidebar items --><style type="text/css" media="screen">
+.post-menu ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+</style>
+
+<div class="post-menu">
+  <div class="post-menu-title">TOC</div>
+  <div class="post-menu-content"></div>
+</div>
+
+<script>
+  function generateContent() {
+    var menu = document.querySelector(".post-menu");
+    var menuContent =  menu.querySelector(".post-menu-content");
+    var headings = document.querySelector(".post-content").querySelectorAll("h2, h3, h4, h5, h6");
+
+    // Hide menu when no headings
+    if (headings.length === 0) {
+      return menu.style.display = "none";
+    }
+
+    // Generate post menu
+    var menuHTML = '';
+    for (var i = 0; i < headings.length; i++) {
+      var h = headings[i];
+      menuHTML += (
+        '<li class="h-' + h.tagName.toLowerCase() + '">'
+        + '<a href="#h-' + h.getAttribute('id') + '">' + h.textContent + '</a></li>');
+    }
+
+    menuContent.innerHTML = '<ul>' + menuHTML + '</ul>';
+
+    // The header element
+    var header = document.querySelector('header.site-header');
+
+    function doMenuCollapse(index, over_items) {
+      var items = menuContent.firstChild.children;
+
+      if (over_items == undefined) {
+        over_items = 20;
+      }
+
+      if (items.length < over_items) {
+        return;
+      }
+
+      var activeItem = items[index];
+      var beginItem = activeItem
+      var endItem = activeItem
+      var beginIndex = index;
+      var endIndex = index + 1;
+      while (beginIndex >= 0
+        && !items[beginIndex].classList.contains('h-h2')) {
+        beginIndex -= 1;
+      }
+      while (endIndex < items.length
+        && !items[endIndex].classList.contains('h-h2')) {
+        endIndex += 1;
+      }
+      for (var i = 0; i < beginIndex; i++) {
+        item = items[i]
+        if (!item.classList.contains('h-h2')) {
+          item.style.display = 'none';
+        }
+      }
+      for (var i = beginIndex + 1; i < endIndex; i++) {
+        item = items[i]
+        // if (!item.classList.contains('h-h2')) {
+          item.style.display = '';
+        // }
+      }
+      for (var i = endIndex; i < items.length; i++) {
+        item = items[i]
+        if (!item.classList.contains('h-h2')) {
+          item.style.display = 'none';
+        }
+      }
+    }
+
+    // Init menu collapsed
+    doMenuCollapse(-1);
+
+    // Active the menu item
+    window.addEventListener('scroll', function (event) {
+      var lastActive = menuContent.querySelector('.active');
+      var changed = true;
+      var activeIndex = -1;
+      for (var i = headings.length - 1; i >= 0; i--) {
+        var h = headings[i];
+        var headingRect = h.getBoundingClientRect();
+        var headerRect = header.getBoundingClientRect();
+        var headerTop = Math.floor(headerRect.top);
+        var headerHeight = Math.floor(headerRect.height);
+        var headerHeight = headerTop + headerHeight + 20;
+        if (headingRect.top <= headerHeight) {
+          var id = 'h-' + h.getAttribute('id');
+          var a = menuContent.querySelector('a[href="#' + id  + '"]');
+          var curActive = a.parentNode;
+          if (curActive) {
+            curActive.classList.add('active');
+            activeIndex = i;
+          }
+          if (lastActive == curActive) {
+            changed = false;
+          }
+          break;
+        }
+      }
+      if (changed) {
+        if (lastActive) {
+          lastActive.classList.remove('active');
+        }
+        doMenuCollapse(activeIndex);
+      }
+      event.preventDefault();
+    });
+  }
+  generateContent();
+</script>
+</section>
+</div>
+
+      </div>
+    </main><footer class="site-footer h-card">
+  <data class="u-url" href="/jekyll-theme-yat/"></data>
+
+  <div class="wrapper">
+    <div class="site-footer-inner">
+<div>Waka-DS © 2021-2026</div>
+      <div>Powered by <a title="Jekyll is a simple, blog-aware, static site
+      generator." href="http://jekyllrb.com/">Jekyll</a> &amp; <a title="Yat, yet
+      another theme." href="https://github.com/jeffreytse/jekyll-theme-yat">Yat Theme</a>.</div>
+      <div class="footer-col rss-subscribe">Subscribe <a href="/jekyll-theme-yat/feed.xml">via RSS</a>
+</div>
+    </div>
+  </div>
+</footer>
+</body>
+</html>

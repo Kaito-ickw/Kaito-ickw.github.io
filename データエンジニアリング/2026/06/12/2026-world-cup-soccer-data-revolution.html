@@ -1,0 +1,947 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <script>
+  (function() {
+    try {
+      var p = localStorage.getItem('preferred_lang');
+      if (!p) return;
+      var path = window.location.pathname;
+      var ja = ['/', '/archives.html', '/categories.html', '/tags.html', '/about.html'];
+      var en = ['/en/', '/en/archives.html', '/en/categories.html', '/en/tags.html', '/en/about.html'];
+      if (p === 'en' && ja.indexOf(path) !== -1) {
+        window.location.replace('/en' + (path === '/' ? '/' : path));
+      } else if (p === 'ja' && en.indexOf(path) !== -1) {
+        window.location.replace(path.slice(3) || '/');
+      }
+    } catch(e) {}
+  })();
+  </script>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="google-translate-customization" content="108d9124921d80c3-80e20d618ff053c8-g4f02ec6f3dba68b7-c">
+<!-- Begin Jekyll SEO tag v2.9.0 -->
+<title>2026ワールドカップで見るサッカーのデータ革命 | Waka-DS.com</title>
+<meta name="generator" content="Jekyll v4.4.1">
+<meta property="og:title" content="2026ワールドカップで見るサッカーのデータ革命">
+<meta name="author" content="Waka-DS">
+<meta property="og:locale" content="ja">
+<meta name="description" content="2026年6月、FIFA ワールドカップが開幕した。48チームが北米3カ国を舞台に戦うこの大会は、規模だけでなくデータ活用の点でも過去最大規模になる見込みだ。">
+<meta name="twitter:description" property="og:description" content="2026年6月、FIFA ワールドカップが開幕した。48チームが北米3カ国を舞台に戦うこの大会は、規模だけでなくデータ活用の点でも過去最大規模になる見込みだ。">
+<link rel="canonical" href="/jekyll-theme-yat/%E3%83%87%E3%83%BC%E3%82%BF%E3%82%A8%E3%83%B3%E3%82%B8%E3%83%8B%E3%82%A2%E3%83%AA%E3%83%B3%E3%82%B0/2026/06/12/2026-world-cup-soccer-data-revolution.html">
+<meta property="og:url" content="/jekyll-theme-yat/%E3%83%87%E3%83%BC%E3%82%BF%E3%82%A8%E3%83%B3%E3%82%B8%E3%83%8B%E3%82%A2%E3%83%AA%E3%83%B3%E3%82%B0/2026/06/12/2026-world-cup-soccer-data-revolution.html">
+<meta property="og:site_name" content="Waka-DS.com">
+<meta property="og:image" content="/jekyll-theme-yat/assets/images/posts/2026-06-12-2026-world-cup-soccer-data-revolution/eyecatch.png">
+<meta property="og:image:alt" content="紙のピッチをめくってデータで見えるオフザボールの走路を表したコラージュ">
+<meta property="og:type" content="article">
+<meta property="article:published_time" content="2026-06-12T00:00:00+00:00">
+<meta property="article:modified_time" content="2026-06-12T00:00:00+00:00">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="/jekyll-theme-yat/assets/images/posts/2026-06-12-2026-world-cup-soccer-data-revolution/eyecatch.png">
+<meta name="twitter:image:alt" content="紙のピッチをめくってデータで見えるオフザボールの走路を表したコラージュ">
+<meta name="twitter:title" content="2026ワールドカップで見るサッカーのデータ革命">
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":"Waka-DS"},"dateModified":"2026-06-12T00:00:00+00:00","datePublished":"2026-06-12T00:00:00+00:00","description":"2026年6月、FIFA ワールドカップが開幕した。48チームが北米3カ国を舞台に戦うこの大会は、規模だけでなくデータ活用の点でも過去最大規模になる見込みだ。","headline":"2026ワールドカップで見るサッカーのデータ革命","image":{"alt":"紙のピッチをめくってデータで見えるオフザボールの走路を表したコラージュ","url":"/jekyll-theme-yat/assets/images/posts/2026-06-12-2026-world-cup-soccer-data-revolution/eyecatch.png","@type":"imageObject"},"mainEntityOfPage":{"@type":"WebPage","@id":"/jekyll-theme-yat/%E3%83%87%E3%83%BC%E3%82%BF%E3%82%A8%E3%83%B3%E3%82%B8%E3%83%8B%E3%82%A2%E3%83%AA%E3%83%B3%E3%82%B0/2026/06/12/2026-world-cup-soccer-data-revolution.html"},"url":"/jekyll-theme-yat/%E3%83%87%E3%83%BC%E3%82%BF%E3%82%A8%E3%83%B3%E3%82%B8%E3%83%8B%E3%82%A2%E3%83%AA%E3%83%B3%E3%82%B0/2026/06/12/2026-world-cup-soccer-data-revolution.html"}</script>
+<!-- End Jekyll SEO tag -->
+<link rel="shortcut icon" href="">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=Noto+Sans+JP:wght@400;500;700&amp;display=swap">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+  <link rel="stylesheet" href="/jekyll-theme-yat/assets/css/main.css">
+  <script src="/jekyll-theme-yat/assets/js/main.js"></script><link type="application/atom+xml" rel="alternate" href="/jekyll-theme-yat/feed.xml" title="Waka-DS.com">
+<script>
+  function initGoogleAnalytics() {
+    var doNotTrack = (window.doNotTrack === "1" || navigator.doNotTrack === "1" ||
+      navigator.doNotTrack === "yes" || navigator.msDoNotTrack === "1");
+    var enableDNT = "true" == "true";
+
+    if (!enableDNT || !doNotTrack) {
+      var ga_id = 'G-XNP1RBTG9C';
+
+      var script = document.createElement('script');
+      script.async = true;
+      script.src = 'https://www.googletagmanager.com/gtag/js?id=' + ga_id;
+      document.head.appendChild(script);
+
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', ga_id);
+    }
+  }
+  window.addEventListener("load", initGoogleAnalytics);
+</script>
+<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/styles/default.min.css">
+<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/highlight.min.js"></script>
+<!-- and it's easy to individually load additional languages -->
+<script charset="UTF-8" src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/languages/go.min.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<script>
+// Init highlight js
+document.addEventListener('DOMContentLoaded', function(event) {
+  var els = document.querySelectorAll('pre code')
+
+  function addLangData(block) {
+    var outer = block.parentElement.parentElement.parentElement;
+    var lang = block.getAttribute('data-lang');
+    for (var i = 0; i < outer.classList.length; i++) {
+      var cls = outer.classList[i];
+      if (cls.startsWith('language-')) {
+        lang = cls;
+        break;
+      }
+    }
+    if (!lang) {
+      cls = block.getAttribute('class');
+      lang = cls ? cls.replace('hljs ', '') : '';
+    }
+    if (lang.startsWith('language-')) {
+      lang = lang.substr(9);
+    }
+    block.setAttribute('class', 'hljs ' + lang);
+    block.parentNode.setAttribute('data-lang', lang);
+  }
+
+  function addBadge(block) {
+    var enabled = ('true' || 'true').toLowerCase();
+    if (enabled == 'true') {
+      var pre = block.parentElement;
+      pre.classList.add('badge');
+    }
+  }
+
+  function handle(block) {
+    addLangData(block);
+    addBadge(block)
+    hljs.highlightBlock(block);
+  }
+
+  for (var i = 0; i < els.length; i++) {
+    var el = els[i];
+    handle(el);
+  }
+});
+</script>
+
+<style>
+  /* code language badge */
+  pre.badge::before {
+    content: attr(data-lang);
+    color: #fff;
+    background-color: #0d9488;
+    padding: 0 .5em;
+    border-radius: 0 2px;
+    text-transform: uppercase;
+    text-align: center;
+    min-width: 32px;
+    display: inline-block;
+    position: absolute;
+    right: 0;
+  }
+
+  /* fix wrong badge display for firefox browser */
+  code > table pre::before {
+    display: none;
+  }
+</style>
+</head>
+<body>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<header class="site-header " role="banner">
+
+  <div class="wrapper">
+    <div class="site-header-inner">
+<span class="site-brand"><a class="site-brand-inner" rel="author" href="/jekyll-theme-yat/">
+  <img class="site-favicon" title="Waka-DS.com" src="" onerror="this.style.display='none'">
+  Waka-DS.com
+</a>
+</span><nav class="site-nav">
+          <input type="checkbox" id="nav-trigger" class="nav-trigger">
+          <label for="nav-trigger">
+            <span class="menu-icon">
+              <svg viewbox="0 0 18 15" width="18px" height="15px">
+                <path d="M18,1.484c0,0.82-0.665,1.484-1.484,1.484H1.484C0.665,2.969,0,2.304,0,1.484l0,0C0,0.665,0.665,0,1.484,0 h15.032C17.335,0,18,0.665,18,1.484L18,1.484z M18,7.516C18,8.335,17.335,9,16.516,9H1.484C0.665,9,0,8.335,0,7.516l0,0 c0-0.82,0.665-1.484,1.484-1.484h15.032C17.335,6.031,18,6.696,18,7.516L18,7.516z M18,13.516C18,14.335,17.335,15,16.516,15H1.484 C0.665,15,0,14.335,0,13.516l0,0c0-0.82,0.665-1.483,1.484-1.483h15.032C17.335,12.031,18,12.695,18,13.516L18,13.516z"></path>
+              </svg>
+            </span>
+          </label>
+
+          <div class="trigger">
+<a class="page-link" href="/jekyll-theme-yat/about.html">ABOUT</a><a class="page-link" href="/jekyll-theme-yat/archives.html">ARCHIVES</a><a class="page-link" href="/jekyll-theme-yat/categories.html">CATEGORIES</a><a class="page-link" href="/jekyll-theme-yat/">HOME</a><a class="page-link" href="/jekyll-theme-yat/tags.html">TAGS</a>
+</div>
+        </nav>
+</div>
+  </div>
+</header>
+
+<script>
+  function initHeader() {
+    var lastScrollY = getScrollPos().y;
+    var documentElement = document.documentElement;
+
+    function storeScrollData() {
+      var y = getScrollPos().y;var scrollStatus = "";
+
+      if (y <= 0) {
+        scrollStatus = "top";
+      } else if ((window.innerHeight + y) >= document.body.offsetHeight) {
+        scrollStatus = "bottom";
+      } else {
+        var isScrollDown = (y - lastScrollY > 0) ? true : false;
+        scrollStatus = isScrollDown ? "down" : "up";
+      }
+
+      lastScrollY = y;
+      documentElement.setAttribute("data-scroll-status", scrollStatus);
+    }
+
+    window.addEventListener('scroll', function(e) {
+      storeScrollData();
+    });
+
+    storeScrollData();
+  }
+  document.addEventListener('DOMContentLoaded', initHeader);
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<script>
+  function hashLocate(hashValue) {
+    hashValue = hashValue.replace(/^.*#h-/, '');
+    hashValue = decodeURIComponent(hashValue);
+    var element = document.getElementById(hashValue);
+
+    if (!element) {
+      return;
+    }
+
+    var header = document.querySelector('header.site-header');
+    var headerRect = header.getBoundingClientRect();
+    var headerTop = Math.floor(headerRect.top);
+    var headerHeight = Math.floor(headerRect.height);
+    var scrollPos = getScrollPos();
+    var offsetY = element.offsetTop - (headerTop + headerHeight + 20);
+
+    if (offsetY == scrollPos.y) {
+      return;
+    }
+
+    if (headerTop == 0  && offsetY > scrollPos.y) {
+      offsetY += headerHeight + 2;
+    } else if (headerTop < 0  && offsetY < scrollPos.y) {
+      offsetY -= headerHeight - 2;
+    }
+
+    smoothScrollTo(offsetY);
+  }
+
+  // The first event occurred
+  window.addEventListener('load', function(event) {
+    if (window.location.hash) {
+      hashLocate(window.location.hash);
+    }
+  });
+
+  // The first event occurred
+  window.addEventListener('click', function(event) {
+    if (event.target.tagName.toLowerCase() == 'a') {
+      hashLocate(event.target.getAttribute('href'));
+    }
+  });
+</script>
+<div class="theme-toggle">
+  <input type="checkbox" id="theme-switch">
+  <label for="theme-switch">
+    <div class="toggle"></div>
+    <div class="names">
+      <p class="light">Light</p>
+      <p class="dark">Dark</p>
+    </div>
+  </label>
+</div>
+
+
+
+
+<script>
+  (function() {
+    var sw = document.getElementById('theme-switch');
+    var html = document.getElementsByTagName('html')[0];
+    var nightModeOption = ('auto' || 'auto').toLowerCase();
+    var storage = nightModeOption === 'manual'
+        ? localStorage
+        : sessionStorage;
+    var themeData = loadThemeData();
+
+    function saveThemeData(data) {
+      storage.setItem('theme', JSON.stringify(data));
+    }
+
+    function loadThemeData() {
+      var data = storage.getItem('theme');
+      try {
+        data = JSON.parse(data ? data : '');
+      } catch(e) {
+        data = { nightShift: undefined, autoToggleAt: 0 };
+        saveThemeData(data);
+      }
+      return data;
+    }
+
+    function handleThemeToggle(nightShift) {
+      themeData.nightShift = nightShift;
+      saveThemeData(themeData);
+      html.dataset.theme = nightShift ? 'dark' : 'light';
+      setTimeout(function() {
+        sw.checked = nightShift ? true : false;
+      }, 50);
+    }
+
+    function autoThemeToggle() {
+      // Next time point of theme toggle
+      var now = new Date();
+      var toggleAt = new Date();
+      var hours = now.getHours();
+      var nightShift = hours >= 19 || hours <=7;
+
+      if (nightShift) {
+        if (hours > 7) {
+          toggleAt.setDate(toggleAt.getDate() + 1);
+        }
+        toggleAt.setHours(7);
+      } else {
+        toggleAt.setHours(19);
+      }
+
+      toggleAt.setMinutes(0);
+      toggleAt.setSeconds(0);
+      toggleAt.setMilliseconds(0)
+
+      var delay = toggleAt.getTime() - now.getTime();
+
+      // auto toggle theme mode
+      setTimeout(function() {
+        handleThemeToggle(!nightShift);
+      }, delay);
+
+      return {
+        nightShift: nightShift,
+        toggleAt: toggleAt.getTime()
+      };
+    }
+
+    // Listen the theme toggle event
+    sw.addEventListener('change', function(event) {
+      handleThemeToggle(event.target.checked);
+    });
+
+    if (nightModeOption == 'auto') {
+      var data = autoThemeToggle();
+
+      // Toggle theme by local setting
+      if (data.toggleAt > themeData.autoToggleAt) {
+        themeData.autoToggleAt = data.toggleAt;
+        handleThemeToggle(data.nightShift);
+      } else {
+        handleThemeToggle(themeData.nightShift);
+      }
+    } else if (nightModeOption == 'manual') {
+      handleThemeToggle(themeData.nightShift);
+    } else {
+      var nightShift = themeData.nightShift;
+      if (nightShift === undefined) {
+        nightShift = nightModeOption === 'on';
+      }
+      handleThemeToggle(nightShift);
+    }
+  })();
+</script>
+<main class="page-content" aria-label="Content">
+      <div class="wrapper">
+        <div class="framework">
+  <section class="main">
+
+     <div class="post post--with-image">
+  <section>
+
+
+
+
+
+
+
+
+
+<header class="post-header">
+  <h1 class="post-title p-name" itemprop="name headline">2026ワールドカップで見るサッカーのデータ革命</h1>
+  <h2 class="post-subtitle"></h2>
+
+  <p class="post-meta">
+    <time class="dt-published" datetime="2026-06-12T00:00:00+00:00" itemprop="datePublished"><i class="fa fa-calendar"></i> Jun 12, 2026
+    </time>
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <span class="post-reading-time left-vsplit"><i class="fa fa-clock-o"></i> About 6 mins</span>
+  </p>
+<div class="post-tags">
+<a class="post-tag" href="/jekyll-theme-yat/tags.html#AI">#AI</a><a class="post-tag" href="/jekyll-theme-yat/tags.html#%E3%83%87%E3%83%BC%E3%82%BF%E3%83%99%E3%83%BC%E3%82%B9">#データベース</a><a class="post-tag" href="/jekyll-theme-yat/tags.html#%E8%A8%AD%E8%A8%88">#設計</a>
+</div></header>
+<figure class="post-eyecatch">
+  <img src="/jekyll-theme-yat/assets/images/posts/2026-06-12-2026-world-cup-soccer-data-revolution/eyecatch.png" alt="紙のピッチをめくってデータで見えるオフザボールの走路を表したコラージュ" decoding="async" fetchpriority="high">
+</figure><article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
+
+    <div class="post-content e-content" itemprop="articleBody">
+
+      <p>2026年6月、FIFA ワールドカップが開幕した。48チームが北米3カ国を舞台に戦うこの大会は、規模だけでなくデータ活用の点でも過去最大規模になる見込みだ。</p>
+
+<p>この機会に、サッカーにおけるデータ戦略の現在地を整理してみたい。野球の世界で「マネーボール」という言葉が生まれてから20年以上が経った。サッカーではなぜ同様のことが難しかったのか。そして何が変わったのか。</p>
+
+<hr>
+
+<h2 id="なぜサッカーのマネーボールは難しかったのか">なぜサッカーのマネーボールは難しかったのか</h2>
+
+<p>マネーボール的な発想の核心は「市場が見落としている選手の価値をデータで発見し、安く買う」というものだ。野球ではこれがうまく機能した理由がある。</p>
+
+<p>野球は「打席」という離散したイベントの積み重ねで成立する。投手と打者が1対1で向き合い、結果（ヒット・アウト・四球）が明確に記録される。個々のプレーを切り出して数値化しやすく、それを積み上げれば「この選手が勝利にどれだけ貢献したか」を計算できる。</p>
+
+<p>サッカーは構造が違う。90分間、10人のフィールドプレーヤーが同時に動き続ける。誰かのゴールは、その前の選手の動き、スペースの作り方、プレスのかけ方すべてが絡み合って生まれる。個人の貢献を切り出すのが、構造的に難しい競技なのだ。</p>
+
+<p>そのため、野球がデータ革命を経験してから10年以上、サッカーのデータ活用は「試合後にシュート数やボール支配率を眺める」程度のまま止まっていた。</p>
+
+<hr>
+
+<h2 id="xg-の登場が変えたこと">xG の登場が変えたこと</h2>
+
+<p>転換点は2012年から2014年ごろ、xG（Expected Goals、期待ゴール数）という指標が広まり始めたときだ。</p>
+
+<p>xG は「このシュートがゴールになる確率」を表す数値だ。シュートの位置、角度、前のプレーの流れ、GK の位置などをもとに計算される。0.1 なら10回に1回決まる難しいシュート、0.8 なら10回に8回決まる決定的なチャンスを意味する。</p>
+
+<p>この指標が革新的だったのは、「実際の得点」ではなく「得点になるべきだったか」を測れる点だ。運が良くて得点が多いチームと、実力で得点を稼いでいるチームを区別できる。運不運を除いた実力を可視化する道具として、クラブのスカウティングや試合分析に急速に普及した。</p>
+
+<p>今では欧州の主要リーグのテレビ中継でも当たり前のように xG が表示される。野球でいえば OPS（出塁率＋長打率）が一般化したときに近い変化が、サッカーでも起きた。</p>
+
+<hr>
+
+<h2 id="brighton-と-brentford-が証明したこと">Brighton と Brentford が証明したこと</h2>
+
+<p>指標が整備されると、それを使って「市場の歪み」を突く戦略が登場する。プレミアリーグでその先駆けとなったのが Brighton &amp; Hove Albion と Brentford FC だ。</p>
+
+<p>Brighton のオーナー Tony Bloom は、Starlizard という大手スポーツ分析会社の創業者でもある。確率的な思考でスポーツデータを扱い続けてきた人物が、クラブ経営に同じロジックを持ち込んだ。</p>
+
+<p>結果として生まれたのは「安く買い、育て、高く売る」サイクルだ。Moises Caicedo はそのサイクルで発掘した選手のひとりで、最終的に £100M を超える移籍金でチェルシーに売却された。Alexis Mac Allister（2022年ワールドカップ優勝後にリバプールへ £35M）、Leandro Trossard（アーセナルへ £21M）なども同様のサイクルで動いた。</p>
+
+<p>Brentford も構造は似ている。オーナー Matthew Benham は元クオンツで、デンマークの FC Midtjylland と共通のデータ分析基盤でクラブを経営する。100年以上プレミアリーグに上がれなかったクラブが、2021年に初昇格を果たした。</p>
+
+<p>両クラブに共通するのは「感性や経験ではなく、データが市場の非効率を見つけ出せる」という確信だ。</p>
+
+<hr>
+
+<h2 id="ワールドカップでデータ技術はどこまで来たか">ワールドカップでデータ技術はどこまで来たか</h2>
+
+<p>国代表レベルでも、データ活用は2010年代から本格化している。</p>
+
+<p>2014年ブラジル大会でドイツ代表が優勝したとき、その準備を支えたのが SAP との共同開発システム「Match Insights」だった。GPS トラッキングとビデオ分析を統合し、全選手の動きをリアルタイムで分析するインフラだ。あのブラジル戦（7-1）の戦術的な準備も、このシステムを通じたデータ分析が背景にあるとされている。</p>
+
+<p>2022年カタール大会では技術がさらに前に出た。ボール内部に IMU（慣性計測ユニット）センサーが搭載され、1秒間に500回の頻度で位置・速度・スピンを計測する。スタジアムに設置されたカメラが選手の骨格上の29点を1秒50フレームで追跡し、それをもとに半自動オフサイド判定（SAOT）が動く。人間の目では追いきれない体の傾きや足の位置が、1秒以内に判定される。</p>
+
+<p>2026年大会は48チーム・104試合と規模が拡大する。計測基盤がより多くの試合データを生成し、放送局やクラブへの提供も広がる方向で進んでいる。</p>
+
+<hr>
+
+<h2 id="これからどこへ向かうか">これからどこへ向かうか</h2>
+
+<p>xG は先駆けにすぎない。今は全アクション（パス・ドリブル・プレス・ポジショニングすべて）をゴール期待値への貢献として換算する指標（OBV や VAEP など）が研究・実用化されている。従来の「シュート数」「パス成功率」では見えなかった選手の貢献が数値になり、スカウティングの精度はさらに上がる。</p>
+
+<p>試合中にリアルタイムで戦術の選択肢を提示する方向も視野に入っている。選手のポジションデータと過去の膨大な試合データをもとに自然言語でインサイトを生成するという動きも始まっている。</p>
+
+<p>サッカーのデータ革命は、野球よりも10年以上遅れて始まった。だが今は、野球で起きた変化が急速に追体験されているように見える。ワールドカップというステージで、その現在地が4年に一度可視化される。</p>
+
+<hr>
+
+<h2 id="参考">参考</h2>
+
+<ul>
+  <li><a href="https://github.com/statsbomb/open-data">StatsBomb Open Data – サッカー分析用オープンデータ</a></li>
+  <li><a href="https://www.fifa.com/fifaplus/en/articles/how-does-semi-automated-offside-technology-work">FIFA – Semi-Automated Offside Technology</a></li>
+</ul>
+
+
+    </div>
+
+</article>
+<div class="post-nav">
+<a class="previous" href="/jekyll-theme-yat/ai%E9%96%8B%E7%99%BA/2026/06/11/mobile-first-ai-dev-issue-pr-workflow.html" title="スマホで AI 開発を回す Issue/PR ベースワークフローの設計">スマホで AI 開発を回す Issue/PR ベースワークフローの設計</a><a class="next" href="/jekyll-theme-yat/%E9%96%8B%E7%99%BA/2026/06/13/github-secrets-guide.html" title="GitHub Secrets で API キーを安全にワークフローへ渡す">GitHub Secrets で API キーを安全にワークフローへ渡す</a>
+</div>
+<div class="post-related">
+      <div>Related Articles</div>
+      <ul>
+        <li><a class="post-link" href="/jekyll-theme-yat/%E9%96%8B%E7%99%BA/2023/06/24/vscode-shortcut.html" title="GitHub Secrets で API キーを安全にワークフローへ渡す">【VSCode】よく使うショートカット10選</a></li>
+<li><a class="post-link" href="/jekyll-theme-yat/%E9%96%8B%E7%99%BA/2023/05/25/python-venv.html" title="GitHub Secrets で API キーを安全にワークフローへ渡す">Pythonとvenv: 仮想環境のスムーズな管理まとめ</a></li>
+<li><a class="post-link" href="/jekyll-theme-yat/%E9%96%8B%E7%99%BA/2026/06/13/nodejs-basics-for-vibe-coding.html" title="GitHub Secrets で API キーを安全にワークフローへ渡す">バイブコーディングする人が知っておきたい Node.js 周辺の基礎知識</a></li>
+<li><a class="post-link" href="/jekyll-theme-yat/ai%E9%96%8B%E7%99%BA/2026/06/08/agent-reward-hacking-alignment.html" title="GitHub Secrets で API キーを安全にワークフローへ渡す">エージェントが「ルールの穴」を突く</a></li>
+</ul>
+    </div>
+<div class="post-comments"></div></section>
+</div>
+
+
+  </section>
+  <section class="sidebar" style="margin-left: 15px;">
+    <!-- Get sidebar items --><style type="text/css" media="screen">
+.post-menu ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+</style>
+
+<div class="post-menu">
+  <div class="post-menu-title">TOC</div>
+  <div class="post-menu-content"></div>
+</div>
+
+<script>
+  function generateContent() {
+    var menu = document.querySelector(".post-menu");
+    var menuContent =  menu.querySelector(".post-menu-content");
+    var headings = document.querySelector(".post-content").querySelectorAll("h2, h3, h4, h5, h6");
+
+    // Hide menu when no headings
+    if (headings.length === 0) {
+      return menu.style.display = "none";
+    }
+
+    // Generate post menu
+    var menuHTML = '';
+    for (var i = 0; i < headings.length; i++) {
+      var h = headings[i];
+      menuHTML += (
+        '<li class="h-' + h.tagName.toLowerCase() + '">'
+        + '<a href="#h-' + h.getAttribute('id') + '">' + h.textContent + '</a></li>');
+    }
+
+    menuContent.innerHTML = '<ul>' + menuHTML + '</ul>';
+
+    // The header element
+    var header = document.querySelector('header.site-header');
+
+    function doMenuCollapse(index, over_items) {
+      var items = menuContent.firstChild.children;
+
+      if (over_items == undefined) {
+        over_items = 20;
+      }
+
+      if (items.length < over_items) {
+        return;
+      }
+
+      var activeItem = items[index];
+      var beginItem = activeItem
+      var endItem = activeItem
+      var beginIndex = index;
+      var endIndex = index + 1;
+      while (beginIndex >= 0
+        && !items[beginIndex].classList.contains('h-h2')) {
+        beginIndex -= 1;
+      }
+      while (endIndex < items.length
+        && !items[endIndex].classList.contains('h-h2')) {
+        endIndex += 1;
+      }
+      for (var i = 0; i < beginIndex; i++) {
+        item = items[i]
+        if (!item.classList.contains('h-h2')) {
+          item.style.display = 'none';
+        }
+      }
+      for (var i = beginIndex + 1; i < endIndex; i++) {
+        item = items[i]
+        // if (!item.classList.contains('h-h2')) {
+          item.style.display = '';
+        // }
+      }
+      for (var i = endIndex; i < items.length; i++) {
+        item = items[i]
+        if (!item.classList.contains('h-h2')) {
+          item.style.display = 'none';
+        }
+      }
+    }
+
+    // Init menu collapsed
+    doMenuCollapse(-1);
+
+    // Active the menu item
+    window.addEventListener('scroll', function (event) {
+      var lastActive = menuContent.querySelector('.active');
+      var changed = true;
+      var activeIndex = -1;
+      for (var i = headings.length - 1; i >= 0; i--) {
+        var h = headings[i];
+        var headingRect = h.getBoundingClientRect();
+        var headerRect = header.getBoundingClientRect();
+        var headerTop = Math.floor(headerRect.top);
+        var headerHeight = Math.floor(headerRect.height);
+        var headerHeight = headerTop + headerHeight + 20;
+        if (headingRect.top <= headerHeight) {
+          var id = 'h-' + h.getAttribute('id');
+          var a = menuContent.querySelector('a[href="#' + id  + '"]');
+          var curActive = a.parentNode;
+          if (curActive) {
+            curActive.classList.add('active');
+            activeIndex = i;
+          }
+          if (lastActive == curActive) {
+            changed = false;
+          }
+          break;
+        }
+      }
+      if (changed) {
+        if (lastActive) {
+          lastActive.classList.remove('active');
+        }
+        doMenuCollapse(activeIndex);
+      }
+      event.preventDefault();
+    });
+  }
+  generateContent();
+</script>
+</section>
+</div>
+
+      </div>
+    </main><footer class="site-footer h-card">
+  <data class="u-url" href="/jekyll-theme-yat/"></data>
+
+  <div class="wrapper">
+    <div class="site-footer-inner">
+<div>Waka-DS © 2021-2026</div>
+      <div>Powered by <a title="Jekyll is a simple, blog-aware, static site
+      generator." href="http://jekyllrb.com/">Jekyll</a> &amp; <a title="Yat, yet
+      another theme." href="https://github.com/jeffreytse/jekyll-theme-yat">Yat Theme</a>.</div>
+      <div class="footer-col rss-subscribe">Subscribe <a href="/jekyll-theme-yat/feed.xml">via RSS</a>
+</div>
+    </div>
+  </div>
+</footer>
+</body>
+</html>

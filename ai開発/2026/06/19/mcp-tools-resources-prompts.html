@@ -1,0 +1,1261 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <script>
+  (function() {
+    try {
+      var p = localStorage.getItem('preferred_lang');
+      if (!p) return;
+      var path = window.location.pathname;
+      var ja = ['/', '/archives.html', '/categories.html', '/tags.html', '/about.html'];
+      var en = ['/en/', '/en/archives.html', '/en/categories.html', '/en/tags.html', '/en/about.html'];
+      if (p === 'en' && ja.indexOf(path) !== -1) {
+        window.location.replace('/en' + (path === '/' ? '/' : path));
+      } else if (p === 'ja' && en.indexOf(path) !== -1) {
+        window.location.replace(path.slice(3) || '/');
+      }
+    } catch(e) {}
+  })();
+  </script>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="google-translate-customization" content="108d9124921d80c3-80e20d618ff053c8-g4f02ec6f3dba68b7-c">
+<!-- Begin Jekyll SEO tag v2.9.0 -->
+<title>MCPのTools・Resources・Promptsを使い分ける | Waka-DS.com</title>
+<meta name="generator" content="Jekyll v4.4.1">
+<meta property="og:title" content="MCPのTools・Resources・Promptsを使い分ける">
+<meta name="author" content="Waka-DS">
+<meta property="og:locale" content="ja">
+<meta name="description" content="MCPサーバーというと、LLMから外部APIを呼ぶためのToolsがまず思い浮かぶ。実際には、MCPサーバーが公開する基本機能にはTools、Resources、Promptsの3種類がある。">
+<meta name="twitter:description" property="og:description" content="MCPサーバーというと、LLMから外部APIを呼ぶためのToolsがまず思い浮かぶ。実際には、MCPサーバーが公開する基本機能にはTools、Resources、Promptsの3種類がある。">
+<link rel="canonical" href="/jekyll-theme-yat/ai%E9%96%8B%E7%99%BA/2026/06/19/mcp-tools-resources-prompts.html">
+<meta property="og:url" content="/jekyll-theme-yat/ai%E9%96%8B%E7%99%BA/2026/06/19/mcp-tools-resources-prompts.html">
+<meta property="og:site_name" content="Waka-DS.com">
+<meta property="og:image" content="/jekyll-theme-yat/assets/images/posts/2026-06-19-mcp-tools-resources-prompts/eyecatch.png">
+<meta property="og:image:alt" content="レバー、資料箱、手順カードが工房の棚に分かれて収まるミニチュア風イラスト">
+<meta property="og:type" content="article">
+<meta property="article:published_time" content="2026-06-19T00:00:00+00:00">
+<meta property="article:modified_time" content="2026-06-19T00:00:00+00:00">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="/jekyll-theme-yat/assets/images/posts/2026-06-19-mcp-tools-resources-prompts/eyecatch.png">
+<meta name="twitter:image:alt" content="レバー、資料箱、手順カードが工房の棚に分かれて収まるミニチュア風イラスト">
+<meta name="twitter:title" content="MCPのTools・Resources・Promptsを使い分ける">
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":"Waka-DS"},"dateModified":"2026-06-19T00:00:00+00:00","datePublished":"2026-06-19T00:00:00+00:00","description":"MCPサーバーというと、LLMから外部APIを呼ぶためのToolsがまず思い浮かぶ。実際には、MCPサーバーが公開する基本機能にはTools、Resources、Promptsの3種類がある。","headline":"MCPのTools・Resources・Promptsを使い分ける","image":{"alt":"レバー、資料箱、手順カードが工房の棚に分かれて収まるミニチュア風イラスト","url":"/jekyll-theme-yat/assets/images/posts/2026-06-19-mcp-tools-resources-prompts/eyecatch.png","@type":"imageObject"},"mainEntityOfPage":{"@type":"WebPage","@id":"/jekyll-theme-yat/ai%E9%96%8B%E7%99%BA/2026/06/19/mcp-tools-resources-prompts.html"},"url":"/jekyll-theme-yat/ai%E9%96%8B%E7%99%BA/2026/06/19/mcp-tools-resources-prompts.html"}</script>
+<!-- End Jekyll SEO tag -->
+<link rel="shortcut icon" href="">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=Noto+Sans+JP:wght@400;500;700&amp;display=swap">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+  <link rel="stylesheet" href="/jekyll-theme-yat/assets/css/main.css">
+  <script src="/jekyll-theme-yat/assets/js/main.js"></script><link type="application/atom+xml" rel="alternate" href="/jekyll-theme-yat/feed.xml" title="Waka-DS.com">
+<script>
+  function initGoogleAnalytics() {
+    var doNotTrack = (window.doNotTrack === "1" || navigator.doNotTrack === "1" ||
+      navigator.doNotTrack === "yes" || navigator.msDoNotTrack === "1");
+    var enableDNT = "true" == "true";
+
+    if (!enableDNT || !doNotTrack) {
+      var ga_id = 'G-XNP1RBTG9C';
+
+      var script = document.createElement('script');
+      script.async = true;
+      script.src = 'https://www.googletagmanager.com/gtag/js?id=' + ga_id;
+      document.head.appendChild(script);
+
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', ga_id);
+    }
+  }
+  window.addEventListener("load", initGoogleAnalytics);
+</script>
+<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/styles/default.min.css">
+<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/highlight.min.js"></script>
+<!-- and it's easy to individually load additional languages -->
+<script charset="UTF-8" src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/languages/go.min.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<script>
+// Init highlight js
+document.addEventListener('DOMContentLoaded', function(event) {
+  var els = document.querySelectorAll('pre code')
+
+  function addLangData(block) {
+    var outer = block.parentElement.parentElement.parentElement;
+    var lang = block.getAttribute('data-lang');
+    for (var i = 0; i < outer.classList.length; i++) {
+      var cls = outer.classList[i];
+      if (cls.startsWith('language-')) {
+        lang = cls;
+        break;
+      }
+    }
+    if (!lang) {
+      cls = block.getAttribute('class');
+      lang = cls ? cls.replace('hljs ', '') : '';
+    }
+    if (lang.startsWith('language-')) {
+      lang = lang.substr(9);
+    }
+    block.setAttribute('class', 'hljs ' + lang);
+    block.parentNode.setAttribute('data-lang', lang);
+  }
+
+  function addBadge(block) {
+    var enabled = ('true' || 'true').toLowerCase();
+    if (enabled == 'true') {
+      var pre = block.parentElement;
+      pre.classList.add('badge');
+    }
+  }
+
+  function handle(block) {
+    addLangData(block);
+    addBadge(block)
+    hljs.highlightBlock(block);
+  }
+
+  for (var i = 0; i < els.length; i++) {
+    var el = els[i];
+    handle(el);
+  }
+});
+</script>
+
+<style>
+  /* code language badge */
+  pre.badge::before {
+    content: attr(data-lang);
+    color: #fff;
+    background-color: #0d9488;
+    padding: 0 .5em;
+    border-radius: 0 2px;
+    text-transform: uppercase;
+    text-align: center;
+    min-width: 32px;
+    display: inline-block;
+    position: absolute;
+    right: 0;
+  }
+
+  /* fix wrong badge display for firefox browser */
+  code > table pre::before {
+    display: none;
+  }
+</style>
+</head>
+<body>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<header class="site-header " role="banner">
+
+  <div class="wrapper">
+    <div class="site-header-inner">
+<span class="site-brand"><a class="site-brand-inner" rel="author" href="/jekyll-theme-yat/">
+  <img class="site-favicon" title="Waka-DS.com" src="" onerror="this.style.display='none'">
+  Waka-DS.com
+</a>
+</span><nav class="site-nav">
+          <input type="checkbox" id="nav-trigger" class="nav-trigger">
+          <label for="nav-trigger">
+            <span class="menu-icon">
+              <svg viewbox="0 0 18 15" width="18px" height="15px">
+                <path d="M18,1.484c0,0.82-0.665,1.484-1.484,1.484H1.484C0.665,2.969,0,2.304,0,1.484l0,0C0,0.665,0.665,0,1.484,0 h15.032C17.335,0,18,0.665,18,1.484L18,1.484z M18,7.516C18,8.335,17.335,9,16.516,9H1.484C0.665,9,0,8.335,0,7.516l0,0 c0-0.82,0.665-1.484,1.484-1.484h15.032C17.335,6.031,18,6.696,18,7.516L18,7.516z M18,13.516C18,14.335,17.335,15,16.516,15H1.484 C0.665,15,0,14.335,0,13.516l0,0c0-0.82,0.665-1.483,1.484-1.483h15.032C17.335,12.031,18,12.695,18,13.516L18,13.516z"></path>
+              </svg>
+            </span>
+          </label>
+
+          <div class="trigger">
+<a class="page-link" href="/jekyll-theme-yat/about.html">ABOUT</a><a class="page-link" href="/jekyll-theme-yat/archives.html">ARCHIVES</a><a class="page-link" href="/jekyll-theme-yat/categories.html">CATEGORIES</a><a class="page-link" href="/jekyll-theme-yat/">HOME</a><a class="page-link" href="/jekyll-theme-yat/tags.html">TAGS</a>
+</div>
+        </nav>
+</div>
+  </div>
+</header>
+
+<script>
+  function initHeader() {
+    var lastScrollY = getScrollPos().y;
+    var documentElement = document.documentElement;
+
+    function storeScrollData() {
+      var y = getScrollPos().y;var scrollStatus = "";
+
+      if (y <= 0) {
+        scrollStatus = "top";
+      } else if ((window.innerHeight + y) >= document.body.offsetHeight) {
+        scrollStatus = "bottom";
+      } else {
+        var isScrollDown = (y - lastScrollY > 0) ? true : false;
+        scrollStatus = isScrollDown ? "down" : "up";
+      }
+
+      lastScrollY = y;
+      documentElement.setAttribute("data-scroll-status", scrollStatus);
+    }
+
+    window.addEventListener('scroll', function(e) {
+      storeScrollData();
+    });
+
+    storeScrollData();
+  }
+  document.addEventListener('DOMContentLoaded', initHeader);
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<script>
+  function hashLocate(hashValue) {
+    hashValue = hashValue.replace(/^.*#h-/, '');
+    hashValue = decodeURIComponent(hashValue);
+    var element = document.getElementById(hashValue);
+
+    if (!element) {
+      return;
+    }
+
+    var header = document.querySelector('header.site-header');
+    var headerRect = header.getBoundingClientRect();
+    var headerTop = Math.floor(headerRect.top);
+    var headerHeight = Math.floor(headerRect.height);
+    var scrollPos = getScrollPos();
+    var offsetY = element.offsetTop - (headerTop + headerHeight + 20);
+
+    if (offsetY == scrollPos.y) {
+      return;
+    }
+
+    if (headerTop == 0  && offsetY > scrollPos.y) {
+      offsetY += headerHeight + 2;
+    } else if (headerTop < 0  && offsetY < scrollPos.y) {
+      offsetY -= headerHeight - 2;
+    }
+
+    smoothScrollTo(offsetY);
+  }
+
+  // The first event occurred
+  window.addEventListener('load', function(event) {
+    if (window.location.hash) {
+      hashLocate(window.location.hash);
+    }
+  });
+
+  // The first event occurred
+  window.addEventListener('click', function(event) {
+    if (event.target.tagName.toLowerCase() == 'a') {
+      hashLocate(event.target.getAttribute('href'));
+    }
+  });
+</script>
+<div class="theme-toggle">
+  <input type="checkbox" id="theme-switch">
+  <label for="theme-switch">
+    <div class="toggle"></div>
+    <div class="names">
+      <p class="light">Light</p>
+      <p class="dark">Dark</p>
+    </div>
+  </label>
+</div>
+
+
+
+
+<script>
+  (function() {
+    var sw = document.getElementById('theme-switch');
+    var html = document.getElementsByTagName('html')[0];
+    var nightModeOption = ('auto' || 'auto').toLowerCase();
+    var storage = nightModeOption === 'manual'
+        ? localStorage
+        : sessionStorage;
+    var themeData = loadThemeData();
+
+    function saveThemeData(data) {
+      storage.setItem('theme', JSON.stringify(data));
+    }
+
+    function loadThemeData() {
+      var data = storage.getItem('theme');
+      try {
+        data = JSON.parse(data ? data : '');
+      } catch(e) {
+        data = { nightShift: undefined, autoToggleAt: 0 };
+        saveThemeData(data);
+      }
+      return data;
+    }
+
+    function handleThemeToggle(nightShift) {
+      themeData.nightShift = nightShift;
+      saveThemeData(themeData);
+      html.dataset.theme = nightShift ? 'dark' : 'light';
+      setTimeout(function() {
+        sw.checked = nightShift ? true : false;
+      }, 50);
+    }
+
+    function autoThemeToggle() {
+      // Next time point of theme toggle
+      var now = new Date();
+      var toggleAt = new Date();
+      var hours = now.getHours();
+      var nightShift = hours >= 19 || hours <=7;
+
+      if (nightShift) {
+        if (hours > 7) {
+          toggleAt.setDate(toggleAt.getDate() + 1);
+        }
+        toggleAt.setHours(7);
+      } else {
+        toggleAt.setHours(19);
+      }
+
+      toggleAt.setMinutes(0);
+      toggleAt.setSeconds(0);
+      toggleAt.setMilliseconds(0)
+
+      var delay = toggleAt.getTime() - now.getTime();
+
+      // auto toggle theme mode
+      setTimeout(function() {
+        handleThemeToggle(!nightShift);
+      }, delay);
+
+      return {
+        nightShift: nightShift,
+        toggleAt: toggleAt.getTime()
+      };
+    }
+
+    // Listen the theme toggle event
+    sw.addEventListener('change', function(event) {
+      handleThemeToggle(event.target.checked);
+    });
+
+    if (nightModeOption == 'auto') {
+      var data = autoThemeToggle();
+
+      // Toggle theme by local setting
+      if (data.toggleAt > themeData.autoToggleAt) {
+        themeData.autoToggleAt = data.toggleAt;
+        handleThemeToggle(data.nightShift);
+      } else {
+        handleThemeToggle(themeData.nightShift);
+      }
+    } else if (nightModeOption == 'manual') {
+      handleThemeToggle(themeData.nightShift);
+    } else {
+      var nightShift = themeData.nightShift;
+      if (nightShift === undefined) {
+        nightShift = nightModeOption === 'on';
+      }
+      handleThemeToggle(nightShift);
+    }
+  })();
+</script>
+<main class="page-content" aria-label="Content">
+      <div class="wrapper">
+        <div class="framework">
+  <section class="main">
+
+     <div class="post post--with-image">
+  <section>
+
+
+
+
+
+
+
+
+
+<header class="post-header">
+  <h1 class="post-title p-name" itemprop="name headline">MCPのTools・Resources・Promptsを使い分ける</h1>
+  <h2 class="post-subtitle">サーバーが公開する3つの機能と、クライアント側機能の役割</h2>
+
+  <p class="post-meta">
+    <time class="dt-published" datetime="2026-06-19T00:00:00+00:00" itemprop="datePublished"><i class="fa fa-calendar"></i> Jun 19, 2026
+    </time>
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <span class="post-reading-time left-vsplit"><i class="fa fa-clock-o"></i> About 22 mins</span>
+  </p>
+<div class="post-tags">
+<a class="post-tag" href="/jekyll-theme-yat/tags.html#MCP">#MCP</a><a class="post-tag" href="/jekyll-theme-yat/tags.html#AI%E3%82%A8%E3%83%BC%E3%82%B8%E3%82%A7%E3%83%B3%E3%83%88">#AIエージェント</a><a class="post-tag" href="/jekyll-theme-yat/tags.html#LLM">#LLM</a><a class="post-tag" href="/jekyll-theme-yat/tags.html#API">#API</a><a class="post-tag" href="/jekyll-theme-yat/tags.html#%E8%A8%AD%E8%A8%88">#設計</a>
+</div></header>
+<figure class="post-eyecatch">
+  <img src="/jekyll-theme-yat/assets/images/posts/2026-06-19-mcp-tools-resources-prompts/eyecatch.png" alt="レバー、資料箱、手順カードが工房の棚に分かれて収まるミニチュア風イラスト" decoding="async" fetchpriority="high">
+</figure><article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
+
+    <div class="post-content e-content" itemprop="articleBody">
+
+      <p>MCPサーバーというと、LLMから外部APIを呼ぶためのToolsがまず思い浮かぶ。実際には、MCPサーバーが公開する基本機能にはTools、Resources、Promptsの3種類がある。</p>
+
+<p>この3つは、同じデータを返せることもある。たとえばノートを読む機能は、<code class="language-plaintext highlighter-rouge">read_note</code>というToolにも、<code class="language-plaintext highlighter-rouge">note://daily/2026-06-19</code>というResourceにもできる。コードレビューの指示は、Toolの説明文にもPromptにも書ける。そのため、通信できるかどうかだけで設計すると、ほとんどをToolに寄せてしまいがちだ。</p>
+
+<p>違いはデータ形式よりも「誰が、どのタイミングで使うものか」にある。本連載の<a href="/jekyll-theme-yat/ai%E9%96%8B%E7%99%BA/2026/06/18/mcp-host-client-server.html">前回はHost・Client・Serverの分担</a>を整理した。今回はその上に、MCPが提供する機能を配置していく。なお、この記事はMCP仕様の<code class="language-plaintext highlighter-rouge">2025-11-25</code>版を基準にしている。</p>
+
+<nav class="mcp-series-index" aria-label="MCPサーバー連載">
+  <p><strong>MCPサーバー連載（全7回）</strong></p>
+  <ol>
+    <li>
+      
+        <a href="/jekyll-theme-yat/ai%E9%96%8B%E7%99%BA/2026/06/17/mcp-protocol-overview.html">MCPは何を標準化するプロトコルなのか</a>
+      
+    </li>
+    <li>
+      
+        <a href="/jekyll-theme-yat/ai%E9%96%8B%E7%99%BA/2026/06/18/mcp-host-client-server.html">MCPのHost・Client・Serverを整理する</a>
+      
+    </li>
+    <li>
+      
+        <strong aria-current="page">MCPのTools・Resources・Promptsを使い分ける（この記事）</strong>
+      
+    </li>
+    <li>
+      
+        <a href="/jekyll-theme-yat/ai%E9%96%8B%E7%99%BA/2026/06/20/mcp-json-rpc-lifecycle.html">MCPの接続と通信をJSON-RPCから理解する</a>
+      
+    </li>
+    <li>
+      
+        <a href="/jekyll-theme-yat/ai%E9%96%8B%E7%99%BA/2026/06/21/build-mcp-server-python.html">Pythonで小さなMCPサーバーを作る</a>
+      
+    </li>
+    <li>
+      
+        <a href="/jekyll-theme-yat/ai%E9%96%8B%E7%99%BA/2026/06/22/mcp-local-remote-transports.html">ローカルMCPとリモートMCPの違い</a>
+      
+    </li>
+    <li>
+      
+        <a href="/jekyll-theme-yat/ai%E9%96%8B%E7%99%BA/2026/06/23/mcp-security-operations.html">MCPサーバーを安全に運用する</a>
+      
+    </li>
+  </ol>
+</nav>
+
+<hr>
+
+<h2 id="3つの違いは操作の主導権にある">3つの違いは操作の主導権にある</h2>
+
+<p>MCP仕様は、サーバー側の3つのprimitiveを次のように整理している。</p>
+
+<table>
+  <thead>
+    <tr>
+      <th style="text-align: left">Primitive</th>
+      <th style="text-align: left">標準的な主導者</th>
+      <th style="text-align: left">主な用途</th>
+      <th style="text-align: left">例</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td style="text-align: left">Tools</td>
+      <td style="text-align: left">Model-controlled</td>
+      <td style="text-align: left">処理の実行、外部システムの操作</td>
+      <td style="text-align: left">Issue作成、検索、計算</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">Resources</td>
+      <td style="text-align: left">Application-controlled</td>
+      <td style="text-align: left">文脈として使うデータの提供</td>
+      <td style="text-align: left">ファイル、DBスキーマ、Git履歴</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">Prompts</td>
+      <td style="text-align: left">User-controlled</td>
+      <td style="text-align: left">ユーザーが選ぶ定型ワークフロー</td>
+      <td style="text-align: left">コードレビュー、議事録の整理</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>ここでいう<code class="language-plaintext highlighter-rouge">model-controlled</code>は「モデルが無制限に実行してよい」という意味ではない。モデルが文脈に応じてToolの利用を提案・選択できる、というインタラクション上の分類だ。Hostは実行前に確認画面を出せるし、ユーザーは拒否できる。MCP仕様も、Tool実行を拒否できるhuman-in-the-loopを推奨している。</p>
+
+<p>同様に、<code class="language-plaintext highlighter-rouge">application-controlled</code>はResourceをHostが必ず自動挿入するという意味ではない。ツリーからユーザーに選ばせてもよいし、検索やヒューリスティクス、モデルの選択を使ってもよい。<code class="language-plaintext highlighter-rouge">user-controlled</code>のPromptも、必ずスラッシュコマンドとして表示する決まりではない。仕様は代表的な操作モデルを示すが、具体的なUIまでは規定していない。</p>
+
+<p><img class="mermaid" src="https://mermaid.ink/svg/eyJjb2RlIjoiZmxvd2NoYXJ0IFRCXG5TZXJ2ZXJbXCJNQ1AgU2VydmVyXCJdIC0tPiBUb29sc1tcIlRvb2xzPGJyLz7lrp_ooYzlj6_og73jgarmqZ_og71cIl1cblNlcnZlciAtLT4gUmVzb3VyY2VzW1wiUmVzb3VyY2VzPGJyLz7lj4LnhafjgZnjgovjg4fjg7zjgr9cIl1cblNlcnZlciAtLT4gUHJvbXB0c1tcIlByb21wdHM8YnIvPuWGjeWIqeeUqOOBmeOCi-aMh-ekulwiXVxuTW9kZWxbXCJNb2RlbOOBjOmBuOaKnlwiXSAtLT4gVG9vbHNcbkFwcFtcIkFwcGxpY2F0aW9u44GM5paH6ISI44KS566h55CGXCJdIC0tPiBSZXNvdXJjZXNcblVzZXJbXCJVc2Vy44GM5piO56S655qE44Gr6YG45oqeXCJdIC0tPiBQcm9tcHRzIiwibWVybWFpZCI6bnVsbH0"></p>
+
+<p>この整理は権限モデルそのものではない。安全性は、Server側のアクセス制御、Host側の承認、OSやコンテナの権限などで別に担保する必要がある。</p>
+
+<hr>
+
+<h2 id="toolsは実行する機能を公開する">Toolsは「実行する機能」を公開する</h2>
+
+<p>Toolsは、モデルが外部システムへ働きかけたり、その場で計算や検索を行ったりするための機能だ。MCP Clientは<code class="language-plaintext highlighter-rouge">tools/list</code>で定義を取得し、<code class="language-plaintext highlighter-rouge">tools/call</code>で選んだToolを呼び出す。</p>
+
+<p>Toolの定義には、名前、説明、引数を表す<code class="language-plaintext highlighter-rouge">inputSchema</code>などが含まれる。<code class="language-plaintext highlighter-rouge">outputSchema</code>を付ければ、構造化された結果の形も宣言できる。</p>
+
+<div class="language-json highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">{</span><span class="w">
+  </span><span class="nl">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"search_notes"</span><span class="p">,</span><span class="w">
+  </span><span class="nl">"description"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Search notes whose body contains the query"</span><span class="p">,</span><span class="w">
+  </span><span class="nl">"inputSchema"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+    </span><span class="nl">"type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"object"</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"properties"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+      </span><span class="nl">"query"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+        </span><span class="nl">"type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"string"</span><span class="p">,</span><span class="w">
+        </span><span class="nl">"description"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Text to search for"</span><span class="w">
+      </span><span class="p">}</span><span class="w">
+    </span><span class="p">},</span><span class="w">
+    </span><span class="nl">"required"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">"query"</span><span class="p">]</span><span class="w">
+  </span><span class="p">}</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></code></pre></div></div>
+
+<p>この説明とスキーマは単なるAPIドキュメントではない。Hostからモデルへ渡され、モデルが「この場面で使うべきか」「どの引数を渡すか」を判断する材料になる。名前が曖昧だったり、説明が誇張されていたりすると、通信自体は成功しても選択を誤りやすい。</p>
+
+<p>Toolsに向くのは、呼び出すたびに処理が走るものだ。</p>
+
+<ul>
+  <li>Issueを作成する</li>
+  <li>指定条件でノートを検索する</li>
+  <li>SQLを実行する</li>
+  <li>金額を換算する</li>
+  <li>メール送信の下書きを保存する</li>
+</ul>
+
+<p>読み取り処理もToolにできる。「書き込みならTool、読み取りならResource」という区分ではない。検索条件を受け取って動的に結果を作る、実行の成否をモデルが受けて次の行動を変える、といった処理は読み取りでもToolと相性がよい。</p>
+
+<p>一方、Toolを公開しただけでは、承認、認可、リトライ、タイムアウトの方針は決まらない。たとえば<code class="language-plaintext highlighter-rouge">delete_note</code>を毎回確認するか、自動実行を許すかはHostの実装や設定である。Server側も「Hostで確認されるはず」と信用せず、入力検証とアクセス制御を持つ必要がある。</p>
+
+<h3 id="toolのエラーは2層ある">Toolのエラーは2層ある</h3>
+
+<p>Toolでは、プロトコルエラーと実行エラーを分けて扱う。</p>
+
+<p>存在しないTool名や壊れたリクエストは、JSON-RPCの<code class="language-plaintext highlighter-rouge">error</code>として返す。一方、外部APIのレート制限や業務ルール違反のように、Toolの呼び出し自体は成立したが処理に失敗した場合は、通常の<code class="language-plaintext highlighter-rouge">result</code>内で<code class="language-plaintext highlighter-rouge">isError: true</code>を返せる。</p>
+
+<p>後者は「日付を未来日に直して再試行する」といった自己修正に利用できる。すべての失敗を同じ例外にまとめるより、モデルが次の行動を判断しやすい。</p>
+
+<hr>
+
+<h2 id="resourcesは参照できるデータを公開する">Resourcesは「参照できるデータ」を公開する</h2>
+
+<p>Resourcesは、Serverが持つデータを文脈として利用できる形でClientへ公開する。各ResourceはURIで識別される。</p>
+
+<div class="language-text highlighter-rouge"><div class="highlight"><pre class="highlight"><code>note://daily/2026-06-19
+file:///workspace/README.md
+git://repository/commits/main
+</code></pre></div></div>
+
+<p>Clientは<code class="language-plaintext highlighter-rouge">resources/list</code>で一覧を取得し、<code class="language-plaintext highlighter-rouge">resources/read</code>で内容を読む。固定URIの一覧だけでなく、<code class="language-plaintext highlighter-rouge">note://daily/{date}</code>のようなResource Templateを公開することもできる。Resourceの内容はテキストまたはbase64エンコードされたバイナリで表現できる。</p>
+
+<p>Resourcesに向くのは、「呼び出して処理する」というより「存在する情報を参照する」と考えた方が自然なものだ。</p>
+
+<ul>
+  <li>プロジェクトのREADME</li>
+  <li>データベースのスキーマ</li>
+  <li>アプリケーションの設定情報</li>
+  <li>Gitの履歴</li>
+  <li>日付やIDで識別できるノート</li>
+</ul>
+
+<p>Resourceは、モデルのコンテキストへ必ず自動投入されるわけではない。Hostが一覧をUIに表示してユーザーに選ばせることも、必要なものだけ取得することもできる。MCPが標準化するのは、発見と読み出しの方法である。どのResourceをいつモデルへ見せるか、長い内容を要約するか、キャッシュするかはHost側の判断になる。</p>
+
+<h3 id="resourceは変更通知を扱える">Resourceは変更通知を扱える</h3>
+
+<p>Serverが<code class="language-plaintext highlighter-rouge">resources.subscribe</code> capabilityを宣言している場合、Clientは個別Resourceを購読できる。内容が変わったときは、Serverが<code class="language-plaintext highlighter-rouge">notifications/resources/updated</code>を送る。また、公開されているResourceの一覧自体が変わった場合は、<code class="language-plaintext highlighter-rouge">notifications/resources/list_changed</code>を利用できる。</p>
+
+<p>ここにも境界がある。通知は「変わった」という合図であり、Hostが即座に再取得してモデルへ差し込むことまでは規定しない。更新頻度の高いResourceを毎回読み直すかどうかは、通信量と鮮度を考えてHostが決める。</p>
+
+<h3 id="toolで読むかresourceで読むか">Toolで読むかResourceで読むか</h3>
+
+<p>ノートの例で考えると区別しやすい。</p>
+
+<table>
+  <thead>
+    <tr>
+      <th style="text-align: left">要件</th>
+      <th style="text-align: left">適した候補</th>
+      <th style="text-align: left">理由</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td style="text-align: left">URIが分かっているノート本文を読む</td>
+      <td style="text-align: left">Resource</td>
+      <td style="text-align: left">既存データの参照として表現できる</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">キーワードと期間を指定して検索する</td>
+      <td style="text-align: left">Tool</td>
+      <td style="text-align: left">引数を受けて検索処理を実行する</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">検索結果から本文へ移動する</td>
+      <td style="text-align: left">Tool + Resource</td>
+      <td style="text-align: left">検索結果でResource Linkを返せる</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">ノートを更新する</td>
+      <td style="text-align: left">Tool</td>
+      <td style="text-align: left">副作用のある操作として明示できる</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>すべてを片方に寄せる必要はない。Toolの結果からResourceへのリンクを返す設計にすると、検索という操作と、見つかったデータの参照を分離できる。</p>
+
+<hr>
+
+<h2 id="promptsは選んで使う対話の型を公開する">Promptsは「選んで使う対話の型」を公開する</h2>
+
+<p>Promptsは、Serverが再利用可能なメッセージや指示のテンプレートをClientへ公開する機能だ。Clientは<code class="language-plaintext highlighter-rouge">prompts/list</code>で候補を取得し、ユーザーが選んだPromptを<code class="language-plaintext highlighter-rouge">prompts/get</code>で展開する。Promptは引数を受け取れる。</p>
+
+<div class="language-json highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">{</span><span class="w">
+  </span><span class="nl">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"review_note"</span><span class="p">,</span><span class="w">
+  </span><span class="nl">"description"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Review a note for unclear claims and missing evidence"</span><span class="p">,</span><span class="w">
+  </span><span class="nl">"arguments"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
+    </span><span class="p">{</span><span class="w">
+      </span><span class="nl">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"note_uri"</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"description"</span><span class="p">:</span><span class="w"> </span><span class="s2">"URI of the note to review"</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"required"</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="w">
+    </span><span class="p">}</span><span class="w">
+  </span><span class="p">]</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></code></pre></div></div>
+
+<p>取得結果は単なる文字列ではなく、<code class="language-plaintext highlighter-rouge">user</code>または<code class="language-plaintext highlighter-rouge">assistant</code>のroleを持つメッセージ列だ。テキストのほか、画像、音声、埋め込みResourceを含められる。たとえば「指定ノートを読み、根拠がない断定を列挙する」というレビュー手順と対象Resourceを一緒に返せる。</p>
+
+<p>Promptsが向くのは、ユーザーが目的を理解したうえで明示的に開始するワークフローだ。</p>
+
+<ul>
+  <li>コードレビューを始める</li>
+  <li>障害報告を所定の形式で作る</li>
+  <li>会議メモから決定事項を抽出する</li>
+  <li>特定の観点で設計案を比較する</li>
+</ul>
+
+<p>Promptはモデルのsystem promptをServerが自由に上書きする仕組みではない。Serverがテンプレートを返し、Hostが対話へどう組み込むかを決める。Promptをスラッシュコマンド、メニュー、フォームのどれで見せるかもHost次第だ。</p>
+
+<p>また、PromptがServerから来る以上、その内容を無条件に信頼してよいわけではない。外部データの送信や権限の拡大を指示に含める可能性もある。Hostは出所を示し、ユーザーが内容を確認できるようにする必要がある。</p>
+
+<hr>
+
+<h2 id="rootssamplingelicitationは向きが逆になる">Roots・Sampling・Elicitationは向きが逆になる</h2>
+
+<p>Tools、Resources、PromptsはServerがClientへ公開するServer Featuresである。MCPには反対方向、つまりServerがClientの機能を利用するClient Featuresもある。<code class="language-plaintext highlighter-rouge">2025-11-25</code>版で主要なものはRoots、Sampling、Elicitationだ。</p>
+
+<p><img class="mermaid" src="https://mermaid.ink/svg/eyJjb2RlIjoiZmxvd2NoYXJ0IFRCXG5DbGllbnRbXCJNQ1AgQ2xpZW50XCJdIC0tPnxcIuWFrOmWi-ODu-aPkOS-m1wifCBSb290c1tcIlJvb3RzPGJyLz7lr77osaHjg4fjgqPjg6zjgq_jg4jjg6pcIl1cbkNsaWVudCAtLT58XCLjg6Ljg4fjg6vliKnnlKjjgpLku7Lku4tcInwgU2FtcGxpbmdbXCJTYW1wbGluZzxici8-TExN55Sf5oiQXCJdXG5DbGllbnQgLS0-fFwi44Om44O844K244O85pON5L2c44KS5Luy5LuLXCJ8IEVsaWNpdGF0aW9uW1wiRWxpY2l0YXRpb248YnIvPui_veWKoOaDheWgsVwiXVxuU2VydmVyW1wiTUNQIFNlcnZlclwiXSAtLT58XCJyb290cy9saXN0XCJ8IFJvb3RzXG5TZXJ2ZXIgLS0-fFwic2FtcGxpbmcvY3JlYXRlTWVzc2FnZVwifCBTYW1wbGluZ1xuU2VydmVyIC0tPnxcImVsaWNpdGF0aW9uL2NyZWF0ZVwifCBFbGljaXRhdGlvbiIsIm1lcm1haWQiOm51bGx9"></p>
+
+<h3 id="rootsは作業対象をserverへ伝える">Rootsは作業対象をServerへ伝える</h3>
+
+<p>RootsをサポートするClientは、作業対象となるファイルシステムのルートをServerへ公開できる。Serverは<code class="language-plaintext highlighter-rouge">roots/list</code>を送り、<code class="language-plaintext highlighter-rouge">file://</code> URIの一覧を受け取る。ワークスペースが変わった場合はClientから変更通知を送れる。</p>
+
+<p>ただし、Rootsの一覧を受け取ることと、OSレベルでアクセスを封じることは同じではない。Serverが実際に読める範囲は、プロセス権限やコンテナ、ファイルシステムのマウントなどにも依存する。Rootsをセキュリティ境界の唯一の実装にしない方がよい。</p>
+
+<h3 id="samplingはserverからclientのllm利用を依頼する">SamplingはServerからClientのLLM利用を依頼する</h3>
+
+<p>Samplingでは、Serverが<code class="language-plaintext highlighter-rouge">sampling/createMessage</code>をClientへ送り、LLMによる生成を依頼する。モデルのAPIキーやモデル選択をClient側に残したまま、Server内部の処理からLLMを利用できる。</p>
+
+<p>Serverは希望するモデル特性や最大トークン数などを渡せるが、実際にどのモデルを使うか、どの情報を追加コンテキストとして含めるかはClientが制御する。仕様はユーザーがSampling要求と生成結果を確認し、拒否できる設計を推奨している。</p>
+
+<h3 id="elicitationは処理途中でユーザーへ情報を求める">Elicitationは処理途中でユーザーへ情報を求める</h3>
+
+<p>Elicitationは、ServerがClientを通じてユーザーへ追加情報を求める仕組みだ。<code class="language-plaintext highlighter-rouge">2025-11-25</code>版には、構造化フォームを表示するform modeと、外部URLで操作してもらうurl modeがある。</p>
+
+<p>たとえば「保存先のプロジェクトを選んでほしい」はform modeで聞ける。一方、APIキーやパスワードなどの秘密情報をform modeで要求してはならず、そのような操作にはurl modeを使う。Serverがユーザーへ直接UIを出すのではなく、Clientが表示と同意を仲介する点が重要だ。</p>
+
+<hr>
+
+<h2 id="どの機能を選ぶか">どの機能を選ぶか</h2>
+
+<p>設計時は「何を返すか」だけでなく、「誰が開始し、何が起きるか」を順番に確認するとよい。</p>
+
+<table>
+  <thead>
+    <tr>
+      <th style="text-align: left">判断したいこと</th>
+      <th style="text-align: left">Yesなら第一候補</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td style="text-align: left">外部システムを操作する、または計算・検索を実行するか</td>
+      <td style="text-align: left">Tool</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">URIで識別できる既存データを文脈として読ませたいか</td>
+      <td style="text-align: left">Resource</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">ユーザーが明示的に選ぶ再利用可能な対話手順か</td>
+      <td style="text-align: left">Prompt</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">Serverが作業対象ディレクトリを知る必要があるか</td>
+      <td style="text-align: left">Roots</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">Server内部の処理からClientのLLMを使いたいか</td>
+      <td style="text-align: left">Sampling</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">Serverの処理途中でユーザー入力や外部操作が必要か</td>
+      <td style="text-align: left">Elicitation</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>複数に該当する場合は組み合わせる。ノート管理Serverなら、検索と更新をTools、各ノート本文をResources、定型レビューをPromptとして公開できる。レビュー中に評価基準を選ばせるならElicitation、Server側で下書きを生成するならSamplingが加わる。</p>
+
+<p><img class="mermaid" src="https://mermaid.ink/svg/eyJjb2RlIjoiZmxvd2NoYXJ0IFRCXG5TdGFydFtcIuWFrOmWi-OBl-OBn-OBhOapn-iDvVwiXSAtLT4gQWN0aW9ue1wi5Yem55CG44KE5Ymv5L2c55So44GM44GC44KL44GLXCJ9XG5BY3Rpb24gLS0-fFwiWWVzXCJ8IFRvb2xbXCJUb29sXCJdXG5BY3Rpb24gLS0-fFwiTm9cInwgRGF0YXtcIuaXouWtmOODh-ODvOOCv-OBruWPgueFp-OBi1wifVxuRGF0YSAtLT58XCJZZXNcInwgUmVzb3VyY2VbXCJSZXNvdXJjZVwiXVxuRGF0YSAtLT58XCJOb1wifCBXb3JrZmxvd3tcIuODpuODvOOCtuODvOOBjOmBuOOBtuWvvuipseaJi-mghuOBi1wifVxuV29ya2Zsb3cgLS0-fFwiWWVzXCJ8IFByb21wdFtcIlByb21wdFwiXVxuV29ya2Zsb3cgLS0-fFwiTm9cInwgUmVjaGVja1tcIuimgeS7tuOBqOaTjeS9nOS4u-S9k-OCkuWGjeeiuuiqjVwiXSIsIm1lcm1haWQiOm51bGx9"></p>
+
+<p>SDKのデコレーターや登録APIは、この設計をコードに落とすための手段である。どのSDKを使っても、Toolへ寄せすぎた設計が自動的に直るわけではない。先に操作主体と責任範囲を決め、それからSDKのAPIへ対応づける方が理解しやすい。</p>
+
+<hr>
+
+<h2 id="まとめ">まとめ</h2>
+
+<table>
+  <thead>
+    <tr>
+      <th style="text-align: left">機能</th>
+      <th style="text-align: left">覚えておく役割</th>
+      <th style="text-align: left">MCPが決めないこと</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td style="text-align: left">Tools</td>
+      <td style="text-align: left">モデルが選択できる実行機能</td>
+      <td style="text-align: left">承認UI、認可、再試行方針</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">Resources</td>
+      <td style="text-align: left">Hostが文脈として扱える参照データ</td>
+      <td style="text-align: left">自動挿入、キャッシュ、要約方法</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">Prompts</td>
+      <td style="text-align: left">ユーザーが選ぶ対話テンプレート</td>
+      <td style="text-align: left">コマンドやメニューなどの表示方法</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">Roots</td>
+      <td style="text-align: left">ClientがServerへ示す作業対象</td>
+      <td style="text-align: left">OSレベルのsandboxそのもの</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">Sampling</td>
+      <td style="text-align: left">ServerからClientへ依頼するLLM生成</td>
+      <td style="text-align: left">実モデルの選択、最終承認</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">Elicitation</td>
+      <td style="text-align: left">Serverからユーザーへ求める追加情報</td>
+      <td style="text-align: left">具体的な入力UI</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>MCPの機能は「Serverが提供するもの」だけではない。Server FeaturesとClient Featuresを分け、メッセージがどちら向きに流れるかを見ると、Host・Client・Serverの責任分担も見えやすくなる。</p>
+
+<p>次回は、これらの機能が接続後にどう発見され、呼び出されるのかを<a href="/jekyll-theme-yat/ai%E9%96%8B%E7%99%BA/2026/06/20/mcp-json-rpc-lifecycle.html">JSON-RPCとMCPのライフサイクル</a>から追う。</p>
+
+<hr>
+
+<h2 id="参考">参考</h2>
+
+<ul>
+  <li>
+<a href="https://modelcontextprotocol.io/specification/2025-11-25/server">Server Features Overview - Model Context Protocol</a> ── 3つのprimitiveと操作主体の整理</li>
+  <li>
+<a href="https://modelcontextprotocol.io/specification/2025-11-25/server/tools">Tools - Model Context Protocol</a> ── Toolの発見、呼び出し、結果とエラー</li>
+  <li>
+<a href="https://modelcontextprotocol.io/specification/2025-11-25/server/resources">Resources - Model Context Protocol</a> ── ResourceのURI、読み出し、購読</li>
+  <li>
+<a href="https://modelcontextprotocol.io/specification/2025-11-25/server/prompts">Prompts - Model Context Protocol</a> ── Promptの一覧取得と展開</li>
+  <li>
+<a href="https://modelcontextprotocol.io/specification/2025-11-25/client/roots">Roots - Model Context Protocol</a> ── Clientが公開するファイルシステムのルート</li>
+  <li>
+<a href="https://modelcontextprotocol.io/specification/2025-11-25/client/sampling">Sampling - Model Context Protocol</a> ── ServerからClientへのLLM生成依頼</li>
+  <li>
+<a href="https://modelcontextprotocol.io/specification/2025-11-25/client/elicitation">Elicitation - Model Context Protocol</a> ── form modeとurl modeによる追加入力</li>
+</ul>
+
+
+    </div>
+
+</article>
+<div class="post-nav">
+<a class="previous" href="/jekyll-theme-yat/ai%E9%96%8B%E7%99%BA/2026/06/18/mcp-host-client-server.html" title="MCPのHost・Client・Serverを整理する">MCPのHost・Client・Serverを整理する</a><a class="next" href="/jekyll-theme-yat/ai%E9%96%8B%E7%99%BA/2026/06/20/mcp-json-rpc-lifecycle.html" title="MCPの接続と通信をJSON-RPCから理解する">MCPの接続と通信をJSON-RPCから理解する</a>
+</div>
+<div class="post-related">
+      <div>Related Articles</div>
+      <ul>
+        <li><a class="post-link" href="/jekyll-theme-yat/ai%E9%96%8B%E7%99%BA/2026/06/19/mcp-tools-resources-prompts.html" title="MCPの接続と通信をJSON-RPCから理解する">MCPのTools・Resources・Promptsを使い分ける</a></li>
+<li><a class="post-link" href="/jekyll-theme-yat/ai%E9%96%8B%E7%99%BA/2026/06/09/beast-mode-ai-tools.html" title="MCPの接続と通信をJSON-RPCから理解する">「Beast モード」でAIはどこまで変わるか</a></li>
+<li><a class="post-link" href="/jekyll-theme-yat/%E9%96%8B%E7%99%BA/2026/06/13/github-secrets-guide.html" title="MCPの接続と通信をJSON-RPCから理解する">GitHub Secrets で API キーを安全にワークフローへ渡す</a></li>
+<li><a class="post-link" href="/jekyll-theme-yat/ai%E9%96%8B%E7%99%BA/2026/06/24/ai-subscription-telehodai.html" title="MCPの接続と通信をJSON-RPCから理解する">AIサブスクのレートリミットは令和のテレホーダイか</a></li>
+</ul>
+    </div>
+<div class="post-comments"></div></section>
+</div>
+
+
+  </section>
+  <section class="sidebar" style="margin-left: 15px;">
+    <!-- Get sidebar items --><style type="text/css" media="screen">
+.post-menu ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+</style>
+
+<div class="post-menu">
+  <div class="post-menu-title">TOC</div>
+  <div class="post-menu-content"></div>
+</div>
+
+<script>
+  function generateContent() {
+    var menu = document.querySelector(".post-menu");
+    var menuContent =  menu.querySelector(".post-menu-content");
+    var headings = document.querySelector(".post-content").querySelectorAll("h2, h3, h4, h5, h6");
+
+    // Hide menu when no headings
+    if (headings.length === 0) {
+      return menu.style.display = "none";
+    }
+
+    // Generate post menu
+    var menuHTML = '';
+    for (var i = 0; i < headings.length; i++) {
+      var h = headings[i];
+      menuHTML += (
+        '<li class="h-' + h.tagName.toLowerCase() + '">'
+        + '<a href="#h-' + h.getAttribute('id') + '">' + h.textContent + '</a></li>');
+    }
+
+    menuContent.innerHTML = '<ul>' + menuHTML + '</ul>';
+
+    // The header element
+    var header = document.querySelector('header.site-header');
+
+    function doMenuCollapse(index, over_items) {
+      var items = menuContent.firstChild.children;
+
+      if (over_items == undefined) {
+        over_items = 20;
+      }
+
+      if (items.length < over_items) {
+        return;
+      }
+
+      var activeItem = items[index];
+      var beginItem = activeItem
+      var endItem = activeItem
+      var beginIndex = index;
+      var endIndex = index + 1;
+      while (beginIndex >= 0
+        && !items[beginIndex].classList.contains('h-h2')) {
+        beginIndex -= 1;
+      }
+      while (endIndex < items.length
+        && !items[endIndex].classList.contains('h-h2')) {
+        endIndex += 1;
+      }
+      for (var i = 0; i < beginIndex; i++) {
+        item = items[i]
+        if (!item.classList.contains('h-h2')) {
+          item.style.display = 'none';
+        }
+      }
+      for (var i = beginIndex + 1; i < endIndex; i++) {
+        item = items[i]
+        // if (!item.classList.contains('h-h2')) {
+          item.style.display = '';
+        // }
+      }
+      for (var i = endIndex; i < items.length; i++) {
+        item = items[i]
+        if (!item.classList.contains('h-h2')) {
+          item.style.display = 'none';
+        }
+      }
+    }
+
+    // Init menu collapsed
+    doMenuCollapse(-1);
+
+    // Active the menu item
+    window.addEventListener('scroll', function (event) {
+      var lastActive = menuContent.querySelector('.active');
+      var changed = true;
+      var activeIndex = -1;
+      for (var i = headings.length - 1; i >= 0; i--) {
+        var h = headings[i];
+        var headingRect = h.getBoundingClientRect();
+        var headerRect = header.getBoundingClientRect();
+        var headerTop = Math.floor(headerRect.top);
+        var headerHeight = Math.floor(headerRect.height);
+        var headerHeight = headerTop + headerHeight + 20;
+        if (headingRect.top <= headerHeight) {
+          var id = 'h-' + h.getAttribute('id');
+          var a = menuContent.querySelector('a[href="#' + id  + '"]');
+          var curActive = a.parentNode;
+          if (curActive) {
+            curActive.classList.add('active');
+            activeIndex = i;
+          }
+          if (lastActive == curActive) {
+            changed = false;
+          }
+          break;
+        }
+      }
+      if (changed) {
+        if (lastActive) {
+          lastActive.classList.remove('active');
+        }
+        doMenuCollapse(activeIndex);
+      }
+      event.preventDefault();
+    });
+  }
+  generateContent();
+</script>
+</section>
+</div>
+
+      </div>
+    </main><footer class="site-footer h-card">
+  <data class="u-url" href="/jekyll-theme-yat/"></data>
+
+  <div class="wrapper">
+    <div class="site-footer-inner">
+<div>Waka-DS © 2021-2026</div>
+      <div>Powered by <a title="Jekyll is a simple, blog-aware, static site
+      generator." href="http://jekyllrb.com/">Jekyll</a> &amp; <a title="Yat, yet
+      another theme." href="https://github.com/jeffreytse/jekyll-theme-yat">Yat Theme</a>.</div>
+      <div class="footer-col rss-subscribe">Subscribe <a href="/jekyll-theme-yat/feed.xml">via RSS</a>
+</div>
+    </div>
+  </div>
+</footer>
+</body>
+</html>

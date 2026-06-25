@@ -1,0 +1,1415 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <script>
+  (function() {
+    try {
+      var p = localStorage.getItem('preferred_lang');
+      if (!p) return;
+      var path = window.location.pathname;
+      var ja = ['/', '/archives.html', '/categories.html', '/tags.html', '/about.html'];
+      var en = ['/en/', '/en/archives.html', '/en/categories.html', '/en/tags.html', '/en/about.html'];
+      if (p === 'en' && ja.indexOf(path) !== -1) {
+        window.location.replace('/en' + (path === '/' ? '/' : path));
+      } else if (p === 'ja' && en.indexOf(path) !== -1) {
+        window.location.replace(path.slice(3) || '/');
+      }
+    } catch(e) {}
+  })();
+  </script>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="google-translate-customization" content="108d9124921d80c3-80e20d618ff053c8-g4f02ec6f3dba68b7-c">
+<!-- Begin Jekyll SEO tag v2.9.0 -->
+<title>MCPの接続と通信をJSON-RPCから理解する | Waka-DS.com</title>
+<meta name="generator" content="Jekyll v4.4.1">
+<meta property="og:title" content="MCPの接続と通信をJSON-RPCから理解する">
+<meta name="author" content="Waka-DS">
+<meta property="og:locale" content="ja">
+<meta name="description" content="MCP対応アプリでToolを使うと、画面上では「モデルがToolを選び、結果を受け取った」ように見える。その裏では、ClientとServerが接続を初期化し、互いに対応機能を宣言し、Tool一覧を取得してから、引数付きの呼び出しを行っている。">
+<meta name="twitter:description" property="og:description" content="MCP対応アプリでToolを使うと、画面上では「モデルがToolを選び、結果を受け取った」ように見える。その裏では、ClientとServerが接続を初期化し、互いに対応機能を宣言し、Tool一覧を取得してから、引数付きの呼び出しを行っている。">
+<link rel="canonical" href="/jekyll-theme-yat/ai%E9%96%8B%E7%99%BA/2026/06/20/mcp-json-rpc-lifecycle.html">
+<meta property="og:url" content="/jekyll-theme-yat/ai%E9%96%8B%E7%99%BA/2026/06/20/mcp-json-rpc-lifecycle.html">
+<meta property="og:site_name" content="Waka-DS.com">
+<meta property="og:image" content="/jekyll-theme-yat/assets/images/posts/2026-06-20-mcp-json-rpc-lifecycle/eyecatch.png">
+<meta property="og:image:alt" content="二つの装置が通行証、目録、仕事の箱を順に受け渡す紙コラージュ風イラスト">
+<meta property="og:type" content="article">
+<meta property="article:published_time" content="2026-06-20T00:00:00+00:00">
+<meta property="article:modified_time" content="2026-06-20T00:00:00+00:00">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="/jekyll-theme-yat/assets/images/posts/2026-06-20-mcp-json-rpc-lifecycle/eyecatch.png">
+<meta name="twitter:image:alt" content="二つの装置が通行証、目録、仕事の箱を順に受け渡す紙コラージュ風イラスト">
+<meta name="twitter:title" content="MCPの接続と通信をJSON-RPCから理解する">
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":"Waka-DS"},"dateModified":"2026-06-20T00:00:00+00:00","datePublished":"2026-06-20T00:00:00+00:00","description":"MCP対応アプリでToolを使うと、画面上では「モデルがToolを選び、結果を受け取った」ように見える。その裏では、ClientとServerが接続を初期化し、互いに対応機能を宣言し、Tool一覧を取得してから、引数付きの呼び出しを行っている。","headline":"MCPの接続と通信をJSON-RPCから理解する","image":{"alt":"二つの装置が通行証、目録、仕事の箱を順に受け渡す紙コラージュ風イラスト","url":"/jekyll-theme-yat/assets/images/posts/2026-06-20-mcp-json-rpc-lifecycle/eyecatch.png","@type":"imageObject"},"mainEntityOfPage":{"@type":"WebPage","@id":"/jekyll-theme-yat/ai%E9%96%8B%E7%99%BA/2026/06/20/mcp-json-rpc-lifecycle.html"},"url":"/jekyll-theme-yat/ai%E9%96%8B%E7%99%BA/2026/06/20/mcp-json-rpc-lifecycle.html"}</script>
+<!-- End Jekyll SEO tag -->
+<link rel="shortcut icon" href="">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=Noto+Sans+JP:wght@400;500;700&amp;display=swap">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+  <link rel="stylesheet" href="/jekyll-theme-yat/assets/css/main.css">
+  <script src="/jekyll-theme-yat/assets/js/main.js"></script><link type="application/atom+xml" rel="alternate" href="/jekyll-theme-yat/feed.xml" title="Waka-DS.com">
+<script>
+  function initGoogleAnalytics() {
+    var doNotTrack = (window.doNotTrack === "1" || navigator.doNotTrack === "1" ||
+      navigator.doNotTrack === "yes" || navigator.msDoNotTrack === "1");
+    var enableDNT = "true" == "true";
+
+    if (!enableDNT || !doNotTrack) {
+      var ga_id = 'G-XNP1RBTG9C';
+
+      var script = document.createElement('script');
+      script.async = true;
+      script.src = 'https://www.googletagmanager.com/gtag/js?id=' + ga_id;
+      document.head.appendChild(script);
+
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', ga_id);
+    }
+  }
+  window.addEventListener("load", initGoogleAnalytics);
+</script>
+<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/styles/default.min.css">
+<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/highlight.min.js"></script>
+<!-- and it's easy to individually load additional languages -->
+<script charset="UTF-8" src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/languages/go.min.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<script>
+// Init highlight js
+document.addEventListener('DOMContentLoaded', function(event) {
+  var els = document.querySelectorAll('pre code')
+
+  function addLangData(block) {
+    var outer = block.parentElement.parentElement.parentElement;
+    var lang = block.getAttribute('data-lang');
+    for (var i = 0; i < outer.classList.length; i++) {
+      var cls = outer.classList[i];
+      if (cls.startsWith('language-')) {
+        lang = cls;
+        break;
+      }
+    }
+    if (!lang) {
+      cls = block.getAttribute('class');
+      lang = cls ? cls.replace('hljs ', '') : '';
+    }
+    if (lang.startsWith('language-')) {
+      lang = lang.substr(9);
+    }
+    block.setAttribute('class', 'hljs ' + lang);
+    block.parentNode.setAttribute('data-lang', lang);
+  }
+
+  function addBadge(block) {
+    var enabled = ('true' || 'true').toLowerCase();
+    if (enabled == 'true') {
+      var pre = block.parentElement;
+      pre.classList.add('badge');
+    }
+  }
+
+  function handle(block) {
+    addLangData(block);
+    addBadge(block)
+    hljs.highlightBlock(block);
+  }
+
+  for (var i = 0; i < els.length; i++) {
+    var el = els[i];
+    handle(el);
+  }
+});
+</script>
+
+<style>
+  /* code language badge */
+  pre.badge::before {
+    content: attr(data-lang);
+    color: #fff;
+    background-color: #0d9488;
+    padding: 0 .5em;
+    border-radius: 0 2px;
+    text-transform: uppercase;
+    text-align: center;
+    min-width: 32px;
+    display: inline-block;
+    position: absolute;
+    right: 0;
+  }
+
+  /* fix wrong badge display for firefox browser */
+  code > table pre::before {
+    display: none;
+  }
+</style>
+</head>
+<body>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<header class="site-header " role="banner">
+
+  <div class="wrapper">
+    <div class="site-header-inner">
+<span class="site-brand"><a class="site-brand-inner" rel="author" href="/jekyll-theme-yat/">
+  <img class="site-favicon" title="Waka-DS.com" src="" onerror="this.style.display='none'">
+  Waka-DS.com
+</a>
+</span><nav class="site-nav">
+          <input type="checkbox" id="nav-trigger" class="nav-trigger">
+          <label for="nav-trigger">
+            <span class="menu-icon">
+              <svg viewbox="0 0 18 15" width="18px" height="15px">
+                <path d="M18,1.484c0,0.82-0.665,1.484-1.484,1.484H1.484C0.665,2.969,0,2.304,0,1.484l0,0C0,0.665,0.665,0,1.484,0 h15.032C17.335,0,18,0.665,18,1.484L18,1.484z M18,7.516C18,8.335,17.335,9,16.516,9H1.484C0.665,9,0,8.335,0,7.516l0,0 c0-0.82,0.665-1.484,1.484-1.484h15.032C17.335,6.031,18,6.696,18,7.516L18,7.516z M18,13.516C18,14.335,17.335,15,16.516,15H1.484 C0.665,15,0,14.335,0,13.516l0,0c0-0.82,0.665-1.483,1.484-1.483h15.032C17.335,12.031,18,12.695,18,13.516L18,13.516z"></path>
+              </svg>
+            </span>
+          </label>
+
+          <div class="trigger">
+<a class="page-link" href="/jekyll-theme-yat/about.html">ABOUT</a><a class="page-link" href="/jekyll-theme-yat/archives.html">ARCHIVES</a><a class="page-link" href="/jekyll-theme-yat/categories.html">CATEGORIES</a><a class="page-link" href="/jekyll-theme-yat/">HOME</a><a class="page-link" href="/jekyll-theme-yat/tags.html">TAGS</a>
+</div>
+        </nav>
+</div>
+  </div>
+</header>
+
+<script>
+  function initHeader() {
+    var lastScrollY = getScrollPos().y;
+    var documentElement = document.documentElement;
+
+    function storeScrollData() {
+      var y = getScrollPos().y;var scrollStatus = "";
+
+      if (y <= 0) {
+        scrollStatus = "top";
+      } else if ((window.innerHeight + y) >= document.body.offsetHeight) {
+        scrollStatus = "bottom";
+      } else {
+        var isScrollDown = (y - lastScrollY > 0) ? true : false;
+        scrollStatus = isScrollDown ? "down" : "up";
+      }
+
+      lastScrollY = y;
+      documentElement.setAttribute("data-scroll-status", scrollStatus);
+    }
+
+    window.addEventListener('scroll', function(e) {
+      storeScrollData();
+    });
+
+    storeScrollData();
+  }
+  document.addEventListener('DOMContentLoaded', initHeader);
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<script>
+  function hashLocate(hashValue) {
+    hashValue = hashValue.replace(/^.*#h-/, '');
+    hashValue = decodeURIComponent(hashValue);
+    var element = document.getElementById(hashValue);
+
+    if (!element) {
+      return;
+    }
+
+    var header = document.querySelector('header.site-header');
+    var headerRect = header.getBoundingClientRect();
+    var headerTop = Math.floor(headerRect.top);
+    var headerHeight = Math.floor(headerRect.height);
+    var scrollPos = getScrollPos();
+    var offsetY = element.offsetTop - (headerTop + headerHeight + 20);
+
+    if (offsetY == scrollPos.y) {
+      return;
+    }
+
+    if (headerTop == 0  && offsetY > scrollPos.y) {
+      offsetY += headerHeight + 2;
+    } else if (headerTop < 0  && offsetY < scrollPos.y) {
+      offsetY -= headerHeight - 2;
+    }
+
+    smoothScrollTo(offsetY);
+  }
+
+  // The first event occurred
+  window.addEventListener('load', function(event) {
+    if (window.location.hash) {
+      hashLocate(window.location.hash);
+    }
+  });
+
+  // The first event occurred
+  window.addEventListener('click', function(event) {
+    if (event.target.tagName.toLowerCase() == 'a') {
+      hashLocate(event.target.getAttribute('href'));
+    }
+  });
+</script>
+<div class="theme-toggle">
+  <input type="checkbox" id="theme-switch">
+  <label for="theme-switch">
+    <div class="toggle"></div>
+    <div class="names">
+      <p class="light">Light</p>
+      <p class="dark">Dark</p>
+    </div>
+  </label>
+</div>
+
+
+
+
+<script>
+  (function() {
+    var sw = document.getElementById('theme-switch');
+    var html = document.getElementsByTagName('html')[0];
+    var nightModeOption = ('auto' || 'auto').toLowerCase();
+    var storage = nightModeOption === 'manual'
+        ? localStorage
+        : sessionStorage;
+    var themeData = loadThemeData();
+
+    function saveThemeData(data) {
+      storage.setItem('theme', JSON.stringify(data));
+    }
+
+    function loadThemeData() {
+      var data = storage.getItem('theme');
+      try {
+        data = JSON.parse(data ? data : '');
+      } catch(e) {
+        data = { nightShift: undefined, autoToggleAt: 0 };
+        saveThemeData(data);
+      }
+      return data;
+    }
+
+    function handleThemeToggle(nightShift) {
+      themeData.nightShift = nightShift;
+      saveThemeData(themeData);
+      html.dataset.theme = nightShift ? 'dark' : 'light';
+      setTimeout(function() {
+        sw.checked = nightShift ? true : false;
+      }, 50);
+    }
+
+    function autoThemeToggle() {
+      // Next time point of theme toggle
+      var now = new Date();
+      var toggleAt = new Date();
+      var hours = now.getHours();
+      var nightShift = hours >= 19 || hours <=7;
+
+      if (nightShift) {
+        if (hours > 7) {
+          toggleAt.setDate(toggleAt.getDate() + 1);
+        }
+        toggleAt.setHours(7);
+      } else {
+        toggleAt.setHours(19);
+      }
+
+      toggleAt.setMinutes(0);
+      toggleAt.setSeconds(0);
+      toggleAt.setMilliseconds(0)
+
+      var delay = toggleAt.getTime() - now.getTime();
+
+      // auto toggle theme mode
+      setTimeout(function() {
+        handleThemeToggle(!nightShift);
+      }, delay);
+
+      return {
+        nightShift: nightShift,
+        toggleAt: toggleAt.getTime()
+      };
+    }
+
+    // Listen the theme toggle event
+    sw.addEventListener('change', function(event) {
+      handleThemeToggle(event.target.checked);
+    });
+
+    if (nightModeOption == 'auto') {
+      var data = autoThemeToggle();
+
+      // Toggle theme by local setting
+      if (data.toggleAt > themeData.autoToggleAt) {
+        themeData.autoToggleAt = data.toggleAt;
+        handleThemeToggle(data.nightShift);
+      } else {
+        handleThemeToggle(themeData.nightShift);
+      }
+    } else if (nightModeOption == 'manual') {
+      handleThemeToggle(themeData.nightShift);
+    } else {
+      var nightShift = themeData.nightShift;
+      if (nightShift === undefined) {
+        nightShift = nightModeOption === 'on';
+      }
+      handleThemeToggle(nightShift);
+    }
+  })();
+</script>
+<main class="page-content" aria-label="Content">
+      <div class="wrapper">
+        <div class="framework">
+  <section class="main">
+
+     <div class="post post--with-image">
+  <section>
+
+
+
+
+
+
+
+
+
+<header class="post-header">
+  <h1 class="post-title p-name" itemprop="name headline">MCPの接続と通信をJSON-RPCから理解する</h1>
+  <h2 class="post-subtitle">初期化、機能の発見、Tool実行までのメッセージを追う</h2>
+
+  <p class="post-meta">
+    <time class="dt-published" datetime="2026-06-20T00:00:00+00:00" itemprop="datePublished"><i class="fa fa-calendar"></i> Jun 20, 2026
+    </time>
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <span class="post-reading-time left-vsplit"><i class="fa fa-clock-o"></i> About 32 mins</span>
+  </p>
+<div class="post-tags">
+<a class="post-tag" href="/jekyll-theme-yat/tags.html#MCP">#MCP</a><a class="post-tag" href="/jekyll-theme-yat/tags.html#API">#API</a><a class="post-tag" href="/jekyll-theme-yat/tags.html#LLM">#LLM</a><a class="post-tag" href="/jekyll-theme-yat/tags.html#%E8%A8%AD%E8%A8%88">#設計</a>
+</div></header>
+<figure class="post-eyecatch">
+  <img src="/jekyll-theme-yat/assets/images/posts/2026-06-20-mcp-json-rpc-lifecycle/eyecatch.png" alt="二つの装置が通行証、目録、仕事の箱を順に受け渡す紙コラージュ風イラスト" decoding="async" fetchpriority="high">
+</figure><article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
+
+    <div class="post-content e-content" itemprop="articleBody">
+
+      <p>MCP対応アプリでToolを使うと、画面上では「モデルがToolを選び、結果を受け取った」ように見える。その裏では、ClientとServerが接続を初期化し、互いに対応機能を宣言し、Tool一覧を取得してから、引数付きの呼び出しを行っている。</p>
+
+<p>この流れを知らなくてもSDKでMCPサーバーは作れる。ただし、接続直後に落ちる、Toolが一覧へ出ない、呼び出しが終わらないといった問題が起きたとき、SDKのログだけでは原因を切り分けにくい。JSON-RPCメッセージを読めると、問題が初期化、機能の発見、実行のどこにあるかを追えるようになる。</p>
+
+<p><a href="/jekyll-theme-yat/ai%E9%96%8B%E7%99%BA/2026/06/19/mcp-tools-resources-prompts.html">前回はTools・Resources・Promptsの使い分け</a>を整理した。今回はノートを読む<code class="language-plaintext highlighter-rouge">read_note</code> Toolを例に、接続から実行までをメッセージ単位で追う。この記事はMCP仕様の<code class="language-plaintext highlighter-rouge">2025-11-25</code>版を基準にしている。</p>
+
+<nav class="mcp-series-index" aria-label="MCPサーバー連載">
+  <p><strong>MCPサーバー連載（全7回）</strong></p>
+  <ol>
+    <li>
+      
+        <a href="/jekyll-theme-yat/ai%E9%96%8B%E7%99%BA/2026/06/17/mcp-protocol-overview.html">MCPは何を標準化するプロトコルなのか</a>
+      
+    </li>
+    <li>
+      
+        <a href="/jekyll-theme-yat/ai%E9%96%8B%E7%99%BA/2026/06/18/mcp-host-client-server.html">MCPのHost・Client・Serverを整理する</a>
+      
+    </li>
+    <li>
+      
+        <a href="/jekyll-theme-yat/ai%E9%96%8B%E7%99%BA/2026/06/19/mcp-tools-resources-prompts.html">MCPのTools・Resources・Promptsを使い分ける</a>
+      
+    </li>
+    <li>
+      
+        <strong aria-current="page">MCPの接続と通信をJSON-RPCから理解する（この記事）</strong>
+      
+    </li>
+    <li>
+      
+        <a href="/jekyll-theme-yat/ai%E9%96%8B%E7%99%BA/2026/06/21/build-mcp-server-python.html">Pythonで小さなMCPサーバーを作る</a>
+      
+    </li>
+    <li>
+      
+        <a href="/jekyll-theme-yat/ai%E9%96%8B%E7%99%BA/2026/06/22/mcp-local-remote-transports.html">ローカルMCPとリモートMCPの違い</a>
+      
+    </li>
+    <li>
+      
+        <a href="/jekyll-theme-yat/ai%E9%96%8B%E7%99%BA/2026/06/23/mcp-security-operations.html">MCPサーバーを安全に運用する</a>
+      
+    </li>
+  </ol>
+</nav>
+
+<hr>
+
+<h2 id="全体は初期化通常処理終了の3段階">全体は初期化・通常処理・終了の3段階</h2>
+
+<p>MCPの接続ライフサイクルは、大きく3段階に分かれる。</p>
+
+<ol>
+  <li>Initialization: protocol versionとcapabilityを交換する</li>
+  <li>Operation: 合意した範囲で通常のリクエストを処理する</li>
+  <li>Shutdown: 下位のtransportを終了する</li>
+</ol>
+
+<p>Toolを1回呼ぶ場合、代表的な流れは次のようになる。</p>
+
+<p><img class="mermaid" src="https://mermaid.ink/svg/eyJjb2RlIjoiZmxvd2NoYXJ0IFRCXG5Db25uZWN0W1wiQ2xpZW5044GMU2VydmVy44G45o6l57aaXCJdIC0tPiBJbml0UmVxW1wiaW5pdGlhbGl6ZSByZXF1ZXN0XCJdXG5Jbml0UmVxIC0tPiBJbml0UmVzW1wiaW5pdGlhbGl6ZSByZXNwb25zZVwiXVxuSW5pdFJlcyAtLT4gSW5pdGlhbGl6ZWRbXCJub3RpZmljYXRpb25zL2luaXRpYWxpemVkXCJdXG5Jbml0aWFsaXplZCAtLT4gTGlzdFJlcVtcInRvb2xzL2xpc3QgcmVxdWVzdFwiXVxuTGlzdFJlcSAtLT4gTGlzdFJlc1tcIlRvb2zlrprnvqnjgpLov5TjgZlcIl1cbkxpc3RSZXMgLS0-IFNlbGVjdFtcIkhvc3TjgYzlrprnvqnjgpLjg6Ljg4fjg6vjgbjmuKHjgZlcIl1cblNlbGVjdCAtLT4gQXBwcm92YWxbXCLlv4XopoHjgarjgonjg6bjg7zjgrbjg7zjgYzmib_oqo1cIl1cbkFwcHJvdmFsIC0tPiBDYWxsUmVxW1widG9vbHMvY2FsbCByZXF1ZXN0XCJdXG5DYWxsUmVxIC0tPiBDYWxsUmVzW1wiVG9vbOe1kOaenOOCkui_lOOBmVwiXVxuQ2FsbFJlcyAtLT4gQW5zd2VyW1wiSG9zdOOBjOe1kOaenOOCkuODouODh-ODq-OBuOa4oeOBmVwiXVxuQW5zd2VyIC0tPiBTaHV0ZG93bltcInRyYW5zcG9ydOOCkue1guS6hlwiXSIsIm1lcm1haWQiOm51bGx9"></p>
+
+<p>この図のうち、MCPが規定するのはClientとServer間のメッセージである。「Tool定義をどのモデルへ渡すか」「いつ承認を求めるか」「結果を会話へどう入れるか」はHostの実装であり、JSON-RPCメッセージには現れない。</p>
+
+<hr>
+
+<h2 id="mcpの土台はjson-rpc-20">MCPの土台はJSON-RPC 2.0</h2>
+
+<p>MCPのClientとServerは、JSON-RPC 2.0形式でメッセージを交換する。基本形はRequest、成功Response、Error Response、Notificationの4つだ。</p>
+
+<h3 id="request">Request</h3>
+
+<p>Requestは相手に処理を求めるメッセージで、<code class="language-plaintext highlighter-rouge">id</code>、<code class="language-plaintext highlighter-rouge">method</code>、必要に応じて<code class="language-plaintext highlighter-rouge">params</code>を持つ。</p>
+
+<div class="language-json highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">{</span><span class="w">
+  </span><span class="nl">"jsonrpc"</span><span class="p">:</span><span class="w"> </span><span class="s2">"2.0"</span><span class="p">,</span><span class="w">
+  </span><span class="nl">"id"</span><span class="p">:</span><span class="w"> </span><span class="mi">10</span><span class="p">,</span><span class="w">
+  </span><span class="nl">"method"</span><span class="p">:</span><span class="w"> </span><span class="s2">"tools/list"</span><span class="p">,</span><span class="w">
+  </span><span class="nl">"params"</span><span class="p">:</span><span class="w"> </span><span class="p">{}</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></code></pre></div></div>
+
+<p>MCPでは<code class="language-plaintext highlighter-rouge">id</code>に文字列または整数を使う。<code class="language-plaintext highlighter-rouge">null</code>は使えず、同じ送信者が同一session内で過去に使ったRequest IDを再利用してはならない。</p>
+
+<h3 id="成功response">成功Response</h3>
+
+<p>処理が成功すると、相手は同じ<code class="language-plaintext highlighter-rouge">id</code>と<code class="language-plaintext highlighter-rouge">result</code>を返す。</p>
+
+<div class="language-json highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">{</span><span class="w">
+  </span><span class="nl">"jsonrpc"</span><span class="p">:</span><span class="w"> </span><span class="s2">"2.0"</span><span class="p">,</span><span class="w">
+  </span><span class="nl">"id"</span><span class="p">:</span><span class="w"> </span><span class="mi">10</span><span class="p">,</span><span class="w">
+  </span><span class="nl">"result"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+    </span><span class="nl">"tools"</span><span class="p">:</span><span class="w"> </span><span class="p">[]</span><span class="w">
+  </span><span class="p">}</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></code></pre></div></div>
+
+<p>複数のRequestが並行していても、<code class="language-plaintext highlighter-rouge">id</code>を照合すればどのResponseか分かる。Responseの到着順がRequestの送信順と同じだと仮定してはいけない。</p>
+
+<h3 id="error-response">Error Response</h3>
+
+<p>リクエストの形式や処理に問題がある場合は、<code class="language-plaintext highlighter-rouge">result</code>ではなく<code class="language-plaintext highlighter-rouge">error</code>を返す。</p>
+
+<div class="language-json highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">{</span><span class="w">
+  </span><span class="nl">"jsonrpc"</span><span class="p">:</span><span class="w"> </span><span class="s2">"2.0"</span><span class="p">,</span><span class="w">
+  </span><span class="nl">"id"</span><span class="p">:</span><span class="w"> </span><span class="mi">10</span><span class="p">,</span><span class="w">
+  </span><span class="nl">"error"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+    </span><span class="nl">"code"</span><span class="p">:</span><span class="w"> </span><span class="mi">-32601</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"message"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Method not found"</span><span class="w">
+  </span><span class="p">}</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></code></pre></div></div>
+
+<p><code class="language-plaintext highlighter-rouge">error</code>には整数の<code class="language-plaintext highlighter-rouge">code</code>と文字列の<code class="language-plaintext highlighter-rouge">message</code>が必要で、補足情報を<code class="language-plaintext highlighter-rouge">data</code>へ入れられる。読み取り可能なRequestに対するError Responseなら、元と同じ<code class="language-plaintext highlighter-rouge">id</code>を返す。</p>
+
+<h3 id="notification">Notification</h3>
+
+<p>Notificationは一方向の通知であり、<code class="language-plaintext highlighter-rouge">id</code>を持たない。受信側はResponseを返さない。</p>
+
+<div class="language-json highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">{</span><span class="w">
+  </span><span class="nl">"jsonrpc"</span><span class="p">:</span><span class="w"> </span><span class="s2">"2.0"</span><span class="p">,</span><span class="w">
+  </span><span class="nl">"method"</span><span class="p">:</span><span class="w"> </span><span class="s2">"notifications/initialized"</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></code></pre></div></div>
+
+<p><code class="language-plaintext highlighter-rouge">id</code>がないことは省略ミスではなく、「返答を待たない」という意味である。NotificationへResponseを返したり、Requestから<code class="language-plaintext highlighter-rouge">id</code>を落としたりすると、通信の対応関係が崩れる。</p>
+
+<hr>
+
+<h2 id="最初のrequestはinitializeで固定されている">最初のRequestはinitializeで固定されている</h2>
+
+<p>接続後、Clientが最初に送る通常Requestは<code class="language-plaintext highlighter-rouge">initialize</code>である。この段階で3つの情報をServerへ伝える。</p>
+
+<ul>
+  <li>Clientが希望するprotocol version</li>
+  <li>Clientが提供できるcapability</li>
+  <li>Client実装の名前やversion</li>
+</ul>
+
+<p>ノート管理Clientの例を、必要な部分に絞ると次のようになる。</p>
+
+<div class="language-json highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">{</span><span class="w">
+  </span><span class="nl">"jsonrpc"</span><span class="p">:</span><span class="w"> </span><span class="s2">"2.0"</span><span class="p">,</span><span class="w">
+  </span><span class="nl">"id"</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w">
+  </span><span class="nl">"method"</span><span class="p">:</span><span class="w"> </span><span class="s2">"initialize"</span><span class="p">,</span><span class="w">
+  </span><span class="nl">"params"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+    </span><span class="nl">"protocolVersion"</span><span class="p">:</span><span class="w"> </span><span class="s2">"2025-11-25"</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"capabilities"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+      </span><span class="nl">"roots"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+        </span><span class="nl">"listChanged"</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="w">
+      </span><span class="p">},</span><span class="w">
+      </span><span class="nl">"sampling"</span><span class="p">:</span><span class="w"> </span><span class="p">{},</span><span class="w">
+      </span><span class="nl">"elicitation"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+        </span><span class="nl">"form"</span><span class="p">:</span><span class="w"> </span><span class="p">{},</span><span class="w">
+        </span><span class="nl">"url"</span><span class="p">:</span><span class="w"> </span><span class="p">{}</span><span class="w">
+      </span><span class="p">}</span><span class="w">
+    </span><span class="p">},</span><span class="w">
+    </span><span class="nl">"clientInfo"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+      </span><span class="nl">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"notes-host"</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"version"</span><span class="p">:</span><span class="w"> </span><span class="s2">"1.0.0"</span><span class="w">
+    </span><span class="p">}</span><span class="w">
+  </span><span class="p">}</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></code></pre></div></div>
+
+<p>ここで宣言されている<code class="language-plaintext highlighter-rouge">roots</code>、<code class="language-plaintext highlighter-rouge">sampling</code>、<code class="language-plaintext highlighter-rouge">elicitation</code>は、ServerからClientへ利用を依頼できるClient Featuresだ。空オブジェクトの<code class="language-plaintext highlighter-rouge">sampling: {}</code>も「何もない」のではなく、基本的なSamplingをサポートするというcapability宣言になる。</p>
+
+<p>Serverは、採用するprotocol version、自分が提供するcapability、Server実装情報をResponseで返す。</p>
+
+<div class="language-json highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">{</span><span class="w">
+  </span><span class="nl">"jsonrpc"</span><span class="p">:</span><span class="w"> </span><span class="s2">"2.0"</span><span class="p">,</span><span class="w">
+  </span><span class="nl">"id"</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w">
+  </span><span class="nl">"result"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+    </span><span class="nl">"protocolVersion"</span><span class="p">:</span><span class="w"> </span><span class="s2">"2025-11-25"</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"capabilities"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+      </span><span class="nl">"tools"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+        </span><span class="nl">"listChanged"</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="w">
+      </span><span class="p">},</span><span class="w">
+      </span><span class="nl">"resources"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+        </span><span class="nl">"subscribe"</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span><span class="w">
+        </span><span class="nl">"listChanged"</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="w">
+      </span><span class="p">}</span><span class="w">
+    </span><span class="p">},</span><span class="w">
+    </span><span class="nl">"serverInfo"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+      </span><span class="nl">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"notes-server"</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"version"</span><span class="p">:</span><span class="w"> </span><span class="s2">"1.0.0"</span><span class="w">
+    </span><span class="p">},</span><span class="w">
+    </span><span class="nl">"instructions"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Provides read-only access to Markdown notes."</span><span class="w">
+  </span><span class="p">}</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></code></pre></div></div>
+
+<p>RequestとResponseで<code class="language-plaintext highlighter-rouge">id: 1</code>が一致していること、Client FeaturesとServer Featuresの宣言方向が異なることに注目したい。<code class="language-plaintext highlighter-rouge">instructions</code>はServerからClientへの補足で、省略可能である。</p>
+
+<h3 id="version-negotiationは文字列の一致だけではない">version negotiationは文字列の一致だけではない</h3>
+
+<p>Clientは、自分がサポートする中で通常は最新のversionを<code class="language-plaintext highlighter-rouge">initialize</code>に指定する。Serverがそのversionをサポートしていれば、同じversionを返す。サポートしていなければ、Serverは自分がサポートする別のversionを返す。</p>
+
+<p>返されたversionをClientがサポートしていない場合、Clientは接続を切るべきとされている。Serverが返したversionへClientが無条件に合わせるわけではない。</p>
+
+<p>HTTP transportでは、初期化後のリクエストに<code class="language-plaintext highlighter-rouge">MCP-Protocol-Version</code>ヘッダーを付ける必要がある。これはJSON-RPCの<code class="language-plaintext highlighter-rouge">params</code>ではなくHTTP層の要件である。stdio transportにはHTTPヘッダー自体がない。この違いは、後続のローカルMCPとリモートMCPを扱う回で詳しく扱う。</p>
+
+<h3 id="capabilityは使ってよい機能の宣言になる">capabilityは使ってよい機能の宣言になる</h3>
+
+<p>Serverが<code class="language-plaintext highlighter-rouge">tools</code> capabilityを返していなければ、Clientは<code class="language-plaintext highlighter-rouge">tools/list</code>や<code class="language-plaintext highlighter-rouge">tools/call</code>を送るべきではない。<code class="language-plaintext highlighter-rouge">resources.subscribe</code>がないのにResource購読を始めることもできない。</p>
+
+<p>capabilityは「このServerならたぶん対応している」という推測をなくす仕組みだ。ClientとServerは、初期化で示されたprotocol versionを守り、正常にnegotiationされた機能だけを使う。</p>
+
+<hr>
+
+<h2 id="initialized通知で通常処理へ移る">initialized通知で通常処理へ移る</h2>
+
+<p>Serverから正常な<code class="language-plaintext highlighter-rouge">initialize</code> Responseを受け取ったら、Clientは<code class="language-plaintext highlighter-rouge">notifications/initialized</code>を送る。</p>
+
+<div class="language-json highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">{</span><span class="w">
+  </span><span class="nl">"jsonrpc"</span><span class="p">:</span><span class="w"> </span><span class="s2">"2.0"</span><span class="p">,</span><span class="w">
+  </span><span class="nl">"method"</span><span class="p">:</span><span class="w"> </span><span class="s2">"notifications/initialized"</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></code></pre></div></div>
+
+<p>このNotificationを境にOperationフェーズへ移る。Clientは<code class="language-plaintext highlighter-rouge">initialize</code>のResponseを受け取る前に、ping以外のRequestを送るべきではない。Serverも<code class="language-plaintext highlighter-rouge">initialized</code>を受け取る前は、pingとlogging以外のRequestを送るべきではない。</p>
+
+<p>初期化が失敗するとTool一覧まで進まない。接続直後の不具合を調べるときは、まず次の順序を確認するとよい。</p>
+
+<div class="language-text highlighter-rouge"><div class="highlight"><pre class="highlight"><code>initialize request
+→ 同じidのinitialize response
+→ notifications/initialized
+→ 通常のrequest
+</code></pre></div></div>
+
+<p>SDKがこの処理を隠していても、wire logでこの3メッセージを見つけられれば、初期化のどこまで進んだかを判断できる。</p>
+
+<hr>
+
+<h2 id="toolslistでtoolの定義を発見する">tools/listでToolの定義を発見する</h2>
+
+<p>初期化後、Clientは<code class="language-plaintext highlighter-rouge">tools/list</code>でServerが公開するToolを取得する。</p>
+
+<div class="language-json highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">{</span><span class="w">
+  </span><span class="nl">"jsonrpc"</span><span class="p">:</span><span class="w"> </span><span class="s2">"2.0"</span><span class="p">,</span><span class="w">
+  </span><span class="nl">"id"</span><span class="p">:</span><span class="w"> </span><span class="mi">2</span><span class="p">,</span><span class="w">
+  </span><span class="nl">"method"</span><span class="p">:</span><span class="w"> </span><span class="s2">"tools/list"</span><span class="p">,</span><span class="w">
+  </span><span class="nl">"params"</span><span class="p">:</span><span class="w"> </span><span class="p">{}</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></code></pre></div></div>
+
+<p>ServerはTool名、説明、入力スキーマなどを返す。</p>
+
+<div class="language-json highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">{</span><span class="w">
+  </span><span class="nl">"jsonrpc"</span><span class="p">:</span><span class="w"> </span><span class="s2">"2.0"</span><span class="p">,</span><span class="w">
+  </span><span class="nl">"id"</span><span class="p">:</span><span class="w"> </span><span class="mi">2</span><span class="p">,</span><span class="w">
+  </span><span class="nl">"result"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+    </span><span class="nl">"tools"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
+      </span><span class="p">{</span><span class="w">
+        </span><span class="nl">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"read_note"</span><span class="p">,</span><span class="w">
+        </span><span class="nl">"title"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Read Note"</span><span class="p">,</span><span class="w">
+        </span><span class="nl">"description"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Read one Markdown note by its relative path"</span><span class="p">,</span><span class="w">
+        </span><span class="nl">"inputSchema"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+          </span><span class="nl">"type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"object"</span><span class="p">,</span><span class="w">
+          </span><span class="nl">"properties"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+            </span><span class="nl">"path"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+              </span><span class="nl">"type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"string"</span><span class="p">,</span><span class="w">
+              </span><span class="nl">"description"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Relative path under the notes directory"</span><span class="w">
+            </span><span class="p">}</span><span class="w">
+          </span><span class="p">},</span><span class="w">
+          </span><span class="nl">"required"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">"path"</span><span class="p">],</span><span class="w">
+          </span><span class="nl">"additionalProperties"</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="w">
+        </span><span class="p">}</span><span class="w">
+      </span><span class="p">}</span><span class="w">
+    </span><span class="p">]</span><span class="w">
+  </span><span class="p">}</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></code></pre></div></div>
+
+<p>この時点ではToolは実行されていない。Clientが定義を発見しただけだ。Hostはこの定義をモデルへ提示し、モデルが会話の文脈から利用候補を選ぶ。ToolをUIへ表示する方法や、モデルへ一度に渡すTool数はMCPの範囲外である。</p>
+
+<p>Tool一覧が多い場合、<code class="language-plaintext highlighter-rouge">tools/list</code>はpaginationに対応する。Responseに<code class="language-plaintext highlighter-rouge">nextCursor</code>があれば、Clientは次のRequestの<code class="language-plaintext highlighter-rouge">params.cursor</code>へ渡す。1回のResponseだけを見て「Serverにはこれしかない」と決めつけない方がよい。</p>
+
+<p>ServerがTool一覧を動的に変更し、初期化で<code class="language-plaintext highlighter-rouge">tools.listChanged</code>を宣言している場合は、次のNotificationを送れる。</p>
+
+<div class="language-json highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">{</span><span class="w">
+  </span><span class="nl">"jsonrpc"</span><span class="p">:</span><span class="w"> </span><span class="s2">"2.0"</span><span class="p">,</span><span class="w">
+  </span><span class="nl">"method"</span><span class="p">:</span><span class="w"> </span><span class="s2">"notifications/tools/list_changed"</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></code></pre></div></div>
+
+<p>これは新しい一覧そのものではない。Clientが必要に応じて<code class="language-plaintext highlighter-rouge">tools/list</code>を再実行するための合図である。</p>
+
+<hr>
+
+<h2 id="toolscallでtoolを実行する">tools/callでToolを実行する</h2>
+
+<p>ユーザーが「<code class="language-plaintext highlighter-rouge">daily/2026-06-19.md</code>を読んで」と依頼し、モデルが<code class="language-plaintext highlighter-rouge">read_note</code>を選んだとする。Hostが必要な承認を処理した後、Clientは<code class="language-plaintext highlighter-rouge">tools/call</code>を送る。</p>
+
+<div class="language-json highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">{</span><span class="w">
+  </span><span class="nl">"jsonrpc"</span><span class="p">:</span><span class="w"> </span><span class="s2">"2.0"</span><span class="p">,</span><span class="w">
+  </span><span class="nl">"id"</span><span class="p">:</span><span class="w"> </span><span class="mi">3</span><span class="p">,</span><span class="w">
+  </span><span class="nl">"method"</span><span class="p">:</span><span class="w"> </span><span class="s2">"tools/call"</span><span class="p">,</span><span class="w">
+  </span><span class="nl">"params"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+    </span><span class="nl">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"read_note"</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"arguments"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+      </span><span class="nl">"path"</span><span class="p">:</span><span class="w"> </span><span class="s2">"daily/2026-06-19.md"</span><span class="w">
+    </span><span class="p">}</span><span class="w">
+  </span><span class="p">}</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></code></pre></div></div>
+
+<p>Serverは<code class="language-plaintext highlighter-rouge">name</code>に対応する処理を選び、<code class="language-plaintext highlighter-rouge">arguments</code>を検証して実行する。成功すればTool Resultを返す。</p>
+
+<div class="language-json highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">{</span><span class="w">
+  </span><span class="nl">"jsonrpc"</span><span class="p">:</span><span class="w"> </span><span class="s2">"2.0"</span><span class="p">,</span><span class="w">
+  </span><span class="nl">"id"</span><span class="p">:</span><span class="w"> </span><span class="mi">3</span><span class="p">,</span><span class="w">
+  </span><span class="nl">"result"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+    </span><span class="nl">"content"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
+      </span><span class="p">{</span><span class="w">
+        </span><span class="nl">"type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"text"</span><span class="p">,</span><span class="w">
+        </span><span class="nl">"text"</span><span class="p">:</span><span class="w"> </span><span class="s2">"# 2026-06-19</span><span class="se">\n\n</span><span class="s2">MCPのprimitiveを整理した。"</span><span class="w">
+      </span><span class="p">}</span><span class="w">
+    </span><span class="p">],</span><span class="w">
+    </span><span class="nl">"isError"</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="w">
+  </span><span class="p">}</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></code></pre></div></div>
+
+<p>MCPの処理はここで完了する。その後、HostがTool Resultをモデルへ渡し、モデルが人間向けの文章を生成する。Serverが最終回答を作っているわけではない。</p>
+
+<p>Tool Resultはテキストだけでなく、画像、音声、Resource Link、埋め込みResource、<code class="language-plaintext highlighter-rouge">structuredContent</code>なども返せる。<code class="language-plaintext highlighter-rouge">outputSchema</code>をTool定義に付けた場合、Serverはそれに適合する<code class="language-plaintext highlighter-rouge">structuredContent</code>を返す必要があり、Clientも検証すべきとされている。</p>
+
+<hr>
+
+<h2 id="エラーは通信の失敗とtool処理の失敗を分ける">エラーは「通信の失敗」と「Tool処理の失敗」を分ける</h2>
+
+<p><code class="language-plaintext highlighter-rouge">tools/call</code>の失敗には2種類ある。</p>
+
+<h3 id="protocol-error">Protocol Error</h3>
+
+<p>存在しないTool名、壊れたRequest、Server内部のプロトコル処理失敗などはJSON-RPC Error Responseで返す。</p>
+
+<div class="language-json highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">{</span><span class="w">
+  </span><span class="nl">"jsonrpc"</span><span class="p">:</span><span class="w"> </span><span class="s2">"2.0"</span><span class="p">,</span><span class="w">
+  </span><span class="nl">"id"</span><span class="p">:</span><span class="w"> </span><span class="mi">3</span><span class="p">,</span><span class="w">
+  </span><span class="nl">"error"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+    </span><span class="nl">"code"</span><span class="p">:</span><span class="w"> </span><span class="mi">-32602</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"message"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Unknown tool: read_notes"</span><span class="w">
+  </span><span class="p">}</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></code></pre></div></div>
+
+<p>この場合、<code class="language-plaintext highlighter-rouge">result</code>は存在しない。Requestの構造やmethodの扱いに問題があるため、ClientやServer実装の不整合を疑う。</p>
+
+<h3 id="tool-execution-error">Tool Execution Error</h3>
+
+<p>Toolは見つかり引数の受け渡しも成立したが、ファイルが存在しない、外部APIが制限された、業務ルールに反した、といった失敗はTool Resultの<code class="language-plaintext highlighter-rouge">isError: true</code>で表現する。</p>
+
+<div class="language-json highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">{</span><span class="w">
+  </span><span class="nl">"jsonrpc"</span><span class="p">:</span><span class="w"> </span><span class="s2">"2.0"</span><span class="p">,</span><span class="w">
+  </span><span class="nl">"id"</span><span class="p">:</span><span class="w"> </span><span class="mi">3</span><span class="p">,</span><span class="w">
+  </span><span class="nl">"result"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+    </span><span class="nl">"content"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
+      </span><span class="p">{</span><span class="w">
+        </span><span class="nl">"type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"text"</span><span class="p">,</span><span class="w">
+        </span><span class="nl">"text"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Note not found: daily/2026-06-19.md"</span><span class="w">
+      </span><span class="p">}</span><span class="w">
+    </span><span class="p">],</span><span class="w">
+    </span><span class="nl">"isError"</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="w">
+  </span><span class="p">}</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></code></pre></div></div>
+
+<p>こちらはJSON-RPC上では成功Responseである。モデルへ内容を返せば、別のパスを確認するなどの自己修正に使える。監視で<code class="language-plaintext highlighter-rouge">error</code>フィールドだけを数えていると、Tool Execution Errorを見落とすので注意が必要だ。</p>
+
+<hr>
+
+<h2 id="長い処理にはprogresstimeoutcancellationが関わる">長い処理にはprogress・timeout・cancellationが関わる</h2>
+
+<p>Toolがすぐ終わるとは限らない。大量検索や外部API待ちを扱うなら、進捗、時間切れ、キャンセルを分けて考える必要がある。</p>
+
+<h3 id="progressはrequest側から希望する">progressはRequest側から希望する</h3>
+
+<p>進捗を受け取りたい送信者は、Requestの<code class="language-plaintext highlighter-rouge">params._meta.progressToken</code>に一意なtokenを付ける。</p>
+
+<div class="language-json highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">{</span><span class="w">
+  </span><span class="nl">"jsonrpc"</span><span class="p">:</span><span class="w"> </span><span class="s2">"2.0"</span><span class="p">,</span><span class="w">
+  </span><span class="nl">"id"</span><span class="p">:</span><span class="w"> </span><span class="mi">4</span><span class="p">,</span><span class="w">
+  </span><span class="nl">"method"</span><span class="p">:</span><span class="w"> </span><span class="s2">"tools/call"</span><span class="p">,</span><span class="w">
+  </span><span class="nl">"params"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+    </span><span class="nl">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"index_notes"</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"arguments"</span><span class="p">:</span><span class="w"> </span><span class="p">{},</span><span class="w">
+    </span><span class="nl">"_meta"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+      </span><span class="nl">"progressToken"</span><span class="p">:</span><span class="w"> </span><span class="s2">"index-20260620"</span><span class="w">
+    </span><span class="p">}</span><span class="w">
+  </span><span class="p">}</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></code></pre></div></div>
+
+<p>受信側は、同じtokenを使った<code class="language-plaintext highlighter-rouge">notifications/progress</code>を送れる。</p>
+
+<div class="language-json highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">{</span><span class="w">
+  </span><span class="nl">"jsonrpc"</span><span class="p">:</span><span class="w"> </span><span class="s2">"2.0"</span><span class="p">,</span><span class="w">
+  </span><span class="nl">"method"</span><span class="p">:</span><span class="w"> </span><span class="s2">"notifications/progress"</span><span class="p">,</span><span class="w">
+  </span><span class="nl">"params"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+    </span><span class="nl">"progressToken"</span><span class="p">:</span><span class="w"> </span><span class="s2">"index-20260620"</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"progress"</span><span class="p">:</span><span class="w"> </span><span class="mi">40</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"total"</span><span class="p">:</span><span class="w"> </span><span class="mi">100</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"message"</span><span class="p">:</span><span class="w"> </span><span class="s2">"40 notes indexed"</span><span class="w">
+  </span><span class="p">}</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></code></pre></div></div>
+
+<p>進捗通知は任意であり、Requestを受けた側が必ず送るわけではない。また、進捗が届いていることを理由に無制限に待つべきでもない。</p>
+
+<h3 id="timeoutは実装が設定する">timeoutは実装が設定する</h3>
+
+<p>MCP仕様は、送信するすべてのRequestにtimeoutを設けることを推奨している。しかし「Toolは30秒」といった固定値は仕様で決められていない。SDKやHostがRequestごとに設定可能にする領域だ。</p>
+
+<p>timeoutまでに成功ResponseもError Responseも来なければ、送信者はcancellation Notificationを送り、Responseを待つのをやめるべきとされている。進捗を受けるたびにtimeoutを延長する実装も可能だが、最大timeoutは別に持つべきである。</p>
+
+<h3 id="cancellationは完了を保証するresponseではない">cancellationは完了を保証するResponseではない</h3>
+
+<p>通常の処理をキャンセルするときは、元のRequest IDを指定した<code class="language-plaintext highlighter-rouge">notifications/cancelled</code>を送る。</p>
+
+<div class="language-json highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">{</span><span class="w">
+  </span><span class="nl">"jsonrpc"</span><span class="p">:</span><span class="w"> </span><span class="s2">"2.0"</span><span class="p">,</span><span class="w">
+  </span><span class="nl">"method"</span><span class="p">:</span><span class="w"> </span><span class="s2">"notifications/cancelled"</span><span class="p">,</span><span class="w">
+  </span><span class="nl">"params"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+    </span><span class="nl">"requestId"</span><span class="p">:</span><span class="w"> </span><span class="mi">4</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"reason"</span><span class="p">:</span><span class="w"> </span><span class="s2">"User stopped the operation"</span><span class="w">
+  </span><span class="p">}</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></code></pre></div></div>
+
+<p>受信側は処理を止め、リソースを解放し、元RequestへのResponseを送らないことが推奨される。ただし、処理がすでに完了していた、止められない処理だった、といった理由でNotificationが無視されることもある。</p>
+
+<p>キャンセルとResponseがネットワーク上ですれ違うrace conditionも起こる。送信側はキャンセル後に届いたResponseを無視し、受信側は未知または完了済みのRequest IDを指すキャンセルを無視する。Notificationなので「キャンセル完了Response」は返ってこない。</p>
+
+<p>なお、<code class="language-plaintext highlighter-rouge">initialize</code>をClientからキャンセルしてはならない。また、<code class="language-plaintext highlighter-rouge">2025-11-25</code>版で追加されたtask-augmented requestには、Notificationではなく<code class="language-plaintext highlighter-rouge">tasks/cancel</code>という別の仕組みがある。</p>
+
+<hr>
+
+<h2 id="shutdown専用のjson-rpc-methodはない">shutdown専用のJSON-RPC methodはない</h2>
+
+<p>MCPのライフサイクルにはShutdownフェーズがあるが、共通の<code class="language-plaintext highlighter-rouge">shutdown</code> Requestは定義されていない。終了はtransportで表現する。</p>
+
+<p>stdioでは、ClientがServerプロセスへの入力streamを閉じ、終了を待つ。必要なら<code class="language-plaintext highlighter-rouge">SIGTERM</code>、さらに終了しなければ<code class="language-plaintext highlighter-rouge">SIGKILL</code>という順で停止する。HTTPでは関連するHTTP接続を閉じる。</p>
+
+<p>この違いからも、JSON-RPCとtransportは別の層だと分かる。JSON-RPCはメッセージの形と対応関係を定め、stdioやStreamable HTTPはそのメッセージをどう運ぶかを定める。</p>
+
+<hr>
+
+<h2 id="ログを見るときの切り分け順">ログを見るときの切り分け順</h2>
+
+<p>MCP接続の調査では、いきなりSDKコードを追うより、最後に成立したメッセージを見つける方が早い。</p>
+
+<table>
+  <thead>
+    <tr>
+      <th style="text-align: left">最後に確認できたもの</th>
+      <th style="text-align: left">次に疑う箇所</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td style="text-align: left">Serverプロセス起動だけ</td>
+      <td style="text-align: left">transport、標準入出力、接続先URL</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">
+<code class="language-plaintext highlighter-rouge">initialize</code> Request</td>
+      <td style="text-align: left">Serverのversion対応、JSONの形式、例外</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">
+<code class="language-plaintext highlighter-rouge">initialize</code> Response</td>
+      <td style="text-align: left">Clientのversion判定、<code class="language-plaintext highlighter-rouge">initialized</code>送信</td>
+    </tr>
+    <tr>
+      <td style="text-align: left"><code class="language-plaintext highlighter-rouge">notifications/initialized</code></td>
+      <td style="text-align: left">Server capability、<code class="language-plaintext highlighter-rouge">tools/list</code>送信</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">
+<code class="language-plaintext highlighter-rouge">tools/list</code> Response</td>
+      <td style="text-align: left">HostへのTool登録、モデルへの定義提示</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">
+<code class="language-plaintext highlighter-rouge">tools/call</code> Request</td>
+      <td style="text-align: left">引数検証、外部API、ファイル権限</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">progressだけ継続</td>
+      <td style="text-align: left">timeout、最大処理時間、停止処理</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>stdioでは標準出力がJSON-RPCの通信路になるため、Serverの通常ログをstdoutへ混ぜるとメッセージのparseに失敗する。ログはstderrへ出す必要がある。これはSDKの書き方ではなく、transport上の制約として理解しておくと原因を見つけやすい。</p>
+
+<p>また、秘密情報を含む引数や結果をwire logへそのまま残すと、調査用ログが新しい漏洩経路になる。Request ID、method、所要時間、エラー種別を残し、本文は必要に応じてredactする方がよい。</p>
+
+<hr>
+
+<h2 id="まとめ">まとめ</h2>
+
+<p><img class="mermaid" src="https://mermaid.ink/svg/eyJjb2RlIjoiZmxvd2NoYXJ0IFRCXG5BW1wiaW5pdGlhbGl6ZVwiXSAtLT4gQltcInZlcnNpb27jgahjYXBhYmlsaXR544KS56K66KqNXCJdXG5CIC0tPiBDW1wibm90aWZpY2F0aW9ucy9pbml0aWFsaXplZFwiXVxuQyAtLT4gRFtcInRvb2xzL2xpc3TjgafnmbropotcIl1cbkQgLS0-IEVbXCJ0b29scy9jYWxs44Gn5a6f6KGMXCJdXG5FIC0tPiBGe1wi57WQ5p6cXCJ9XG5GIC0tPnxcIuaIkOWKn1wifCBHW1wicmVzdWx0XCJdXG5GIC0tPnxcIuODl-ODreODiOOCs-ODq-OBruWVj-mhjFwifCBIW1wiSlNPTi1SUEMgZXJyb3JcIl1cbkYgLS0-fFwiVG9vbOWHpueQhuOBruWkseaVl1wifCBJW1wicmVzdWx0ICsgaXNFcnJvclwiXSIsIm1lcm1haWQiOm51bGx9"></p>
+
+<p>MCP通信を読むときは、次の点を押さえればよい。</p>
+
+<ul>
+  <li>Requestには<code class="language-plaintext highlighter-rouge">id</code>があり、Responseは同じ<code class="language-plaintext highlighter-rouge">id</code>を返す</li>
+  <li>Notificationには<code class="language-plaintext highlighter-rouge">id</code>がなく、Responseも返さない</li>
+  <li>
+<code class="language-plaintext highlighter-rouge">initialize</code>でversionとcapabilityを確認してから通常処理へ進む</li>
+  <li>
+<code class="language-plaintext highlighter-rouge">tools/list</code>は機能の発見、<code class="language-plaintext highlighter-rouge">tools/call</code>は機能の実行である</li>
+  <li>JSON-RPC ErrorとTool Execution Errorは別の層にある</li>
+  <li>timeout値、承認UI、モデルへの渡し方はHostやSDKの実装領域である</li>
+</ul>
+
+<p>次回はこのメッセージ列をSDKに対応づけ、<a href="/jekyll-theme-yat/ai%E9%96%8B%E7%99%BA/2026/06/21/build-mcp-server-python.html">Pythonで小さなMCPサーバーを作る</a>。</p>
+
+<hr>
+
+<h2 id="参考">参考</h2>
+
+<ul>
+  <li>
+<a href="https://modelcontextprotocol.io/specification/2025-11-25/basic">Base Protocol Overview - Model Context Protocol</a> ── JSON-RPCのRequest、Response、Notification</li>
+  <li>
+<a href="https://modelcontextprotocol.io/specification/2025-11-25/basic/lifecycle">Lifecycle - Model Context Protocol</a> ── 初期化、version・capability negotiation、終了とtimeout</li>
+  <li>
+<a href="https://modelcontextprotocol.io/specification/2025-11-25/server/tools">Tools - Model Context Protocol</a> ── <code class="language-plaintext highlighter-rouge">tools/list</code>、<code class="language-plaintext highlighter-rouge">tools/call</code>、2種類のエラー</li>
+  <li>
+<a href="https://modelcontextprotocol.io/specification/2025-11-25/basic/utilities/progress">Progress - Model Context Protocol</a> ── progress tokenと進捗通知</li>
+  <li>
+<a href="https://modelcontextprotocol.io/specification/2025-11-25/basic/utilities/cancellation">Cancellation - Model Context Protocol</a> ── キャンセル通知とrace condition</li>
+  <li>
+<a href="https://www.jsonrpc.org/specification">JSON-RPC 2.0 Specification</a> ── MCPの基礎となるメッセージ仕様</li>
+</ul>
+
+
+    </div>
+
+</article>
+<div class="post-nav">
+<a class="previous" href="/jekyll-theme-yat/ai%E9%96%8B%E7%99%BA/2026/06/19/mcp-tools-resources-prompts.html" title="MCPのTools・Resources・Promptsを使い分ける">MCPのTools・Resources・Promptsを使い分ける</a><a class="next" href="/jekyll-theme-yat/ai%E9%96%8B%E7%99%BA/2026/06/21/build-mcp-server-python.html" title="Pythonで小さなMCPサーバーを作る">Pythonで小さなMCPサーバーを作る</a>
+</div>
+<div class="post-related">
+      <div>Related Articles</div>
+      <ul>
+        <li><a class="post-link" href="/jekyll-theme-yat/%E3%83%96%E3%83%AD%E3%82%B0/2023/06/03/github-pages-jekyll.html" title="Pythonで小さなMCPサーバーを作る">JekyllとGitHub Pagesを使ったブログサイトの記事更新手順</a></li>
+<li><a class="post-link" href="/jekyll-theme-yat/%E9%96%8B%E7%99%BA/2026/06/10/git-submodule-subtree.html" title="Pythonで小さなMCPサーバーを作る">Git submodule と Git subtree の違いと使い分け</a></li>
+<li><a class="post-link" href="/jekyll-theme-yat/%E9%96%8B%E7%99%BA/2026/06/13/github-useful-features.html" title="Pythonで小さなMCPサーバーを作る">まだ使っていない GitHub の便利機能を整理する</a></li>
+<li><a class="post-link" href="/jekyll-theme-yat/ai%E9%96%8B%E7%99%BA/2026/06/10/solo-dev-multi-agent-setup.html" title="Pythonで小さなMCPサーバーを作る">1人開発でマルチエージェント体制を作る方法</a></li>
+</ul>
+    </div>
+<div class="post-comments"></div></section>
+</div>
+
+
+  </section>
+  <section class="sidebar" style="margin-left: 15px;">
+    <!-- Get sidebar items --><style type="text/css" media="screen">
+.post-menu ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+</style>
+
+<div class="post-menu">
+  <div class="post-menu-title">TOC</div>
+  <div class="post-menu-content"></div>
+</div>
+
+<script>
+  function generateContent() {
+    var menu = document.querySelector(".post-menu");
+    var menuContent =  menu.querySelector(".post-menu-content");
+    var headings = document.querySelector(".post-content").querySelectorAll("h2, h3, h4, h5, h6");
+
+    // Hide menu when no headings
+    if (headings.length === 0) {
+      return menu.style.display = "none";
+    }
+
+    // Generate post menu
+    var menuHTML = '';
+    for (var i = 0; i < headings.length; i++) {
+      var h = headings[i];
+      menuHTML += (
+        '<li class="h-' + h.tagName.toLowerCase() + '">'
+        + '<a href="#h-' + h.getAttribute('id') + '">' + h.textContent + '</a></li>');
+    }
+
+    menuContent.innerHTML = '<ul>' + menuHTML + '</ul>';
+
+    // The header element
+    var header = document.querySelector('header.site-header');
+
+    function doMenuCollapse(index, over_items) {
+      var items = menuContent.firstChild.children;
+
+      if (over_items == undefined) {
+        over_items = 20;
+      }
+
+      if (items.length < over_items) {
+        return;
+      }
+
+      var activeItem = items[index];
+      var beginItem = activeItem
+      var endItem = activeItem
+      var beginIndex = index;
+      var endIndex = index + 1;
+      while (beginIndex >= 0
+        && !items[beginIndex].classList.contains('h-h2')) {
+        beginIndex -= 1;
+      }
+      while (endIndex < items.length
+        && !items[endIndex].classList.contains('h-h2')) {
+        endIndex += 1;
+      }
+      for (var i = 0; i < beginIndex; i++) {
+        item = items[i]
+        if (!item.classList.contains('h-h2')) {
+          item.style.display = 'none';
+        }
+      }
+      for (var i = beginIndex + 1; i < endIndex; i++) {
+        item = items[i]
+        // if (!item.classList.contains('h-h2')) {
+          item.style.display = '';
+        // }
+      }
+      for (var i = endIndex; i < items.length; i++) {
+        item = items[i]
+        if (!item.classList.contains('h-h2')) {
+          item.style.display = 'none';
+        }
+      }
+    }
+
+    // Init menu collapsed
+    doMenuCollapse(-1);
+
+    // Active the menu item
+    window.addEventListener('scroll', function (event) {
+      var lastActive = menuContent.querySelector('.active');
+      var changed = true;
+      var activeIndex = -1;
+      for (var i = headings.length - 1; i >= 0; i--) {
+        var h = headings[i];
+        var headingRect = h.getBoundingClientRect();
+        var headerRect = header.getBoundingClientRect();
+        var headerTop = Math.floor(headerRect.top);
+        var headerHeight = Math.floor(headerRect.height);
+        var headerHeight = headerTop + headerHeight + 20;
+        if (headingRect.top <= headerHeight) {
+          var id = 'h-' + h.getAttribute('id');
+          var a = menuContent.querySelector('a[href="#' + id  + '"]');
+          var curActive = a.parentNode;
+          if (curActive) {
+            curActive.classList.add('active');
+            activeIndex = i;
+          }
+          if (lastActive == curActive) {
+            changed = false;
+          }
+          break;
+        }
+      }
+      if (changed) {
+        if (lastActive) {
+          lastActive.classList.remove('active');
+        }
+        doMenuCollapse(activeIndex);
+      }
+      event.preventDefault();
+    });
+  }
+  generateContent();
+</script>
+</section>
+</div>
+
+      </div>
+    </main><footer class="site-footer h-card">
+  <data class="u-url" href="/jekyll-theme-yat/"></data>
+
+  <div class="wrapper">
+    <div class="site-footer-inner">
+<div>Waka-DS © 2021-2026</div>
+      <div>Powered by <a title="Jekyll is a simple, blog-aware, static site
+      generator." href="http://jekyllrb.com/">Jekyll</a> &amp; <a title="Yat, yet
+      another theme." href="https://github.com/jeffreytse/jekyll-theme-yat">Yat Theme</a>.</div>
+      <div class="footer-col rss-subscribe">Subscribe <a href="/jekyll-theme-yat/feed.xml">via RSS</a>
+</div>
+    </div>
+  </div>
+</footer>
+</body>
+</html>

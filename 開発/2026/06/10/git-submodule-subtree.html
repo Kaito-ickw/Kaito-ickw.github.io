@@ -1,0 +1,1057 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <script>
+  (function() {
+    try {
+      var p = localStorage.getItem('preferred_lang');
+      if (!p) return;
+      var path = window.location.pathname;
+      var ja = ['/', '/archives.html', '/categories.html', '/tags.html', '/about.html'];
+      var en = ['/en/', '/en/archives.html', '/en/categories.html', '/en/tags.html', '/en/about.html'];
+      if (p === 'en' && ja.indexOf(path) !== -1) {
+        window.location.replace('/en' + (path === '/' ? '/' : path));
+      } else if (p === 'ja' && en.indexOf(path) !== -1) {
+        window.location.replace(path.slice(3) || '/');
+      }
+    } catch(e) {}
+  })();
+  </script>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="google-translate-customization" content="108d9124921d80c3-80e20d618ff053c8-g4f02ec6f3dba68b7-c">
+<!-- Begin Jekyll SEO tag v2.9.0 -->
+<title>Git submodule と Git subtree の違いと使い分け | Waka-DS.com</title>
+<meta name="generator" content="Jekyll v4.4.1">
+<meta property="og:title" content="Git submodule と Git subtree の違いと使い分け">
+<meta name="author" content="Waka-DS">
+<meta property="og:locale" content="ja">
+<meta name="description" content="外部のリポジトリを自分のプロジェクトに組み込みたいとき、Git には submodule と subtree という2つのアプローチがある。どちらも「外部リポジトリを取り込む」ことはできるが、仕組みも運用上の扱いも大きく異なる。">
+<meta name="twitter:description" property="og:description" content="外部のリポジトリを自分のプロジェクトに組み込みたいとき、Git には submodule と subtree という2つのアプローチがある。どちらも「外部リポジトリを取り込む」ことはできるが、仕組みも運用上の扱いも大きく異なる。">
+<link rel="canonical" href="/jekyll-theme-yat/%E9%96%8B%E7%99%BA/2026/06/10/git-submodule-subtree.html">
+<meta property="og:url" content="/jekyll-theme-yat/%E9%96%8B%E7%99%BA/2026/06/10/git-submodule-subtree.html">
+<meta property="og:site_name" content="Waka-DS.com">
+<meta property="og:image" content="/jekyll-theme-yat/assets/images/posts/2026-06-10-git-submodule-subtree/eyecatch.png">
+<meta property="og:image:alt" content="外部の箱につながる参照と親の箱へ展開された内容を対比する紙工作">
+<meta property="og:type" content="article">
+<meta property="article:published_time" content="2026-06-10T00:00:00+00:00">
+<meta property="article:modified_time" content="2026-06-10T00:00:00+00:00">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="/jekyll-theme-yat/assets/images/posts/2026-06-10-git-submodule-subtree/eyecatch.png">
+<meta name="twitter:image:alt" content="外部の箱につながる参照と親の箱へ展開された内容を対比する紙工作">
+<meta name="twitter:title" content="Git submodule と Git subtree の違いと使い分け">
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":"Waka-DS"},"dateModified":"2026-06-10T00:00:00+00:00","datePublished":"2026-06-10T00:00:00+00:00","description":"外部のリポジトリを自分のプロジェクトに組み込みたいとき、Git には submodule と subtree という2つのアプローチがある。どちらも「外部リポジトリを取り込む」ことはできるが、仕組みも運用上の扱いも大きく異なる。","headline":"Git submodule と Git subtree の違いと使い分け","image":{"alt":"外部の箱につながる参照と親の箱へ展開された内容を対比する紙工作","url":"/jekyll-theme-yat/assets/images/posts/2026-06-10-git-submodule-subtree/eyecatch.png","@type":"imageObject"},"mainEntityOfPage":{"@type":"WebPage","@id":"/jekyll-theme-yat/%E9%96%8B%E7%99%BA/2026/06/10/git-submodule-subtree.html"},"url":"/jekyll-theme-yat/%E9%96%8B%E7%99%BA/2026/06/10/git-submodule-subtree.html"}</script>
+<!-- End Jekyll SEO tag -->
+<link rel="shortcut icon" href="">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=Noto+Sans+JP:wght@400;500;700&amp;display=swap">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+  <link rel="stylesheet" href="/jekyll-theme-yat/assets/css/main.css">
+  <script src="/jekyll-theme-yat/assets/js/main.js"></script><link type="application/atom+xml" rel="alternate" href="/jekyll-theme-yat/feed.xml" title="Waka-DS.com">
+<script>
+  function initGoogleAnalytics() {
+    var doNotTrack = (window.doNotTrack === "1" || navigator.doNotTrack === "1" ||
+      navigator.doNotTrack === "yes" || navigator.msDoNotTrack === "1");
+    var enableDNT = "true" == "true";
+
+    if (!enableDNT || !doNotTrack) {
+      var ga_id = 'G-XNP1RBTG9C';
+
+      var script = document.createElement('script');
+      script.async = true;
+      script.src = 'https://www.googletagmanager.com/gtag/js?id=' + ga_id;
+      document.head.appendChild(script);
+
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', ga_id);
+    }
+  }
+  window.addEventListener("load", initGoogleAnalytics);
+</script>
+<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/styles/default.min.css">
+<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/highlight.min.js"></script>
+<!-- and it's easy to individually load additional languages -->
+<script charset="UTF-8" src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/languages/go.min.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<script>
+// Init highlight js
+document.addEventListener('DOMContentLoaded', function(event) {
+  var els = document.querySelectorAll('pre code')
+
+  function addLangData(block) {
+    var outer = block.parentElement.parentElement.parentElement;
+    var lang = block.getAttribute('data-lang');
+    for (var i = 0; i < outer.classList.length; i++) {
+      var cls = outer.classList[i];
+      if (cls.startsWith('language-')) {
+        lang = cls;
+        break;
+      }
+    }
+    if (!lang) {
+      cls = block.getAttribute('class');
+      lang = cls ? cls.replace('hljs ', '') : '';
+    }
+    if (lang.startsWith('language-')) {
+      lang = lang.substr(9);
+    }
+    block.setAttribute('class', 'hljs ' + lang);
+    block.parentNode.setAttribute('data-lang', lang);
+  }
+
+  function addBadge(block) {
+    var enabled = ('true' || 'true').toLowerCase();
+    if (enabled == 'true') {
+      var pre = block.parentElement;
+      pre.classList.add('badge');
+    }
+  }
+
+  function handle(block) {
+    addLangData(block);
+    addBadge(block)
+    hljs.highlightBlock(block);
+  }
+
+  for (var i = 0; i < els.length; i++) {
+    var el = els[i];
+    handle(el);
+  }
+});
+</script>
+
+<style>
+  /* code language badge */
+  pre.badge::before {
+    content: attr(data-lang);
+    color: #fff;
+    background-color: #0d9488;
+    padding: 0 .5em;
+    border-radius: 0 2px;
+    text-transform: uppercase;
+    text-align: center;
+    min-width: 32px;
+    display: inline-block;
+    position: absolute;
+    right: 0;
+  }
+
+  /* fix wrong badge display for firefox browser */
+  code > table pre::before {
+    display: none;
+  }
+</style>
+</head>
+<body>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<header class="site-header " role="banner">
+
+  <div class="wrapper">
+    <div class="site-header-inner">
+<span class="site-brand"><a class="site-brand-inner" rel="author" href="/jekyll-theme-yat/">
+  <img class="site-favicon" title="Waka-DS.com" src="" onerror="this.style.display='none'">
+  Waka-DS.com
+</a>
+</span><nav class="site-nav">
+          <input type="checkbox" id="nav-trigger" class="nav-trigger">
+          <label for="nav-trigger">
+            <span class="menu-icon">
+              <svg viewbox="0 0 18 15" width="18px" height="15px">
+                <path d="M18,1.484c0,0.82-0.665,1.484-1.484,1.484H1.484C0.665,2.969,0,2.304,0,1.484l0,0C0,0.665,0.665,0,1.484,0 h15.032C17.335,0,18,0.665,18,1.484L18,1.484z M18,7.516C18,8.335,17.335,9,16.516,9H1.484C0.665,9,0,8.335,0,7.516l0,0 c0-0.82,0.665-1.484,1.484-1.484h15.032C17.335,6.031,18,6.696,18,7.516L18,7.516z M18,13.516C18,14.335,17.335,15,16.516,15H1.484 C0.665,15,0,14.335,0,13.516l0,0c0-0.82,0.665-1.483,1.484-1.483h15.032C17.335,12.031,18,12.695,18,13.516L18,13.516z"></path>
+              </svg>
+            </span>
+          </label>
+
+          <div class="trigger">
+<a class="page-link" href="/jekyll-theme-yat/about.html">ABOUT</a><a class="page-link" href="/jekyll-theme-yat/archives.html">ARCHIVES</a><a class="page-link" href="/jekyll-theme-yat/categories.html">CATEGORIES</a><a class="page-link" href="/jekyll-theme-yat/">HOME</a><a class="page-link" href="/jekyll-theme-yat/tags.html">TAGS</a>
+</div>
+        </nav>
+</div>
+  </div>
+</header>
+
+<script>
+  function initHeader() {
+    var lastScrollY = getScrollPos().y;
+    var documentElement = document.documentElement;
+
+    function storeScrollData() {
+      var y = getScrollPos().y;var scrollStatus = "";
+
+      if (y <= 0) {
+        scrollStatus = "top";
+      } else if ((window.innerHeight + y) >= document.body.offsetHeight) {
+        scrollStatus = "bottom";
+      } else {
+        var isScrollDown = (y - lastScrollY > 0) ? true : false;
+        scrollStatus = isScrollDown ? "down" : "up";
+      }
+
+      lastScrollY = y;
+      documentElement.setAttribute("data-scroll-status", scrollStatus);
+    }
+
+    window.addEventListener('scroll', function(e) {
+      storeScrollData();
+    });
+
+    storeScrollData();
+  }
+  document.addEventListener('DOMContentLoaded', initHeader);
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<script>
+  function hashLocate(hashValue) {
+    hashValue = hashValue.replace(/^.*#h-/, '');
+    hashValue = decodeURIComponent(hashValue);
+    var element = document.getElementById(hashValue);
+
+    if (!element) {
+      return;
+    }
+
+    var header = document.querySelector('header.site-header');
+    var headerRect = header.getBoundingClientRect();
+    var headerTop = Math.floor(headerRect.top);
+    var headerHeight = Math.floor(headerRect.height);
+    var scrollPos = getScrollPos();
+    var offsetY = element.offsetTop - (headerTop + headerHeight + 20);
+
+    if (offsetY == scrollPos.y) {
+      return;
+    }
+
+    if (headerTop == 0  && offsetY > scrollPos.y) {
+      offsetY += headerHeight + 2;
+    } else if (headerTop < 0  && offsetY < scrollPos.y) {
+      offsetY -= headerHeight - 2;
+    }
+
+    smoothScrollTo(offsetY);
+  }
+
+  // The first event occurred
+  window.addEventListener('load', function(event) {
+    if (window.location.hash) {
+      hashLocate(window.location.hash);
+    }
+  });
+
+  // The first event occurred
+  window.addEventListener('click', function(event) {
+    if (event.target.tagName.toLowerCase() == 'a') {
+      hashLocate(event.target.getAttribute('href'));
+    }
+  });
+</script>
+<div class="theme-toggle">
+  <input type="checkbox" id="theme-switch">
+  <label for="theme-switch">
+    <div class="toggle"></div>
+    <div class="names">
+      <p class="light">Light</p>
+      <p class="dark">Dark</p>
+    </div>
+  </label>
+</div>
+
+
+
+
+<script>
+  (function() {
+    var sw = document.getElementById('theme-switch');
+    var html = document.getElementsByTagName('html')[0];
+    var nightModeOption = ('auto' || 'auto').toLowerCase();
+    var storage = nightModeOption === 'manual'
+        ? localStorage
+        : sessionStorage;
+    var themeData = loadThemeData();
+
+    function saveThemeData(data) {
+      storage.setItem('theme', JSON.stringify(data));
+    }
+
+    function loadThemeData() {
+      var data = storage.getItem('theme');
+      try {
+        data = JSON.parse(data ? data : '');
+      } catch(e) {
+        data = { nightShift: undefined, autoToggleAt: 0 };
+        saveThemeData(data);
+      }
+      return data;
+    }
+
+    function handleThemeToggle(nightShift) {
+      themeData.nightShift = nightShift;
+      saveThemeData(themeData);
+      html.dataset.theme = nightShift ? 'dark' : 'light';
+      setTimeout(function() {
+        sw.checked = nightShift ? true : false;
+      }, 50);
+    }
+
+    function autoThemeToggle() {
+      // Next time point of theme toggle
+      var now = new Date();
+      var toggleAt = new Date();
+      var hours = now.getHours();
+      var nightShift = hours >= 19 || hours <=7;
+
+      if (nightShift) {
+        if (hours > 7) {
+          toggleAt.setDate(toggleAt.getDate() + 1);
+        }
+        toggleAt.setHours(7);
+      } else {
+        toggleAt.setHours(19);
+      }
+
+      toggleAt.setMinutes(0);
+      toggleAt.setSeconds(0);
+      toggleAt.setMilliseconds(0)
+
+      var delay = toggleAt.getTime() - now.getTime();
+
+      // auto toggle theme mode
+      setTimeout(function() {
+        handleThemeToggle(!nightShift);
+      }, delay);
+
+      return {
+        nightShift: nightShift,
+        toggleAt: toggleAt.getTime()
+      };
+    }
+
+    // Listen the theme toggle event
+    sw.addEventListener('change', function(event) {
+      handleThemeToggle(event.target.checked);
+    });
+
+    if (nightModeOption == 'auto') {
+      var data = autoThemeToggle();
+
+      // Toggle theme by local setting
+      if (data.toggleAt > themeData.autoToggleAt) {
+        themeData.autoToggleAt = data.toggleAt;
+        handleThemeToggle(data.nightShift);
+      } else {
+        handleThemeToggle(themeData.nightShift);
+      }
+    } else if (nightModeOption == 'manual') {
+      handleThemeToggle(themeData.nightShift);
+    } else {
+      var nightShift = themeData.nightShift;
+      if (nightShift === undefined) {
+        nightShift = nightModeOption === 'on';
+      }
+      handleThemeToggle(nightShift);
+    }
+  })();
+</script>
+<main class="page-content" aria-label="Content">
+      <div class="wrapper">
+        <div class="framework">
+  <section class="main">
+
+     <div class="post post--with-image">
+  <section>
+
+
+
+
+
+
+
+
+
+<header class="post-header">
+  <h1 class="post-title p-name" itemprop="name headline">Git submodule と Git subtree の違いと使い分け</h1>
+  <h2 class="post-subtitle">外部リポジトリを取り込む2つの方法を比較する</h2>
+
+  <p class="post-meta">
+    <time class="dt-published" datetime="2026-06-10T00:00:00+00:00" itemprop="datePublished"><i class="fa fa-calendar"></i> Jun 10, 2026
+    </time>
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <span class="post-reading-time left-vsplit"><i class="fa fa-clock-o"></i> About 9 mins</span>
+  </p>
+<div class="post-tags">
+<a class="post-tag" href="/jekyll-theme-yat/tags.html#Git">#Git</a><a class="post-tag" href="/jekyll-theme-yat/tags.html#%E9%96%8B%E7%99%BA%E7%92%B0%E5%A2%83">#開発環境</a><a class="post-tag" href="/jekyll-theme-yat/tags.html#CLI">#CLI</a>
+</div></header>
+<figure class="post-eyecatch">
+  <img src="/jekyll-theme-yat/assets/images/posts/2026-06-10-git-submodule-subtree/eyecatch.png" alt="外部の箱につながる参照と親の箱へ展開された内容を対比する紙工作" decoding="async" fetchpriority="high">
+</figure><article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
+
+    <div class="post-content e-content" itemprop="articleBody">
+
+      <p>外部のリポジトリを自分のプロジェクトに組み込みたいとき、Git には <code class="language-plaintext highlighter-rouge">submodule</code> と <code class="language-plaintext highlighter-rouge">subtree</code> という2つのアプローチがある。どちらも「外部リポジトリを取り込む」ことはできるが、仕組みも運用上の扱いも大きく異なる。</p>
+
+<p>この記事では、それぞれの仕組みを整理し、どういう状況でどちらを選ぶかを考える。</p>
+
+<hr>
+
+<h2 id="git-submodule-とは">Git submodule とは</h2>
+
+<p>submodule は、外部リポジトリへの「参照」を親リポジトリに持たせる仕組みだ。実体のコードは外部リポジトリ側にあり、親リポジトリは「どのリポジトリの・どのコミットを使うか」という情報だけを持つ。</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>my-project/
+├── .gitmodules       ← submoduleの設定ファイル
+├── src/
+└── libs/
+    └── external-lib/ ← submoduleとして登録したディレクトリ
+</code></pre></div></div>
+
+<p><code class="language-plaintext highlighter-rouge">.gitmodules</code> にはリポジトリURLとパスが記録され、<code class="language-plaintext highlighter-rouge">libs/external-lib/</code> ディレクトリ自体はコミットハッシュへのポインタとして扱われる。</p>
+
+<h3 id="基本的なコマンド">基本的なコマンド</h3>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># submoduleを追加する</span>
+git submodule add https://github.com/org/external-lib libs/external-lib
+
+<span class="c"># リポジトリをクローンする（submoduleも含めて）</span>
+git clone <span class="nt">--recurse-submodules</span> https://github.com/me/my-project
+
+<span class="c"># すでにクローン済みのリポジトリでsubmoduleを初期化・取得する</span>
+git submodule update <span class="nt">--init</span> <span class="nt">--recursive</span>
+
+<span class="c"># submoduleを最新コミットに追従させる</span>
+git submodule update <span class="nt">--remote</span>
+</code></pre></div></div>
+
+<h3 id="submodule-を使う際の注意点">submodule を使う際の注意点</h3>
+
+<p>submodule を含むリポジトリをクローンした直後は、<code class="language-plaintext highlighter-rouge">libs/external-lib/</code> ディレクトリが空になっている。<code class="language-plaintext highlighter-rouge">git submodule update --init</code> を実行して初めてコードが取得される。これを忘れると「ファイルがない」という状況に陥る。</p>
+
+<p>もう一つの特性は、submodule が「どのコミットを指しているか」を親リポジトリが管理するという点だ。外部ライブラリ側で新しいコミットが積まれても、親リポジトリは古いコミットを指したままになる。意図的な固定とも言えるが、更新を取り込むには明示的な操作が必要になる。</p>
+
+<hr>
+
+<h2 id="git-subtree-とは">Git subtree とは</h2>
+
+<p>subtree は、外部リポジトリのコードを親リポジトリの歴史の中に直接取り込む仕組みだ。取り込んだ後は、外部リポジトリへの依存関係はなくなり、ただのディレクトリとして扱われる。</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># subtreeとして追加する</span>
+git subtree add <span class="nt">--prefix</span><span class="o">=</span>libs/external-lib <span class="se">\</span>
+  https://github.com/org/external-lib main <span class="nt">--squash</span>
+
+<span class="c"># 外部リポジトリの更新を取り込む</span>
+git subtree pull <span class="nt">--prefix</span><span class="o">=</span>libs/external-lib <span class="se">\</span>
+  https://github.com/org/external-lib main <span class="nt">--squash</span>
+
+<span class="c"># 変更を外部リポジトリへ送り返す</span>
+git subtree push <span class="nt">--prefix</span><span class="o">=</span>libs/external-lib <span class="se">\</span>
+  https://github.com/org/external-lib main
+</code></pre></div></div>
+
+<p><code class="language-plaintext highlighter-rouge">--squash</code> をつけると外部リポジトリのコミット履歴を1つにまとめてから取り込む。外部の細かいコミット履歴を親リポジトリに持ち込みたくない場合は <code class="language-plaintext highlighter-rouge">--squash</code> を使うことが多い。</p>
+
+<h3 id="subtree-の特徴">subtree の特徴</h3>
+
+<p>クローンした人が何も意識しなくてよいのが大きな利点だ。<code class="language-plaintext highlighter-rouge">git clone</code> だけで完結する。submodule のように「初期化を忘れた」という問題が起きない。</p>
+
+<p>一方、<code class="language-plaintext highlighter-rouge">--squash</code> なしで使うとコミット履歴が混在して見づらくなる。また、取り込んだコードに変更を加えて元のリポジトリへ送り返す（<code class="language-plaintext highlighter-rouge">subtree push</code>）操作はやや複雑で、Gitの知識が必要になる。</p>
+
+<hr>
+
+<h2 id="どちらを選ぶか">どちらを選ぶか</h2>
+
+<table>
+  <thead>
+    <tr>
+      <th style="text-align: left"> </th>
+      <th style="text-align: left">submodule</th>
+      <th style="text-align: left">subtree</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td style="text-align: left">外部リポジトリとの連動</td>
+      <td style="text-align: left">強い（コミット単位で追従）</td>
+      <td style="text-align: left">弱い（pullで手動取り込み）</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">クローン後の手順</td>
+      <td style="text-align: left">
+<code class="language-plaintext highlighter-rouge">submodule update</code> が必要</td>
+      <td style="text-align: left">不要</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">チームへの負担</td>
+      <td style="text-align: left">大きい（全員がsubmoduleを理解する必要）</td>
+      <td style="text-align: left">小さい</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">外部リポジトリへの書き戻し</td>
+      <td style="text-align: left">難しくない</td>
+      <td style="text-align: left">やや複雑</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">履歴の扱い</td>
+      <td style="text-align: left">外部の履歴は外部にある</td>
+      <td style="text-align: left">親に取り込まれる</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>選び方の目安は次の通り。</p>
+
+<p><strong>submodule が向いている場面</strong></p>
+
+<ul>
+  <li>外部リポジトリを特定のコミットに固定して使いたい（ライブラリのバージョン固定）</li>
+  <li>外部リポジトリへの変更を頻繁に送り返す</li>
+  <li>チーム全員がGitの扱いに慣れている</li>
+</ul>
+
+<p><strong>subtree が向いている場面</strong></p>
+
+<ul>
+  <li>チームに Git 初心者がいる、または外部ツールが submodule に対応していない</li>
+  <li>取り込んだコードをそのまま使い、ほとんど更新しない</li>
+  <li>シンプルなワークフローを優先する</li>
+</ul>
+
+<p>実際のところ、ソロ開発や小規模チームでは subtree の方が扱いやすいケースが多い。submodule は「外部リポジトリとの同期を密にしたい」という明確な理由がある場合に選ぶ方が、運用上の混乱が少ない。</p>
+
+<hr>
+
+<h2 id="よくある混乱を整理する">よくある混乱を整理する</h2>
+
+<h3 id="submodule-を追加したのにコードがない">「submodule を追加したのにコードがない」</h3>
+
+<p><code class="language-plaintext highlighter-rouge">git clone</code> 後に <code class="language-plaintext highlighter-rouge">git submodule update --init --recursive</code> を実行していないことが原因だ。<code class="language-plaintext highlighter-rouge">--recurse-submodules</code> つきでクローンすれば一発で済む。</p>
+
+<h3 id="submodule-のバージョンを上げたら他のメンバーでビルドが通らなくなった">「submodule のバージョンを上げたら他のメンバーでビルドが通らなくなった」</h3>
+
+<p>submodule のコミットポインタを更新した後、<code class="language-plaintext highlighter-rouge">git submodule update</code> を実行してもらう必要がある。これを徹底するのが難しい場合は、READMEに手順を明記するか、subtree への移行を検討する。</p>
+
+<h3 id="subtree-pull-でコンフリクトが大量に出た">「subtree pull でコンフリクトが大量に出た」</h3>
+
+<p><code class="language-plaintext highlighter-rouge">--squash</code> の有無を途中で変えるとコンフリクトが起きやすい。最初に決めた方針を最後まで貫くことが重要だ。</p>
+
+<hr>
+
+<h2 id="まとめ">まとめ</h2>
+
+<table>
+  <thead>
+    <tr>
+      <th style="text-align: left">観点</th>
+      <th style="text-align: left">submodule</th>
+      <th style="text-align: left">subtree</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td style="text-align: left">仕組み</td>
+      <td style="text-align: left">外部リポジトリへの参照</td>
+      <td style="text-align: left">外部リポジトリの歴史を直接取り込む</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">独立性</td>
+      <td style="text-align: left">低い（外部リポジトリに依存）</td>
+      <td style="text-align: left">高い（取り込んだら独立）</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">扱いやすさ</td>
+      <td style="text-align: left">慣れが必要</td>
+      <td style="text-align: left">直感的</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">用途</td>
+      <td style="text-align: left">バージョン固定・頻繁な同期</td>
+      <td style="text-align: left">シンプルな取り込み・ほぼ読み取り専用</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>どちらが優れているという話ではなく、用途と状況によって使い分けるものだ。迷ったら subtree から始めて、「外部リポジトリとの同期をもっと細かく管理したい」という必要が出てきたときに submodule を検討するのが現実的な順序だと思う。</p>
+
+
+    </div>
+
+</article>
+<div class="post-nav">
+<a class="previous" href="/jekyll-theme-yat/ai%E9%96%8B%E7%99%BA/2026/06/10/claude-mythos-fable.html" title="Claude Mythos（Fable）とは何か">Claude Mythos（Fable）とは何か</a><a class="next" href="/jekyll-theme-yat/ai%E9%96%8B%E7%99%BA/2026/06/10/solo-dev-multi-agent-setup.html" title="1人開発でマルチエージェント体制を作る方法">1人開発でマルチエージェント体制を作る方法</a>
+</div>
+<div class="post-related">
+      <div>Related Articles</div>
+      <ul>
+        <li><a class="post-link" href="/jekyll-theme-yat/ai%E9%96%8B%E7%99%BA/2026/06/08/agent-reward-hacking-alignment.html" title="1人開発でマルチエージェント体制を作る方法">エージェントが「ルールの穴」を突く</a></li>
+<li><a class="post-link" href="/jekyll-theme-yat/ai%E9%96%8B%E7%99%BA/2026/06/07/agent-context-management-2026.html" title="1人開発でマルチエージェント体制を作る方法">エージェントを長く自律動作させるためのコンテキスト設計</a></li>
+<li><a class="post-link" href="/jekyll-theme-yat/%E9%96%8B%E7%99%BA/2026/06/07/python-black-guide.html" title="1人開発でマルチエージェント体制を作る方法">AI コーディング向けの Python フォーマッター Black</a></li>
+<li><a class="post-link" href="/jekyll-theme-yat/ai%E9%96%8B%E7%99%BA/2026/06/21/build-mcp-server-python.html" title="1人開発でマルチエージェント体制を作る方法">Pythonで小さなMCPサーバーを作る</a></li>
+</ul>
+    </div>
+<div class="post-comments"></div></section>
+</div>
+
+
+  </section>
+  <section class="sidebar" style="margin-left: 15px;">
+    <!-- Get sidebar items --><style type="text/css" media="screen">
+.post-menu ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+</style>
+
+<div class="post-menu">
+  <div class="post-menu-title">TOC</div>
+  <div class="post-menu-content"></div>
+</div>
+
+<script>
+  function generateContent() {
+    var menu = document.querySelector(".post-menu");
+    var menuContent =  menu.querySelector(".post-menu-content");
+    var headings = document.querySelector(".post-content").querySelectorAll("h2, h3, h4, h5, h6");
+
+    // Hide menu when no headings
+    if (headings.length === 0) {
+      return menu.style.display = "none";
+    }
+
+    // Generate post menu
+    var menuHTML = '';
+    for (var i = 0; i < headings.length; i++) {
+      var h = headings[i];
+      menuHTML += (
+        '<li class="h-' + h.tagName.toLowerCase() + '">'
+        + '<a href="#h-' + h.getAttribute('id') + '">' + h.textContent + '</a></li>');
+    }
+
+    menuContent.innerHTML = '<ul>' + menuHTML + '</ul>';
+
+    // The header element
+    var header = document.querySelector('header.site-header');
+
+    function doMenuCollapse(index, over_items) {
+      var items = menuContent.firstChild.children;
+
+      if (over_items == undefined) {
+        over_items = 20;
+      }
+
+      if (items.length < over_items) {
+        return;
+      }
+
+      var activeItem = items[index];
+      var beginItem = activeItem
+      var endItem = activeItem
+      var beginIndex = index;
+      var endIndex = index + 1;
+      while (beginIndex >= 0
+        && !items[beginIndex].classList.contains('h-h2')) {
+        beginIndex -= 1;
+      }
+      while (endIndex < items.length
+        && !items[endIndex].classList.contains('h-h2')) {
+        endIndex += 1;
+      }
+      for (var i = 0; i < beginIndex; i++) {
+        item = items[i]
+        if (!item.classList.contains('h-h2')) {
+          item.style.display = 'none';
+        }
+      }
+      for (var i = beginIndex + 1; i < endIndex; i++) {
+        item = items[i]
+        // if (!item.classList.contains('h-h2')) {
+          item.style.display = '';
+        // }
+      }
+      for (var i = endIndex; i < items.length; i++) {
+        item = items[i]
+        if (!item.classList.contains('h-h2')) {
+          item.style.display = 'none';
+        }
+      }
+    }
+
+    // Init menu collapsed
+    doMenuCollapse(-1);
+
+    // Active the menu item
+    window.addEventListener('scroll', function (event) {
+      var lastActive = menuContent.querySelector('.active');
+      var changed = true;
+      var activeIndex = -1;
+      for (var i = headings.length - 1; i >= 0; i--) {
+        var h = headings[i];
+        var headingRect = h.getBoundingClientRect();
+        var headerRect = header.getBoundingClientRect();
+        var headerTop = Math.floor(headerRect.top);
+        var headerHeight = Math.floor(headerRect.height);
+        var headerHeight = headerTop + headerHeight + 20;
+        if (headingRect.top <= headerHeight) {
+          var id = 'h-' + h.getAttribute('id');
+          var a = menuContent.querySelector('a[href="#' + id  + '"]');
+          var curActive = a.parentNode;
+          if (curActive) {
+            curActive.classList.add('active');
+            activeIndex = i;
+          }
+          if (lastActive == curActive) {
+            changed = false;
+          }
+          break;
+        }
+      }
+      if (changed) {
+        if (lastActive) {
+          lastActive.classList.remove('active');
+        }
+        doMenuCollapse(activeIndex);
+      }
+      event.preventDefault();
+    });
+  }
+  generateContent();
+</script>
+</section>
+</div>
+
+      </div>
+    </main><footer class="site-footer h-card">
+  <data class="u-url" href="/jekyll-theme-yat/"></data>
+
+  <div class="wrapper">
+    <div class="site-footer-inner">
+<div>Waka-DS © 2021-2026</div>
+      <div>Powered by <a title="Jekyll is a simple, blog-aware, static site
+      generator." href="http://jekyllrb.com/">Jekyll</a> &amp; <a title="Yat, yet
+      another theme." href="https://github.com/jeffreytse/jekyll-theme-yat">Yat Theme</a>.</div>
+      <div class="footer-col rss-subscribe">Subscribe <a href="/jekyll-theme-yat/feed.xml">via RSS</a>
+</div>
+    </div>
+  </div>
+</footer>
+</body>
+</html>

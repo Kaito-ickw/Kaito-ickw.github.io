@@ -1,0 +1,991 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <script>
+  (function() {
+    try {
+      var p = localStorage.getItem('preferred_lang');
+      if (!p) return;
+      var path = window.location.pathname;
+      var ja = ['/', '/archives.html', '/categories.html', '/tags.html', '/about.html'];
+      var en = ['/en/', '/en/archives.html', '/en/categories.html', '/en/tags.html', '/en/about.html'];
+      if (p === 'en' && ja.indexOf(path) !== -1) {
+        window.location.replace('/en' + (path === '/' ? '/' : path));
+      } else if (p === 'ja' && en.indexOf(path) !== -1) {
+        window.location.replace(path.slice(3) || '/');
+      }
+    } catch(e) {}
+  })();
+  </script>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="google-translate-customization" content="108d9124921d80c3-80e20d618ff053c8-g4f02ec6f3dba68b7-c">
+<!-- Begin Jekyll SEO tag v2.9.0 -->
+<title>OpenAIはなぜ「スクリーンのない」AIデバイスを作ろうとしているのか | Waka-DS.com</title>
+<meta name="generator" content="Jekyll v4.4.1">
+<meta property="og:title" content="OpenAIはなぜ「スクリーンのない」AIデバイスを作ろうとしているのか">
+<meta name="author" content="Waka-DS">
+<meta property="og:locale" content="ja">
+<meta name="description" content="ChatGPTはブラウザやスマートフォンのアプリとして使うのが当たり前になっている。だがOpenAIは、その先に専用のハードウェアを置こうとしている。元Appleのデザイン責任者Jony Iveを巻き込んだこの計画は、2025年の発表以来何度も報道されてきたが、ブランド名の変更や発売延期もあり、全体像が見えにくくなっている。">
+<meta name="twitter:description" property="og:description" content="ChatGPTはブラウザやスマートフォンのアプリとして使うのが当たり前になっている。だがOpenAIは、その先に専用のハードウェアを置こうとしている。元Appleのデザイン責任者Jony Iveを巻き込んだこの計画は、2025年の発表以来何度も報道されてきたが、ブランド名の変更や発売延期もあり、全体像が見えにくくなっている。">
+<link rel="canonical" href="/jekyll-theme-yat/ai%E9%96%8B%E7%99%BA/2026/06/16/openai-jony-ive-ai-hardware-vision.html">
+<meta property="og:url" content="/jekyll-theme-yat/ai%E9%96%8B%E7%99%BA/2026/06/16/openai-jony-ive-ai-hardware-vision.html">
+<meta property="og:site_name" content="Waka-DS.com">
+<meta property="og:type" content="article">
+<meta property="article:published_time" content="2026-06-16T00:00:00+00:00">
+<meta property="article:modified_time" content="2026-06-16T00:00:00+00:00">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="OpenAIはなぜ「スクリーンのない」AIデバイスを作ろうとしているのか">
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":"Waka-DS"},"dateModified":"2026-06-16T00:00:00+00:00","datePublished":"2026-06-16T00:00:00+00:00","description":"ChatGPTはブラウザやスマートフォンのアプリとして使うのが当たり前になっている。だがOpenAIは、その先に専用のハードウェアを置こうとしている。元Appleのデザイン責任者Jony Iveを巻き込んだこの計画は、2025年の発表以来何度も報道されてきたが、ブランド名の変更や発売延期もあり、全体像が見えにくくなっている。","headline":"OpenAIはなぜ「スクリーンのない」AIデバイスを作ろうとしているのか","mainEntityOfPage":{"@type":"WebPage","@id":"/jekyll-theme-yat/ai%E9%96%8B%E7%99%BA/2026/06/16/openai-jony-ive-ai-hardware-vision.html"},"url":"/jekyll-theme-yat/ai%E9%96%8B%E7%99%BA/2026/06/16/openai-jony-ive-ai-hardware-vision.html"}</script>
+<!-- End Jekyll SEO tag -->
+<link rel="shortcut icon" href="">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=Noto+Sans+JP:wght@400;500;700&amp;display=swap">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+  <link rel="stylesheet" href="/jekyll-theme-yat/assets/css/main.css">
+  <script src="/jekyll-theme-yat/assets/js/main.js"></script><link type="application/atom+xml" rel="alternate" href="/jekyll-theme-yat/feed.xml" title="Waka-DS.com">
+<script>
+  function initGoogleAnalytics() {
+    var doNotTrack = (window.doNotTrack === "1" || navigator.doNotTrack === "1" ||
+      navigator.doNotTrack === "yes" || navigator.msDoNotTrack === "1");
+    var enableDNT = "true" == "true";
+
+    if (!enableDNT || !doNotTrack) {
+      var ga_id = 'G-XNP1RBTG9C';
+
+      var script = document.createElement('script');
+      script.async = true;
+      script.src = 'https://www.googletagmanager.com/gtag/js?id=' + ga_id;
+      document.head.appendChild(script);
+
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', ga_id);
+    }
+  }
+  window.addEventListener("load", initGoogleAnalytics);
+</script>
+<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/styles/default.min.css">
+<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/highlight.min.js"></script>
+<!-- and it's easy to individually load additional languages -->
+<script charset="UTF-8" src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/languages/go.min.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<script>
+// Init highlight js
+document.addEventListener('DOMContentLoaded', function(event) {
+  var els = document.querySelectorAll('pre code')
+
+  function addLangData(block) {
+    var outer = block.parentElement.parentElement.parentElement;
+    var lang = block.getAttribute('data-lang');
+    for (var i = 0; i < outer.classList.length; i++) {
+      var cls = outer.classList[i];
+      if (cls.startsWith('language-')) {
+        lang = cls;
+        break;
+      }
+    }
+    if (!lang) {
+      cls = block.getAttribute('class');
+      lang = cls ? cls.replace('hljs ', '') : '';
+    }
+    if (lang.startsWith('language-')) {
+      lang = lang.substr(9);
+    }
+    block.setAttribute('class', 'hljs ' + lang);
+    block.parentNode.setAttribute('data-lang', lang);
+  }
+
+  function addBadge(block) {
+    var enabled = ('true' || 'true').toLowerCase();
+    if (enabled == 'true') {
+      var pre = block.parentElement;
+      pre.classList.add('badge');
+    }
+  }
+
+  function handle(block) {
+    addLangData(block);
+    addBadge(block)
+    hljs.highlightBlock(block);
+  }
+
+  for (var i = 0; i < els.length; i++) {
+    var el = els[i];
+    handle(el);
+  }
+});
+</script>
+
+<style>
+  /* code language badge */
+  pre.badge::before {
+    content: attr(data-lang);
+    color: #fff;
+    background-color: #0d9488;
+    padding: 0 .5em;
+    border-radius: 0 2px;
+    text-transform: uppercase;
+    text-align: center;
+    min-width: 32px;
+    display: inline-block;
+    position: absolute;
+    right: 0;
+  }
+
+  /* fix wrong badge display for firefox browser */
+  code > table pre::before {
+    display: none;
+  }
+</style>
+</head>
+<body>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<header class="site-header " role="banner">
+
+  <div class="wrapper">
+    <div class="site-header-inner">
+<span class="site-brand"><a class="site-brand-inner" rel="author" href="/jekyll-theme-yat/">
+  <img class="site-favicon" title="Waka-DS.com" src="" onerror="this.style.display='none'">
+  Waka-DS.com
+</a>
+</span><nav class="site-nav">
+          <input type="checkbox" id="nav-trigger" class="nav-trigger">
+          <label for="nav-trigger">
+            <span class="menu-icon">
+              <svg viewbox="0 0 18 15" width="18px" height="15px">
+                <path d="M18,1.484c0,0.82-0.665,1.484-1.484,1.484H1.484C0.665,2.969,0,2.304,0,1.484l0,0C0,0.665,0.665,0,1.484,0 h15.032C17.335,0,18,0.665,18,1.484L18,1.484z M18,7.516C18,8.335,17.335,9,16.516,9H1.484C0.665,9,0,8.335,0,7.516l0,0 c0-0.82,0.665-1.484,1.484-1.484h15.032C17.335,6.031,18,6.696,18,7.516L18,7.516z M18,13.516C18,14.335,17.335,15,16.516,15H1.484 C0.665,15,0,14.335,0,13.516l0,0c0-0.82,0.665-1.483,1.484-1.483h15.032C17.335,12.031,18,12.695,18,13.516L18,13.516z"></path>
+              </svg>
+            </span>
+          </label>
+
+          <div class="trigger">
+<a class="page-link" href="/jekyll-theme-yat/about.html">ABOUT</a><a class="page-link" href="/jekyll-theme-yat/archives.html">ARCHIVES</a><a class="page-link" href="/jekyll-theme-yat/categories.html">CATEGORIES</a><a class="page-link" href="/jekyll-theme-yat/">HOME</a><a class="page-link" href="/jekyll-theme-yat/tags.html">TAGS</a>
+</div>
+        </nav>
+</div>
+  </div>
+</header>
+
+<script>
+  function initHeader() {
+    var lastScrollY = getScrollPos().y;
+    var documentElement = document.documentElement;
+
+    function storeScrollData() {
+      var y = getScrollPos().y;var scrollStatus = "";
+
+      if (y <= 0) {
+        scrollStatus = "top";
+      } else if ((window.innerHeight + y) >= document.body.offsetHeight) {
+        scrollStatus = "bottom";
+      } else {
+        var isScrollDown = (y - lastScrollY > 0) ? true : false;
+        scrollStatus = isScrollDown ? "down" : "up";
+      }
+
+      lastScrollY = y;
+      documentElement.setAttribute("data-scroll-status", scrollStatus);
+    }
+
+    window.addEventListener('scroll', function(e) {
+      storeScrollData();
+    });
+
+    storeScrollData();
+  }
+  document.addEventListener('DOMContentLoaded', initHeader);
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<script>
+  function hashLocate(hashValue) {
+    hashValue = hashValue.replace(/^.*#h-/, '');
+    hashValue = decodeURIComponent(hashValue);
+    var element = document.getElementById(hashValue);
+
+    if (!element) {
+      return;
+    }
+
+    var header = document.querySelector('header.site-header');
+    var headerRect = header.getBoundingClientRect();
+    var headerTop = Math.floor(headerRect.top);
+    var headerHeight = Math.floor(headerRect.height);
+    var scrollPos = getScrollPos();
+    var offsetY = element.offsetTop - (headerTop + headerHeight + 20);
+
+    if (offsetY == scrollPos.y) {
+      return;
+    }
+
+    if (headerTop == 0  && offsetY > scrollPos.y) {
+      offsetY += headerHeight + 2;
+    } else if (headerTop < 0  && offsetY < scrollPos.y) {
+      offsetY -= headerHeight - 2;
+    }
+
+    smoothScrollTo(offsetY);
+  }
+
+  // The first event occurred
+  window.addEventListener('load', function(event) {
+    if (window.location.hash) {
+      hashLocate(window.location.hash);
+    }
+  });
+
+  // The first event occurred
+  window.addEventListener('click', function(event) {
+    if (event.target.tagName.toLowerCase() == 'a') {
+      hashLocate(event.target.getAttribute('href'));
+    }
+  });
+</script>
+<div class="theme-toggle">
+  <input type="checkbox" id="theme-switch">
+  <label for="theme-switch">
+    <div class="toggle"></div>
+    <div class="names">
+      <p class="light">Light</p>
+      <p class="dark">Dark</p>
+    </div>
+  </label>
+</div>
+
+
+
+
+<script>
+  (function() {
+    var sw = document.getElementById('theme-switch');
+    var html = document.getElementsByTagName('html')[0];
+    var nightModeOption = ('auto' || 'auto').toLowerCase();
+    var storage = nightModeOption === 'manual'
+        ? localStorage
+        : sessionStorage;
+    var themeData = loadThemeData();
+
+    function saveThemeData(data) {
+      storage.setItem('theme', JSON.stringify(data));
+    }
+
+    function loadThemeData() {
+      var data = storage.getItem('theme');
+      try {
+        data = JSON.parse(data ? data : '');
+      } catch(e) {
+        data = { nightShift: undefined, autoToggleAt: 0 };
+        saveThemeData(data);
+      }
+      return data;
+    }
+
+    function handleThemeToggle(nightShift) {
+      themeData.nightShift = nightShift;
+      saveThemeData(themeData);
+      html.dataset.theme = nightShift ? 'dark' : 'light';
+      setTimeout(function() {
+        sw.checked = nightShift ? true : false;
+      }, 50);
+    }
+
+    function autoThemeToggle() {
+      // Next time point of theme toggle
+      var now = new Date();
+      var toggleAt = new Date();
+      var hours = now.getHours();
+      var nightShift = hours >= 19 || hours <=7;
+
+      if (nightShift) {
+        if (hours > 7) {
+          toggleAt.setDate(toggleAt.getDate() + 1);
+        }
+        toggleAt.setHours(7);
+      } else {
+        toggleAt.setHours(19);
+      }
+
+      toggleAt.setMinutes(0);
+      toggleAt.setSeconds(0);
+      toggleAt.setMilliseconds(0)
+
+      var delay = toggleAt.getTime() - now.getTime();
+
+      // auto toggle theme mode
+      setTimeout(function() {
+        handleThemeToggle(!nightShift);
+      }, delay);
+
+      return {
+        nightShift: nightShift,
+        toggleAt: toggleAt.getTime()
+      };
+    }
+
+    // Listen the theme toggle event
+    sw.addEventListener('change', function(event) {
+      handleThemeToggle(event.target.checked);
+    });
+
+    if (nightModeOption == 'auto') {
+      var data = autoThemeToggle();
+
+      // Toggle theme by local setting
+      if (data.toggleAt > themeData.autoToggleAt) {
+        themeData.autoToggleAt = data.toggleAt;
+        handleThemeToggle(data.nightShift);
+      } else {
+        handleThemeToggle(themeData.nightShift);
+      }
+    } else if (nightModeOption == 'manual') {
+      handleThemeToggle(themeData.nightShift);
+    } else {
+      var nightShift = themeData.nightShift;
+      if (nightShift === undefined) {
+        nightShift = nightModeOption === 'on';
+      }
+      handleThemeToggle(nightShift);
+    }
+  })();
+</script>
+<main class="page-content" aria-label="Content">
+      <div class="wrapper">
+        <div class="framework">
+  <section class="main">
+
+     <div class="post">
+  <section>
+
+
+
+
+
+
+
+
+
+<header class="post-header">
+  <h1 class="post-title p-name" itemprop="name headline">OpenAIはなぜ「スクリーンのない」AIデバイスを作ろうとしているのか</h1>
+  <h2 class="post-subtitle">Jony Iveとの提携が目指す体験と、2027年延期までの経緯</h2>
+
+  <p class="post-meta">
+    <time class="dt-published" datetime="2026-06-16T00:00:00+00:00" itemprop="datePublished"><i class="fa fa-calendar"></i> Jun 16, 2026
+    </time>
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <span class="post-reading-time left-vsplit"><i class="fa fa-clock-o"></i> About 12 mins</span>
+  </p>
+<div class="post-tags">
+<a class="post-tag" href="/jekyll-theme-yat/tags.html#OpenAI">#OpenAI</a><a class="post-tag" href="/jekyll-theme-yat/tags.html#AI">#AI</a><a class="post-tag" href="/jekyll-theme-yat/tags.html#AI%E3%83%8D%E3%82%A4%E3%83%86%E3%82%A3%E3%83%96%E9%96%8B%E7%99%BA">#AIネイティブ開発</a><a class="post-tag" href="/jekyll-theme-yat/tags.html#%E3%83%8F%E3%83%BC%E3%83%89%E3%82%A6%E3%82%A7%E3%82%A2">#ハードウェア</a>
+</div></header>
+<article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
+
+    <div class="post-content e-content" itemprop="articleBody">
+
+      <p>ChatGPTはブラウザやスマートフォンのアプリとして使うのが当たり前になっている。だがOpenAIは、その先に専用のハードウェアを置こうとしている。元Appleのデザイン責任者Jony Iveを巻き込んだこの計画は、2025年の発表以来何度も報道されてきたが、ブランド名の変更や発売延期もあり、全体像が見えにくくなっている。</p>
+
+<p>ここでは公開されている報道をもとに、OpenAIが何を作ろうとしていて、どういう体験を目指しているのかを整理する。</p>
+
+<h2 id="結論を先に">結論を先に</h2>
+
+<p>OpenAIが目指しているのは、スマートフォンを置き換える単一の新製品ではなく、スマートフォンやノートPCと並ぶ「もう一つのコアデバイス」だ。画面を持たず、音声と常時的なコンテキスト理解を軸にした、より落ち着いた使用感を狙っている。</p>
+
+<p>具体的な製品名・形状・発売日はまだ確定していない。2025年5月にJony Iveの会社io Productsを買収して始まったこの計画は、当初2026年後半の発表を目指していたが、商標紛争などを経て2027年へ延期されている。</p>
+
+<h2 id="jony-iveの会社買収から始まった計画">Jony Iveの会社買収から始まった計画</h2>
+
+<p>OpenAIは2025年5月、元Appleのデザイン責任者Jony Iveが率いるスタートアップ「io Products」を、全株式交換で約65億ドルと評価される取引で買収すると発表した。買収は同年7月に完了し、Iveと彼のデザイン集団LoveFromがOpenAIのクリエイティブ・デザイン部門を率いる体制になった（<a href="https://techcrunch.com/2025/05/21/jony-ive-to-lead-openais-design-work-following-6-5b-acquisition-of-his-company">TechCrunch</a>, <a href="https://www.macrumors.com/2025/07/09/openai-jony-ive-io-acquisition-complete/">MacRumors</a>）。</p>
+
+<p>OpenAIが公開した連名のレターでは、Sam AltmanとJony Iveが「新しい製品群を開発・設計・製造するという野心は、まったく新しい会社を必要とすることが明らかになった」と説明している（<a href="https://www.dezeen.com/2025/05/21/jony-ive-openai-products-merge/">Dezeen</a>経由で確認）。ソフトウェア企業だったOpenAIが、なぜハードウェアの自社開発に踏み出すのかという問いに対する、当事者なりの回答といえる。</p>
+
+<h2 id="目指している体験はスマホ的な忙しさからの距離">目指している体験は「スマホ的な忙しさ」からの距離</h2>
+
+<p>Altmanは複数のインタビューで、この計画の狙いを現在のデバイス体験への違和感として語っている。Nikkei Asiaのインタビューを引用した報道によれば、Altmanは今のデバイスを使う感覚を「ニューヨークのタイムズスクエアを歩いているようなもので、光が顔に当たり、人にぶつかられ、常に音が鳴っている」と表現した。一方で目指す体験は「湖畔の美しい山小屋に座って、静けさを楽しんでいる」感覚だという（<a href="https://www.tomsguide.com/ai/thats-it-its-so-simple-openais-sam-altman-teases-screenless-device-with-jony-ive">Tom’s Guide</a>、<a href="https://www.webpronews.com/sam-altman-jony-ive-team-on-ai-device-to-surpass-smartphones-by-2027/">WebProNews</a>）。</p>
+
+<p>この発言は、デバイスの仕様よりも設計思想を示すものとして報じられている。通知や画面に追われる状態から離れ、声で話しかければ文脈を理解して反応する、背景に存在するAIという方向性だ。報道では「スマートフォンを置き換える」という表現と、「スマートフォンやノートPCと並ぶ第三のコアデバイス」という表現の両方が使われており、最終的にどちらの位置づけになるかはまだ固まっていないようにみえる（<a href="https://builtin.com/articles/openai-device">Built In</a>、<a href="https://9to5mac.com/2026/02/10/jony-ives-ai-hardware-is-delayed-to-2027-and-wont-be-called-io/">9to5Mac</a>）。</p>
+
+<h2 id="検討されてきた形状は一つではない">検討されてきた形状は一つではない</h2>
+
+<p>報道を時系列で追うと、想定されている形状は一度に決まったわけではなく、複数の方向性が並行して検討されてきたことが分かる。</p>
+
+<p>2025年後半から2026年初頭にかけての報道では、耳の後ろに着けるイヤフォン型のウェアラブルが軸になっていた。コードネーム「Sweetpea」と呼ばれ、環境センサーと専用チップを使い、画面なしで常時情報にアクセスできる構成だと報じられている。同時に、ペン型のデバイス「Gumdrop」も別の形として検討されているとされた（<a href="https://www.geeky-gadgets.com/io-openai-ai-assistant-2026-launch/">Geeky Gadgets</a>、<a href="https://www.androidheadlines.com/2026/01/openai-first-device-jony-ive-launch-2026-sweetpea.html">Android Headlines</a>）。TechCrunchも2026年1月、OpenAIが最初の製品としてイヤフォンを検討しており、独自シリコンとOpenAIのモデルを密に統合した音声中心の操作を想定していると報じた。</p>
+
+<p>一方、2026年2月の延期報道以降は、デバイスを「ウェアラブルでもイヤフォン型でもない」とし、デスクに置くか、ポケットに入れて持ち歩く「第三のコアデバイス」として説明する報道に変わっている（9to5Mac）。これが設計方針の転換なのか、報道の解釈の違いなのかは、現時点の公開情報だけでは判断できない。</p>
+
+<h2 id="ブランド名ioを捨てた理由">ブランド名「io」を捨てた理由</h2>
+
+<p>2026年2月、OpenAIはこの計画で使っていた「io」というブランド名の使用を取りやめた。背景にあるのは、補聴器スタートアップ「iyO」が起こした商標権侵害訴訟だ。OpenAIのVPであるPeter Welinderは、「io」「iyO」、いずれの大文字小文字表記も使わないと社内向けに説明したと報じられている（9to5Mac、<a href="https://www.technobezz.com/news/openai-drops-io-branding-for-ai-hardware-and-delays-device-to-2027">Technobezz</a>）。</p>
+
+<p>新しいブランド名はまだ公表されておらず、報道では一貫して「(io改め)OpenAIのハードウェアデバイス」のような表現が使われている。</p>
+
+<h2 id="量産体制は中国依存を避ける方向に">量産体制は中国依存を避ける方向に</h2>
+
+<p>製造面では、2026年1月以降、生産委託先を中国のLuxshareから台湾のFoxconnへ切り替えたという報道が相次いだ。背景として、中国本土での製造に伴うリスクを避けたい意図が指摘されている。組み立て拠点はベトナムまたは米国になる可能性が報じられており、初年度の出荷目標は4,000万〜5,000万台とされている（<a href="https://www.benzinga.com/markets/tech/26/01/49661988/openai-shifts-ai-hardware-manufacturing-to-foxconn-as-jony-ive-designed-device-targets-2026-launch-report">Benzinga</a>、<a href="https://www.trendforce.com/news/2026/01/02/news-openai-reportedly-shifts-first-ai-hardware-order-from-chinas-luxshare-to-foxconn/">TrendForce</a>）。</p>
+
+<p>これだけの量産規模を最初から想定している点は、試作機を少量出すプロダクトではなく、最初からマスマーケットを狙っていることを示している。</p>
+
+<h2 id="発売は2027年に後ろ倒し">発売は2027年に後ろ倒し</h2>
+
+<p>当初、デバイスは2026年後半の発表が目標とされていた。しかし2026年2月の報道では、顧客への出荷は「2027年2月末より前にはならない」とされ、計画が後ろ倒しになったことが明らかになった（<a href="https://www.pymnts.com/artificial-intelligence-2/2026/openai-delays-first-consumer-device-to-2027/">PYMNTS</a>、<a href="https://9to5mac.com/2026/02/10/jony-ives-ai-hardware-is-delayed-to-2027-and-wont-be-called-io/">9to5Mac</a>）。</p>
+
+<p>延期の理由として公開報道で確認できるのは、前述の商標紛争への対応と、ハードウェア・ソフトウェア両面の完成度を上げるための調整だ。PYMNTSの報道では、延期によって「モデルの精度を高め、デバイス上の処理を最適化し、デザインを練り直す」ための時間を確保すると説明されている。OpenAIの経営判断の優先順位について踏み込んだ独自の説明は、今回確認した公開ソースの範囲では見当たらなかった。</p>
+
+<h2 id="まとめ">まとめ</h2>
+
+<table>
+  <thead>
+    <tr>
+      <th style="text-align: left">項目</th>
+      <th style="text-align: left">内容</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td style="text-align: left">計画の起点</td>
+      <td style="text-align: left">2025年5月、Jony Ive率いるio Productsを約65億ドルで買収（同年7月完了）</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">目指す体験</td>
+      <td style="text-align: left">画面に追われない、声とコンテキスト理解を軸にした「落ち着いた」AI体験</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">位置づけ</td>
+      <td style="text-align: left">スマートフォン・ノートPCと並ぶ「第三のコアデバイス」という説明が中心</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">検討された形状</td>
+      <td style="text-align: left">イヤフォン型「Sweetpea」、ペン型「Gumdrop」など複数案</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">ブランド名</td>
+      <td style="text-align: left">商標紛争を理由に「io」の使用を停止。新名称は未公表</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">製造体制</td>
+      <td style="text-align: left">LuxshareからFoxconnへ切り替え、初年度4,000万〜5,000万台規模を想定</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">発売時期</td>
+      <td style="text-align: left">当初2026年後半目標 → 2027年2月末以降に延期</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">現状</td>
+      <td style="text-align: left">試作機の存在は報じられているが、正式な仕様・名称・発売日は未確定</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>ここまでの情報はすべて2026年6月時点の報道に基づく。OpenAIは正式な製品発表をまだ行っておらず、形状や発売時期は今後さらに変わる可能性がある。</p>
+
+<h2 id="参考">参考</h2>
+
+<ul>
+  <li>
+    <table>
+      <tbody>
+        <tr>
+          <td>[A letter from Sam &amp; Jony</td>
+          <td>OpenAI](https://openai.com/sam-and-jony/)</td>
+        </tr>
+      </tbody>
+    </table>
+  </li>
+  <li><a href="https://techcrunch.com/2025/05/21/jony-ive-to-lead-openais-design-work-following-6-5b-acquisition-of-his-company">Jony Ive to lead OpenAI’s design work following $6.5B acquisition of his company - TechCrunch</a></li>
+  <li><a href="https://www.macrumors.com/2025/07/09/openai-jony-ive-io-acquisition-complete/">OpenAI Finalizes Deal for Jony Ive’s ‘io’ AI Hardware Company - MacRumors</a></li>
+  <li><a href="https://www.dezeen.com/2025/05/21/jony-ive-openai-products-merge/">Jony Ive and OpenAI join forces to create “new family of products” - Dezeen</a></li>
+  <li><a href="https://www.tomsguide.com/ai/thats-it-its-so-simple-openais-sam-altman-teases-screenless-device-with-jony-ive">‘That’s it? It’s so simple’: OpenAI’s Sam Altman teases screenless device with Jony Ive - Tom’s Guide</a></li>
+  <li><a href="https://www.webpronews.com/sam-altman-jony-ive-team-on-ai-device-to-surpass-smartphones-by-2027/">Sam Altman, Jony Ive Team on AI Device to Surpass Smartphones by 2027 - WebProNews</a></li>
+  <li><a href="https://builtin.com/articles/openai-device">What Is the OpenAI AI Smartphone? Everything We Know About the Jony Ive Device - Built In</a></li>
+  <li><a href="https://www.androidheadlines.com/2026/01/openai-first-device-jony-ive-launch-2026-sweetpea.html">Official: OpenAI to Reveal Its First AI Hardware in Late 2026 - Android Headlines</a></li>
+  <li><a href="https://www.geeky-gadgets.com/io-openai-ai-assistant-2026-launch/">OpenAI and Jony Ive IO device, AI hardware expected in 2026 - Geeky Gadgets</a></li>
+  <li><a href="https://9to5mac.com/2026/02/10/jony-ives-ai-hardware-is-delayed-to-2027-and-wont-be-called-io/">Jony Ive’s AI hardware is delayed to 2027 and won’t be called io - 9to5Mac</a></li>
+  <li><a href="https://www.technobezz.com/news/openai-drops-io-branding-for-ai-hardware-and-delays-device-to-2027">OpenAI Drops io Branding for AI Hardware and Delays Device to 2027 - Technobezz</a></li>
+  <li><a href="https://www.pymnts.com/artificial-intelligence-2/2026/openai-delays-first-consumer-device-to-2027/">OpenAI Delays First Consumer Device to 2027 - PYMNTS</a></li>
+  <li><a href="https://www.benzinga.com/markets/tech/26/01/49661988/openai-shifts-ai-hardware-manufacturing-to-foxconn-as-jony-ive-designed-device-targets-2026-launch-report">OpenAI Shifts AI Hardware Manufacturing To Foxconn As Jony Ive-Designed Device Targets 2026 Launch: Report - Benzinga</a></li>
+  <li><a href="https://www.trendforce.com/news/2026/01/02/news-openai-reportedly-shifts-first-ai-hardware-order-from-chinas-luxshare-to-foxconn/">OpenAI Reportedly Shifts First AI Hardware Order from China’s Luxshare to Foxconn - TrendForce</a></li>
+</ul>
+
+
+    </div>
+
+</article>
+<div class="post-nav">
+<a class="previous" href="/jekyll-theme-yat/%E9%96%8B%E7%99%BA/2026/06/16/notion-database-personal-backend.html" title="なぜ個人開発のバックエンドに Notion データベースを選ぶのか">なぜ個人開発のバックエンドに Notion データベースを選ぶのか</a><a class="next" href="/jekyll-theme-yat/%E9%96%8B%E7%99%BA/2026/06/16/spacex-ipo-kardashev-scale.html" title="SpaceXのIPOとカルダシェフ・スケール">SpaceXのIPOとカルダシェフ・スケール</a>
+</div>
+<div class="post-related">
+      <div>Related Articles</div>
+      <ul>
+        <li><a class="post-link" href="/jekyll-theme-yat/%E9%96%8B%E7%99%BA/2026/06/11/git-flow-guide.html" title="SpaceXのIPOとカルダシェフ・スケール">チーム開発のブランチ戦略と Git Flow の使いどころ</a></li>
+<li><a class="post-link" href="/jekyll-theme-yat/ai%E9%96%8B%E7%99%BA/2026/06/17/mcp-protocol-overview.html" title="SpaceXのIPOとカルダシェフ・スケール">MCPは何を標準化するプロトコルなのか</a></li>
+<li><a class="post-link" href="/jekyll-theme-yat/ai%E9%96%8B%E7%99%BA/2026/06/23/mcp-security-operations.html" title="SpaceXのIPOとカルダシェフ・スケール">MCPサーバーを安全に運用する</a></li>
+<li><a class="post-link" href="/jekyll-theme-yat/ai%E9%96%8B%E7%99%BA/2026/06/22/mcp-local-remote-transports.html" title="SpaceXのIPOとカルダシェフ・スケール">ローカルMCPとリモートMCPの違い</a></li>
+</ul>
+    </div>
+<div class="post-comments"></div></section>
+</div>
+
+
+  </section>
+  <section class="sidebar" style="margin-left: 15px;">
+    <!-- Get sidebar items --><style type="text/css" media="screen">
+.post-menu ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+</style>
+
+<div class="post-menu">
+  <div class="post-menu-title">TOC</div>
+  <div class="post-menu-content"></div>
+</div>
+
+<script>
+  function generateContent() {
+    var menu = document.querySelector(".post-menu");
+    var menuContent =  menu.querySelector(".post-menu-content");
+    var headings = document.querySelector(".post-content").querySelectorAll("h2, h3, h4, h5, h6");
+
+    // Hide menu when no headings
+    if (headings.length === 0) {
+      return menu.style.display = "none";
+    }
+
+    // Generate post menu
+    var menuHTML = '';
+    for (var i = 0; i < headings.length; i++) {
+      var h = headings[i];
+      menuHTML += (
+        '<li class="h-' + h.tagName.toLowerCase() + '">'
+        + '<a href="#h-' + h.getAttribute('id') + '">' + h.textContent + '</a></li>');
+    }
+
+    menuContent.innerHTML = '<ul>' + menuHTML + '</ul>';
+
+    // The header element
+    var header = document.querySelector('header.site-header');
+
+    function doMenuCollapse(index, over_items) {
+      var items = menuContent.firstChild.children;
+
+      if (over_items == undefined) {
+        over_items = 20;
+      }
+
+      if (items.length < over_items) {
+        return;
+      }
+
+      var activeItem = items[index];
+      var beginItem = activeItem
+      var endItem = activeItem
+      var beginIndex = index;
+      var endIndex = index + 1;
+      while (beginIndex >= 0
+        && !items[beginIndex].classList.contains('h-h2')) {
+        beginIndex -= 1;
+      }
+      while (endIndex < items.length
+        && !items[endIndex].classList.contains('h-h2')) {
+        endIndex += 1;
+      }
+      for (var i = 0; i < beginIndex; i++) {
+        item = items[i]
+        if (!item.classList.contains('h-h2')) {
+          item.style.display = 'none';
+        }
+      }
+      for (var i = beginIndex + 1; i < endIndex; i++) {
+        item = items[i]
+        // if (!item.classList.contains('h-h2')) {
+          item.style.display = '';
+        // }
+      }
+      for (var i = endIndex; i < items.length; i++) {
+        item = items[i]
+        if (!item.classList.contains('h-h2')) {
+          item.style.display = 'none';
+        }
+      }
+    }
+
+    // Init menu collapsed
+    doMenuCollapse(-1);
+
+    // Active the menu item
+    window.addEventListener('scroll', function (event) {
+      var lastActive = menuContent.querySelector('.active');
+      var changed = true;
+      var activeIndex = -1;
+      for (var i = headings.length - 1; i >= 0; i--) {
+        var h = headings[i];
+        var headingRect = h.getBoundingClientRect();
+        var headerRect = header.getBoundingClientRect();
+        var headerTop = Math.floor(headerRect.top);
+        var headerHeight = Math.floor(headerRect.height);
+        var headerHeight = headerTop + headerHeight + 20;
+        if (headingRect.top <= headerHeight) {
+          var id = 'h-' + h.getAttribute('id');
+          var a = menuContent.querySelector('a[href="#' + id  + '"]');
+          var curActive = a.parentNode;
+          if (curActive) {
+            curActive.classList.add('active');
+            activeIndex = i;
+          }
+          if (lastActive == curActive) {
+            changed = false;
+          }
+          break;
+        }
+      }
+      if (changed) {
+        if (lastActive) {
+          lastActive.classList.remove('active');
+        }
+        doMenuCollapse(activeIndex);
+      }
+      event.preventDefault();
+    });
+  }
+  generateContent();
+</script>
+</section>
+</div>
+
+      </div>
+    </main><footer class="site-footer h-card">
+  <data class="u-url" href="/jekyll-theme-yat/"></data>
+
+  <div class="wrapper">
+    <div class="site-footer-inner">
+<div>Waka-DS © 2021-2026</div>
+      <div>Powered by <a title="Jekyll is a simple, blog-aware, static site
+      generator." href="http://jekyllrb.com/">Jekyll</a> &amp; <a title="Yat, yet
+      another theme." href="https://github.com/jeffreytse/jekyll-theme-yat">Yat Theme</a>.</div>
+      <div class="footer-col rss-subscribe">Subscribe <a href="/jekyll-theme-yat/feed.xml">via RSS</a>
+</div>
+    </div>
+  </div>
+</footer>
+</body>
+</html>

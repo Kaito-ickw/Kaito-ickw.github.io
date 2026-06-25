@@ -1,0 +1,1306 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <script>
+  (function() {
+    try {
+      var p = localStorage.getItem('preferred_lang');
+      if (!p) return;
+      var path = window.location.pathname;
+      var ja = ['/', '/archives.html', '/categories.html', '/tags.html', '/about.html'];
+      var en = ['/en/', '/en/archives.html', '/en/categories.html', '/en/tags.html', '/en/about.html'];
+      if (p === 'en' && ja.indexOf(path) !== -1) {
+        window.location.replace('/en' + (path === '/' ? '/' : path));
+      } else if (p === 'ja' && en.indexOf(path) !== -1) {
+        window.location.replace(path.slice(3) || '/');
+      }
+    } catch(e) {}
+  })();
+  </script>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="google-translate-customization" content="108d9124921d80c3-80e20d618ff053c8-g4f02ec6f3dba68b7-c">
+<!-- Begin Jekyll SEO tag v2.9.0 -->
+<title>Claude Code が「考え中」に表示する英単語を全部調べた | Waka-DS.com</title>
+<meta name="generator" content="Jekyll v4.4.1">
+<meta property="og:title" content="Claude Code が「考え中」に表示する英単語を全部調べた">
+<meta name="author" content="Waka-DS">
+<meta property="og:locale" content="ja">
+<meta name="description" content="Claude Code を使っていると、処理中に Cogitating... や Noodling... といった言葉がくるくると表示される。英語ネイティブでも見慣れない語彙が混じっていて、初見では意味がつかみにくい。">
+<meta name="twitter:description" property="og:description" content="Claude Code を使っていると、処理中に Cogitating... や Noodling... といった言葉がくるくると表示される。英語ネイティブでも見慣れない語彙が混じっていて、初見では意味がつかみにくい。">
+<link rel="canonical" href="/jekyll-theme-yat/ai%E9%96%8B%E7%99%BA/2026/06/08/claude-code-thinking-words.html">
+<meta property="og:url" content="/jekyll-theme-yat/ai%E9%96%8B%E7%99%BA/2026/06/08/claude-code-thinking-words.html">
+<meta property="og:site_name" content="Waka-DS.com">
+<meta property="og:type" content="article">
+<meta property="article:published_time" content="2026-06-08T00:00:00+00:00">
+<meta property="article:modified_time" content="2026-06-08T00:00:00+00:00">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Claude Code が「考え中」に表示する英単語を全部調べた">
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":"Waka-DS"},"dateModified":"2026-06-08T00:00:00+00:00","datePublished":"2026-06-08T00:00:00+00:00","description":"Claude Code を使っていると、処理中に Cogitating... や Noodling... といった言葉がくるくると表示される。英語ネイティブでも見慣れない語彙が混じっていて、初見では意味がつかみにくい。","headline":"Claude Code が「考え中」に表示する英単語を全部調べた","mainEntityOfPage":{"@type":"WebPage","@id":"/jekyll-theme-yat/ai%E9%96%8B%E7%99%BA/2026/06/08/claude-code-thinking-words.html"},"url":"/jekyll-theme-yat/ai%E9%96%8B%E7%99%BA/2026/06/08/claude-code-thinking-words.html"}</script>
+<!-- End Jekyll SEO tag -->
+<link rel="shortcut icon" href="">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=Noto+Sans+JP:wght@400;500;700&amp;display=swap">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+  <link rel="stylesheet" href="/jekyll-theme-yat/assets/css/main.css">
+  <script src="/jekyll-theme-yat/assets/js/main.js"></script><link type="application/atom+xml" rel="alternate" href="/jekyll-theme-yat/feed.xml" title="Waka-DS.com">
+<script>
+  function initGoogleAnalytics() {
+    var doNotTrack = (window.doNotTrack === "1" || navigator.doNotTrack === "1" ||
+      navigator.doNotTrack === "yes" || navigator.msDoNotTrack === "1");
+    var enableDNT = "true" == "true";
+
+    if (!enableDNT || !doNotTrack) {
+      var ga_id = 'G-XNP1RBTG9C';
+
+      var script = document.createElement('script');
+      script.async = true;
+      script.src = 'https://www.googletagmanager.com/gtag/js?id=' + ga_id;
+      document.head.appendChild(script);
+
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', ga_id);
+    }
+  }
+  window.addEventListener("load", initGoogleAnalytics);
+</script>
+<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/styles/default.min.css">
+<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/highlight.min.js"></script>
+<!-- and it's easy to individually load additional languages -->
+<script charset="UTF-8" src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/languages/go.min.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<script>
+// Init highlight js
+document.addEventListener('DOMContentLoaded', function(event) {
+  var els = document.querySelectorAll('pre code')
+
+  function addLangData(block) {
+    var outer = block.parentElement.parentElement.parentElement;
+    var lang = block.getAttribute('data-lang');
+    for (var i = 0; i < outer.classList.length; i++) {
+      var cls = outer.classList[i];
+      if (cls.startsWith('language-')) {
+        lang = cls;
+        break;
+      }
+    }
+    if (!lang) {
+      cls = block.getAttribute('class');
+      lang = cls ? cls.replace('hljs ', '') : '';
+    }
+    if (lang.startsWith('language-')) {
+      lang = lang.substr(9);
+    }
+    block.setAttribute('class', 'hljs ' + lang);
+    block.parentNode.setAttribute('data-lang', lang);
+  }
+
+  function addBadge(block) {
+    var enabled = ('true' || 'true').toLowerCase();
+    if (enabled == 'true') {
+      var pre = block.parentElement;
+      pre.classList.add('badge');
+    }
+  }
+
+  function handle(block) {
+    addLangData(block);
+    addBadge(block)
+    hljs.highlightBlock(block);
+  }
+
+  for (var i = 0; i < els.length; i++) {
+    var el = els[i];
+    handle(el);
+  }
+});
+</script>
+
+<style>
+  /* code language badge */
+  pre.badge::before {
+    content: attr(data-lang);
+    color: #fff;
+    background-color: #0d9488;
+    padding: 0 .5em;
+    border-radius: 0 2px;
+    text-transform: uppercase;
+    text-align: center;
+    min-width: 32px;
+    display: inline-block;
+    position: absolute;
+    right: 0;
+  }
+
+  /* fix wrong badge display for firefox browser */
+  code > table pre::before {
+    display: none;
+  }
+</style>
+</head>
+<body>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<header class="site-header " role="banner">
+
+  <div class="wrapper">
+    <div class="site-header-inner">
+<span class="site-brand"><a class="site-brand-inner" rel="author" href="/jekyll-theme-yat/">
+  <img class="site-favicon" title="Waka-DS.com" src="" onerror="this.style.display='none'">
+  Waka-DS.com
+</a>
+</span><nav class="site-nav">
+          <input type="checkbox" id="nav-trigger" class="nav-trigger">
+          <label for="nav-trigger">
+            <span class="menu-icon">
+              <svg viewbox="0 0 18 15" width="18px" height="15px">
+                <path d="M18,1.484c0,0.82-0.665,1.484-1.484,1.484H1.484C0.665,2.969,0,2.304,0,1.484l0,0C0,0.665,0.665,0,1.484,0 h15.032C17.335,0,18,0.665,18,1.484L18,1.484z M18,7.516C18,8.335,17.335,9,16.516,9H1.484C0.665,9,0,8.335,0,7.516l0,0 c0-0.82,0.665-1.484,1.484-1.484h15.032C17.335,6.031,18,6.696,18,7.516L18,7.516z M18,13.516C18,14.335,17.335,15,16.516,15H1.484 C0.665,15,0,14.335,0,13.516l0,0c0-0.82,0.665-1.483,1.484-1.483h15.032C17.335,12.031,18,12.695,18,13.516L18,13.516z"></path>
+              </svg>
+            </span>
+          </label>
+
+          <div class="trigger">
+<a class="page-link" href="/jekyll-theme-yat/about.html">ABOUT</a><a class="page-link" href="/jekyll-theme-yat/archives.html">ARCHIVES</a><a class="page-link" href="/jekyll-theme-yat/categories.html">CATEGORIES</a><a class="page-link" href="/jekyll-theme-yat/">HOME</a><a class="page-link" href="/jekyll-theme-yat/tags.html">TAGS</a>
+</div>
+        </nav>
+</div>
+  </div>
+</header>
+
+<script>
+  function initHeader() {
+    var lastScrollY = getScrollPos().y;
+    var documentElement = document.documentElement;
+
+    function storeScrollData() {
+      var y = getScrollPos().y;var scrollStatus = "";
+
+      if (y <= 0) {
+        scrollStatus = "top";
+      } else if ((window.innerHeight + y) >= document.body.offsetHeight) {
+        scrollStatus = "bottom";
+      } else {
+        var isScrollDown = (y - lastScrollY > 0) ? true : false;
+        scrollStatus = isScrollDown ? "down" : "up";
+      }
+
+      lastScrollY = y;
+      documentElement.setAttribute("data-scroll-status", scrollStatus);
+    }
+
+    window.addEventListener('scroll', function(e) {
+      storeScrollData();
+    });
+
+    storeScrollData();
+  }
+  document.addEventListener('DOMContentLoaded', initHeader);
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<script>
+  function hashLocate(hashValue) {
+    hashValue = hashValue.replace(/^.*#h-/, '');
+    hashValue = decodeURIComponent(hashValue);
+    var element = document.getElementById(hashValue);
+
+    if (!element) {
+      return;
+    }
+
+    var header = document.querySelector('header.site-header');
+    var headerRect = header.getBoundingClientRect();
+    var headerTop = Math.floor(headerRect.top);
+    var headerHeight = Math.floor(headerRect.height);
+    var scrollPos = getScrollPos();
+    var offsetY = element.offsetTop - (headerTop + headerHeight + 20);
+
+    if (offsetY == scrollPos.y) {
+      return;
+    }
+
+    if (headerTop == 0  && offsetY > scrollPos.y) {
+      offsetY += headerHeight + 2;
+    } else if (headerTop < 0  && offsetY < scrollPos.y) {
+      offsetY -= headerHeight - 2;
+    }
+
+    smoothScrollTo(offsetY);
+  }
+
+  // The first event occurred
+  window.addEventListener('load', function(event) {
+    if (window.location.hash) {
+      hashLocate(window.location.hash);
+    }
+  });
+
+  // The first event occurred
+  window.addEventListener('click', function(event) {
+    if (event.target.tagName.toLowerCase() == 'a') {
+      hashLocate(event.target.getAttribute('href'));
+    }
+  });
+</script>
+<div class="theme-toggle">
+  <input type="checkbox" id="theme-switch">
+  <label for="theme-switch">
+    <div class="toggle"></div>
+    <div class="names">
+      <p class="light">Light</p>
+      <p class="dark">Dark</p>
+    </div>
+  </label>
+</div>
+
+
+
+
+<script>
+  (function() {
+    var sw = document.getElementById('theme-switch');
+    var html = document.getElementsByTagName('html')[0];
+    var nightModeOption = ('auto' || 'auto').toLowerCase();
+    var storage = nightModeOption === 'manual'
+        ? localStorage
+        : sessionStorage;
+    var themeData = loadThemeData();
+
+    function saveThemeData(data) {
+      storage.setItem('theme', JSON.stringify(data));
+    }
+
+    function loadThemeData() {
+      var data = storage.getItem('theme');
+      try {
+        data = JSON.parse(data ? data : '');
+      } catch(e) {
+        data = { nightShift: undefined, autoToggleAt: 0 };
+        saveThemeData(data);
+      }
+      return data;
+    }
+
+    function handleThemeToggle(nightShift) {
+      themeData.nightShift = nightShift;
+      saveThemeData(themeData);
+      html.dataset.theme = nightShift ? 'dark' : 'light';
+      setTimeout(function() {
+        sw.checked = nightShift ? true : false;
+      }, 50);
+    }
+
+    function autoThemeToggle() {
+      // Next time point of theme toggle
+      var now = new Date();
+      var toggleAt = new Date();
+      var hours = now.getHours();
+      var nightShift = hours >= 19 || hours <=7;
+
+      if (nightShift) {
+        if (hours > 7) {
+          toggleAt.setDate(toggleAt.getDate() + 1);
+        }
+        toggleAt.setHours(7);
+      } else {
+        toggleAt.setHours(19);
+      }
+
+      toggleAt.setMinutes(0);
+      toggleAt.setSeconds(0);
+      toggleAt.setMilliseconds(0)
+
+      var delay = toggleAt.getTime() - now.getTime();
+
+      // auto toggle theme mode
+      setTimeout(function() {
+        handleThemeToggle(!nightShift);
+      }, delay);
+
+      return {
+        nightShift: nightShift,
+        toggleAt: toggleAt.getTime()
+      };
+    }
+
+    // Listen the theme toggle event
+    sw.addEventListener('change', function(event) {
+      handleThemeToggle(event.target.checked);
+    });
+
+    if (nightModeOption == 'auto') {
+      var data = autoThemeToggle();
+
+      // Toggle theme by local setting
+      if (data.toggleAt > themeData.autoToggleAt) {
+        themeData.autoToggleAt = data.toggleAt;
+        handleThemeToggle(data.nightShift);
+      } else {
+        handleThemeToggle(themeData.nightShift);
+      }
+    } else if (nightModeOption == 'manual') {
+      handleThemeToggle(themeData.nightShift);
+    } else {
+      var nightShift = themeData.nightShift;
+      if (nightShift === undefined) {
+        nightShift = nightModeOption === 'on';
+      }
+      handleThemeToggle(nightShift);
+    }
+  })();
+</script>
+<main class="page-content" aria-label="Content">
+      <div class="wrapper">
+        <div class="framework">
+  <section class="main">
+
+     <div class="post">
+  <section>
+
+
+
+
+
+
+
+
+
+<header class="post-header">
+  <h1 class="post-title p-name" itemprop="name headline">Claude Code が「考え中」に表示する英単語を全部調べた</h1>
+  <h2 class="post-subtitle">thinking メッセージの語彙一覧とカテゴリ分類</h2>
+
+  <p class="post-meta">
+    <time class="dt-published" datetime="2026-06-08T00:00:00+00:00" itemprop="datePublished"><i class="fa fa-calendar"></i> Jun 08, 2026
+    </time>
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <span class="post-reading-time left-vsplit"><i class="fa fa-clock-o"></i> About 13 mins</span>
+  </p>
+<div class="post-tags">
+<a class="post-tag" href="/jekyll-theme-yat/tags.html#Claude%20Code">#Claude Code</a><a class="post-tag" href="/jekyll-theme-yat/tags.html#Claude">#Claude</a><a class="post-tag" href="/jekyll-theme-yat/tags.html#%E3%82%B3%E3%83%BC%E3%83%87%E3%82%A3%E3%83%B3%E3%82%B0%E3%82%A8%E3%83%BC%E3%82%B8%E3%82%A7%E3%83%B3%E3%83%88">#コーディングエージェント</a><a class="post-tag" href="/jekyll-theme-yat/tags.html#CLI">#CLI</a>
+</div></header>
+<article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
+
+    <div class="post-content e-content" itemprop="articleBody">
+
+      <p>Claude Code を使っていると、処理中に <code class="language-plaintext highlighter-rouge">Cogitating...</code> や <code class="language-plaintext highlighter-rouge">Noodling...</code> といった言葉がくるくると表示される。英語ネイティブでも見慣れない語彙が混じっていて、初見では意味がつかみにくい。</p>
+
+<p>「公式ドキュメントに一覧があるのでは」と思って探したが、見当たらなかった。語彙リストはソースコード内の定数として管理されており、X（旧Twitter）への投稿や GitHub Issues を通じてコミュニティに共有されている。この記事ではその全リストをカテゴリ別にまとめた。</p>
+
+<hr>
+
+<h2 id="料理醸造系">料理・醸造系</h2>
+
+<p>素材がゆっくりと組み合わさっていくイメージ。時間がかかる処理のときに多い印象がある。</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>単語</th>
+      <th>意味</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Brewing</td>
+      <td>醸造する・（考えが）醸成される</td>
+    </tr>
+    <tr>
+      <td>Baking</td>
+      <td>焼き上げる</td>
+    </tr>
+    <tr>
+      <td>Marinating</td>
+      <td>漬け込む・じっくり浸透させる</td>
+    </tr>
+    <tr>
+      <td>Percolating</td>
+      <td>ゆっくりと滲み出る（コーヒーメーカーのイメージ）</td>
+    </tr>
+    <tr>
+      <td>Simmering</td>
+      <td>とろ火で煮る</td>
+    </tr>
+    <tr>
+      <td>Distilling</td>
+      <td>蒸留する・エッセンスを抽出する</td>
+    </tr>
+    <tr>
+      <td>Cooking</td>
+      <td>料理する</td>
+    </tr>
+    <tr>
+      <td>Concocting</td>
+      <td>調合する・（計画を）練る</td>
+    </tr>
+  </tbody>
+</table>
+
+<hr>
+
+<h2 id="思索哲学系">思索・哲学系</h2>
+
+<p>深く考えているときのイメージ。英語でも格式ばった語彙が多く、ネイティブでも日常会話ではほぼ使わない。</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>単語</th>
+      <th>意味</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Cogitating</td>
+      <td>熟慮する</td>
+    </tr>
+    <tr>
+      <td>Ruminating</td>
+      <td>反芻する・深く考える</td>
+    </tr>
+    <tr>
+      <td>Contemplating</td>
+      <td>熟考する</td>
+    </tr>
+    <tr>
+      <td>Pondering</td>
+      <td>じっくり考える</td>
+    </tr>
+    <tr>
+      <td>Philosophising</td>
+      <td>哲学的に考える</td>
+    </tr>
+    <tr>
+      <td>Pontificating</td>
+      <td>もったいぶって断言する</td>
+    </tr>
+    <tr>
+      <td>Deliberating</td>
+      <td>審議する・慎重に考える</td>
+    </tr>
+    <tr>
+      <td>Musing</td>
+      <td>物思いにふける</td>
+    </tr>
+    <tr>
+      <td>Mulling</td>
+      <td>じっくり考える（mulling over）</td>
+    </tr>
+    <tr>
+      <td>Meandering</td>
+      <td>さまようように考える</td>
+    </tr>
+    <tr>
+      <td>Interrogating</td>
+      <td>問い詰めながら掘り下げる</td>
+    </tr>
+  </tbody>
+</table>
+
+<hr>
+
+<h2 id="エンジニアリング組み立て系">エンジニアリング・組み立て系</h2>
+
+<p>システムを設計・構築するイメージ。技術的な作業のときに出やすい。</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>単語</th>
+      <th>意味</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Calculating</td>
+      <td>計算する</td>
+    </tr>
+    <tr>
+      <td>Computing</td>
+      <td>演算する</td>
+    </tr>
+    <tr>
+      <td>Calibrating</td>
+      <td>調整する・較正する</td>
+    </tr>
+    <tr>
+      <td>Orchestrating</td>
+      <td>オーケストラのように調和させる</td>
+    </tr>
+    <tr>
+      <td>Synthesizing</td>
+      <td>統合する・合成する</td>
+    </tr>
+    <tr>
+      <td>Assembling</td>
+      <td>組み立てる</td>
+    </tr>
+    <tr>
+      <td>Forging</td>
+      <td>鍛造する・力強く作り上げる</td>
+    </tr>
+    <tr>
+      <td>Wrangling</td>
+      <td>格闘する・取り組む</td>
+    </tr>
+    <tr>
+      <td>Untangling</td>
+      <td>ほどく・解きほぐす</td>
+    </tr>
+    <tr>
+      <td>Coalescing</td>
+      <td>統合する・一つにまとめる</td>
+    </tr>
+    <tr>
+      <td>Deciphering</td>
+      <td>解読する</td>
+    </tr>
+    <tr>
+      <td>Reticulating</td>
+      <td>網の目のように張り巡らせる</td>
+    </tr>
+    <tr>
+      <td>Crystallizing</td>
+      <td>結晶化する・明確な形にする</td>
+    </tr>
+    <tr>
+      <td>Weaving</td>
+      <td>織り上げる</td>
+    </tr>
+  </tbody>
+</table>
+
+<hr>
+
+<h2 id="ユーモアファンタジー系">ユーモア・ファンタジー系</h2>
+
+<p>意味として面白い、あるいは普段まず見かけない語彙。Claude らしい遊び心が出ているカテゴリだ。</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>単語</th>
+      <th>意味・補足</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Noodling</td>
+      <td>ぼんやり考える。ジャズの即興演奏もこう言う</td>
+    </tr>
+    <tr>
+      <td>Conjuring</td>
+      <td>魔法で呼び出す</td>
+    </tr>
+    <tr>
+      <td>Scheming</td>
+      <td>画策する・企む（悪意ある響きも含む）</td>
+    </tr>
+    <tr>
+      <td>Hatching</td>
+      <td>孵化させる・（計画を）温める</td>
+    </tr>
+    <tr>
+      <td>Frolicking</td>
+      <td>はしゃぐ・軽やかに動き回る</td>
+    </tr>
+    <tr>
+      <td>Herding</td>
+      <td>群れを誘導する</td>
+    </tr>
+    <tr>
+      <td>Honking</td>
+      <td>クラクションを鳴らす</td>
+    </tr>
+    <tr>
+      <td>Booping</td>
+      <td>鼻をつつく（ネットスラング）</td>
+    </tr>
+    <tr>
+      <td>Smooshing</td>
+      <td>ぐにゅっと押しつぶす</td>
+    </tr>
+    <tr>
+      <td>Shimmying</td>
+      <td>小刻みに震える・軽やかに動く</td>
+    </tr>
+    <tr>
+      <td>Schlepping</td>
+      <td>重いものを引きずって運ぶ（イディッシュ語由来）</td>
+    </tr>
+    <tr>
+      <td>Discombobulating</td>
+      <td>混乱させる</td>
+    </tr>
+    <tr>
+      <td>Combobulating</td>
+      <td>Discombobulating の造語的反義語（辞書にはない）</td>
+    </tr>
+    <tr>
+      <td>Finagling</td>
+      <td>うまく取り計らう・ごまかす</td>
+    </tr>
+    <tr>
+      <td>Flibbertigibbeting</td>
+      <td>そわそわしたおしゃべりをする（中世英語由来の古風な語）</td>
+    </tr>
+    <tr>
+      <td>Puttering</td>
+      <td>ちょこちょこいじる・ぶらぶらする</td>
+    </tr>
+    <tr>
+      <td>Moseying</td>
+      <td>のんびり歩く</td>
+    </tr>
+    <tr>
+      <td>Clauding</td>
+      <td>“Claude する”（固有名詞の動詞化・完全な造語）</td>
+    </tr>
+    <tr>
+      <td>Sprinkling</td>
+      <td>振りかける</td>
+    </tr>
+    <tr>
+      <td>Choreographing</td>
+      <td>振付をする・動きを細かく設計する</td>
+    </tr>
+    <tr>
+      <td>Waltzing</td>
+      <td>ワルツを踊る</td>
+    </tr>
+  </tbody>
+</table>
+
+<hr>
+
+<h2 id="一般動詞系">一般動詞系</h2>
+
+<p>見た目には普通の英単語だが、並んでみると意外と使い道の幅広さがわかる。</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>単語</th>
+      <th>意味</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Thinking</td>
+      <td>考える</td>
+    </tr>
+    <tr>
+      <td>Processing</td>
+      <td>処理する</td>
+    </tr>
+    <tr>
+      <td>Generating</td>
+      <td>生成する</td>
+    </tr>
+    <tr>
+      <td>Imagining</td>
+      <td>想像する</td>
+    </tr>
+    <tr>
+      <td>Considering</td>
+      <td>考慮する</td>
+    </tr>
+    <tr>
+      <td>Determining</td>
+      <td>決定する</td>
+    </tr>
+    <tr>
+      <td>Inferring</td>
+      <td>推論する</td>
+    </tr>
+    <tr>
+      <td>Envisioning</td>
+      <td>心に描く</td>
+    </tr>
+    <tr>
+      <td>Manifesting</td>
+      <td>具現化する</td>
+    </tr>
+    <tr>
+      <td>Ideating</td>
+      <td>アイデアを出す</td>
+    </tr>
+    <tr>
+      <td>Elucidating</td>
+      <td>明確にする</td>
+    </tr>
+    <tr>
+      <td>Perusing</td>
+      <td>精読する</td>
+    </tr>
+    <tr>
+      <td>Puzzling</td>
+      <td>首をひねる・頭を悩ます</td>
+    </tr>
+    <tr>
+      <td>Mustering</td>
+      <td>かき集める・奮い起こす</td>
+    </tr>
+    <tr>
+      <td>Actualizing</td>
+      <td>実現する</td>
+    </tr>
+    <tr>
+      <td>Channelling</td>
+      <td>媒介する・集中させる</td>
+    </tr>
+    <tr>
+      <td>Cerebrating</td>
+      <td>頭を働かせる（cerebrate という動詞から）</td>
+    </tr>
+    <tr>
+      <td>Incubating</td>
+      <td>孵化させる・温める</td>
+    </tr>
+    <tr>
+      <td>Germinating</td>
+      <td>発芽する</td>
+    </tr>
+    <tr>
+      <td>Effecting</td>
+      <td>引き起こす・実現する</td>
+    </tr>
+    <tr>
+      <td>Forming</td>
+      <td>形成する</td>
+    </tr>
+    <tr>
+      <td>Doing</td>
+      <td>する（一番シンプルなのがかえって印象的）</td>
+    </tr>
+    <tr>
+      <td>Accomplishing</td>
+      <td>成し遂げる</td>
+    </tr>
+    <tr>
+      <td>Actioning</td>
+      <td>実行する（action の動詞用法・やや非標準）</td>
+    </tr>
+    <tr>
+      <td>Churning</td>
+      <td>激しくかき混ぜる</td>
+    </tr>
+    <tr>
+      <td>Crafting</td>
+      <td>丁寧に作り上げる</td>
+    </tr>
+  </tbody>
+</table>
+
+<hr>
+
+<h2 id="特に面白い語をいくつか">特に面白い語をいくつか</h2>
+
+<p>全体の中で特に特徴的な語を補足しておく。</p>
+
+<p><code class="language-plaintext highlighter-rouge">Clauding</code> は “Claude する” という固有名詞の動詞化で、他の AI ツールではまず見ない。<code class="language-plaintext highlighter-rouge">Combobulating</code> は <code class="language-plaintext highlighter-rouge">Discombobulating</code>（混乱させる）の造語的な反義語で、辞書には存在しない。<code class="language-plaintext highlighter-rouge">Schlepping</code> はイディッシュ語（ユダヤ系東欧語）由来のスラングで、「重いものを引きずって運ぶ」という疲労感のある語だ。<code class="language-plaintext highlighter-rouge">Flibbertigibbeting</code> は中世英語に由来する古風な語で、「そわそわしたおしゃべり屋のようにふるまう」という意味を持つ。</p>
+
+<hr>
+
+<h2 id="anthropic-の公式情報は">Anthropic の公式情報は？</h2>
+
+<p>記事執筆時点（2026年6月）で、Anthropic の公式ドキュメントにこの語彙一覧の掲載はない。</p>
+
+<p>語彙はソースコードの定数として管理されており、X への投稿（2025年3月）が一次情報として広く参照されている。表示語彙のカスタマイズを求める GitHub Issues（#29200、#30259）も出ているが、まだ実装はされていない。</p>
+
+<p>コミュニティの観察によると、シリアスなトピック（セキュリティ処理など）では <code class="language-plaintext highlighter-rouge">Setting up the calculation</code> のような平凡な文言が出る傾向があり、ユーモラスな語彙は軽いタスクや創作的な作業に多い。意図的に語彙とトーンを使い分けているようだ。</p>
+
+<hr>
+
+<h2 id="参考">参考</h2>
+
+<ul>
+  <li><a href="https://x.com/pallavmac/status/1897491460636778693">X: Pallav Agarwal — 全リスト投稿（2025年3月）</a></li>
+  <li><a href="https://dev.to/npayyappilly/the-words-claude-uses-when-thinking-a-deep-dive-into-ais-inner-monologue-2mik">DEV Community: The Words Claude Uses When Thinking</a></li>
+  <li><a href="https://github.com/anthropics/claude-code/issues/29200">GitHub Issue #29200: Allow customizing the animated thinking/status words</a></li>
+  <li><a href="https://github.com/anthropics/claude-code/issues/30259">GitHub Issue #30259: Customizable thinking status messages</a></li>
+</ul>
+
+
+    </div>
+
+</article>
+<div class="post-nav">
+<a class="previous" href="/jekyll-theme-yat/ai%E9%96%8B%E7%99%BA/2026/06/08/agent-reward-hacking-alignment.html" title="エージェントが「ルールの穴」を突く">エージェントが「ルールの穴」を突く</a><a class="next" href="/jekyll-theme-yat/ai%E9%96%8B%E7%99%BA/2026/06/08/harness-engineering-guide.html" title="ハーネスエンジニアリングとは何か">ハーネスエンジニアリングとは何か</a>
+</div>
+<div class="post-related">
+      <div>Related Articles</div>
+      <ul>
+        <li><a class="post-link" href="/jekyll-theme-yat/%E9%96%8B%E7%99%BA/2026/06/13/nodejs-basics-for-vibe-coding.html" title="ハーネスエンジニアリングとは何か">バイブコーディングする人が知っておきたい Node.js 周辺の基礎知識</a></li>
+<li><a class="post-link" href="/jekyll-theme-yat/%E9%96%8B%E7%99%BA/2023/06/24/vscode-shortcut.html" title="ハーネスエンジニアリングとは何か">【VSCode】よく使うショートカット10選</a></li>
+<li><a class="post-link" href="/jekyll-theme-yat/ai%E9%96%8B%E7%99%BA/2026/06/10/solo-dev-multi-agent-setup.html" title="ハーネスエンジニアリングとは何か">1人開発でマルチエージェント体制を作る方法</a></li>
+<li><a class="post-link" href="/jekyll-theme-yat/%E9%96%8B%E7%99%BA/2026/06/07/python-black-guide.html" title="ハーネスエンジニアリングとは何か">AI コーディング向けの Python フォーマッター Black</a></li>
+</ul>
+    </div>
+<div class="post-comments"></div></section>
+</div>
+
+
+  </section>
+  <section class="sidebar" style="margin-left: 15px;">
+    <!-- Get sidebar items --><style type="text/css" media="screen">
+.post-menu ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+</style>
+
+<div class="post-menu">
+  <div class="post-menu-title">TOC</div>
+  <div class="post-menu-content"></div>
+</div>
+
+<script>
+  function generateContent() {
+    var menu = document.querySelector(".post-menu");
+    var menuContent =  menu.querySelector(".post-menu-content");
+    var headings = document.querySelector(".post-content").querySelectorAll("h2, h3, h4, h5, h6");
+
+    // Hide menu when no headings
+    if (headings.length === 0) {
+      return menu.style.display = "none";
+    }
+
+    // Generate post menu
+    var menuHTML = '';
+    for (var i = 0; i < headings.length; i++) {
+      var h = headings[i];
+      menuHTML += (
+        '<li class="h-' + h.tagName.toLowerCase() + '">'
+        + '<a href="#h-' + h.getAttribute('id') + '">' + h.textContent + '</a></li>');
+    }
+
+    menuContent.innerHTML = '<ul>' + menuHTML + '</ul>';
+
+    // The header element
+    var header = document.querySelector('header.site-header');
+
+    function doMenuCollapse(index, over_items) {
+      var items = menuContent.firstChild.children;
+
+      if (over_items == undefined) {
+        over_items = 20;
+      }
+
+      if (items.length < over_items) {
+        return;
+      }
+
+      var activeItem = items[index];
+      var beginItem = activeItem
+      var endItem = activeItem
+      var beginIndex = index;
+      var endIndex = index + 1;
+      while (beginIndex >= 0
+        && !items[beginIndex].classList.contains('h-h2')) {
+        beginIndex -= 1;
+      }
+      while (endIndex < items.length
+        && !items[endIndex].classList.contains('h-h2')) {
+        endIndex += 1;
+      }
+      for (var i = 0; i < beginIndex; i++) {
+        item = items[i]
+        if (!item.classList.contains('h-h2')) {
+          item.style.display = 'none';
+        }
+      }
+      for (var i = beginIndex + 1; i < endIndex; i++) {
+        item = items[i]
+        // if (!item.classList.contains('h-h2')) {
+          item.style.display = '';
+        // }
+      }
+      for (var i = endIndex; i < items.length; i++) {
+        item = items[i]
+        if (!item.classList.contains('h-h2')) {
+          item.style.display = 'none';
+        }
+      }
+    }
+
+    // Init menu collapsed
+    doMenuCollapse(-1);
+
+    // Active the menu item
+    window.addEventListener('scroll', function (event) {
+      var lastActive = menuContent.querySelector('.active');
+      var changed = true;
+      var activeIndex = -1;
+      for (var i = headings.length - 1; i >= 0; i--) {
+        var h = headings[i];
+        var headingRect = h.getBoundingClientRect();
+        var headerRect = header.getBoundingClientRect();
+        var headerTop = Math.floor(headerRect.top);
+        var headerHeight = Math.floor(headerRect.height);
+        var headerHeight = headerTop + headerHeight + 20;
+        if (headingRect.top <= headerHeight) {
+          var id = 'h-' + h.getAttribute('id');
+          var a = menuContent.querySelector('a[href="#' + id  + '"]');
+          var curActive = a.parentNode;
+          if (curActive) {
+            curActive.classList.add('active');
+            activeIndex = i;
+          }
+          if (lastActive == curActive) {
+            changed = false;
+          }
+          break;
+        }
+      }
+      if (changed) {
+        if (lastActive) {
+          lastActive.classList.remove('active');
+        }
+        doMenuCollapse(activeIndex);
+      }
+      event.preventDefault();
+    });
+  }
+  generateContent();
+</script>
+</section>
+</div>
+
+      </div>
+    </main><footer class="site-footer h-card">
+  <data class="u-url" href="/jekyll-theme-yat/"></data>
+
+  <div class="wrapper">
+    <div class="site-footer-inner">
+<div>Waka-DS © 2021-2026</div>
+      <div>Powered by <a title="Jekyll is a simple, blog-aware, static site
+      generator." href="http://jekyllrb.com/">Jekyll</a> &amp; <a title="Yat, yet
+      another theme." href="https://github.com/jeffreytse/jekyll-theme-yat">Yat Theme</a>.</div>
+      <div class="footer-col rss-subscribe">Subscribe <a href="/jekyll-theme-yat/feed.xml">via RSS</a>
+</div>
+    </div>
+  </div>
+</footer>
+</body>
+</html>

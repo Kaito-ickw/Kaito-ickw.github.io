@@ -1,0 +1,2086 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <script>
+  (function() {
+    try {
+      var p = localStorage.getItem('preferred_lang');
+      if (!p) return;
+      var path = window.location.pathname;
+      var ja = ['/', '/archives.html', '/categories.html', '/tags.html', '/about.html'];
+      var en = ['/en/', '/en/archives.html', '/en/categories.html', '/en/tags.html', '/en/about.html'];
+      if (p === 'en' && ja.indexOf(path) !== -1) {
+        window.location.replace('/en' + (path === '/' ? '/' : path));
+      } else if (p === 'ja' && en.indexOf(path) !== -1) {
+        window.location.replace(path.slice(3) || '/');
+      }
+    } catch(e) {}
+  })();
+  </script>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="google-translate-customization" content="108d9124921d80c3-80e20d618ff053c8-g4f02ec6f3dba68b7-c">
+<!-- Begin Jekyll SEO tag v2.9.0 -->
+<title>バイブコーディングする人が知っておきたい Node.js 周辺の基礎知識 | Waka-DS.com</title>
+<meta name="generator" content="Jekyll v4.4.1">
+<meta property="og:title" content="バイブコーディングする人が知っておきたい Node.js 周辺の基礎知識">
+<meta name="author" content="Waka-DS">
+<meta property="og:locale" content="ja">
+<meta name="description" content="AIエージェントを使ってWebアプリを開発していると、Node.js周辺の用語やファイルが頻繁に現れる。">
+<meta name="twitter:description" property="og:description" content="AIエージェントを使ってWebアプリを開発していると、Node.js周辺の用語やファイルが頻繁に現れる。">
+<link rel="canonical" href="/jekyll-theme-yat/%E9%96%8B%E7%99%BA/2026/06/13/nodejs-basics-for-vibe-coding.html">
+<meta property="og:url" content="/jekyll-theme-yat/%E9%96%8B%E7%99%BA/2026/06/13/nodejs-basics-for-vibe-coding.html">
+<meta property="og:site_name" content="Waka-DS.com">
+<meta property="og:type" content="article">
+<meta property="article:published_time" content="2026-06-13T00:00:00+00:00">
+<meta property="article:modified_time" content="2026-06-13T00:00:00+00:00">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="バイブコーディングする人が知っておきたい Node.js 周辺の基礎知識">
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":"Waka-DS"},"dateModified":"2026-06-13T00:00:00+00:00","datePublished":"2026-06-13T00:00:00+00:00","description":"AIエージェントを使ってWebアプリを開発していると、Node.js周辺の用語やファイルが頻繁に現れる。","headline":"バイブコーディングする人が知っておきたい Node.js 周辺の基礎知識","mainEntityOfPage":{"@type":"WebPage","@id":"/jekyll-theme-yat/%E9%96%8B%E7%99%BA/2026/06/13/nodejs-basics-for-vibe-coding.html"},"url":"/jekyll-theme-yat/%E9%96%8B%E7%99%BA/2026/06/13/nodejs-basics-for-vibe-coding.html"}</script>
+<!-- End Jekyll SEO tag -->
+<link rel="shortcut icon" href="">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=Noto+Sans+JP:wght@400;500;700&amp;display=swap">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+  <link rel="stylesheet" href="/jekyll-theme-yat/assets/css/main.css">
+  <script src="/jekyll-theme-yat/assets/js/main.js"></script><link type="application/atom+xml" rel="alternate" href="/jekyll-theme-yat/feed.xml" title="Waka-DS.com">
+<script>
+  function initGoogleAnalytics() {
+    var doNotTrack = (window.doNotTrack === "1" || navigator.doNotTrack === "1" ||
+      navigator.doNotTrack === "yes" || navigator.msDoNotTrack === "1");
+    var enableDNT = "true" == "true";
+
+    if (!enableDNT || !doNotTrack) {
+      var ga_id = 'G-XNP1RBTG9C';
+
+      var script = document.createElement('script');
+      script.async = true;
+      script.src = 'https://www.googletagmanager.com/gtag/js?id=' + ga_id;
+      document.head.appendChild(script);
+
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', ga_id);
+    }
+  }
+  window.addEventListener("load", initGoogleAnalytics);
+</script>
+<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/styles/default.min.css">
+<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/highlight.min.js"></script>
+<!-- and it's easy to individually load additional languages -->
+<script charset="UTF-8" src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/languages/go.min.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<script>
+// Init highlight js
+document.addEventListener('DOMContentLoaded', function(event) {
+  var els = document.querySelectorAll('pre code')
+
+  function addLangData(block) {
+    var outer = block.parentElement.parentElement.parentElement;
+    var lang = block.getAttribute('data-lang');
+    for (var i = 0; i < outer.classList.length; i++) {
+      var cls = outer.classList[i];
+      if (cls.startsWith('language-')) {
+        lang = cls;
+        break;
+      }
+    }
+    if (!lang) {
+      cls = block.getAttribute('class');
+      lang = cls ? cls.replace('hljs ', '') : '';
+    }
+    if (lang.startsWith('language-')) {
+      lang = lang.substr(9);
+    }
+    block.setAttribute('class', 'hljs ' + lang);
+    block.parentNode.setAttribute('data-lang', lang);
+  }
+
+  function addBadge(block) {
+    var enabled = ('true' || 'true').toLowerCase();
+    if (enabled == 'true') {
+      var pre = block.parentElement;
+      pre.classList.add('badge');
+    }
+  }
+
+  function handle(block) {
+    addLangData(block);
+    addBadge(block)
+    hljs.highlightBlock(block);
+  }
+
+  for (var i = 0; i < els.length; i++) {
+    var el = els[i];
+    handle(el);
+  }
+});
+</script>
+
+<style>
+  /* code language badge */
+  pre.badge::before {
+    content: attr(data-lang);
+    color: #fff;
+    background-color: #0d9488;
+    padding: 0 .5em;
+    border-radius: 0 2px;
+    text-transform: uppercase;
+    text-align: center;
+    min-width: 32px;
+    display: inline-block;
+    position: absolute;
+    right: 0;
+  }
+
+  /* fix wrong badge display for firefox browser */
+  code > table pre::before {
+    display: none;
+  }
+</style>
+</head>
+<body>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<header class="site-header " role="banner">
+
+  <div class="wrapper">
+    <div class="site-header-inner">
+<span class="site-brand"><a class="site-brand-inner" rel="author" href="/jekyll-theme-yat/">
+  <img class="site-favicon" title="Waka-DS.com" src="" onerror="this.style.display='none'">
+  Waka-DS.com
+</a>
+</span><nav class="site-nav">
+          <input type="checkbox" id="nav-trigger" class="nav-trigger">
+          <label for="nav-trigger">
+            <span class="menu-icon">
+              <svg viewbox="0 0 18 15" width="18px" height="15px">
+                <path d="M18,1.484c0,0.82-0.665,1.484-1.484,1.484H1.484C0.665,2.969,0,2.304,0,1.484l0,0C0,0.665,0.665,0,1.484,0 h15.032C17.335,0,18,0.665,18,1.484L18,1.484z M18,7.516C18,8.335,17.335,9,16.516,9H1.484C0.665,9,0,8.335,0,7.516l0,0 c0-0.82,0.665-1.484,1.484-1.484h15.032C17.335,6.031,18,6.696,18,7.516L18,7.516z M18,13.516C18,14.335,17.335,15,16.516,15H1.484 C0.665,15,0,14.335,0,13.516l0,0c0-0.82,0.665-1.483,1.484-1.483h15.032C17.335,12.031,18,12.695,18,13.516L18,13.516z"></path>
+              </svg>
+            </span>
+          </label>
+
+          <div class="trigger">
+<a class="page-link" href="/jekyll-theme-yat/about.html">ABOUT</a><a class="page-link" href="/jekyll-theme-yat/archives.html">ARCHIVES</a><a class="page-link" href="/jekyll-theme-yat/categories.html">CATEGORIES</a><a class="page-link" href="/jekyll-theme-yat/">HOME</a><a class="page-link" href="/jekyll-theme-yat/tags.html">TAGS</a>
+</div>
+        </nav>
+</div>
+  </div>
+</header>
+
+<script>
+  function initHeader() {
+    var lastScrollY = getScrollPos().y;
+    var documentElement = document.documentElement;
+
+    function storeScrollData() {
+      var y = getScrollPos().y;var scrollStatus = "";
+
+      if (y <= 0) {
+        scrollStatus = "top";
+      } else if ((window.innerHeight + y) >= document.body.offsetHeight) {
+        scrollStatus = "bottom";
+      } else {
+        var isScrollDown = (y - lastScrollY > 0) ? true : false;
+        scrollStatus = isScrollDown ? "down" : "up";
+      }
+
+      lastScrollY = y;
+      documentElement.setAttribute("data-scroll-status", scrollStatus);
+    }
+
+    window.addEventListener('scroll', function(e) {
+      storeScrollData();
+    });
+
+    storeScrollData();
+  }
+  document.addEventListener('DOMContentLoaded', initHeader);
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<script>
+  function hashLocate(hashValue) {
+    hashValue = hashValue.replace(/^.*#h-/, '');
+    hashValue = decodeURIComponent(hashValue);
+    var element = document.getElementById(hashValue);
+
+    if (!element) {
+      return;
+    }
+
+    var header = document.querySelector('header.site-header');
+    var headerRect = header.getBoundingClientRect();
+    var headerTop = Math.floor(headerRect.top);
+    var headerHeight = Math.floor(headerRect.height);
+    var scrollPos = getScrollPos();
+    var offsetY = element.offsetTop - (headerTop + headerHeight + 20);
+
+    if (offsetY == scrollPos.y) {
+      return;
+    }
+
+    if (headerTop == 0  && offsetY > scrollPos.y) {
+      offsetY += headerHeight + 2;
+    } else if (headerTop < 0  && offsetY < scrollPos.y) {
+      offsetY -= headerHeight - 2;
+    }
+
+    smoothScrollTo(offsetY);
+  }
+
+  // The first event occurred
+  window.addEventListener('load', function(event) {
+    if (window.location.hash) {
+      hashLocate(window.location.hash);
+    }
+  });
+
+  // The first event occurred
+  window.addEventListener('click', function(event) {
+    if (event.target.tagName.toLowerCase() == 'a') {
+      hashLocate(event.target.getAttribute('href'));
+    }
+  });
+</script>
+<div class="theme-toggle">
+  <input type="checkbox" id="theme-switch">
+  <label for="theme-switch">
+    <div class="toggle"></div>
+    <div class="names">
+      <p class="light">Light</p>
+      <p class="dark">Dark</p>
+    </div>
+  </label>
+</div>
+
+
+
+
+<script>
+  (function() {
+    var sw = document.getElementById('theme-switch');
+    var html = document.getElementsByTagName('html')[0];
+    var nightModeOption = ('auto' || 'auto').toLowerCase();
+    var storage = nightModeOption === 'manual'
+        ? localStorage
+        : sessionStorage;
+    var themeData = loadThemeData();
+
+    function saveThemeData(data) {
+      storage.setItem('theme', JSON.stringify(data));
+    }
+
+    function loadThemeData() {
+      var data = storage.getItem('theme');
+      try {
+        data = JSON.parse(data ? data : '');
+      } catch(e) {
+        data = { nightShift: undefined, autoToggleAt: 0 };
+        saveThemeData(data);
+      }
+      return data;
+    }
+
+    function handleThemeToggle(nightShift) {
+      themeData.nightShift = nightShift;
+      saveThemeData(themeData);
+      html.dataset.theme = nightShift ? 'dark' : 'light';
+      setTimeout(function() {
+        sw.checked = nightShift ? true : false;
+      }, 50);
+    }
+
+    function autoThemeToggle() {
+      // Next time point of theme toggle
+      var now = new Date();
+      var toggleAt = new Date();
+      var hours = now.getHours();
+      var nightShift = hours >= 19 || hours <=7;
+
+      if (nightShift) {
+        if (hours > 7) {
+          toggleAt.setDate(toggleAt.getDate() + 1);
+        }
+        toggleAt.setHours(7);
+      } else {
+        toggleAt.setHours(19);
+      }
+
+      toggleAt.setMinutes(0);
+      toggleAt.setSeconds(0);
+      toggleAt.setMilliseconds(0)
+
+      var delay = toggleAt.getTime() - now.getTime();
+
+      // auto toggle theme mode
+      setTimeout(function() {
+        handleThemeToggle(!nightShift);
+      }, delay);
+
+      return {
+        nightShift: nightShift,
+        toggleAt: toggleAt.getTime()
+      };
+    }
+
+    // Listen the theme toggle event
+    sw.addEventListener('change', function(event) {
+      handleThemeToggle(event.target.checked);
+    });
+
+    if (nightModeOption == 'auto') {
+      var data = autoThemeToggle();
+
+      // Toggle theme by local setting
+      if (data.toggleAt > themeData.autoToggleAt) {
+        themeData.autoToggleAt = data.toggleAt;
+        handleThemeToggle(data.nightShift);
+      } else {
+        handleThemeToggle(themeData.nightShift);
+      }
+    } else if (nightModeOption == 'manual') {
+      handleThemeToggle(themeData.nightShift);
+    } else {
+      var nightShift = themeData.nightShift;
+      if (nightShift === undefined) {
+        nightShift = nightModeOption === 'on';
+      }
+      handleThemeToggle(nightShift);
+    }
+  })();
+</script>
+<main class="page-content" aria-label="Content">
+      <div class="wrapper">
+        <div class="framework">
+  <section class="main">
+
+     <div class="post">
+  <section>
+
+
+
+
+
+
+
+
+
+<header class="post-header">
+  <h1 class="post-title p-name" itemprop="name headline">バイブコーディングする人が知っておきたい Node.js 周辺の基礎知識</h1>
+  <h2 class="post-subtitle">npm run・package.json・ビルド・環境変数の見取り図</h2>
+
+  <p class="post-meta">
+    <time class="dt-published" datetime="2026-06-13T00:00:00+00:00" itemprop="datePublished"><i class="fa fa-calendar"></i> Jun 13, 2026
+    </time>
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <span class="post-reading-time left-vsplit"><i class="fa fa-clock-o"></i> About 53 mins</span>
+  </p>
+<div class="post-tags">
+<a class="post-tag" href="/jekyll-theme-yat/tags.html#AI%E3%82%A8%E3%83%BC%E3%82%B8%E3%82%A7%E3%83%B3%E3%83%88">#AIエージェント</a><a class="post-tag" href="/jekyll-theme-yat/tags.html#%E3%82%B3%E3%83%BC%E3%83%87%E3%82%A3%E3%83%B3%E3%82%B0%E3%82%A8%E3%83%BC%E3%82%B8%E3%82%A7%E3%83%B3%E3%83%88">#コーディングエージェント</a><a class="post-tag" href="/jekyll-theme-yat/tags.html#AI%E3%83%8D%E3%82%A4%E3%83%86%E3%82%A3%E3%83%96%E9%96%8B%E7%99%BA">#AIネイティブ開発</a><a class="post-tag" href="/jekyll-theme-yat/tags.html#%E9%96%8B%E7%99%BA%E7%92%B0%E5%A2%83">#開発環境</a><a class="post-tag" href="/jekyll-theme-yat/tags.html#CLI">#CLI</a>
+</div></header>
+<article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
+
+    <div class="post-content e-content" itemprop="articleBody">
+
+      <p>AIエージェントを使ってWebアプリを開発していると、Node.js周辺の用語やファイルが頻繁に現れる。</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>node <span class="nt">-v</span>
+npm <span class="nb">install
+</span>npm run dev
+npm run build
+npm run lint
+npm <span class="nb">test</span>
+</code></pre></div></div>
+
+<p>ほかにも、<code class="language-plaintext highlighter-rouge">package.json</code>、<code class="language-plaintext highlighter-rouge">node_modules</code>、<code class="language-plaintext highlighter-rouge">.env</code>、TypeScript、Vite、Next.jsといった名前が一度に出てくる。エージェントが操作してくれるため、意味を知らなくても開発自体は進む。しかし、エラーが起きたときに「どの層で失敗したのか」が分からないと、エージェントの説明や修正案が妥当か判断しにくい。</p>
+
+<p>バイブコーディングで必要なのは、Node.jsを使って一から実装できる知識ではない。実行環境、パッケージ、開発ツール、設定ファイルの関係を把握し、エージェントが何を変更・実行しているか追えることである。</p>
+
+<hr>
+
+<h2 id="結論を先に">結論を先に</h2>
+
+<p>Node.js周辺は、次のように分けると理解しやすい。</p>
+
+<table>
+  <thead>
+    <tr>
+      <th style="text-align: left">領域</th>
+      <th style="text-align: left">代表的なもの</th>
+      <th style="text-align: left">何をしているか</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td style="text-align: left">実行環境</td>
+      <td style="text-align: left">Node.js</td>
+      <td style="text-align: left">JavaScriptをブラウザの外で動かす</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">パッケージ管理</td>
+      <td style="text-align: left">npm、Yarn、pnpm</td>
+      <td style="text-align: left">ライブラリや開発ツールを導入する</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">プロジェクト設定</td>
+      <td style="text-align: left"><code class="language-plaintext highlighter-rouge">package.json</code></td>
+      <td style="text-align: left">依存関係や実行コマンドを定義する</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">開発ツール</td>
+      <td style="text-align: left">Vite、Next.js、TypeScript、ESLint</td>
+      <td style="text-align: left">開発サーバー、変換、検査などを行う</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">設定値</td>
+      <td style="text-align: left">
+<code class="language-plaintext highlighter-rouge">.env</code>、環境変数</td>
+      <td style="text-align: left">API URLや秘密情報などを実行環境へ渡す</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">実行結果</td>
+      <td style="text-align: left">開発サーバー、ビルド成果物</td>
+      <td style="text-align: left">ブラウザ確認やデプロイに使う</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>AIエージェントが <code class="language-plaintext highlighter-rouge">npm run dev</code> を実行している場合、npmだけが動いているわけではない。npmが <code class="language-plaintext highlighter-rouge">package.json</code> を読み、ViteやNext.jsなどの開発ツールを呼び、そのツールがNode.js上で動いている。</p>
+
+<p><img class="mermaid" src="https://mermaid.ink/svg/eyJjb2RlIjoiZmxvd2NoYXJ0IFRCXG5BZ2VudFtcIkFJ44Ko44O844K444Kn44Oz44OIXCJdIC0tPiBDb21tYW5kW1wibnBtIHJ1biBkZXZcIl1cbkNvbW1hbmQgLS0-IFBhY2thZ2VKc29uW1wicGFja2FnZS5qc29uXCJdXG5QYWNrYWdlSnNvbiAtLT4gVG9vbFtcIlZpdGUgLyBOZXh0LmpzIOOBquOBqVwiXVxuVG9vbCAtLT4gUnVudGltZVtcIk5vZGUuanPkuIrjgaflrp_ooYxcIl1cblJ1bnRpbWUgLS0-IFJlc3VsdFtcIumWi-eZuuOCteODvOODkOODvFwiXSIsIm1lcm1haWQiOm51bGx9"></p>
+
+<p>この記事では、Node.js周辺でよく見るものをこの順番で整理する。その中でも出現頻度の高い <code class="language-plaintext highlighter-rouge">npm run</code> と依存関係については、少し詳しく扱う。</p>
+
+<hr>
+
+<h2 id="最初に押さえる7つのポイント">最初に押さえる7つのポイント</h2>
+
+<p>細部へ入る前に、バイブコーディングで判断材料になるポイントを先に並べておく。</p>
+
+<ol>
+  <li>Node.jsはプログラミング言語ではなく、JavaScriptの実行環境である</li>
+  <li>npmはNode.jsそのものではなく、パッケージ管理とコマンド実行を担う</li>
+  <li>そのリポジトリの作業内容は <code class="language-plaintext highlighter-rouge">package.json</code> に書かれている</li>
+  <li>
+<code class="language-plaintext highlighter-rouge">npm run dev</code> の中身はプロジェクトごとに異なる</li>
+  <li>開発サーバーと本番用ビルドは別の処理である</li>
+  <li>
+<code class="language-plaintext highlighter-rouge">.env</code> は設定値を渡す仕組みで、秘密情報を含む場合がある</li>
+  <li>Node.jsやパッケージマネージャーのバージョン違いで動作が変わる</li>
+</ol>
+
+<p>この7点を知っていれば、エージェントへ確認すべきことや、ログのどこを見るべきかがかなり明確になる。</p>
+
+<hr>
+
+<h2 id="nodejsnpmpackagejsonの関係">Node.js・npm・package.jsonの関係</h2>
+
+<p>最初に、似た言葉の役割を分けておきたい。</p>
+
+<table>
+  <thead>
+    <tr>
+      <th style="text-align: left">名前</th>
+      <th style="text-align: left">役割</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td style="text-align: left">Node.js</td>
+      <td style="text-align: left">JavaScriptをブラウザの外でも動かす実行環境</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">npm</td>
+      <td style="text-align: left">パッケージの導入やスクリプト実行を行うCLI</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">npm registry</td>
+      <td style="text-align: left">公開されたパッケージを配布する場所</td>
+    </tr>
+    <tr>
+      <td style="text-align: left"><code class="language-plaintext highlighter-rouge">package.json</code></td>
+      <td style="text-align: left">プロジェクトの設定や依存関係を書くファイル</td>
+    </tr>
+    <tr>
+      <td style="text-align: left"><code class="language-plaintext highlighter-rouge">package-lock.json</code></td>
+      <td style="text-align: left">実際に導入する依存関係の正確な構成を記録するファイル</td>
+    </tr>
+    <tr>
+      <td style="text-align: left"><code class="language-plaintext highlighter-rouge">node_modules/</code></td>
+      <td style="text-align: left">インストールされたパッケージが置かれるディレクトリ</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>Node.jsをインストールすると、一般的にはnpm CLIも一緒に利用できるようになる。それぞれが使えるかは、次のコマンドで確認できる。</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>node <span class="nt">-v</span>
+npm <span class="nt">-v</span>
+</code></pre></div></div>
+
+<p>Node.jsがプログラムを動かす環境で、npmはその周辺の道具を管理する役割を持つ。npm自身がアプリを開発するのではなく、Vite、Next.js、ESLint、Vitestなどのツールを導入し、決められた方法で呼び出している。</p>
+
+<hr>
+
+<h2 id="javascriptとnodejsは同じものではない">JavaScriptとNode.jsは同じものではない</h2>
+
+<p>JavaScriptはプログラミング言語であり、Node.jsはJavaScriptを動かす実行環境である。</p>
+
+<p>JavaScriptはもともとブラウザ上で動くものとして広く使われてきた。ブラウザには画面を操作するDOMや、現在のページを表す <code class="language-plaintext highlighter-rouge">window</code> などの機能がある。一方、Node.jsにはファイルを読み書きする機能や、HTTPサーバーを動かす機能がある。</p>
+
+<p>同じJavaScriptでも、実行する場所によって利用できる機能が違う。</p>
+
+<table>
+  <thead>
+    <tr>
+      <th style="text-align: left">実行場所</th>
+      <th style="text-align: left">主な用途</th>
+      <th style="text-align: left">代表的な機能</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td style="text-align: left">ブラウザ</td>
+      <td style="text-align: left">画面表示・ユーザー操作</td>
+      <td style="text-align: left">DOM、<code class="language-plaintext highlighter-rouge">window</code>、ブラウザAPI</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">Node.js</td>
+      <td style="text-align: left">サーバー・開発ツール・スクリプト</td>
+      <td style="text-align: left">ファイル操作、プロセス、サーバー</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>フロントエンド開発でもNode.jsが登場するのは、ブラウザで動く画面そのものだけでなく、開発サーバー、TypeScript変換、コード検査、ビルドなどをNode.js上のツールが担当するためである。</p>
+
+<p><img class="mermaid" src="https://mermaid.ink/svg/eyJjb2RlIjoiZmxvd2NoYXJ0IFRCXG5Tb3VyY2VbXCJSZWFjdCAvIFR5cGVTY3JpcHQg44Gu44K944O844K5XCJdIC0tPiBUb29sc1tcIk5vZGUuanPkuIrjga7plovnmbrjg4Tjg7zjg6tcIl1cblRvb2xzIC0tPiBEZXZbXCLplovnmbrjgrXjg7zjg5Djg7xcIl1cblRvb2xzIC0tPiBCdWlsZFtcIuODluODqeOCpuOCtuWQkeOBkeaIkOaenOeJqVwiXVxuRGV2IC0tPiBCcm93c2VyW1wi44OW44Op44Km44K244Gn56K66KqNXCJdXG5CdWlsZCAtLT4gRGVwbG95W1wi44OH44OX44Ot44KkXCJdIiwibWVybWFpZCI6bnVsbH0"></p>
+
+<p>エラーに <code class="language-plaintext highlighter-rouge">window is not defined</code> や <code class="language-plaintext highlighter-rouge">document is not defined</code> と出る場合は、ブラウザ向けの処理がNode.js側で動いている可能性がある。反対に、ブラウザ側でNode.js専用のファイル操作を使おうとして失敗することもある。</p>
+
+<hr>
+
+<h2 id="packagejsonはプロジェクトの案内板">package.jsonはプロジェクトの案内板</h2>
+
+<p>Node.jsを使うプロジェクトでは、ルートディレクトリに <code class="language-plaintext highlighter-rouge">package.json</code> が置かれていることが多い。</p>
+
+<div class="language-json highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">{</span><span class="w">
+  </span><span class="nl">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"sample-app"</span><span class="p">,</span><span class="w">
+  </span><span class="nl">"private"</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span><span class="w">
+  </span><span class="nl">"scripts"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+    </span><span class="nl">"dev"</span><span class="p">:</span><span class="w"> </span><span class="s2">"vite"</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"build"</span><span class="p">:</span><span class="w"> </span><span class="s2">"vite build"</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"lint"</span><span class="p">:</span><span class="w"> </span><span class="s2">"eslint ."</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"test"</span><span class="p">:</span><span class="w"> </span><span class="s2">"vitest run"</span><span class="w">
+  </span><span class="p">},</span><span class="w">
+  </span><span class="nl">"dependencies"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+    </span><span class="nl">"react"</span><span class="p">:</span><span class="w"> </span><span class="s2">"^19.0.0"</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"react-dom"</span><span class="p">:</span><span class="w"> </span><span class="s2">"^19.0.0"</span><span class="w">
+  </span><span class="p">},</span><span class="w">
+  </span><span class="nl">"devDependencies"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+    </span><span class="nl">"eslint"</span><span class="p">:</span><span class="w"> </span><span class="s2">"^9.0.0"</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"vite"</span><span class="p">:</span><span class="w"> </span><span class="s2">"^7.0.0"</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"vitest"</span><span class="p">:</span><span class="w"> </span><span class="s2">"^3.0.0"</span><span class="w">
+  </span><span class="p">}</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></code></pre></div></div>
+
+<p>最初からすべてを読む必要はない。バイブコーディングでまず見る場所は、次の3つである。</p>
+
+<h3 id="scripts">scripts</h3>
+
+<p>プロジェクトで実行できる作業の一覧である。</p>
+
+<div class="language-json highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nl">"scripts"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+  </span><span class="nl">"dev"</span><span class="p">:</span><span class="w"> </span><span class="s2">"vite"</span><span class="p">,</span><span class="w">
+  </span><span class="nl">"build"</span><span class="p">:</span><span class="w"> </span><span class="s2">"vite build"</span><span class="p">,</span><span class="w">
+  </span><span class="nl">"lint"</span><span class="p">:</span><span class="w"> </span><span class="s2">"eslint ."</span><span class="p">,</span><span class="w">
+  </span><span class="nl">"test"</span><span class="p">:</span><span class="w"> </span><span class="s2">"vitest run"</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></code></pre></div></div>
+
+<p>登録されているスクリプトは、引数なしの <code class="language-plaintext highlighter-rouge">npm run</code> でも確認できる。</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>npm run
+</code></pre></div></div>
+
+<p>AIエージェントが見慣れないコマンドを実行しようとしている場合は、まず <code class="language-plaintext highlighter-rouge">package.json</code> の <code class="language-plaintext highlighter-rouge">scripts</code> を見れば、実体を確認できる。</p>
+
+<h3 id="dependencies">dependencies</h3>
+
+<p>アプリを動かすために必要なパッケージを書く場所である。Reactのように、実行するアプリ本体から利用するライブラリが入る。</p>
+
+<h3 id="devdependencies">devDependencies</h3>
+
+<p>主に開発中に使うパッケージを書く場所である。リンター、テストツール、ビルドツールなどが代表例だ。</p>
+
+<p>ただし、<code class="language-plaintext highlighter-rouge">dependencies</code> と <code class="language-plaintext highlighter-rouge">devDependencies</code> の使い分けはプロジェクトの構成によって変わる。名前だけで必要性を決めず、既存の設定に従うのが基本になる。</p>
+
+<hr>
+
+<h2 id="npm-runはpackagejsonに登録された作業を呼び出す">npm runはpackage.jsonに登録された作業を呼び出す</h2>
+
+<p><code class="language-plaintext highlighter-rouge">npm run dev</code> は、npmに組み込まれた「開発サーバー起動機能」を直接呼んでいるわけではない。</p>
+
+<p>プロジェクトの <code class="language-plaintext highlighter-rouge">package.json</code> に登録された <code class="language-plaintext highlighter-rouge">dev</code> という名前のコマンドを探し、その中身を実行している。</p>
+
+<p>たとえば、<code class="language-plaintext highlighter-rouge">package.json</code> に次の設定があるとする。</p>
+
+<div class="language-json highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">{</span><span class="w">
+  </span><span class="nl">"scripts"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+    </span><span class="nl">"dev"</span><span class="p">:</span><span class="w"> </span><span class="s2">"vite"</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"build"</span><span class="p">:</span><span class="w"> </span><span class="s2">"vite build"</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"lint"</span><span class="p">:</span><span class="w"> </span><span class="s2">"eslint ."</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"test"</span><span class="p">:</span><span class="w"> </span><span class="s2">"vitest run"</span><span class="w">
+  </span><span class="p">}</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></code></pre></div></div>
+
+<p>このプロジェクトで次のコマンドを実行すると、</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>npm run dev
+</code></pre></div></div>
+
+<p>npmは <code class="language-plaintext highlighter-rouge">scripts</code> の <code class="language-plaintext highlighter-rouge">dev</code> を探し、実際には <code class="language-plaintext highlighter-rouge">vite</code> を実行する。</p>
+
+<p><img class="mermaid" src="https://mermaid.ink/svg/eyJjb2RlIjoiZmxvd2NoYXJ0IFRCXG5Db21tYW5kW1wibnBtIHJ1biBkZXZcIl0gLS0-IFBhY2thZ2VKc29uW1wicGFja2FnZS5qc29uIOOCkuiqreOCgFwiXVxuUGFja2FnZUpzb24gLS0-IFNjcmlwdFtcInNjcmlwdHMuZGV2IOOCkuaOouOBmVwiXVxuU2NyaXB0IC0tPiBUb29sW1widml0ZSDjgpLlrp_ooYzjgZnjgotcIl1cblRvb2wgLS0-IFJlc3VsdFtcIumWi-eZuuOCteODvOODkOODvOOBjOi1t-WLleOBmeOCi1wiXSIsIm1lcm1haWQiOm51bGx9"></p>
+
+<p><code class="language-plaintext highlighter-rouge">dev</code>、<code class="language-plaintext highlighter-rouge">build</code>、<code class="language-plaintext highlighter-rouge">lint</code> といった名前は、プロジェクト内の作業に付けられたラベルだと考えると分かりやすい。</p>
+
+<hr>
+
+<h2 id="npm-runの一行を分解する">npm runの一行を分解する</h2>
+
+<p>次のコマンドを、単語ごとに見てみる。</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>npm run build
+</code></pre></div></div>
+
+<table>
+  <thead>
+    <tr>
+      <th style="text-align: left">部分</th>
+      <th style="text-align: left">意味</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td style="text-align: left"><code class="language-plaintext highlighter-rouge">npm</code></td>
+      <td style="text-align: left">npm CLIを起動する</td>
+    </tr>
+    <tr>
+      <td style="text-align: left"><code class="language-plaintext highlighter-rouge">run</code></td>
+      <td style="text-align: left">
+<code class="language-plaintext highlighter-rouge">package.json</code> のスクリプトを実行する</td>
+    </tr>
+    <tr>
+      <td style="text-align: left"><code class="language-plaintext highlighter-rouge">build</code></td>
+      <td style="text-align: left">
+<code class="language-plaintext highlighter-rouge">scripts</code> から <code class="language-plaintext highlighter-rouge">build</code> という名前を選ぶ</td>
+    </tr>
+  </tbody>
+</table>
+
+<p><code class="language-plaintext highlighter-rouge">package.json</code> に次の記述があれば、実際に動くのは <code class="language-plaintext highlighter-rouge">vite build</code> である。</p>
+
+<div class="language-json highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">{</span><span class="w">
+  </span><span class="nl">"scripts"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+    </span><span class="nl">"build"</span><span class="p">:</span><span class="w"> </span><span class="s2">"vite build"</span><span class="w">
+  </span><span class="p">}</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></code></pre></div></div>
+
+<p>ここで重要なのは、同じ <code class="language-plaintext highlighter-rouge">npm run build</code> でもプロジェクトによって中身が違うことだ。</p>
+
+<div class="language-json highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nl">"build"</span><span class="p">:</span><span class="w"> </span><span class="s2">"vite build"</span><span class="w">
+</span></code></pre></div></div>
+
+<p>の場合もあれば、</p>
+
+<div class="language-json highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nl">"build"</span><span class="p">:</span><span class="w"> </span><span class="s2">"next build"</span><span class="w">
+</span></code></pre></div></div>
+
+<p>の場合もある。複数の処理をまとめていることもある。</p>
+
+<div class="language-json highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nl">"build"</span><span class="p">:</span><span class="w"> </span><span class="s2">"npm run generate &amp;&amp; vite build"</span><span class="w">
+</span></code></pre></div></div>
+
+<p>したがって、<code class="language-plaintext highlighter-rouge">npm run build</code> という文字だけを見て処理内容を断定することはできない。判断の基準は、そのリポジトリの <code class="language-plaintext highlighter-rouge">package.json</code> である。</p>
+
+<hr>
+
+<h2 id="ローカルのツールを呼び出せる仕組み">ローカルのツールを呼び出せる仕組み</h2>
+
+<p>先ほどの例では、<code class="language-plaintext highlighter-rouge">vite</code> や <code class="language-plaintext highlighter-rouge">eslint</code> を直接実行していた。</p>
+
+<div class="language-json highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">{</span><span class="w">
+  </span><span class="nl">"scripts"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+    </span><span class="nl">"dev"</span><span class="p">:</span><span class="w"> </span><span class="s2">"vite"</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"lint"</span><span class="p">:</span><span class="w"> </span><span class="s2">"eslint ."</span><span class="w">
+  </span><span class="p">}</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></code></pre></div></div>
+
+<p>これらのツールをOS全体へインストールしていなくても、プロジェクトの依存関係として導入されていれば <code class="language-plaintext highlighter-rouge">npm run</code> から呼び出せる。</p>
+
+<p>npmはスクリプトを実行するとき、ローカルにインストールされた実行ファイルがある <code class="language-plaintext highlighter-rouge">node_modules/.bin</code> を検索対象へ追加する。そのため、<code class="language-plaintext highlighter-rouge">node_modules/.bin/vite</code> のような長いパスを書かずに <code class="language-plaintext highlighter-rouge">vite</code> と記述できる。</p>
+
+<p>この仕組みには、プロジェクトごとに必要なバージョンのツールを使いやすいという利点がある。</p>
+
+<hr>
+
+<h2 id="よく使うコマンドの違い">よく使うコマンドの違い</h2>
+
+<p>npmのコマンドは、役割で分けると理解しやすい。</p>
+
+<table>
+  <thead>
+    <tr>
+      <th style="text-align: left">コマンド</th>
+      <th style="text-align: left">主な役割</th>
+      <th style="text-align: left">注意点</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td style="text-align: left"><code class="language-plaintext highlighter-rouge">npm install</code></td>
+      <td style="text-align: left">依存関係をインストールする</td>
+      <td style="text-align: left">条件によってlockfileを更新する</td>
+    </tr>
+    <tr>
+      <td style="text-align: left"><code class="language-plaintext highlighter-rouge">npm install &lt;package&gt;</code></td>
+      <td style="text-align: left">パッケージを追加する</td>
+      <td style="text-align: left">
+<code class="language-plaintext highlighter-rouge">package.json</code> とlockfileを更新する</td>
+    </tr>
+    <tr>
+      <td style="text-align: left"><code class="language-plaintext highlighter-rouge">npm ci</code></td>
+      <td style="text-align: left">lockfileどおりに依存関係を入れ直す</td>
+      <td style="text-align: left">既存の <code class="language-plaintext highlighter-rouge">node_modules/</code> を削除する</td>
+    </tr>
+    <tr>
+      <td style="text-align: left"><code class="language-plaintext highlighter-rouge">npm run &lt;name&gt;</code></td>
+      <td style="text-align: left">登録済みスクリプトを実行する</td>
+      <td style="text-align: left">変更内容はスクリプト次第</td>
+    </tr>
+    <tr>
+      <td style="text-align: left"><code class="language-plaintext highlighter-rouge">npm test</code></td>
+      <td style="text-align: left">
+<code class="language-plaintext highlighter-rouge">test</code> スクリプトを実行する</td>
+      <td style="text-align: left">実体は <code class="language-plaintext highlighter-rouge">scripts.test</code> で確認する</td>
+    </tr>
+    <tr>
+      <td style="text-align: left"><code class="language-plaintext highlighter-rouge">npm exec &lt;command&gt;</code></td>
+      <td style="text-align: left">パッケージが提供するコマンドを実行する</td>
+      <td style="text-align: left">未導入のパッケージを取得する場合がある</td>
+    </tr>
+    <tr>
+      <td style="text-align: left"><code class="language-plaintext highlighter-rouge">npx &lt;command&gt;</code></td>
+      <td style="text-align: left">
+<code class="language-plaintext highlighter-rouge">npm exec</code> に近い形でコマンドを実行する</td>
+      <td style="text-align: left">未導入のパッケージを取得する場合がある</td>
+    </tr>
+  </tbody>
+</table>
+
+<p><code class="language-plaintext highlighter-rouge">npm run lint</code> だからファイルを書き換えない、とは限らない。スクリプトの中に <code class="language-plaintext highlighter-rouge">--fix</code> が含まれていれば、コードが修正される場合がある。</p>
+
+<div class="language-json highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">{</span><span class="w">
+  </span><span class="nl">"scripts"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+    </span><span class="nl">"lint"</span><span class="p">:</span><span class="w"> </span><span class="s2">"eslint ."</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"lint:fix"</span><span class="p">:</span><span class="w"> </span><span class="s2">"eslint . --fix"</span><span class="w">
+  </span><span class="p">}</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></code></pre></div></div>
+
+<p>コマンド名は説明の手がかりにはなるが、実際の処理はスクリプトの中身で判断する。</p>
+
+<hr>
+
+<h2 id="npm-installは依存関係を用意する">npm installは依存関係を用意する</h2>
+
+<p>GitHubからプロジェクトを取得した直後は、通常 <code class="language-plaintext highlighter-rouge">node_modules/</code> が存在しない。依存パッケージはリポジトリへ含めず、各環境でインストールすることが多いためだ。</p>
+
+<p>そこで実行するのが <code class="language-plaintext highlighter-rouge">npm install</code> である。</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>npm <span class="nb">install</span>
+</code></pre></div></div>
+
+<p>npmは <code class="language-plaintext highlighter-rouge">package.json</code> と <code class="language-plaintext highlighter-rouge">package-lock.json</code> を読み、必要なパッケージを <code class="language-plaintext highlighter-rouge">node_modules/</code> へ配置する。</p>
+
+<p><img class="mermaid" src="https://mermaid.ink/svg/eyJjb2RlIjoiZmxvd2NoYXJ0IFRCXG5QYWNrYWdlSnNvbltcInBhY2thZ2UuanNvbjxicj7oqLHlrrnjgZnjgovjg5Djg7zjgrjjg6fjg7NcIl0gLS0-IEluc3RhbGxbXCJucG0gaW5zdGFsbFwiXVxuTG9ja0ZpbGVbXCJwYWNrYWdlLWxvY2suanNvbjxicj7lhbfkvZPnmoTjgarkvp3lrZjplqLkv4JcIl0gLS0-IEluc3RhbGxcbkluc3RhbGwgLS0-IE1vZHVsZXNbXCJub2RlX21vZHVsZXNcIl0iLCJtZXJtYWlkIjpudWxsfQ"></p>
+
+<p>インストールが終わると、<code class="language-plaintext highlighter-rouge">npm run dev</code> などからローカルのツールを呼び出せるようになる。</p>
+
+<h3 id="パッケージを追加する場合">パッケージを追加する場合</h3>
+
+<p>引数付きの <code class="language-plaintext highlighter-rouge">npm install</code> は、プロジェクトへ新しい依存関係を追加する。</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>npm <span class="nb">install </span>zod
+</code></pre></div></div>
+
+<p>この操作では、通常 <code class="language-plaintext highlighter-rouge">package.json</code> と <code class="language-plaintext highlighter-rouge">package-lock.json</code> が更新される。単に一時的なコマンド実行ではなく、プロジェクトの構成変更である。</p>
+
+<p>AIエージェントがパッケージを追加した場合は、少なくとも次の点を確認したい。</p>
+
+<ul>
+  <li>なぜそのパッケージが必要なのか</li>
+  <li>既存の依存関係で代替できないか</li>
+  <li>
+<code class="language-plaintext highlighter-rouge">package.json</code> とlockfileの差分が意図したものか</li>
+  <li>本番用か開発用か</li>
+</ul>
+
+<hr>
+
+<h2 id="package-lockjsonは再現性のためにある">package-lock.jsonは再現性のためにある</h2>
+
+<p><code class="language-plaintext highlighter-rouge">package.json</code> のバージョンには、次のように幅を持たせることがある。</p>
+
+<div class="language-json highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">{</span><span class="w">
+  </span><span class="nl">"dependencies"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+    </span><span class="nl">"example-package"</span><span class="p">:</span><span class="w"> </span><span class="s2">"^2.3.0"</span><span class="w">
+  </span><span class="p">}</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></code></pre></div></div>
+
+<p>一方、<code class="language-plaintext highlighter-rouge">package-lock.json</code> には実際に解決されたバージョンと依存関係の構成が記録される。別のPCやCIでも同じ依存関係を再現しやすくするためのファイルである。</p>
+
+<p>そのため、<code class="language-plaintext highlighter-rouge">package-lock.json</code> は通常Gitへコミットする。<code class="language-plaintext highlighter-rouge">node_modules/</code> はサイズが大きく環境依存でもあるため、通常はコミットしない。</p>
+
+<table>
+  <thead>
+    <tr>
+      <th style="text-align: left">ファイル</th>
+      <th style="text-align: center">Gitで管理</th>
+      <th style="text-align: left">役割</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td style="text-align: left"><code class="language-plaintext highlighter-rouge">package.json</code></td>
+      <td style="text-align: center">する</td>
+      <td style="text-align: left">プロジェクト設定と依存関係の宣言</td>
+    </tr>
+    <tr>
+      <td style="text-align: left"><code class="language-plaintext highlighter-rouge">package-lock.json</code></td>
+      <td style="text-align: center">する</td>
+      <td style="text-align: left">解決済みの依存関係を固定</td>
+    </tr>
+    <tr>
+      <td style="text-align: left"><code class="language-plaintext highlighter-rouge">node_modules/</code></td>
+      <td style="text-align: center">通常しない</td>
+      <td style="text-align: left">インストール済みパッケージの実体</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>lockfileにはnpm以外の種類もある。</p>
+
+<table>
+  <thead>
+    <tr>
+      <th style="text-align: left">パッケージマネージャー</th>
+      <th style="text-align: left">主なlockfile</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td style="text-align: left">npm</td>
+      <td style="text-align: left"><code class="language-plaintext highlighter-rouge">package-lock.json</code></td>
+    </tr>
+    <tr>
+      <td style="text-align: left">Yarn</td>
+      <td style="text-align: left"><code class="language-plaintext highlighter-rouge">yarn.lock</code></td>
+    </tr>
+    <tr>
+      <td style="text-align: left">pnpm</td>
+      <td style="text-align: left"><code class="language-plaintext highlighter-rouge">pnpm-lock.yaml</code></td>
+    </tr>
+  </tbody>
+</table>
+
+<p>既存リポジトリでは、lockfileを見て採用されているパッケージマネージャーを確認する。理由なくnpm、Yarn、pnpmを混在させると、依存関係の差分が分かりにくくなる。</p>
+
+<hr>
+
+<h2 id="npm-installとnpm-ciの違い">npm installとnpm ciの違い</h2>
+
+<p>どちらも依存関係をインストールするが、目的が異なる。</p>
+
+<h3 id="npm-install">npm install</h3>
+
+<p>ローカル開発で依存関係を追加・更新するときに使う。<code class="language-plaintext highlighter-rouge">package.json</code> と <code class="language-plaintext highlighter-rouge">package-lock.json</code> の内容が一致していない場合は、条件に合うバージョンを解決してlockfileを更新することがある。</p>
+
+<h3 id="npm-ci">npm ci</h3>
+
+<p>CIや再現性を重視する環境で、既存の <code class="language-plaintext highlighter-rouge">package-lock.json</code> どおりにクリーンインストールするときに使う。</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>npm ci
+</code></pre></div></div>
+
+<p><code class="language-plaintext highlighter-rouge">package.json</code> とlockfileが一致しなければエラーになり、lockfileを自動更新しない。既存の <code class="language-plaintext highlighter-rouge">node_modules/</code> がある場合は削除してからインストールする。</p>
+
+<table>
+  <thead>
+    <tr>
+      <th style="text-align: left">比較</th>
+      <th style="text-align: left"><code class="language-plaintext highlighter-rouge">npm install</code></th>
+      <th style="text-align: left"><code class="language-plaintext highlighter-rouge">npm ci</code></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td style="text-align: left">lockfileの更新</td>
+      <td style="text-align: left">起こりうる</td>
+      <td style="text-align: left">しない</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">依存パッケージの追加</td>
+      <td style="text-align: left">できる</td>
+      <td style="text-align: left">できない</td>
+    </tr>
+    <tr>
+      <td style="text-align: left"><code class="language-plaintext highlighter-rouge">node_modules/</code></td>
+      <td style="text-align: left">現状を使いながら調整</td>
+      <td style="text-align: left">削除して入れ直す</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">主な用途</td>
+      <td style="text-align: left">日常の開発・依存関係変更</td>
+      <td style="text-align: left">CI・検証・クリーンな再構築</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>AIエージェントに「依存関係を入れてビルドを確認して」と依頼しただけなのにlockfileが更新された場合は、<code class="language-plaintext highlighter-rouge">npm install</code> を使った理由と差分を確認した方がよい。</p>
+
+<hr>
+
+<h2 id="開発サーバーとビルドは別の処理">開発サーバーとビルドは別の処理</h2>
+
+<p>Webアプリ開発で混同しやすいのが、<code class="language-plaintext highlighter-rouge">dev</code> と <code class="language-plaintext highlighter-rouge">build</code> である。</p>
+
+<h3 id="開発サーバー">開発サーバー</h3>
+
+<p><code class="language-plaintext highlighter-rouge">npm run dev</code> は、開発中の確認に使うサーバーを起動することが多い。</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>npm run dev
+</code></pre></div></div>
+
+<p>開発サーバーには、ファイル変更を検知して画面を更新する機能や、エラーを詳しく表示する機能が含まれる。コマンドを実行したターミナルは、サーバーが動いている間は処理中のままになる。</p>
+
+<p>停止するときは、通常 <code class="language-plaintext highlighter-rouge">Ctrl+C</code> を使う。</p>
+
+<p>開発サーバーが起動したまま別のエージェントが同じコマンドを実行すると、ポート競合が起きることがある。エージェントが複数のターミナルやバックグラウンドプロセスを使っている場合は、何が起動中か確認する必要がある。</p>
+
+<h3 id="ビルド">ビルド</h3>
+
+<p><code class="language-plaintext highlighter-rouge">npm run build</code> は、デプロイや本番実行に使う成果物を作る処理であることが多い。</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>npm run build
+</code></pre></div></div>
+
+<p>ビルドでは、プロジェクトによって次のような処理が行われる。</p>
+
+<ul>
+  <li>TypeScriptや新しいJavaScript構文の変換</li>
+  <li>複数ファイルの結合や分割</li>
+  <li>コードの圧縮</li>
+  <li>サーバー側とブラウザ側のコードの振り分け</li>
+  <li>静的HTMLやアセットの生成</li>
+  <li>型チェックや設定値の検証</li>
+</ul>
+
+<p>開発サーバーで画面が表示できても、ビルドが成功するとは限らない。開発中には通っていた型エラーや、デプロイ環境にない環境変数がビルド時に見つかることもある。</p>
+
+<table>
+  <thead>
+    <tr>
+      <th style="text-align: left">比較</th>
+      <th style="text-align: left">開発サーバー</th>
+      <th style="text-align: left">ビルド</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td style="text-align: left">代表的なコマンド</td>
+      <td style="text-align: left"><code class="language-plaintext highlighter-rouge">npm run dev</code></td>
+      <td style="text-align: left"><code class="language-plaintext highlighter-rouge">npm run build</code></td>
+    </tr>
+    <tr>
+      <td style="text-align: left">目的</td>
+      <td style="text-align: left">開発中の確認</td>
+      <td style="text-align: left">デプロイ用成果物の作成</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">実行時間</td>
+      <td style="text-align: left">停止するまで動き続ける</td>
+      <td style="text-align: left">処理完了後に終了する</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">最適化</td>
+      <td style="text-align: left">開発しやすさを優先</td>
+      <td style="text-align: left">配布・実行を意識する</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">結果</td>
+      <td style="text-align: left">ローカルのURLで確認</td>
+      <td style="text-align: left">ディレクトリやサーバー用コードを生成</td>
+    </tr>
+  </tbody>
+</table>
+
+<hr>
+
+<h2 id="typescriptはそのまま動かしているとは限らない">TypeScriptはそのまま動かしているとは限らない</h2>
+
+<p>AIエージェントが生成するWebアプリでは、JavaScriptではなくTypeScriptが使われることが多い。</p>
+
+<div class="language-typescript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">function</span> <span class="nf">greet</span><span class="p">(</span><span class="nx">name</span><span class="p">:</span> <span class="kr">string</span><span class="p">):</span> <span class="kr">string</span> <span class="p">{</span>
+  <span class="k">return</span> <span class="s2">`Hello, </span><span class="p">${</span><span class="nx">name</span><span class="p">}</span><span class="s2">`</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p><code class="language-plaintext highlighter-rouge">: string</code> のような型情報は、コードの間違いを見つけるために使われる。プロジェクトによっては、TypeScriptをJavaScriptへ変換してからブラウザやNode.jsで実行する。</p>
+
+<p>この周辺では、異なる役割をまとめて「ビルド」と呼ぶことがある。</p>
+
+<table>
+  <thead>
+    <tr>
+      <th style="text-align: left">処理</th>
+      <th style="text-align: left">役割</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td style="text-align: left">型チェック</td>
+      <td style="text-align: left">型の矛盾を検出する</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">トランスパイル</td>
+      <td style="text-align: left">TypeScriptなどを実行可能なJavaScriptへ変換する</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">バンドル</td>
+      <td style="text-align: left">複数のファイルや依存関係を配布しやすい形へまとめる</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">最適化</td>
+      <td style="text-align: left">圧縮や不要コードの除去を行う</td>
+    </tr>
+  </tbody>
+</table>
+
+<p><code class="language-plaintext highlighter-rouge">npm run build</code> が失敗したときは、「ビルドが失敗した」だけでは原因が分からない。TypeScriptの型チェック、フレームワークの変換、コード生成のどこで失敗したかを見る必要がある。</p>
+
+<p><code class="language-plaintext highlighter-rouge">tsconfig.json</code> はTypeScriptの主要な設定ファイルである。AIエージェントがこのファイルを変更した場合、単なるコード修正ではなく、プロジェクト全体の型チェックや変換ルールが変わる可能性がある。</p>
+
+<hr>
+
+<h2 id="環境変数とenvはコードの外から設定を渡す">環境変数と.envはコードの外から設定を渡す</h2>
+
+<p>APIのURL、実行モード、外部サービスの認証情報などは、コードへ直接書かず環境変数として渡すことがある。</p>
+
+<p>Node.jsでは、環境変数を <code class="language-plaintext highlighter-rouge">process.env</code> から参照できる。</p>
+
+<div class="language-javascript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">const</span> <span class="nx">apiUrl</span> <span class="o">=</span> <span class="nx">process</span><span class="p">.</span><span class="nx">env</span><span class="p">.</span><span class="nx">API_URL</span><span class="p">;</span>
+</code></pre></div></div>
+
+<p>ローカル開発では、<code class="language-plaintext highlighter-rouge">.env</code> というファイルに値を書く構成もよく使われる。</p>
+
+<pre><code class="language-dotenv">API_URL=https://api.example.com
+API_TOKEN=replace-with-local-token
+</code></pre>
+
+<p>環境変数について、バイブコーディングで知っておきたい点は次のとおりだ。</p>
+
+<ul>
+  <li>
+<code class="language-plaintext highlighter-rouge">.env</code> にはAPIキーやトークンが含まれる場合がある</li>
+  <li>秘密情報を含む <code class="language-plaintext highlighter-rouge">.env</code> は通常Gitへコミットしない</li>
+  <li>必要な変数名だけを書いた <code class="language-plaintext highlighter-rouge">.env.example</code> を共有することがある</li>
+  <li>環境変数の値は文字列として扱われるため、数値や真偽値は変換が必要になる</li>
+  <li>フレームワークによって、ブラウザへ公開される変数の命名規則が異なる</li>
+  <li>
+<code class="language-plaintext highlighter-rouge">.env</code> を変更した後は、開発サーバーの再起動が必要な場合がある</li>
+</ul>
+
+<p>特に注意したいのが、サーバー側だけで使う秘密情報と、ブラウザへ渡してよい公開設定の違いである。フロントエンドへ埋め込まれた値は、利用者から見える可能性がある。</p>
+
+<p>AIエージェントが環境変数を追加した場合は、「どこで参照するか」「秘密情報か」「デプロイ先にも設定が必要か」を確認した方がよい。</p>
+
+<hr>
+
+<h2 id="nodejsのバージョンはプロジェクトの前提条件">Node.jsのバージョンはプロジェクトの前提条件</h2>
+
+<p>同じコードでも、Node.jsのバージョンが違うと動作しない場合がある。</p>
+
+<p>現在使っているバージョンは次のコマンドで確認できる。</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>node <span class="nt">-v</span>
+npm <span class="nt">-v</span>
+</code></pre></div></div>
+
+<p>プロジェクト側では、次のようなファイルや設定で利用するバージョンを示すことがある。</p>
+
+<table>
+  <thead>
+    <tr>
+      <th style="text-align: left">場所</th>
+      <th style="text-align: left">役割</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td style="text-align: left"><code class="language-plaintext highlighter-rouge">.nvmrc</code></td>
+      <td style="text-align: left">nvmで選ぶNode.jsバージョン</td>
+    </tr>
+    <tr>
+      <td style="text-align: left"><code class="language-plaintext highlighter-rouge">.node-version</code></td>
+      <td style="text-align: left">バージョン管理ツール向けの指定</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">
+<code class="language-plaintext highlighter-rouge">package.json</code> の <code class="language-plaintext highlighter-rouge">engines</code>
+</td>
+      <td style="text-align: left">対応するNode.jsやnpmの範囲</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">Dockerfile</td>
+      <td style="text-align: left">コンテナ内で使うNode.jsバージョン</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">CI設定</td>
+      <td style="text-align: left">テストやビルドで使うNode.jsバージョン</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>ローカルでは動くのにCIやデプロイで失敗する場合、Node.jsのバージョン差が原因になることがある。依存パッケージのインストールエラーや、利用できない構文・APIのエラーとして現れる場合もある。</p>
+
+<p>エージェントへ「最新のNode.jsへ上げて」と依頼する前に、ローカル、Docker、CI、デプロイ先の指定をまとめて確認する必要がある。一か所だけ変更すると、環境ごとの不一致が残る。</p>
+
+<hr>
+
+<h2 id="importとrequireはモジュール方式の違い">importとrequireはモジュール方式の違い</h2>
+
+<p>Node.jsのコードでは、外部ファイルやパッケージを読み込む書き方として、主に次の2種類を見かける。</p>
+
+<h3 id="es-modules">ES Modules</h3>
+
+<div class="language-javascript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">import</span> <span class="nx">express</span> <span class="k">from</span> <span class="dl">"</span><span class="s2">express</span><span class="dl">"</span><span class="p">;</span>
+<span class="k">export</span> <span class="kd">function</span> <span class="nf">createApp</span><span class="p">()</span> <span class="p">{}</span>
+</code></pre></div></div>
+
+<h3 id="commonjs">CommonJS</h3>
+
+<div class="language-javascript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">const</span> <span class="nx">express</span> <span class="o">=</span> <span class="nf">require</span><span class="p">(</span><span class="dl">"</span><span class="s2">express</span><span class="dl">"</span><span class="p">);</span>
+<span class="nx">module</span><span class="p">.</span><span class="nx">exports</span> <span class="o">=</span> <span class="p">{</span> <span class="nx">createApp</span> <span class="p">};</span>
+</code></pre></div></div>
+
+<p>どちらもコードをファイルへ分けて再利用する仕組みだが、読み込み方法が異なる。<code class="language-plaintext highlighter-rouge">package.json</code> の <code class="language-plaintext highlighter-rouge">"type": "module"</code>、ファイル拡張子、利用するツールの設定などによって扱いが決まる。</p>
+
+<div class="language-json highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">{</span><span class="w">
+  </span><span class="nl">"type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"module"</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></code></pre></div></div>
+
+<p><code class="language-plaintext highlighter-rouge">Cannot use import statement outside a module</code> や <code class="language-plaintext highlighter-rouge">require is not defined</code> といったエラーは、ES ModulesとCommonJSの前提が合っていないときに出ることがある。</p>
+
+<p>この問題を直すために、エージェントが <code class="language-plaintext highlighter-rouge">package.json</code> の <code class="language-plaintext highlighter-rouge">type</code> を変更することがある。しかし、この設定はプロジェクト内の広い範囲へ影響する。エラーが出た1ファイルだけでなく、設定ファイルやビルドツールも含めて互換性を確認する必要がある。</p>
+
+<hr>
+
+<h2 id="devbuildlinttestは何をしているのか">dev・build・lint・testは何をしているのか</h2>
+
+<p>スクリプト名は自由に付けられるが、よく使われる名前には慣習がある。</p>
+
+<table>
+  <thead>
+    <tr>
+      <th style="text-align: left">名前</th>
+      <th style="text-align: left">よくある役割</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td style="text-align: left"><code class="language-plaintext highlighter-rouge">dev</code></td>
+      <td style="text-align: left">開発サーバーを起動する</td>
+    </tr>
+    <tr>
+      <td style="text-align: left"><code class="language-plaintext highlighter-rouge">build</code></td>
+      <td style="text-align: left">配布・デプロイ用の成果物を作る</td>
+    </tr>
+    <tr>
+      <td style="text-align: left"><code class="language-plaintext highlighter-rouge">start</code></td>
+      <td style="text-align: left">アプリケーションを起動する</td>
+    </tr>
+    <tr>
+      <td style="text-align: left"><code class="language-plaintext highlighter-rouge">lint</code></td>
+      <td style="text-align: left">コードの問題やルール違反を検出する</td>
+    </tr>
+    <tr>
+      <td style="text-align: left"><code class="language-plaintext highlighter-rouge">format</code></td>
+      <td style="text-align: left">コードの見た目を整える</td>
+    </tr>
+    <tr>
+      <td style="text-align: left"><code class="language-plaintext highlighter-rouge">test</code></td>
+      <td style="text-align: left">自動テストを実行する</td>
+    </tr>
+    <tr>
+      <td style="text-align: left"><code class="language-plaintext highlighter-rouge">typecheck</code></td>
+      <td style="text-align: left">型の矛盾を検出する</td>
+    </tr>
+    <tr>
+      <td style="text-align: left"><code class="language-plaintext highlighter-rouge">check</code></td>
+      <td style="text-align: left">lint、型チェック、テストなどをまとめて実行する</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>これらはあくまで慣習である。<code class="language-plaintext highlighter-rouge">npm run check</code> が何をするかは、プロジェクトごとに異なる。</p>
+
+<div class="language-json highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">{</span><span class="w">
+  </span><span class="nl">"scripts"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+    </span><span class="nl">"check"</span><span class="p">:</span><span class="w"> </span><span class="s2">"npm run lint &amp;&amp; npm run typecheck &amp;&amp; npm test"</span><span class="w">
+  </span><span class="p">}</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></code></pre></div></div>
+
+<p>この例では、左から順に実行し、途中で失敗すれば後続の処理へ進まない。</p>
+
+<p>lintやformatの役割をもう少し詳しく知りたい場合は、Python向けの記事だが<a href="/jekyll-theme-yat/%E9%96%8B%E7%99%BA/2026/06/07/python-black-guide.html">AI コーディング向けの Python フォーマッター Black</a>で、フォーマッター・リンター・テストの違いを整理している。</p>
+
+<hr>
+
+<h2 id="引数を追加するときの">引数を追加するときの「–」</h2>
+
+<p>登録されたスクリプトへ追加の引数を渡したい場合は、<code class="language-plaintext highlighter-rouge">--</code> を挟む。</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>npm run <span class="nb">test</span> <span class="nt">--</span> <span class="nt">--watch</span>
+</code></pre></div></div>
+
+<p><code class="language-plaintext highlighter-rouge">--</code> より前はnpm自身への指定、後ろは実際に呼び出されるスクリプトへの指定として扱われる。</p>
+
+<p><code class="language-plaintext highlighter-rouge">package.json</code> が次の内容なら、</p>
+
+<div class="language-json highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">{</span><span class="w">
+  </span><span class="nl">"scripts"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+    </span><span class="nl">"test"</span><span class="p">:</span><span class="w"> </span><span class="s2">"vitest"</span><span class="w">
+  </span><span class="p">}</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></code></pre></div></div>
+
+<p>実質的には次のような呼び出しになる。</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>vitest <span class="nt">--watch</span>
+</code></pre></div></div>
+
+<p>AIエージェントのログに長いnpmコマンドが出たときは、<code class="language-plaintext highlighter-rouge">--</code> の前後を分けて見ると理解しやすい。</p>
+
+<hr>
+
+<h2 id="npm-runの前後に別の処理が動くことがある">npm runの前後に別の処理が動くことがある</h2>
+
+<p>npm scriptsには、スクリプト名の前に <code class="language-plaintext highlighter-rouge">pre</code>、後ろに <code class="language-plaintext highlighter-rouge">post</code> を付ける仕組みがある。</p>
+
+<div class="language-json highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">{</span><span class="w">
+  </span><span class="nl">"scripts"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+    </span><span class="nl">"prebuild"</span><span class="p">:</span><span class="w"> </span><span class="s2">"npm run generate"</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"build"</span><span class="p">:</span><span class="w"> </span><span class="s2">"vite build"</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"postbuild"</span><span class="p">:</span><span class="w"> </span><span class="s2">"node scripts/report-size.js"</span><span class="w">
+  </span><span class="p">}</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></code></pre></div></div>
+
+<p>この状態で次を実行すると、</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>npm run build
+</code></pre></div></div>
+
+<p><code class="language-plaintext highlighter-rouge">prebuild</code>、<code class="language-plaintext highlighter-rouge">build</code>、<code class="language-plaintext highlighter-rouge">postbuild</code> の順に動く。</p>
+
+<p><img class="mermaid" src="https://mermaid.ink/svg/eyJjb2RlIjoiZmxvd2NoYXJ0IFRCXG5QcmVbXCJwcmVidWlsZDxicj7kuovliY3lh6bnkIZcIl0gLS0-IE1haW5bXCJidWlsZDxicj7mnKzlh6bnkIZcIl1cbk1haW4gLS0-IFBvc3RbXCJwb3N0YnVpbGQ8YnI-5LqL5b6M5Yem55CGXCJdIiwibWVybWFpZCI6bnVsbH0"></p>
+
+<p><code class="language-plaintext highlighter-rouge">build</code> の一行だけを見て終わりだと思っていると、生成ファイルの更新やレポート出力を見落とすことがある。スクリプトを確認するときは、同名の <code class="language-plaintext highlighter-rouge">pre...</code> と <code class="language-plaintext highlighter-rouge">post...</code> も確認したい。</p>
+
+<hr>
+
+<h2 id="npxは未導入のパッケージを取得する場合がある">npxは未導入のパッケージを取得する場合がある</h2>
+
+<p>次のようなコマンドもよく見かける。</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>npx create-vite
+</code></pre></div></div>
+
+<p><code class="language-plaintext highlighter-rouge">npx</code> は <code class="language-plaintext highlighter-rouge">npm exec</code> に近い方法で、パッケージが提供するコマンドを実行する。対象がローカルの依存関係に存在しない場合、npmのキャッシュ用ディレクトリへパッケージを取得して実行する場合がある。</p>
+
+<p>このため、<code class="language-plaintext highlighter-rouge">npx</code> は単なる「すでにあるコマンドの呼び出し」とは限らない。</p>
+
+<p>AIエージェントが <code class="language-plaintext highlighter-rouge">npx</code> で見慣れないツールを実行しようとしている場合は、パッケージ名、実行するバージョン、生成・変更されるファイルを確認した方がよい。特に初期化ツールやコード生成ツールは、多数のファイルを書き換えることがある。</p>
+
+<hr>
+
+<h2 id="npmコマンドは安全な読み取り処理とは限らない">npmコマンドは安全な読み取り処理とは限らない</h2>
+
+<p><code class="language-plaintext highlighter-rouge">npm run</code> は、最終的には <code class="language-plaintext highlighter-rouge">package.json</code> に書かれたコマンドをシェルで実行する仕組みである。ファイル削除、データベース操作、外部通信なども記述できる。</p>
+
+<div class="language-json highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">{</span><span class="w">
+  </span><span class="nl">"scripts"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+    </span><span class="nl">"reset"</span><span class="p">:</span><span class="w"> </span><span class="s2">"node scripts/reset-database.js"</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"deploy"</span><span class="p">:</span><span class="w"> </span><span class="s2">"node scripts/deploy.js"</span><span class="w">
+  </span><span class="p">}</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></code></pre></div></div>
+
+<p>名前が <code class="language-plaintext highlighter-rouge">check</code> でも読み取りだけとは限らず、名前が <code class="language-plaintext highlighter-rouge">reset</code> なら必ず危険とも限らない。中身を確認する必要がある。</p>
+
+<p>また、<code class="language-plaintext highlighter-rouge">npm install</code> や <code class="language-plaintext highlighter-rouge">npm ci</code> では、パッケージ側が定義したライフサイクルスクリプトが動く場合がある。信頼できないリポジトリや依存関係を扱うときは、「インストールだけだから何も実行されない」とは考えない方がよい。</p>
+
+<hr>
+
+<h2 id="aiエージェントに実行を任せる前に見るもの">AIエージェントに実行を任せる前に見るもの</h2>
+
+<p>毎回すべてを手作業で確認する必要はない。影響が大きそうなコマンドでは、次の順番で確認すると判断しやすい。</p>
+
+<h3 id="1-今いるディレクトリ">1. 今いるディレクトリ</h3>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">pwd</span>
+</code></pre></div></div>
+
+<p>モノレポや複数アプリを含むリポジトリでは、ディレクトリごとに別の <code class="language-plaintext highlighter-rouge">package.json</code> がある。違う場所で実行すると、スクリプトが見つからなかったり、別アプリの依存関係を変更したりする。</p>
+
+<h3 id="2-nodejsのバージョン">2. Node.jsのバージョン</h3>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>node <span class="nt">-v</span>
+npm <span class="nt">-v</span>
+</code></pre></div></div>
+
+<p><code class="language-plaintext highlighter-rouge">.nvmrc</code>、<code class="language-plaintext highlighter-rouge">package.json</code>、Dockerfile、CI設定などに指定されたバージョンと一致しているか確認する。</p>
+
+<h3 id="3-パッケージマネージャーとlockfile">3. パッケージマネージャーとlockfile</h3>
+
+<p><code class="language-plaintext highlighter-rouge">package-lock.json</code>、<code class="language-plaintext highlighter-rouge">yarn.lock</code>、<code class="language-plaintext highlighter-rouge">pnpm-lock.yaml</code> のどれがあるかを見る。既存のパッケージマネージャーに合わせる。</p>
+
+<h3 id="4-packagejsonのscripts">4. package.jsonのscripts</h3>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>npm run
+</code></pre></div></div>
+
+<p>または <code class="language-plaintext highlighter-rouge">package.json</code> を直接読み、実行対象の中身と <code class="language-plaintext highlighter-rouge">pre</code>・<code class="language-plaintext highlighter-rouge">post</code> スクリプトを確認する。</p>
+
+<h3 id="5-必要な環境変数">5. 必要な環境変数</h3>
+
+<p><code class="language-plaintext highlighter-rouge">.env.example</code>、README、デプロイ設定などを確認し、ローカルと実行先で必要な変数が揃っているかを見る。秘密情報の値をログやコミットへ出さないことも確認する。</p>
+
+<h3 id="6-コマンドが書き換えるもの">6. コマンドが書き換えるもの</h3>
+
+<p>lintの自動修正、コード生成、DBマイグレーション、デプロイ、依存関係の追加など、変更を伴う処理か確認する。</p>
+
+<h3 id="7-実行後の差分とプロセス">7. 実行後の差分とプロセス</h3>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>git status <span class="nt">--short</span>
+git diff
+</code></pre></div></div>
+
+<p>「コマンドが成功した」ことと「意図した変更になった」ことは別である。終了コードが <code class="language-plaintext highlighter-rouge">0</code> でも、不要な生成ファイルやlockfile更新が混ざることはある。開発サーバーを起動した場合は、確認後もプロセスを残すのか停止するのかを明確にする。</p>
+
+<hr>
+
+<h2 id="エージェントへの依頼を少し具体的にする">エージェントへの依頼を少し具体的にする</h2>
+
+<p>単に「動作確認して」と頼むと、エージェントが妥当だと思ったコマンドを広く実行することがある。次のように確認内容を含めると、作業を追いやすくなる。</p>
+
+<div class="language-text highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Node.js のバージョン、package.json の scripts、lockfile、
+必要な環境変数を確認し、
+採用されているパッケージマネージャーに合わせてください。
+npm run build が実際に何を実行するか説明してから実行し、
+終了後に変更ファイル、エラー、起動中のプロセスを報告してください。
+</code></pre></div></div>
+
+<p>依存関係を変更してほしくない場合は、その条件も明示する。</p>
+
+<div class="language-text highlighter-rouge"><div class="highlight"><pre class="highlight"><code>依存パッケージは追加・更新せず、既存のスクリプトだけで
+lint、型チェック、テストを実行してください。
+</code></pre></div></div>
+
+<p>知識がなくても、実行前に「何を読むか」、実行後に「何を報告するか」は指定できる。</p>
+
+<hr>
+
+<h2 id="よくあるエラーの読み方">よくあるエラーの読み方</h2>
+
+<p>エラー全文を理解できなくても、発生した段階を切り分けると状況が見える。</p>
+
+<h3 id="missing-script">Missing script</h3>
+
+<div class="language-text highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Missing script: "dev"
+</code></pre></div></div>
+
+<p>実行した場所の <code class="language-plaintext highlighter-rouge">package.json</code> に、指定したスクリプトが存在しない可能性が高い。</p>
+
+<p>確認するもの:</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">pwd
+</span>npm run
+</code></pre></div></div>
+
+<h3 id="command-not-found">command not found</h3>
+
+<div class="language-text highlighter-rouge"><div class="highlight"><pre class="highlight"><code>sh: 1: vite: not found
+</code></pre></div></div>
+
+<p>スクリプト自体は見つかったが、その中で呼んでいるツールが見つかっていない。依存関係が未インストール、インストール失敗、または <code class="language-plaintext highlighter-rouge">package.json</code> の設定ミスが候補になる。</p>
+
+<h3 id="packagejsonが見つからない">package.jsonが見つからない</h3>
+
+<div class="language-text highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Could not read package.json
+</code></pre></div></div>
+
+<p>実行ディレクトリが違う可能性がある。むやみに新しい <code class="language-plaintext highlighter-rouge">package.json</code> を作る前に、リポジトリ内の正しい配置を確認する。</p>
+
+<h3 id="ポートが使用中">ポートが使用中</h3>
+
+<div class="language-text highlighter-rouge"><div class="highlight"><pre class="highlight"><code>EADDRINUSE
+</code></pre></div></div>
+
+<p>開発サーバーが使おうとしたポートを、別のプロセスがすでに使用している。コードの不具合ではなく、別の開発サーバーが起動したままになっている場合も多い。</p>
+
+<h3 id="環境変数がない">環境変数がない</h3>
+
+<div class="language-text highlighter-rouge"><div class="highlight"><pre class="highlight"><code>API_URL is not defined
+Missing required environment variable
+</code></pre></div></div>
+
+<p><code class="language-plaintext highlighter-rouge">.env</code> の不足、変数名の違い、開発サーバーの再起動忘れ、デプロイ先での設定漏れなどが候補になる。値そのものをログへ表示する前に、秘密情報ではないか確認する。</p>
+
+<h3 id="importやrequireで失敗する">importやrequireで失敗する</h3>
+
+<div class="language-text highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Cannot use import statement outside a module
+require is not defined
+</code></pre></div></div>
+
+<p>ES ModulesとCommonJSの設定が合っていない可能性がある。<code class="language-plaintext highlighter-rouge">package.json</code> の <code class="language-plaintext highlighter-rouge">type</code>、ファイル拡張子、TypeScriptやビルドツールの設定を確認する。</p>
+
+<h3 id="nodejsのバージョンが合わない">Node.jsのバージョンが合わない</h3>
+
+<div class="language-text highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Unsupported engine
+The engine "node" is incompatible
+</code></pre></div></div>
+
+<p>プロジェクトや依存パッケージが要求するNode.jsの範囲と、実際の実行環境が一致していない。ローカルだけでなく、Docker、CI、デプロイ先も確認する。</p>
+
+<h3 id="テストやlintが失敗した">テストやlintが失敗した</h3>
+
+<p>npm自体が壊れているとは限らない。npmは呼び出し役であり、実際の失敗はESLint、TypeScript、テストランナーなどが報告している。</p>
+
+<p>ログでは、次の順番で見るとよい。</p>
+
+<ol>
+  <li>どのnpm scriptを実行したか</li>
+  <li>scriptの実体は何か</li>
+  <li>最初に失敗を報告したツールは何か</li>
+  <li>最初の具体的なエラーメッセージは何か</li>
+  <li>終了後にファイル変更が残っているか</li>
+</ol>
+
+<p>最後の大量のスタックトレースより、最初に出た具体的なエラーの方が原因に近いことが多い。</p>
+
+<hr>
+
+<h2 id="バイブコーディングで覚えておく最小セット">バイブコーディングで覚えておく最小セット</h2>
+
+<p>すべてを覚える必要はない。まずは次の対応関係が分かれば、エージェントの作業を追いやすくなる。</p>
+
+<table>
+  <thead>
+    <tr>
+      <th style="text-align: left">見かけたもの</th>
+      <th style="text-align: left">理解しておくこと</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td style="text-align: left">Node.js</td>
+      <td style="text-align: left">JavaScriptをブラウザ外で動かす実行環境</td>
+    </tr>
+    <tr>
+      <td style="text-align: left"><code class="language-plaintext highlighter-rouge">node -v</code></td>
+      <td style="text-align: left">現在使っているNode.jsのバージョンを確認する</td>
+    </tr>
+    <tr>
+      <td style="text-align: left"><code class="language-plaintext highlighter-rouge">npm run dev</code></td>
+      <td style="text-align: left">
+<code class="language-plaintext highlighter-rouge">package.json</code> の <code class="language-plaintext highlighter-rouge">scripts.dev</code> を実行する</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">開発サーバー</td>
+      <td style="text-align: left">停止するまで動くプロセスで、ポートを使用する</td>
+    </tr>
+    <tr>
+      <td style="text-align: left"><code class="language-plaintext highlighter-rouge">npm run build</code></td>
+      <td style="text-align: left">デプロイ用の変換・生成内容はプロジェクトごとに異なる</td>
+    </tr>
+    <tr>
+      <td style="text-align: left"><code class="language-plaintext highlighter-rouge">npm install</code></td>
+      <td style="text-align: left">依存関係を用意し、設定ファイルを更新する場合がある</td>
+    </tr>
+    <tr>
+      <td style="text-align: left"><code class="language-plaintext highlighter-rouge">npm ci</code></td>
+      <td style="text-align: left">lockfileどおりに依存関係を入れ直す</td>
+    </tr>
+    <tr>
+      <td style="text-align: left"><code class="language-plaintext highlighter-rouge">npx ...</code></td>
+      <td style="text-align: left">未導入のパッケージを取得して実行する場合がある</td>
+    </tr>
+    <tr>
+      <td style="text-align: left"><code class="language-plaintext highlighter-rouge">package.json</code></td>
+      <td style="text-align: left">コマンドと依存関係の宣言を見る</td>
+    </tr>
+    <tr>
+      <td style="text-align: left"><code class="language-plaintext highlighter-rouge">package-lock.json</code></td>
+      <td style="text-align: left">解決済みの依存関係を再現する</td>
+    </tr>
+    <tr>
+      <td style="text-align: left"><code class="language-plaintext highlighter-rouge">node_modules/</code></td>
+      <td style="text-align: left">インストールされたパッケージの実体</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">TypeScript</td>
+      <td style="text-align: left">型チェックやJavaScriptへの変換が関係する</td>
+    </tr>
+    <tr>
+      <td style="text-align: left"><code class="language-plaintext highlighter-rouge">.env</code></td>
+      <td style="text-align: left">実行時の設定値を渡し、秘密情報を含む場合がある</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">
+<code class="language-plaintext highlighter-rouge">import</code> / <code class="language-plaintext highlighter-rouge">require</code>
+</td>
+      <td style="text-align: left">異なるモジュール方式の書き方</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">コマンド失敗</td>
+      <td style="text-align: left">npmではなく、呼び出されたツールが原因の場合も多い</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>Node.js周辺で分からなくなったときは、まず「どの環境で動くコードか」「どのツールを呼んでいるか」「どの設定ファイルを読んでいるか」を分ける。そのうえで <code class="language-plaintext highlighter-rouge">package.json</code>、lockfile、Node.jsのバージョン、環境変数を確認すると、AIエージェントが何をしているのかを具体的に追えるようになる。</p>
+
+<hr>
+
+<h2 id="参考">参考</h2>
+
+<ul>
+  <li>
+<a href="https://nodejs.org/learn/getting-started/introduction-to-nodejs">Introduction to Node.js</a> ── Node.jsの役割と実行モデル</li>
+  <li>
+<a href="https://nodejs.org/learn/command-line/run-nodejs-scripts-from-the-command-line">Run Node.js scripts from the command line</a> ── Node.jsでJavaScriptを実行する基本</li>
+  <li>
+<a href="https://nodejs.org/api/environment_variables.html">Environment Variables</a> ── <code class="language-plaintext highlighter-rouge">process.env</code> と <code class="language-plaintext highlighter-rouge">.env</code> の公式仕様</li>
+  <li>
+<a href="https://nodejs.org/api/packages.html">Modules: Packages</a> ── ES Modules・CommonJSと <code class="language-plaintext highlighter-rouge">package.json</code> の <code class="language-plaintext highlighter-rouge">type</code>
+</li>
+  <li>
+<a href="https://docs.npmjs.com/downloading-and-installing-node-js-and-npm/">Downloading and installing Node.js and npm</a> ── Node.jsとnpm CLIの導入・バージョン確認</li>
+  <li>
+<a href="https://docs.npmjs.com/cli/v11/configuring-npm/package-json/">package.json</a> ── scripts・dependencies・devDependenciesなどの公式仕様</li>
+  <li>
+<a href="https://docs.npmjs.com/cli/v11/commands/npm-run/">npm run</a> ── package scriptsの実行方法</li>
+  <li>
+<a href="https://docs.npmjs.com/cli/v11/commands/npm-install/">npm install</a> ── 依存関係のインストールとlockfileの扱い</li>
+  <li>
+<a href="https://docs.npmjs.com/cli/v11/commands/npm-ci/">npm ci</a> ── lockfileを使ったクリーンインストール</li>
+  <li>
+<a href="https://docs.npmjs.com/cli/v11/configuring-npm/package-lock-json/">package-lock.json</a> ── lockfileの目的と管理方法</li>
+  <li>
+<a href="https://docs.npmjs.com/cli/v11/commands/npm-exec/">npm exec</a> ── ローカルまたは取得したパッケージのコマンド実行</li>
+</ul>
+
+
+    </div>
+
+</article>
+<div class="post-nav">
+<a class="previous" href="/jekyll-theme-yat/%E9%96%8B%E7%99%BA/2026/06/13/github-useful-features.html" title="まだ使っていない GitHub の便利機能を整理する">まだ使っていない GitHub の便利機能を整理する</a><a class="next" href="/jekyll-theme-yat/ai%E9%96%8B%E7%99%BA/2026/06/13/openclaw-personal-ai-agent.html" title="OpenClawで自分専用のAIエージェントを動かす">OpenClawで自分専用のAIエージェントを動かす</a>
+</div>
+<div class="post-related">
+      <div>Related Articles</div>
+      <ul>
+        <li><a class="post-link" href="/jekyll-theme-yat/%E9%96%8B%E7%99%BA/2023/09/17/docker-data-analysis.html" title="OpenClawで自分専用のAIエージェントを動かす">【Docker &amp; VSCode】Pythonデータ分析環境の構築と運用</a></li>
+<li><a class="post-link" href="/jekyll-theme-yat/%E9%96%8B%E7%99%BA/2026/06/06/supabase-vs-railway-comparison.html" title="OpenClawで自分専用のAIエージェントを動かす">Supabase vs Railway vs Neon バックエンド選定 (2026年版)</a></li>
+<li><a class="post-link" href="/jekyll-theme-yat/%E9%96%8B%E7%99%BA/2023/05/05/docker-mount.html" title="OpenClawで自分専用のAIエージェントを動かす">DockerでUbuntuを動かそう！- マウント編</a></li>
+<li><a class="post-link" href="/jekyll-theme-yat/ai%E9%96%8B%E7%99%BA/2026/06/19/mcp-tools-resources-prompts.html" title="OpenClawで自分専用のAIエージェントを動かす">MCPのTools・Resources・Promptsを使い分ける</a></li>
+</ul>
+    </div>
+<div class="post-comments"></div></section>
+</div>
+
+
+  </section>
+  <section class="sidebar" style="margin-left: 15px;">
+    <!-- Get sidebar items --><style type="text/css" media="screen">
+.post-menu ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+</style>
+
+<div class="post-menu">
+  <div class="post-menu-title">TOC</div>
+  <div class="post-menu-content"></div>
+</div>
+
+<script>
+  function generateContent() {
+    var menu = document.querySelector(".post-menu");
+    var menuContent =  menu.querySelector(".post-menu-content");
+    var headings = document.querySelector(".post-content").querySelectorAll("h2, h3, h4, h5, h6");
+
+    // Hide menu when no headings
+    if (headings.length === 0) {
+      return menu.style.display = "none";
+    }
+
+    // Generate post menu
+    var menuHTML = '';
+    for (var i = 0; i < headings.length; i++) {
+      var h = headings[i];
+      menuHTML += (
+        '<li class="h-' + h.tagName.toLowerCase() + '">'
+        + '<a href="#h-' + h.getAttribute('id') + '">' + h.textContent + '</a></li>');
+    }
+
+    menuContent.innerHTML = '<ul>' + menuHTML + '</ul>';
+
+    // The header element
+    var header = document.querySelector('header.site-header');
+
+    function doMenuCollapse(index, over_items) {
+      var items = menuContent.firstChild.children;
+
+      if (over_items == undefined) {
+        over_items = 20;
+      }
+
+      if (items.length < over_items) {
+        return;
+      }
+
+      var activeItem = items[index];
+      var beginItem = activeItem
+      var endItem = activeItem
+      var beginIndex = index;
+      var endIndex = index + 1;
+      while (beginIndex >= 0
+        && !items[beginIndex].classList.contains('h-h2')) {
+        beginIndex -= 1;
+      }
+      while (endIndex < items.length
+        && !items[endIndex].classList.contains('h-h2')) {
+        endIndex += 1;
+      }
+      for (var i = 0; i < beginIndex; i++) {
+        item = items[i]
+        if (!item.classList.contains('h-h2')) {
+          item.style.display = 'none';
+        }
+      }
+      for (var i = beginIndex + 1; i < endIndex; i++) {
+        item = items[i]
+        // if (!item.classList.contains('h-h2')) {
+          item.style.display = '';
+        // }
+      }
+      for (var i = endIndex; i < items.length; i++) {
+        item = items[i]
+        if (!item.classList.contains('h-h2')) {
+          item.style.display = 'none';
+        }
+      }
+    }
+
+    // Init menu collapsed
+    doMenuCollapse(-1);
+
+    // Active the menu item
+    window.addEventListener('scroll', function (event) {
+      var lastActive = menuContent.querySelector('.active');
+      var changed = true;
+      var activeIndex = -1;
+      for (var i = headings.length - 1; i >= 0; i--) {
+        var h = headings[i];
+        var headingRect = h.getBoundingClientRect();
+        var headerRect = header.getBoundingClientRect();
+        var headerTop = Math.floor(headerRect.top);
+        var headerHeight = Math.floor(headerRect.height);
+        var headerHeight = headerTop + headerHeight + 20;
+        if (headingRect.top <= headerHeight) {
+          var id = 'h-' + h.getAttribute('id');
+          var a = menuContent.querySelector('a[href="#' + id  + '"]');
+          var curActive = a.parentNode;
+          if (curActive) {
+            curActive.classList.add('active');
+            activeIndex = i;
+          }
+          if (lastActive == curActive) {
+            changed = false;
+          }
+          break;
+        }
+      }
+      if (changed) {
+        if (lastActive) {
+          lastActive.classList.remove('active');
+        }
+        doMenuCollapse(activeIndex);
+      }
+      event.preventDefault();
+    });
+  }
+  generateContent();
+</script>
+</section>
+</div>
+
+      </div>
+    </main><footer class="site-footer h-card">
+  <data class="u-url" href="/jekyll-theme-yat/"></data>
+
+  <div class="wrapper">
+    <div class="site-footer-inner">
+<div>Waka-DS © 2021-2026</div>
+      <div>Powered by <a title="Jekyll is a simple, blog-aware, static site
+      generator." href="http://jekyllrb.com/">Jekyll</a> &amp; <a title="Yat, yet
+      another theme." href="https://github.com/jeffreytse/jekyll-theme-yat">Yat Theme</a>.</div>
+      <div class="footer-col rss-subscribe">Subscribe <a href="/jekyll-theme-yat/feed.xml">via RSS</a>
+</div>
+    </div>
+  </div>
+</footer>
+</body>
+</html>
