@@ -5,6 +5,9 @@ subtitle: Discuss・Plan・Execute・Verify・Shipを分離する開発ワーク
 categories: AI開発
 tags: ["AIエージェント", "コーディングエージェント", "AIネイティブ開発", "コンテキスト管理", "自動化", "OSS", "CLI"]
 lang: ja
+image:
+  path: /assets/images/posts/2026-06-24-gsd-core-ai-coding-workflow/eyecatch.png
+  alt: "赤いプロジェクトフォルダが工程別の作業場をコンベヤーで進み、検証ループを通る様子を表したアイキャッチ"
 ---
 
 Claude CodeやCodexに機能実装を頼むと、短い変更は驚くほど速く終わる。一方で、数時間にわたる機能開発では様子が変わる。会話の序盤で決めた要件が抜け、途中のエラー対応が本来の目的を押し流し、最後には「コードはできたが、欲しかったものとは違う」という状態になりやすい。

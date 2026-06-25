@@ -5,6 +5,9 @@ subtitle: "利用枠のリセット時刻に作業を合わせる生活"
 categories: AI開発
 tags: ["AI", "LLM", "Claude Code", "Codex", "コーディングエージェント"]
 lang: ja
+image:
+  path: /assets/images/posts/2026-06-24-ai-subscription-telehodai/eyecatch.png
+  alt: "時計の文字盤を囲むタスクカードと、電話機とノートPCで利用枠のリセット待ちを表したアイキャッチ"
 ---
 
 Claude CodeやCodexを日常的に使っていると、作業の区切りが利用枠のリセット時刻に左右されることがある。残量を見ながら軽いタスクへ切り替え、回復したら重い調査や実装をまとめて走らせる。月額料金を払っているのに、使う時間と順番を細かく考えている。
