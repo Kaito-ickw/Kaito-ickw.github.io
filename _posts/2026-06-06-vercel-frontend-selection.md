@@ -6,6 +6,7 @@ categories: 開発
 tags: ["Vercel", "Netlify", "Cloudflare", "Next.js", "フロントエンド", "ホスティング"]
 lang: ja
 ref: vercel-frontend-selection
+last_modified_at: 2026-07-03
 ---
 
 [バックエンド選定の記事]({% post_url 2026-06-06-supabase-vs-railway-comparison %})では `フロントエンド → Vercel` と一言で済ませたが、これにも選定理由がある。
@@ -70,7 +71,7 @@ Cloudflare の 300+ エッジロケーションを活かした静的ホスティ
 | プラン | 月額 |
 | :--- | :--- |
 | **Pages Free** | $0 (帯域・リクエスト数は無制限) |
-| **Workers Pro** | $5 (Pages + Workers の全機能) |
+| **Workers Paid** | $5 (Pages + Workers の全機能) |
 
 帯域 1TB/月 の場合、Vercel Pro が $150 程度になるのに対し Cloudflare Pages は $5 固定。**コスト差は数十倍になりうる。**
 
@@ -89,7 +90,7 @@ Cloudflare の 300+ エッジロケーションを活かした静的ホスティ
 | プラン | 月額 |
 | :--- | :--- |
 | **Free** | $0 (100GB 帯域) |
-| **Pro** | $19/ユーザー |
+| **Pro** | $20/月（席数無制限、クレジット制） |
 | **Enterprise** | 要相談 |
 
 ---
@@ -105,7 +106,7 @@ Cloudflare の 300+ エッジロケーションを活かした静的ホスティ
 | **AI 機能統合** | ✅ (AI Gateway) | ❌ | ❌ |
 | **Preview URL** | ✅ PR ごと自動 | ✅ | ✅ |
 | **無料枠の商用利用** | ❌ | ✅ | ✅ |
-| **月額最低 (有料)** | $20/ユーザー | $5 | $19/ユーザー |
+| **月額最低 (有料)** | $20/ユーザー | $5 | $20/月（席数無制限） |
 
 ---
 

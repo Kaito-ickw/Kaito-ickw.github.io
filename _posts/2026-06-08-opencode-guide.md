@@ -1,17 +1,18 @@
 ---
 layout: post
 title: "LLM を選べる OSS コーディングエージェント opencode"
-subtitle: SST チームが作った OSS コーディング AI の仕組み・使い方・Claude Code との違いを整理する
+subtitle: Anomaly チームが作った OSS コーディング AI の仕組み・使い方・Claude Code との違いを整理する
 categories: AI開発
 tags: ["opencode", "AI", "コーディングエージェント", "CLI", "OSS", "Claude", "LLM"]
 lang: ja
 ref: opencode-guide
+last_modified_at: 2026-07-03
 ---
 
 ターミナルで AI にコードを書かせるツールが増えている。
 GitHub Copilot、Cursor、Claude Code、Aider……どれも「ターミナル or エディタから LLM を呼んでコードを編集する」という思想は同じだが、細部の設計がまったく異なる。
 
-**opencode** は、SST（Serverless Stack）チームが 2025 年に公開したオープンソースの AI コーディングエージェントだ。
+**opencode** は、Anomaly チームが 2025 年に公開したオープンソースの AI コーディングエージェントだ。
 
 - ターミナルで動く TUI（テキストユーザーインターフェース）
 - Claude・GPT・Gemini など主要 LLM を切り替えて使える
@@ -110,7 +111,7 @@ npm install -g opencode-ai
 ### Go ソースからビルド
 
 ```bash
-git clone https://github.com/sst/opencode
+git clone https://github.com/anomalyco/opencode
 cd opencode
 go build ./...
 ```

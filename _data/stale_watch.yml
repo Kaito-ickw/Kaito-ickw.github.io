@@ -16,134 +16,134 @@ articles:
   - slug: 2026-06-24-ai-subscription-telehodai
     stale_risk: high
     reason: Claude Code・Codexのサブスクリプション利用上限とリセット仕様
-    last_verified: 2026-06-24
+    last_verified: 2026-07-03
 
   - slug: 2026-06-16-spacex-ipo-kardashev-scale
     stale_risk: high
     reason: SpaceXのIPO価格・調達額・時価総額・株価などの数値（市場変動で陳腐化）
-    last_verified: 2026-06-16
+    last_verified: 2026-07-03
 
   - slug: 2026-06-06-supabase-vs-railway-comparison
     stale_risk: high
     reason: Supabase・Railway・Neon の詳細料金比較（無料枠・従量単価）
-    last_verified: 2026-06-11
+    last_verified: 2026-07-03
 
   - slug: 2026-06-06-vercel-frontend-selection
     stale_risk: high
     reason: Vercel 料金表（月額・帯域課金）
-    last_verified: 2026-06-11
+    last_verified: 2026-07-03
 
   - slug: 2026-06-10-claude-mythos-fable
     stale_risk: high
     reason: Claude Fable 5 のベンチマーク・特性（新モデルリリースで陳腐化）
-    last_verified: 2026-06-11
+    last_verified: 2026-07-03
 
   - slug: 2026-06-11-goose-agent-pyramid-hierarchy
     stale_risk: high
     reason: エージェントツール比較表（Goose・Claude Code・Codex CLI の LLM バージョン）
-    last_verified: 2026-06-11
+    last_verified: 2026-07-03
 
   - slug: 2026-06-11-mobile-first-ai-dev-issue-pr-workflow
     stale_risk: medium
     reason: Claude Code GitHub Actions の Issue/PR メンション仕様（機能追加で変わる可能性）
-    last_verified: 2026-06-11
+    last_verified: 2026-07-03
 
   - slug: 2026-06-16-openai-jony-ive-ai-hardware-vision
     stale_risk: high
     reason: OpenAIのハードウェアデバイス計画（製品名・形状・発売時期・製造体制）。未発表のため報道内容が頻繁に変わる
-    last_verified: 2026-06-16
+    last_verified: 2026-07-03
 
   - slug: 2026-06-18-google-workspace-studio-guide
     stale_risk: high
     reason: Google Workspace Studio の機能仕様・対応コネクタ数・利用可能プラン（リリース初期のため頻繁に変わる）
-    last_verified: 2026-06-18
+    last_verified: 2026-07-03
 
   # ── medium: 6ヶ月ごとに確認 ──────────────────────────────
 
   - slug: 2026-06-17-mcp-protocol-overview
     stale_risk: medium
     reason: MCP の現行プロトコルバージョン・仕様範囲・公式SDKの位置づけ
-    last_verified: 2026-06-23
+    last_verified: 2026-07-03
 
   - slug: 2026-06-18-mcp-host-client-server
     stale_risk: medium
     reason: MCP のHost・Client・Server構成とCapability仕様
-    last_verified: 2026-06-23
+    last_verified: 2026-07-03
 
   - slug: 2026-06-19-mcp-tools-resources-prompts
     stale_risk: medium
     reason: MCP のTools・Resources・Prompts・Client機能の仕様
-    last_verified: 2026-06-23
+    last_verified: 2026-07-03
 
   - slug: 2026-06-20-mcp-json-rpc-lifecycle
     stale_risk: medium
     reason: MCP のLifecycle・JSON-RPCメソッド・エラー処理の仕様
-    last_verified: 2026-06-23
+    last_verified: 2026-07-03
 
   - slug: 2026-06-21-build-mcp-server-python
     stale_risk: medium
     reason: MCP Python SDK・MCP Inspector・stdioサーバー実装方法
-    last_verified: 2026-06-23
+    last_verified: 2026-07-03
 
   - slug: 2026-06-22-mcp-local-remote-transports
     stale_risk: medium
     reason: MCP のstdio・Streamable HTTP・認証・セッション仕様
-    last_verified: 2026-06-23
+    last_verified: 2026-07-03
 
   - slug: 2026-06-23-mcp-security-operations
     stale_risk: medium
     reason: MCP Authorization・Security Best Practices・Tool annotation仕様
-    last_verified: 2026-06-23
+    last_verified: 2026-07-03
 
   - slug: 2026-06-16-notion-database-personal-backend
     stale_risk: medium
     reason: Notion API のレート制限（約3req/s）・無料プラン上限（5MB・履歴7日）・データソースモデル（2025-09-03）
-    last_verified: 2026-06-16
+    last_verified: 2026-07-03
 
   - slug: 2026-06-13-github-secrets-guide
     stale_risk: medium
     reason: GitHub Actions Secrets の上限・スコープ・Environment保護ルール・プラン制限
-    last_verified: 2026-06-13
+    last_verified: 2026-07-03
 
   - slug: 2026-06-13-github-useful-features
     stale_risk: medium
     reason: Dependabot・Branch Protection・Secret scanning・Push Protection・GitHub Actions の仕様
-    last_verified: 2026-06-13
+    last_verified: 2026-07-03
 
   - slug: 2026-06-13-nodejs-basics-for-vibe-coding
     stale_risk: medium
     reason: Node.js・npm run・npm install・npm ci・npm exec・環境変数の仕様
-    last_verified: 2026-06-13
+    last_verified: 2026-07-03
 
   - slug: 2026-06-13-openclaw-personal-ai-agent
     stale_risk: medium
     reason: OpenClaw の対応チャンネル・導入手順・Gateway・Skill・Sandbox・Cron 仕様
-    last_verified: 2026-06-13
+    last_verified: 2026-07-03
 
   - slug: 2026-06-10-claude-code-skills-guide
     stale_risk: medium
     reason: Claude Code スキル一覧（機能追加で変わる）
-    last_verified: 2026-06-11
+    last_verified: 2026-07-03
 
   - slug: 2026-06-08-opencode-guide
     stale_risk: medium
     reason: opencode の仕様・セットアップ手順
-    last_verified: 2026-06-11
+    last_verified: 2026-07-03
 
   - slug: 2026-06-08-harness-engineering-guide
     stale_risk: medium
     reason: Claude Code Hook イベント仕様・権限設定の記述
-    last_verified: 2026-06-11
+    last_verified: 2026-07-03
 
   - slug: 2026-06-16-graphai-agent-workflow-engine
     stale_risk: medium
     reason: GraphAI のバージョン・対応エージェント一覧・CLI仕様
-    last_verified: 2026-06-16
+    last_verified: 2026-07-03
 
   - slug: 2026-06-09-beast-mode-ai-tools
     stale_risk: medium
     reason: VS Code Copilot のカスタムモード仕様（バージョン 3.1 と記載）
-    last_verified: 2026-06-11
+    last_verified: 2026-07-03
 
   # ── low: 1年ごとに確認 ────────────────────────────────────
 
@@ -165,9 +165,9 @@ articles:
   - slug: 2026-06-18-claude-code-grill-me
     stale_risk: medium
     reason: npx インストールコマンド・SKILL.md の仕様（スキルリポジトリのアップデートで変わる可能性）
-    last_verified: 2026-06-18
+    last_verified: 2026-07-03
 
   - slug: 2026-06-24-gsd-core-ai-coding-workflow
     stale_risk: medium
     reason: GSD Core の開発リポジトリ・インストール方法・コマンド名・対応ランタイム・phase loop仕様
-    last_verified: 2026-06-24
+    last_verified: 2026-07-03
