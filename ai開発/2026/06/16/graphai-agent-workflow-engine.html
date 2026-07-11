@@ -1,0 +1,1155 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <script>
+  (function() {
+    try {
+      var p = localStorage.getItem('preferred_lang');
+      if (!p) return;
+      var path = window.location.pathname;
+      var ja = ['/', '/archives.html', '/categories.html', '/tags.html', '/about.html'];
+      var en = ['/en/', '/en/archives.html', '/en/categories.html', '/en/tags.html', '/en/about.html'];
+      if (p === 'en' && ja.indexOf(path) !== -1) {
+        window.location.replace('/en' + (path === '/' ? '/' : path));
+      } else if (p === 'ja' && en.indexOf(path) !== -1) {
+        window.location.replace(path.slice(3) || '/');
+      }
+    } catch(e) {}
+  })();
+  </script>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="google-translate-customization" content="108d9124921d80c3-80e20d618ff053c8-g4f02ec6f3dba68b7-c">
+<!-- Begin Jekyll SEO tag v2.9.0 -->
+<title>GraphAIでAIエージェントのワークフローをYAML/JSONとして宣言的に書く | Waka-DS.com</title>
+<meta name="generator" content="Jekyll v4.4.1">
+<meta property="og:title" content="GraphAIでAIエージェントのワークフローをYAML/JSONとして宣言的に書く">
+<meta name="author" content="Waka-DS">
+<meta property="og:locale" content="ja">
+<meta name="description" content="LLMを使ったアプリケーションは、ひとつの呼び出しで完結しないことが多い。検索結果を整形してからLLMに渡す、複数のLLM呼び出しの結果を合成する、条件によって次の処理を分岐する。こうした依存関係を素直にコードで書くと、非同期処理と分岐とエラーハンドリングが絡み合い、見通しが悪くなりやすい。">
+<meta name="twitter:description" property="og:description" content="LLMを使ったアプリケーションは、ひとつの呼び出しで完結しないことが多い。検索結果を整形してからLLMに渡す、複数のLLM呼び出しの結果を合成する、条件によって次の処理を分岐する。こうした依存関係を素直にコードで書くと、非同期処理と分岐とエラーハンドリングが絡み合い、見通しが悪くなりやすい。">
+<link rel="canonical" href="/jekyll-theme-yat/ai%E9%96%8B%E7%99%BA/2026/06/16/graphai-agent-workflow-engine.html">
+<meta property="og:url" content="/jekyll-theme-yat/ai%E9%96%8B%E7%99%BA/2026/06/16/graphai-agent-workflow-engine.html">
+<meta property="og:site_name" content="Waka-DS.com">
+<meta property="og:type" content="article">
+<meta property="article:published_time" content="2026-06-16T00:00:00+00:00">
+<meta property="article:modified_time" content="2026-06-16T00:00:00+00:00">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="GraphAIでAIエージェントのワークフローをYAML/JSONとして宣言的に書く">
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":"Waka-DS"},"dateModified":"2026-06-16T00:00:00+00:00","datePublished":"2026-06-16T00:00:00+00:00","description":"LLMを使ったアプリケーションは、ひとつの呼び出しで完結しないことが多い。検索結果を整形してからLLMに渡す、複数のLLM呼び出しの結果を合成する、条件によって次の処理を分岐する。こうした依存関係を素直にコードで書くと、非同期処理と分岐とエラーハンドリングが絡み合い、見通しが悪くなりやすい。","headline":"GraphAIでAIエージェントのワークフローをYAML/JSONとして宣言的に書く","mainEntityOfPage":{"@type":"WebPage","@id":"/jekyll-theme-yat/ai%E9%96%8B%E7%99%BA/2026/06/16/graphai-agent-workflow-engine.html"},"url":"/jekyll-theme-yat/ai%E9%96%8B%E7%99%BA/2026/06/16/graphai-agent-workflow-engine.html"}</script>
+<!-- End Jekyll SEO tag -->
+<link rel="shortcut icon" href="">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=Noto+Sans+JP:wght@400;500;700&amp;display=swap">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+  <link rel="stylesheet" href="/jekyll-theme-yat/assets/css/main.css">
+  <script src="/jekyll-theme-yat/assets/js/main.js"></script><link type="application/atom+xml" rel="alternate" href="/jekyll-theme-yat/feed.xml" title="Waka-DS.com">
+<script>
+  function initGoogleAnalytics() {
+    var doNotTrack = (window.doNotTrack === "1" || navigator.doNotTrack === "1" ||
+      navigator.doNotTrack === "yes" || navigator.msDoNotTrack === "1");
+    var enableDNT = "true" == "true";
+
+    if (!enableDNT || !doNotTrack) {
+      var ga_id = 'G-XNP1RBTG9C';
+
+      var script = document.createElement('script');
+      script.async = true;
+      script.src = 'https://www.googletagmanager.com/gtag/js?id=' + ga_id;
+      document.head.appendChild(script);
+
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', ga_id);
+    }
+  }
+  window.addEventListener("load", initGoogleAnalytics);
+</script>
+<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/styles/default.min.css">
+<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/highlight.min.js"></script>
+<!-- and it's easy to individually load additional languages -->
+<script charset="UTF-8" src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/languages/go.min.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<script>
+// Init highlight js
+document.addEventListener('DOMContentLoaded', function(event) {
+  var els = document.querySelectorAll('pre code')
+
+  function addLangData(block) {
+    var outer = block.parentElement.parentElement.parentElement;
+    var lang = block.getAttribute('data-lang');
+    for (var i = 0; i < outer.classList.length; i++) {
+      var cls = outer.classList[i];
+      if (cls.startsWith('language-')) {
+        lang = cls;
+        break;
+      }
+    }
+    if (!lang) {
+      cls = block.getAttribute('class');
+      lang = cls ? cls.replace('hljs ', '') : '';
+    }
+    if (lang.startsWith('language-')) {
+      lang = lang.substr(9);
+    }
+    block.setAttribute('class', 'hljs ' + lang);
+    block.parentNode.setAttribute('data-lang', lang);
+  }
+
+  function addBadge(block) {
+    var enabled = ('true' || 'true').toLowerCase();
+    if (enabled == 'true') {
+      var pre = block.parentElement;
+      pre.classList.add('badge');
+    }
+  }
+
+  function handle(block) {
+    addLangData(block);
+    addBadge(block)
+    hljs.highlightBlock(block);
+  }
+
+  for (var i = 0; i < els.length; i++) {
+    var el = els[i];
+    handle(el);
+  }
+});
+</script>
+
+<style>
+  /* code language badge */
+  pre.badge::before {
+    content: attr(data-lang);
+    color: #fff;
+    background-color: #0d9488;
+    padding: 0 .5em;
+    border-radius: 0 2px;
+    text-transform: uppercase;
+    text-align: center;
+    min-width: 32px;
+    display: inline-block;
+    position: absolute;
+    right: 0;
+  }
+
+  /* fix wrong badge display for firefox browser */
+  code > table pre::before {
+    display: none;
+  }
+</style>
+</head>
+<body>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<header class="site-header " role="banner">
+
+  <div class="wrapper">
+    <div class="site-header-inner">
+<span class="site-brand"><a class="site-brand-inner" rel="author" href="/jekyll-theme-yat/">
+  <img class="site-favicon" title="Waka-DS.com" src="" onerror="this.style.display='none'">
+  Waka-DS.com
+</a>
+</span><nav class="site-nav">
+          <input type="checkbox" id="nav-trigger" class="nav-trigger">
+          <label for="nav-trigger">
+            <span class="menu-icon">
+              <svg viewbox="0 0 18 15" width="18px" height="15px">
+                <path d="M18,1.484c0,0.82-0.665,1.484-1.484,1.484H1.484C0.665,2.969,0,2.304,0,1.484l0,0C0,0.665,0.665,0,1.484,0 h15.032C17.335,0,18,0.665,18,1.484L18,1.484z M18,7.516C18,8.335,17.335,9,16.516,9H1.484C0.665,9,0,8.335,0,7.516l0,0 c0-0.82,0.665-1.484,1.484-1.484h15.032C17.335,6.031,18,6.696,18,7.516L18,7.516z M18,13.516C18,14.335,17.335,15,16.516,15H1.484 C0.665,15,0,14.335,0,13.516l0,0c0-0.82,0.665-1.483,1.484-1.483h15.032C17.335,12.031,18,12.695,18,13.516L18,13.516z"></path>
+              </svg>
+            </span>
+          </label>
+
+          <div class="trigger">
+<a class="page-link" href="/jekyll-theme-yat/about.html">ABOUT</a><a class="page-link" href="/jekyll-theme-yat/archives.html">ARCHIVES</a><a class="page-link" href="/jekyll-theme-yat/categories.html">CATEGORIES</a><a class="page-link" href="/jekyll-theme-yat/">HOME</a><a class="page-link" href="/jekyll-theme-yat/tags.html">TAGS</a>
+</div>
+        </nav>
+</div>
+  </div>
+</header>
+
+<script>
+  function initHeader() {
+    var lastScrollY = getScrollPos().y;
+    var documentElement = document.documentElement;
+
+    function storeScrollData() {
+      var y = getScrollPos().y;var scrollStatus = "";
+
+      if (y <= 0) {
+        scrollStatus = "top";
+      } else if ((window.innerHeight + y) >= document.body.offsetHeight) {
+        scrollStatus = "bottom";
+      } else {
+        var isScrollDown = (y - lastScrollY > 0) ? true : false;
+        scrollStatus = isScrollDown ? "down" : "up";
+      }
+
+      lastScrollY = y;
+      documentElement.setAttribute("data-scroll-status", scrollStatus);
+    }
+
+    window.addEventListener('scroll', function(e) {
+      storeScrollData();
+    });
+
+    storeScrollData();
+  }
+  document.addEventListener('DOMContentLoaded', initHeader);
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<script>
+  function hashLocate(hashValue) {
+    hashValue = hashValue.replace(/^.*#h-/, '');
+    hashValue = decodeURIComponent(hashValue);
+    var element = document.getElementById(hashValue);
+
+    if (!element) {
+      return;
+    }
+
+    var header = document.querySelector('header.site-header');
+    var headerRect = header.getBoundingClientRect();
+    var headerTop = Math.floor(headerRect.top);
+    var headerHeight = Math.floor(headerRect.height);
+    var scrollPos = getScrollPos();
+    var offsetY = element.offsetTop - (headerTop + headerHeight + 20);
+
+    if (offsetY == scrollPos.y) {
+      return;
+    }
+
+    if (headerTop == 0  && offsetY > scrollPos.y) {
+      offsetY += headerHeight + 2;
+    } else if (headerTop < 0  && offsetY < scrollPos.y) {
+      offsetY -= headerHeight - 2;
+    }
+
+    smoothScrollTo(offsetY);
+  }
+
+  // The first event occurred
+  window.addEventListener('load', function(event) {
+    if (window.location.hash) {
+      hashLocate(window.location.hash);
+    }
+  });
+
+  // The first event occurred
+  window.addEventListener('click', function(event) {
+    if (event.target.tagName.toLowerCase() == 'a') {
+      hashLocate(event.target.getAttribute('href'));
+    }
+  });
+</script>
+<div class="theme-toggle">
+  <input type="checkbox" id="theme-switch">
+  <label for="theme-switch">
+    <div class="toggle"></div>
+    <div class="names">
+      <p class="light">Light</p>
+      <p class="dark">Dark</p>
+    </div>
+  </label>
+</div>
+
+
+
+
+<script>
+  (function() {
+    var sw = document.getElementById('theme-switch');
+    var html = document.getElementsByTagName('html')[0];
+    var nightModeOption = ('auto' || 'auto').toLowerCase();
+    var storage = nightModeOption === 'manual'
+        ? localStorage
+        : sessionStorage;
+    var themeData = loadThemeData();
+
+    function saveThemeData(data) {
+      storage.setItem('theme', JSON.stringify(data));
+    }
+
+    function loadThemeData() {
+      var data = storage.getItem('theme');
+      try {
+        data = JSON.parse(data ? data : '');
+      } catch(e) {
+        data = { nightShift: undefined, autoToggleAt: 0 };
+        saveThemeData(data);
+      }
+      return data;
+    }
+
+    function handleThemeToggle(nightShift) {
+      themeData.nightShift = nightShift;
+      saveThemeData(themeData);
+      html.dataset.theme = nightShift ? 'dark' : 'light';
+      setTimeout(function() {
+        sw.checked = nightShift ? true : false;
+      }, 50);
+    }
+
+    function autoThemeToggle() {
+      // Next time point of theme toggle
+      var now = new Date();
+      var toggleAt = new Date();
+      var hours = now.getHours();
+      var nightShift = hours >= 19 || hours <=7;
+
+      if (nightShift) {
+        if (hours > 7) {
+          toggleAt.setDate(toggleAt.getDate() + 1);
+        }
+        toggleAt.setHours(7);
+      } else {
+        toggleAt.setHours(19);
+      }
+
+      toggleAt.setMinutes(0);
+      toggleAt.setSeconds(0);
+      toggleAt.setMilliseconds(0)
+
+      var delay = toggleAt.getTime() - now.getTime();
+
+      // auto toggle theme mode
+      setTimeout(function() {
+        handleThemeToggle(!nightShift);
+      }, delay);
+
+      return {
+        nightShift: nightShift,
+        toggleAt: toggleAt.getTime()
+      };
+    }
+
+    // Listen the theme toggle event
+    sw.addEventListener('change', function(event) {
+      handleThemeToggle(event.target.checked);
+    });
+
+    if (nightModeOption == 'auto') {
+      var data = autoThemeToggle();
+
+      // Toggle theme by local setting
+      if (data.toggleAt > themeData.autoToggleAt) {
+        themeData.autoToggleAt = data.toggleAt;
+        handleThemeToggle(data.nightShift);
+      } else {
+        handleThemeToggle(themeData.nightShift);
+      }
+    } else if (nightModeOption == 'manual') {
+      handleThemeToggle(themeData.nightShift);
+    } else {
+      var nightShift = themeData.nightShift;
+      if (nightShift === undefined) {
+        nightShift = nightModeOption === 'on';
+      }
+      handleThemeToggle(nightShift);
+    }
+  })();
+</script>
+<main class="page-content" aria-label="Content">
+      <div class="wrapper">
+        <div class="framework">
+  <section class="main">
+
+     <div class="post">
+  <section>
+
+
+
+
+
+
+
+
+
+<header class="post-header">
+  <h1 class="post-title p-name" itemprop="name headline">GraphAIでAIエージェントのワークフローをYAML/JSONとして宣言的に書く</h1>
+  <h2 class="post-subtitle">非同期データフロー実行エンジンとしての仕組みと基本的な使い方</h2>
+
+  <p class="post-meta">
+    <time class="dt-published" datetime="2026-06-16T00:00:00+00:00" itemprop="datePublished"><i class="fa fa-calendar"></i> Jun 16, 2026
+    </time>
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <span class="post-reading-time left-vsplit"><i class="fa fa-clock-o"></i> About 15 mins</span>
+  </p>
+<div class="post-tags">
+<a class="post-tag" href="/jekyll-theme-yat/tags.html#GraphAI">#GraphAI</a><a class="post-tag" href="/jekyll-theme-yat/tags.html#AI%E3%82%A8%E3%83%BC%E3%82%B8%E3%82%A7%E3%83%B3%E3%83%88">#AIエージェント</a><a class="post-tag" href="/jekyll-theme-yat/tags.html#%E3%83%9E%E3%83%AB%E3%83%81%E3%82%A8%E3%83%BC%E3%82%B8%E3%82%A7%E3%83%B3%E3%83%88">#マルチエージェント</a><a class="post-tag" href="/jekyll-theme-yat/tags.html#LLM">#LLM</a><a class="post-tag" href="/jekyll-theme-yat/tags.html#AI">#AI</a><a class="post-tag" href="/jekyll-theme-yat/tags.html#OSS">#OSS</a>
+</div></header>
+<article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
+
+    <div class="post-content e-content" itemprop="articleBody">
+
+      <p>LLMを使ったアプリケーションは、ひとつの呼び出しで完結しないことが多い。検索結果を整形してからLLMに渡す、複数のLLM呼び出しの結果を合成する、条件によって次の処理を分岐する。こうした依存関係を素直にコードで書くと、非同期処理と分岐とエラーハンドリングが絡み合い、見通しが悪くなりやすい。</p>
+
+<p><a href="https://github.com/receptron/graphai">GraphAI</a>は、こうしたエージェントワークフローを「コード」ではなく「データ」として記述するために作られたツールだ。Receptronという組織がOSS（MIT License）で開発しており、npm上の<code class="language-plaintext highlighter-rouge">graphai</code>パッケージは2026年6月時点でv2系が公開されている。</p>
+
+<p>この記事では、公式リポジトリとドキュメントをもとに、GraphAIの基本的な考え方と最小構成のサンプルを整理する。</p>
+
+<hr>
+
+<h2 id="結論を先に">結論を先に</h2>
+
+<p>GraphAIは、エージェントの処理単位を「ノード」、ノード間のデータの受け渡しを「グラフ」として、YAMLまたはJSONで宣言的に定義する非同期データフロー実行エンジンである。</p>
+
+<table>
+  <thead>
+    <tr>
+      <th style="text-align: left">要素</th>
+      <th style="text-align: left">GraphAIでの役割</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td style="text-align: left">Node</td>
+      <td style="text-align: left">入力を受け取り、エージェント関数で処理し、結果を出力する単位</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">Computed Node</td>
+      <td style="text-align: left">エージェントに紐づき、実際に計算や呼び出しを行うノード</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">Static Node</td>
+      <td style="text-align: left">値を保持するだけのプレースホルダー</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">Agent</td>
+      <td style="text-align: left">OpenAI・Anthropic・Geminiなどへの呼び出しを実装した関数</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">Graph</td>
+      <td style="text-align: left">ノードと依存関係（inputs）の集合。グラフ全体がワークフローになる</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>ワークフローをコードで組み立てるフレームワークでは、分岐や並行実行をプログラムのロジックとして書く。GraphAIでは、それらをYAML/JSONの構造としてファイルに書き出す。グラフ定義とエージェントの実装が分かれているため、ワークフローの見直しが、実装コードを読まなくても定義ファイルの差分だけで把握できる。</p>
+
+<hr>
+
+<h2 id="最小構成のサンプル">最小構成のサンプル</h2>
+
+<p>公式チュートリアルに掲載されている最小サンプルは次のようになっている。</p>
+
+<div class="language-yaml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="na">version</span><span class="pi">:</span> <span class="m">0.5</span>
+<span class="na">nodes</span><span class="pi">:</span>
+  <span class="na">llm</span><span class="pi">:</span>
+    <span class="na">agent</span><span class="pi">:</span> <span class="s">openAIAgent</span>
+    <span class="na">params</span><span class="pi">:</span>
+      <span class="na">model</span><span class="pi">:</span> <span class="s">gpt-4o</span>
+    <span class="na">inputs</span><span class="pi">:</span>
+      <span class="na">prompt</span><span class="pi">:</span> <span class="s">Explain ML's transformer in 100 words.</span>
+  <span class="na">output</span><span class="pi">:</span>
+    <span class="na">agent</span><span class="pi">:</span> <span class="s">copyAgent</span>
+    <span class="na">params</span><span class="pi">:</span>
+      <span class="na">namedKey</span><span class="pi">:</span> <span class="s">text</span>
+    <span class="na">console</span><span class="pi">:</span>
+      <span class="na">after</span><span class="pi">:</span> <span class="kc">true</span>
+    <span class="na">inputs</span><span class="pi">:</span>
+      <span class="na">text</span><span class="pi">:</span> <span class="s">:llm.text</span>
+</code></pre></div></div>
+
+<p><code class="language-plaintext highlighter-rouge">llm</code>ノードは<code class="language-plaintext highlighter-rouge">openAIAgent</code>を使ってプロンプトを送り、結果を返す。<code class="language-plaintext highlighter-rouge">output</code>ノードは<code class="language-plaintext highlighter-rouge">:llm.text</code>という記法で<code class="language-plaintext highlighter-rouge">llm</code>ノードの出力を参照し、コンソールへ表示する。<code class="language-plaintext highlighter-rouge">:</code>で始まる文字列は「他のノードの出力を参照する」という意味になる。</p>
+
+<p>この依存関係をグラフとして見ると、次のような単純な流れになる。</p>
+
+<p><img class="mermaid" src="https://mermaid.ink/svg/eyJjb2RlIjoiZmxvd2NoYXJ0IFRCXG5MTE1bXCJsbG08YnIvPm9wZW5BSUFnZW50XCJdXG5PdXRwdXRbXCJvdXRwdXQ8YnIvPmNvcHlBZ2VudFwiXVxuTExNIC0tPiBPdXRwdXQiLCJtZXJtYWlkIjpudWxsfQ"></p>
+
+<p>ノードが増えるほど、この依存関係は枝分かれや合流を持つようになるが、書き方自体は変わらない。<code class="language-plaintext highlighter-rouge">inputs</code>に書いた<code class="language-plaintext highlighter-rouge">:nodeId.property</code>がエッジになる。</p>
+
+<h3 id="static-nodeとcomputed-node">Static NodeとComputed Node</h3>
+
+<p>値を保持するだけのノードは<code class="language-plaintext highlighter-rouge">value</code>プロパティで定義する。</p>
+
+<div class="language-yaml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="na">nodes</span><span class="pi">:</span>
+  <span class="na">prompt</span><span class="pi">:</span>
+    <span class="na">value</span><span class="pi">:</span> <span class="s">Explain ML's transformer in 100 words.</span>
+</code></pre></div></div>
+
+<p>このようなノードはStatic Nodeと呼ばれ、エージェントを持たない。一方、<code class="language-plaintext highlighter-rouge">agent</code>プロパティを持つノードはComputed Nodeで、実行時に値を計算する。プロンプト文字列のような固定値はStatic Nodeに、LLM呼び出しのような処理はComputed Nodeに分けて書く。</p>
+
+<hr>
+
+<h2 id="依存関係のない処理は自動で並行実行される">依存関係のない処理は自動で並行実行される</h2>
+
+<p>GraphAIの実行エンジンは、ノード間の依存関係を解析し、依存のないノードを自動的に並行実行する。複数のAPI呼び出しを手作業で<code class="language-plaintext highlighter-rouge">Promise.all</code>にまとめる必要はなく、グラフの構造そのものが並行実行の単位になる。</p>
+
+<p>並行実行できるタスクの上限は、グラフのトップレベルにある<code class="language-plaintext highlighter-rouge">concurrency</code>プロパティで指定する。既定値は8で、必要に応じて増減できる。</p>
+
+<div class="language-yaml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="na">version</span><span class="pi">:</span> <span class="m">0.5</span>
+<span class="na">concurrency</span><span class="pi">:</span> <span class="m">16</span>
+<span class="na">nodes</span><span class="pi">:</span>
+  <span class="c1"># ...</span>
+</code></pre></div></div>
+
+<p>ノードに<code class="language-plaintext highlighter-rouge">priority</code>を指定すると、並行実行の待ち行列の中で優先的に実行される。多数の外部API呼び出しを束ねるワークフローでは、この優先度づけがレイテンシの調整に使える。</p>
+
+<hr>
+
+<h2 id="条件分岐とループ">条件分岐とループ</h2>
+
+<p>GraphAIは、コード上のif文やfor文に相当する仕組みを、グラフの宣言の中に持っている。</p>
+
+<h3 id="if--unless--anyinput">if / unless / anyInput</h3>
+
+<p>ノードに<code class="language-plaintext highlighter-rouge">if</code>を指定すると、参照先の値が真と評価されたときだけそのノードが実行される。<code class="language-plaintext highlighter-rouge">unless</code>は逆で、偽のときに実行される。たとえばLLMがツール呼び出しを要求した場合だけ次のノードを動かす、といった分岐に使う。</p>
+
+<p><code class="language-plaintext highlighter-rouge">anyInput</code>を有効にしたノードは、複数の入力のうちどれか1つでもデータが届いた時点で実行される。複数の経路を1つのノードへ合流させたいときに使う。</p>
+
+<h3 id="loop">loop</h3>
+
+<p>グラフ全体を繰り返し実行する仕組みとして<code class="language-plaintext highlighter-rouge">loop</code>がある。<code class="language-plaintext highlighter-rouge">count</code>で固定回数を指定するか、<code class="language-plaintext highlighter-rouge">while</code>で継続条件を指定する。繰り返しのたびにStatic Nodeの値を<code class="language-plaintext highlighter-rouge">update</code>で更新できるため、集計や反復的な改善といった処理を表現できる。</p>
+
+<p>このあたりの設計は、Claude CodeやCodex CLIのようなコーディングエージェントが内部で行っている「ツール呼び出し→結果評価→次の呼び出し」のループを、グラフの形に外部化したものと捉えると理解しやすい。ワークフローを実行ロジックの外に置くという考え方自体は、<a href="/jekyll-theme-yat/ai%E9%96%8B%E7%99%BA/2026/06/08/harness-engineering-guide.html">ハーネスエンジニアリングとは何か</a>で扱った「ルールをモデルの外側に置く」発想に近い。</p>
+
+<hr>
+
+<h2 id="用意されているエージェント">用意されているエージェント</h2>
+
+<p>GraphAI本体はグラフの実行エンジンであり、実際の処理は「エージェント」という関数が担う。公式リポジトリの<code class="language-plaintext highlighter-rouge">llm_agents</code>パッケージには、主要なLLMプロバイダー向けのエージェントがまとまっている。</p>
+
+<table>
+  <thead>
+    <tr>
+      <th style="text-align: left">エージェント</th>
+      <th style="text-align: left">用途</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td style="text-align: left"><code class="language-plaintext highlighter-rouge">openAIAgent</code></td>
+      <td style="text-align: left">OpenAIのchat completion APIを呼び出す</td>
+    </tr>
+    <tr>
+      <td style="text-align: left"><code class="language-plaintext highlighter-rouge">anthropicAgent</code></td>
+      <td style="text-align: left">Anthropic APIを呼び出す</td>
+    </tr>
+    <tr>
+      <td style="text-align: left"><code class="language-plaintext highlighter-rouge">geminiAgent</code></td>
+      <td style="text-align: left">Google Generative AI（Gemini）を呼び出す</td>
+    </tr>
+    <tr>
+      <td style="text-align: left"><code class="language-plaintext highlighter-rouge">groqAgent</code></td>
+      <td style="text-align: left">Groq APIを呼び出す</td>
+    </tr>
+    <tr>
+      <td style="text-align: left"><code class="language-plaintext highlighter-rouge">openAIImageAgent</code></td>
+      <td style="text-align: left">OpenAIの画像生成APIを呼び出す</td>
+    </tr>
+    <tr>
+      <td style="text-align: left"><code class="language-plaintext highlighter-rouge">replicateAgent</code></td>
+      <td style="text-align: left">Replicate API経由でモデルを呼び出す</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>これに加えて<code class="language-plaintext highlighter-rouge">@graphai/vanilla</code>パッケージには、データの整形やコピー、フィルタリングなど、LLMを使わない汎用エージェントが用意されている。サンプルの<code class="language-plaintext highlighter-rouge">copyAgent</code>もここに含まれる。</p>
+
+<p>エージェントはTypeScriptの関数として実装されているため、既存のエージェントで足りない処理は自前で追加できる。グラフ定義から見れば、自作エージェントも公式エージェントも同じ<code class="language-plaintext highlighter-rouge">agent</code>プロパティで呼び出すだけの存在になる。</p>
+
+<hr>
+
+<h2 id="cliとgui">CLIとGUI</h2>
+
+<p>GraphAIにはCLIツール<code class="language-plaintext highlighter-rouge">@receptron/graphai_cli</code>が用意されており、グラフ定義ファイルを直接実行できる。</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>npm i <span class="nt">-g</span> @receptron/graphai_cli
+graphai sample.yaml
+</code></pre></div></div>
+
+<p>利用可能なエージェントの一覧は<code class="language-plaintext highlighter-rouge">graphai -l</code>で確認できる。コードを書かずにYAMLファイルだけで動作を確認できるため、グラフ定義を試行錯誤する段階ではCLIが扱いやすい。</p>
+
+<p>GUIでグラフを編集するツールとして、同じReceptron配下で<code class="language-plaintext highlighter-rouge">Grapys</code>が公開されている。ノードを画面上に配置しながらワークフローを組み立てたい場合の選択肢になる。</p>
+
+<hr>
+
+<h2 id="実際の利用例">実際の利用例</h2>
+
+<p>Receptronのリポジトリ群には、GraphAIを使って構築されたアプリケーションの例として<code class="language-plaintext highlighter-rouge">mulmocast</code>がある。これはポッドキャストや動画のスクリプトをLLMで生成し、音声・画像生成エージェントと組み合わせて1本のメディアファイルに仕立てるCLIツールだ。</p>
+
+<p>台本生成、画像生成、音声合成、合成処理といった複数ステップは依存関係が明確で、かつ一部は並行実行できる。GraphAIのようなデータフロー型のエンジンは、こうした「複数のAPIを順序と並行性を持って呼び出すパイプライン」に向いている。</p>
+
+<hr>
+
+<h2 id="コードでグラフを組むフレームワークとの違い">コードでグラフを組むフレームワークとの違い</h2>
+
+<p>LangGraphをはじめ、グラフ構造でエージェントを組むフレームワークの多くは、グラフそのものをプログラミング言語のコードで構築する。ノードの追加やエッジの接続を関数呼び出しとして書き、実行時にグラフが組み立てられる。</p>
+
+<p>GraphAIは、グラフの定義自体をYAML/JSONという「データ」として外部に持つ。実行エンジンはそのデータを読み込んで解釈するだけで、グラフの構造を変えるためにアプリケーションコードを再ビルドする必要はない。</p>
+
+<p>どちらが優れているかは一概には言えない。コードでグラフを組む方式は、型チェックや複雑な条件分岐をプログラミング言語の機能で素直に表現できる。GraphAIの方式は、ワークフローをエンジニア以外も読める形式で残せる点と、定義ファイルだけを差し替えて挙動を変えられる点に強みがある。</p>
+
+<hr>
+
+<h2 id="graphaiが向いているケース">GraphAIが向いているケース</h2>
+
+<table>
+  <thead>
+    <tr>
+      <th style="text-align: left">向いている</th>
+      <th style="text-align: left">向いていない</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td style="text-align: left">複数のLLM・API呼び出しを依存関係込みで管理したい</td>
+      <td style="text-align: left">単発のLLM呼び出しだけで十分</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">ワークフローをコードと分離して管理したい</td>
+      <td style="text-align: left">グラフの構造を頻繁に動的生成する必要がある</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">並行実行を自前で制御したくない</td>
+      <td style="text-align: left">プログラミング言語側の型安全性を最優先したい</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">TypeScriptのエコシステムでエージェントを拡張したい</td>
+      <td style="text-align: left">TypeScript以外の言語で完結させたい</td>
+    </tr>
+  </tbody>
+</table>
+
+<hr>
+
+<h2 id="まとめ">まとめ</h2>
+
+<table>
+  <thead>
+    <tr>
+      <th style="text-align: left">項目</th>
+      <th style="text-align: left">内容</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td style="text-align: left">GraphAIの正体</td>
+      <td style="text-align: left">YAML/JSONでエージェントワークフローを宣言的に書く非同期データフロー実行エンジン</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">中心概念</td>
+      <td style="text-align: left">Static Node・Computed Node・依存関係に基づくグラフ</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">並行実行</td>
+      <td style="text-align: left">依存のないノードを自動検出し、<code class="language-plaintext highlighter-rouge">concurrency</code>で上限を制御</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">制御構造</td>
+      <td style="text-align: left">
+<code class="language-plaintext highlighter-rouge">if</code>・<code class="language-plaintext highlighter-rouge">unless</code>・<code class="language-plaintext highlighter-rouge">anyInput</code>による分岐、<code class="language-plaintext highlighter-rouge">loop</code>による繰り返し</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">拡張方法</td>
+      <td style="text-align: left">LLMエージェント、vanillaエージェント、自作エージェント</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">ツール</td>
+      <td style="text-align: left">CLI（<code class="language-plaintext highlighter-rouge">@receptron/graphai_cli</code>）、GUI（Grapys）</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>GraphAIは、エージェントワークフローを「コードの中の手続き」から「読める定義ファイル」へ移す試みのひとつだ。複数のAPI呼び出しを依存関係込みで扱う場面が増えるほど、こうした宣言的な記述の利点は大きくなる。</p>
+
+<hr>
+
+<h2 id="参考">参考</h2>
+
+<ul>
+  <li><a href="https://github.com/receptron/graphai">receptron/graphai - GitHub</a></li>
+  <li><a href="https://github.com/receptron/graphai/blob/main/docs/guide/tutorial.md">GraphAI Tutorial</a></li>
+  <li><a href="https://github.com/receptron/graphai/blob/main/packages/graphai/README.md">graphai (core package) README</a></li>
+  <li><a href="https://github.com/receptron/graphai/blob/main/agents/llm_agents/README.md">llm_agents README</a></li>
+  <li><a href="https://github.com/receptron/graphai/blob/main/packages/cli/README.md">GraphAI CLI README</a></li>
+  <li><a href="https://receptron.github.io/graphai/apiDoc/">GraphAI API Documentation</a></li>
+  <li><a href="https://www.npmjs.com/package/graphai">graphai - npm</a></li>
+  <li><a href="https://github.com/receptron/graphai_samples">receptron/graphai_samples - GitHub</a></li>
+</ul>
+
+
+    </div>
+
+</article>
+<div class="post-nav">
+<a class="previous" href="/jekyll-theme-yat/ai%E9%96%8B%E7%99%BA/2026/06/13/openclaw-personal-ai-agent.html" title="OpenClawで自分専用のAIエージェントを動かす">OpenClawで自分専用のAIエージェントを動かす</a><a class="next" href="/jekyll-theme-yat/%E9%96%8B%E7%99%BA/2026/06/16/notion-database-personal-backend.html" title="なぜ個人開発のバックエンドに Notion データベースを選ぶのか">なぜ個人開発のバックエンドに Notion データベースを選ぶのか</a>
+</div>
+<div class="post-related">
+      <div>Related Articles</div>
+      <ul>
+        <li><a class="post-link" href="/jekyll-theme-yat/%E9%96%8B%E7%99%BA/2026/06/07/python-black-guide.html" title="なぜ個人開発のバックエンドに Notion データベースを選ぶのか">AI コーディング向けの Python フォーマッター Black</a></li>
+<li><a class="post-link" href="/jekyll-theme-yat/ai%E9%96%8B%E7%99%BA/2026/06/08/opencode-guide.html" title="なぜ個人開発のバックエンドに Notion データベースを選ぶのか">LLM を選べる OSS コーディングエージェント opencode</a></li>
+<li><a class="post-link" href="/jekyll-theme-yat/%E9%96%8B%E7%99%BA/2023/05/25/python-venv.html" title="なぜ個人開発のバックエンドに Notion データベースを選ぶのか">Pythonとvenv: 仮想環境のスムーズな管理まとめ</a></li>
+<li><a class="post-link" href="/jekyll-theme-yat/ai%E9%96%8B%E7%99%BA/2026/06/17/mcp-protocol-overview.html" title="なぜ個人開発のバックエンドに Notion データベースを選ぶのか">MCPは何を標準化するプロトコルなのか</a></li>
+</ul>
+    </div>
+<div class="post-comments"></div></section>
+</div>
+
+
+  </section>
+  <section class="sidebar" style="margin-left: 15px;">
+    <!-- Get sidebar items --><style type="text/css" media="screen">
+.post-menu ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+</style>
+
+<div class="post-menu">
+  <div class="post-menu-title">TOC</div>
+  <div class="post-menu-content"></div>
+</div>
+
+<script>
+  function generateContent() {
+    var menu = document.querySelector(".post-menu");
+    var menuContent =  menu.querySelector(".post-menu-content");
+    var headings = document.querySelector(".post-content").querySelectorAll("h2, h3, h4, h5, h6");
+
+    // Hide menu when no headings
+    if (headings.length === 0) {
+      return menu.style.display = "none";
+    }
+
+    // Generate post menu
+    var menuHTML = '';
+    for (var i = 0; i < headings.length; i++) {
+      var h = headings[i];
+      menuHTML += (
+        '<li class="h-' + h.tagName.toLowerCase() + '">'
+        + '<a href="#h-' + h.getAttribute('id') + '">' + h.textContent + '</a></li>');
+    }
+
+    menuContent.innerHTML = '<ul>' + menuHTML + '</ul>';
+
+    // The header element
+    var header = document.querySelector('header.site-header');
+
+    function doMenuCollapse(index, over_items) {
+      var items = menuContent.firstChild.children;
+
+      if (over_items == undefined) {
+        over_items = 20;
+      }
+
+      if (items.length < over_items) {
+        return;
+      }
+
+      var activeItem = items[index];
+      var beginItem = activeItem
+      var endItem = activeItem
+      var beginIndex = index;
+      var endIndex = index + 1;
+      while (beginIndex >= 0
+        && !items[beginIndex].classList.contains('h-h2')) {
+        beginIndex -= 1;
+      }
+      while (endIndex < items.length
+        && !items[endIndex].classList.contains('h-h2')) {
+        endIndex += 1;
+      }
+      for (var i = 0; i < beginIndex; i++) {
+        item = items[i]
+        if (!item.classList.contains('h-h2')) {
+          item.style.display = 'none';
+        }
+      }
+      for (var i = beginIndex + 1; i < endIndex; i++) {
+        item = items[i]
+        // if (!item.classList.contains('h-h2')) {
+          item.style.display = '';
+        // }
+      }
+      for (var i = endIndex; i < items.length; i++) {
+        item = items[i]
+        if (!item.classList.contains('h-h2')) {
+          item.style.display = 'none';
+        }
+      }
+    }
+
+    // Init menu collapsed
+    doMenuCollapse(-1);
+
+    // Active the menu item
+    window.addEventListener('scroll', function (event) {
+      var lastActive = menuContent.querySelector('.active');
+      var changed = true;
+      var activeIndex = -1;
+      for (var i = headings.length - 1; i >= 0; i--) {
+        var h = headings[i];
+        var headingRect = h.getBoundingClientRect();
+        var headerRect = header.getBoundingClientRect();
+        var headerTop = Math.floor(headerRect.top);
+        var headerHeight = Math.floor(headerRect.height);
+        var headerHeight = headerTop + headerHeight + 20;
+        if (headingRect.top <= headerHeight) {
+          var id = 'h-' + h.getAttribute('id');
+          var a = menuContent.querySelector('a[href="#' + id  + '"]');
+          var curActive = a.parentNode;
+          if (curActive) {
+            curActive.classList.add('active');
+            activeIndex = i;
+          }
+          if (lastActive == curActive) {
+            changed = false;
+          }
+          break;
+        }
+      }
+      if (changed) {
+        if (lastActive) {
+          lastActive.classList.remove('active');
+        }
+        doMenuCollapse(activeIndex);
+      }
+      event.preventDefault();
+    });
+  }
+  generateContent();
+</script>
+</section>
+</div>
+
+      </div>
+    </main><footer class="site-footer h-card">
+  <data class="u-url" href="/jekyll-theme-yat/"></data>
+
+  <div class="wrapper">
+    <div class="site-footer-inner">
+<div>Waka-DS © 2021-2026</div>
+      <div>Powered by <a title="Jekyll is a simple, blog-aware, static site
+      generator." href="http://jekyllrb.com/">Jekyll</a> &amp; <a title="Yat, yet
+      another theme." href="https://github.com/jeffreytse/jekyll-theme-yat">Yat Theme</a>.</div>
+      <div class="footer-col rss-subscribe">Subscribe <a href="/jekyll-theme-yat/feed.xml">via RSS</a>
+</div>
+    </div>
+  </div>
+</footer>
+</body>
+</html>

@@ -1,0 +1,1276 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <script>
+  (function() {
+    try {
+      var p = localStorage.getItem('preferred_lang');
+      if (!p) return;
+      var path = window.location.pathname;
+      var ja = ['/', '/archives.html', '/categories.html', '/tags.html', '/about.html'];
+      var en = ['/en/', '/en/archives.html', '/en/categories.html', '/en/tags.html', '/en/about.html'];
+      if (p === 'en' && ja.indexOf(path) !== -1) {
+        window.location.replace('/en' + (path === '/' ? '/' : path));
+      } else if (p === 'ja' && en.indexOf(path) !== -1) {
+        window.location.replace(path.slice(3) || '/');
+      }
+    } catch(e) {}
+  })();
+  </script>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="google-translate-customization" content="108d9124921d80c3-80e20d618ff053c8-g4f02ec6f3dba68b7-c">
+<!-- Begin Jekyll SEO tag v2.9.0 -->
+<title>エージェントを長く自律動作させるためのコンテキスト設計 | Waka-DS.com</title>
+<meta name="generator" content="Jekyll v4.4.1">
+<meta property="og:title" content="エージェントを長く自律動作させるためのコンテキスト設計">
+<meta name="author" content="Waka-DS">
+<meta property="og:locale" content="ja">
+<meta name="description" content="エージェントに多くのタスクを自律的にやらせようとすると、ある非対称な問題にぶつかる。">
+<meta name="twitter:description" property="og:description" content="エージェントに多くのタスクを自律的にやらせようとすると、ある非対称な問題にぶつかる。">
+<link rel="canonical" href="/jekyll-theme-yat/ai%E9%96%8B%E7%99%BA/2026/06/07/agent-context-management-2026.html">
+<meta property="og:url" content="/jekyll-theme-yat/ai%E9%96%8B%E7%99%BA/2026/06/07/agent-context-management-2026.html">
+<meta property="og:site_name" content="Waka-DS.com">
+<meta property="og:image" content="/jekyll-theme-yat/assets/images/posts/2026-06-07-agent-context-management-2026/eyecatch.png">
+<meta property="og:image:alt" content="完了した作業を外部アーカイブへ移して机を空けるミニチュアの管制室">
+<meta property="og:type" content="article">
+<meta property="article:published_time" content="2026-06-07T00:00:00+00:00">
+<meta property="article:modified_time" content="2026-06-07T00:00:00+00:00">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="/jekyll-theme-yat/assets/images/posts/2026-06-07-agent-context-management-2026/eyecatch.png">
+<meta name="twitter:image:alt" content="完了した作業を外部アーカイブへ移して机を空けるミニチュアの管制室">
+<meta name="twitter:title" content="エージェントを長く自律動作させるためのコンテキスト設計">
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":"Waka-DS"},"dateModified":"2026-06-07T00:00:00+00:00","datePublished":"2026-06-07T00:00:00+00:00","description":"エージェントに多くのタスクを自律的にやらせようとすると、ある非対称な問題にぶつかる。","headline":"エージェントを長く自律動作させるためのコンテキスト設計","image":{"alt":"完了した作業を外部アーカイブへ移して机を空けるミニチュアの管制室","url":"/jekyll-theme-yat/assets/images/posts/2026-06-07-agent-context-management-2026/eyecatch.png","@type":"imageObject"},"mainEntityOfPage":{"@type":"WebPage","@id":"/jekyll-theme-yat/ai%E9%96%8B%E7%99%BA/2026/06/07/agent-context-management-2026.html"},"url":"/jekyll-theme-yat/ai%E9%96%8B%E7%99%BA/2026/06/07/agent-context-management-2026.html"}</script>
+<!-- End Jekyll SEO tag -->
+<link rel="shortcut icon" href="">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=Noto+Sans+JP:wght@400;500;700&amp;display=swap">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+  <link rel="stylesheet" href="/jekyll-theme-yat/assets/css/main.css">
+  <script src="/jekyll-theme-yat/assets/js/main.js"></script><link type="application/atom+xml" rel="alternate" href="/jekyll-theme-yat/feed.xml" title="Waka-DS.com">
+<script>
+  function initGoogleAnalytics() {
+    var doNotTrack = (window.doNotTrack === "1" || navigator.doNotTrack === "1" ||
+      navigator.doNotTrack === "yes" || navigator.msDoNotTrack === "1");
+    var enableDNT = "true" == "true";
+
+    if (!enableDNT || !doNotTrack) {
+      var ga_id = 'G-XNP1RBTG9C';
+
+      var script = document.createElement('script');
+      script.async = true;
+      script.src = 'https://www.googletagmanager.com/gtag/js?id=' + ga_id;
+      document.head.appendChild(script);
+
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', ga_id);
+    }
+  }
+  window.addEventListener("load", initGoogleAnalytics);
+</script>
+<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/styles/default.min.css">
+<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/highlight.min.js"></script>
+<!-- and it's easy to individually load additional languages -->
+<script charset="UTF-8" src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/languages/go.min.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<script>
+// Init highlight js
+document.addEventListener('DOMContentLoaded', function(event) {
+  var els = document.querySelectorAll('pre code')
+
+  function addLangData(block) {
+    var outer = block.parentElement.parentElement.parentElement;
+    var lang = block.getAttribute('data-lang');
+    for (var i = 0; i < outer.classList.length; i++) {
+      var cls = outer.classList[i];
+      if (cls.startsWith('language-')) {
+        lang = cls;
+        break;
+      }
+    }
+    if (!lang) {
+      cls = block.getAttribute('class');
+      lang = cls ? cls.replace('hljs ', '') : '';
+    }
+    if (lang.startsWith('language-')) {
+      lang = lang.substr(9);
+    }
+    block.setAttribute('class', 'hljs ' + lang);
+    block.parentNode.setAttribute('data-lang', lang);
+  }
+
+  function addBadge(block) {
+    var enabled = ('true' || 'true').toLowerCase();
+    if (enabled == 'true') {
+      var pre = block.parentElement;
+      pre.classList.add('badge');
+    }
+  }
+
+  function handle(block) {
+    addLangData(block);
+    addBadge(block)
+    hljs.highlightBlock(block);
+  }
+
+  for (var i = 0; i < els.length; i++) {
+    var el = els[i];
+    handle(el);
+  }
+});
+</script>
+
+<style>
+  /* code language badge */
+  pre.badge::before {
+    content: attr(data-lang);
+    color: #fff;
+    background-color: #0d9488;
+    padding: 0 .5em;
+    border-radius: 0 2px;
+    text-transform: uppercase;
+    text-align: center;
+    min-width: 32px;
+    display: inline-block;
+    position: absolute;
+    right: 0;
+  }
+
+  /* fix wrong badge display for firefox browser */
+  code > table pre::before {
+    display: none;
+  }
+</style>
+</head>
+<body>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<header class="site-header " role="banner">
+
+  <div class="wrapper">
+    <div class="site-header-inner">
+<span class="site-brand"><a class="site-brand-inner" rel="author" href="/jekyll-theme-yat/">
+  <img class="site-favicon" title="Waka-DS.com" src="" onerror="this.style.display='none'">
+  Waka-DS.com
+</a>
+</span><nav class="site-nav">
+          <input type="checkbox" id="nav-trigger" class="nav-trigger">
+          <label for="nav-trigger">
+            <span class="menu-icon">
+              <svg viewbox="0 0 18 15" width="18px" height="15px">
+                <path d="M18,1.484c0,0.82-0.665,1.484-1.484,1.484H1.484C0.665,2.969,0,2.304,0,1.484l0,0C0,0.665,0.665,0,1.484,0 h15.032C17.335,0,18,0.665,18,1.484L18,1.484z M18,7.516C18,8.335,17.335,9,16.516,9H1.484C0.665,9,0,8.335,0,7.516l0,0 c0-0.82,0.665-1.484,1.484-1.484h15.032C17.335,6.031,18,6.696,18,7.516L18,7.516z M18,13.516C18,14.335,17.335,15,16.516,15H1.484 C0.665,15,0,14.335,0,13.516l0,0c0-0.82,0.665-1.483,1.484-1.483h15.032C17.335,12.031,18,12.695,18,13.516L18,13.516z"></path>
+              </svg>
+            </span>
+          </label>
+
+          <div class="trigger">
+<a class="page-link" href="/jekyll-theme-yat/about.html">ABOUT</a><a class="page-link" href="/jekyll-theme-yat/archives.html">ARCHIVES</a><a class="page-link" href="/jekyll-theme-yat/categories.html">CATEGORIES</a><a class="page-link" href="/jekyll-theme-yat/">HOME</a><a class="page-link" href="/jekyll-theme-yat/tags.html">TAGS</a>
+</div>
+        </nav>
+</div>
+  </div>
+</header>
+
+<script>
+  function initHeader() {
+    var lastScrollY = getScrollPos().y;
+    var documentElement = document.documentElement;
+
+    function storeScrollData() {
+      var y = getScrollPos().y;var scrollStatus = "";
+
+      if (y <= 0) {
+        scrollStatus = "top";
+      } else if ((window.innerHeight + y) >= document.body.offsetHeight) {
+        scrollStatus = "bottom";
+      } else {
+        var isScrollDown = (y - lastScrollY > 0) ? true : false;
+        scrollStatus = isScrollDown ? "down" : "up";
+      }
+
+      lastScrollY = y;
+      documentElement.setAttribute("data-scroll-status", scrollStatus);
+    }
+
+    window.addEventListener('scroll', function(e) {
+      storeScrollData();
+    });
+
+    storeScrollData();
+  }
+  document.addEventListener('DOMContentLoaded', initHeader);
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<script>
+  function hashLocate(hashValue) {
+    hashValue = hashValue.replace(/^.*#h-/, '');
+    hashValue = decodeURIComponent(hashValue);
+    var element = document.getElementById(hashValue);
+
+    if (!element) {
+      return;
+    }
+
+    var header = document.querySelector('header.site-header');
+    var headerRect = header.getBoundingClientRect();
+    var headerTop = Math.floor(headerRect.top);
+    var headerHeight = Math.floor(headerRect.height);
+    var scrollPos = getScrollPos();
+    var offsetY = element.offsetTop - (headerTop + headerHeight + 20);
+
+    if (offsetY == scrollPos.y) {
+      return;
+    }
+
+    if (headerTop == 0  && offsetY > scrollPos.y) {
+      offsetY += headerHeight + 2;
+    } else if (headerTop < 0  && offsetY < scrollPos.y) {
+      offsetY -= headerHeight - 2;
+    }
+
+    smoothScrollTo(offsetY);
+  }
+
+  // The first event occurred
+  window.addEventListener('load', function(event) {
+    if (window.location.hash) {
+      hashLocate(window.location.hash);
+    }
+  });
+
+  // The first event occurred
+  window.addEventListener('click', function(event) {
+    if (event.target.tagName.toLowerCase() == 'a') {
+      hashLocate(event.target.getAttribute('href'));
+    }
+  });
+</script>
+<div class="theme-toggle">
+  <input type="checkbox" id="theme-switch">
+  <label for="theme-switch">
+    <div class="toggle"></div>
+    <div class="names">
+      <p class="light">Light</p>
+      <p class="dark">Dark</p>
+    </div>
+  </label>
+</div>
+
+
+
+
+<script>
+  (function() {
+    var sw = document.getElementById('theme-switch');
+    var html = document.getElementsByTagName('html')[0];
+    var nightModeOption = ('auto' || 'auto').toLowerCase();
+    var storage = nightModeOption === 'manual'
+        ? localStorage
+        : sessionStorage;
+    var themeData = loadThemeData();
+
+    function saveThemeData(data) {
+      storage.setItem('theme', JSON.stringify(data));
+    }
+
+    function loadThemeData() {
+      var data = storage.getItem('theme');
+      try {
+        data = JSON.parse(data ? data : '');
+      } catch(e) {
+        data = { nightShift: undefined, autoToggleAt: 0 };
+        saveThemeData(data);
+      }
+      return data;
+    }
+
+    function handleThemeToggle(nightShift) {
+      themeData.nightShift = nightShift;
+      saveThemeData(themeData);
+      html.dataset.theme = nightShift ? 'dark' : 'light';
+      setTimeout(function() {
+        sw.checked = nightShift ? true : false;
+      }, 50);
+    }
+
+    function autoThemeToggle() {
+      // Next time point of theme toggle
+      var now = new Date();
+      var toggleAt = new Date();
+      var hours = now.getHours();
+      var nightShift = hours >= 19 || hours <=7;
+
+      if (nightShift) {
+        if (hours > 7) {
+          toggleAt.setDate(toggleAt.getDate() + 1);
+        }
+        toggleAt.setHours(7);
+      } else {
+        toggleAt.setHours(19);
+      }
+
+      toggleAt.setMinutes(0);
+      toggleAt.setSeconds(0);
+      toggleAt.setMilliseconds(0)
+
+      var delay = toggleAt.getTime() - now.getTime();
+
+      // auto toggle theme mode
+      setTimeout(function() {
+        handleThemeToggle(!nightShift);
+      }, delay);
+
+      return {
+        nightShift: nightShift,
+        toggleAt: toggleAt.getTime()
+      };
+    }
+
+    // Listen the theme toggle event
+    sw.addEventListener('change', function(event) {
+      handleThemeToggle(event.target.checked);
+    });
+
+    if (nightModeOption == 'auto') {
+      var data = autoThemeToggle();
+
+      // Toggle theme by local setting
+      if (data.toggleAt > themeData.autoToggleAt) {
+        themeData.autoToggleAt = data.toggleAt;
+        handleThemeToggle(data.nightShift);
+      } else {
+        handleThemeToggle(themeData.nightShift);
+      }
+    } else if (nightModeOption == 'manual') {
+      handleThemeToggle(themeData.nightShift);
+    } else {
+      var nightShift = themeData.nightShift;
+      if (nightShift === undefined) {
+        nightShift = nightModeOption === 'on';
+      }
+      handleThemeToggle(nightShift);
+    }
+  })();
+</script>
+<main class="page-content" aria-label="Content">
+      <div class="wrapper">
+        <div class="framework">
+  <section class="main">
+
+     <div class="post post--with-image">
+  <section>
+
+
+
+
+
+
+
+
+
+<header class="post-header">
+  <h1 class="post-title p-name" itemprop="name headline">エージェントを長く自律動作させるためのコンテキスト設計</h1>
+  <h2 class="post-subtitle">下位エージェントと上位エージェントで問題が非対称である理由と、2026年時点の解決アプローチ</h2>
+
+  <p class="post-meta">
+    <time class="dt-published" datetime="2026-06-07T00:00:00+00:00" itemprop="datePublished"><i class="fa fa-calendar"></i> Jun 07, 2026
+    </time>
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <span class="post-reading-time left-vsplit"><i class="fa fa-clock-o"></i> About 23 mins</span>
+  </p>
+<div class="post-tags">
+<a class="post-tag" href="/jekyll-theme-yat/tags.html#%E3%83%9E%E3%83%AB%E3%83%81%E3%82%A8%E3%83%BC%E3%82%B8%E3%82%A7%E3%83%B3%E3%83%88">#マルチエージェント</a><a class="post-tag" href="/jekyll-theme-yat/tags.html#%E3%82%B3%E3%83%B3%E3%83%86%E3%82%AD%E3%82%B9%E3%83%88%E7%AE%A1%E7%90%86">#コンテキスト管理</a><a class="post-tag" href="/jekyll-theme-yat/tags.html#Claude%20Code">#Claude Code</a><a class="post-tag" href="/jekyll-theme-yat/tags.html#Codex%20CLI">#Codex CLI</a><a class="post-tag" href="/jekyll-theme-yat/tags.html#LLM">#LLM</a>
+</div></header>
+<figure class="post-eyecatch">
+  <img src="/jekyll-theme-yat/assets/images/posts/2026-06-07-agent-context-management-2026/eyecatch.png" alt="完了した作業を外部アーカイブへ移して机を空けるミニチュアの管制室" decoding="async" fetchpriority="high">
+</figure><article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
+
+    <div class="post-content e-content" itemprop="articleBody">
+
+      <p>エージェントに多くのタスクを自律的にやらせようとすると、ある非対称な問題にぶつかる。</p>
+
+<p><strong>下位エージェント（実装担当）</strong> はタスクが終わるたびにセッションを終了できる。次のタスクは白紙のコンテキストで始まる。コンテキスト管理の問題はあまり起きない。</p>
+
+<p><strong>上位エージェント（オーケストレーター）</strong> はそうはいかない。「何が済んで・何が残っていて・次は何か」を複数タスクにわたって把握しつづける必要があるため、長く生かしたい。しかし長く生かすほどコンテキストが積み上がり、やがてモデルの挙動が変わってくる。</p>
+
+<p>この問題は「いつclearするか」ではなく、<strong>オーケストレーターの設計</strong>の問題だ。2026年6月時点で取られている解決アプローチをまとめる。</p>
+
+<hr>
+
+<h2 id="なぜ長いコンテキストは問題になるのか">なぜ長いコンテキストは問題になるのか</h2>
+
+<p>「上限に達したら困る」という理解は正しいが、問題はそれより前に始まる。</p>
+
+<h3 id="context-rotコンテキスト腐敗">context rot（コンテキスト腐敗）</h3>
+
+<p>コンテキスト窓が埋まる前から、LLMの出力品質が低下し始める。2025〜2026年にかけて「context rot」と呼ばれるようになった現象だ。</p>
+
+<p>ChromaDBが18のフロンティアモデルを対象に実施した研究では、<strong>全モデルで入力が長くなるほど出力品質が下がる</strong>ことが確認されている。</p>
+
+<p>主な原因は3つだ。</p>
+
+<p><strong>lost-in-the-middle効果:</strong> トランスフォーマーは文脈の先頭と末尾には注意を払いやすいが、中間部分への注意が薄れる。精度が30%以上落ちるケースも報告されている。</p>
+
+<p><strong>attention計算量の問題:</strong> 10万トークンの文脈は100億のペアワイズ関係を意味する。処理コストが二乗的に増加するため、長いコンテキストは全体的に精度が下がりやすい。</p>
+
+<p><strong>ノイズの蓄積:</strong> 試行錯誤の過程で積み上がった「うまくいかなかったアプローチ」が、意味的に関連しているがゆえにモデルを誤誘導する。コーディングエージェントにとってこれが一番やっかいで、「頭が良いのに正しく動かない」という形で現れる。</p>
+
+<p>モデルのコンテキストウィンドウは年々拡大しているが、context rotは上限に関係なく発生する。大きくなったウィンドウは問題を先送りするが、解消はしない。</p>
+
+<hr>
+
+<h2 id="問題の非対称性">問題の非対称性</h2>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>下位エージェント（例: Codex）
+  task-001 実装 → DONE → セッション終了
+  task-002 実装 → DONE → セッション終了  ← コンテキストは毎回リセット
+  task-003 実装 → DONE → セッション終了
+
+上位エージェント（例: Claude orchestrator）
+  task-001 発行 → DONE受信 → レビュー → merge → task-002発行
+  task-002 発行 → DONE受信 → レビュー → CHANGES → 修正待ち
+  task-003 発行 → ...                             ← コンテキストが積み続ける
+</code></pre></div></div>
+
+<p>下位エージェントは1タスク1セッションにできる。タスクが完了したらセッションを終了し、次のタスクでは新しいセッションを開始する。コンテキストが汚染される前に毎回リセットされる。</p>
+
+<p>上位エージェントはそれができない。なぜなら「過去のタスクの結果を踏まえて次を判断する」というのがオーケストレーターの仕事だからだ。</p>
+
+<hr>
+
+<h2 id="自律的に解決する3つのアプローチ">自律的に解決する3つのアプローチ</h2>
+
+<p>「人間がタイミングを判断してclearする」のは正しいが、自律性を高めるにはこれに頼れない。2026年時点で取られているアプローチは次の3つに整理できる。</p>
+
+<h3 id="アプローチ1-サブエージェントで文脈の汚染を防ぐ">アプローチ1: サブエージェントで文脈の汚染を防ぐ</h3>
+
+<p>Claude Codeにはサブエージェント機能がある。子エージェントは<strong>独立したコンテキストウィンドウで動き、結果はサマリーとして親に返ってくる</strong>。</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>orchestrator（Claude, 長命）
+  context: [タスクリスト, 設計方針, 完了済み概要, ...]
+
+  → task-002をサブエージェントに委託
+      subagent context: [task-002の仕様, ファイル読み込み結果, テスト実行ログ, ...]
+      ← サマリーのみ返す: "feat/api-v2 実装完了, 3ファイル変更, テスト全通"
+
+  orchestrator contextに追加されるのはサマリーだけ
+</code></pre></div></div>
+
+<p>子エージェントが100Kトークン消費しても、親のコンテキストには数百トークンのサマリーしか積まれない。これは「下位エージェントの文脈汚染を親から遮断する」仕組みだ。</p>
+
+<p>ただし、これは「オーケストレーター自身のコンテキスト蓄積」は解決しない。タスクが増えるほど、サマリーが積み重なって親も膨らんでいく。根本的な解決にはならないが、膨らみ方を大きく抑えられる。</p>
+
+<h3 id="アプローチ2-オーケストレーターを薄く設計するralph-loop">アプローチ2: オーケストレーターを「薄く」設計する（Ralph Loop）</h3>
+
+<p>「Ralph Loop」と呼ばれるパターンが2025〜2026年に広まった。考え方はシンプルだ。</p>
+
+<p><strong>オーケストレーターのコンテキストに状態を持たせない。状態はすべて外部に書く。</strong></p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>while タスクが残っている:
+  1. 外部ストアから現在の状態を読む（git / agmsg / ファイル）
+  2. 「次にやるべきこと」を1つ判断する
+  3. 下位エージェントに委託する
+  4. 結果を外部ストアに書く
+  5. コンテキストをclearして最初に戻る
+</code></pre></div></div>
+
+<p>各ループの終わりにclearできるのは、<strong>判断に必要な状態がすべて外部に書かれているから</strong>だ。コンテキストの中身は「今回の判断」だけでよく、過去のやり取りを覚えている必要がない。</p>
+
+<div class="language-text highlighter-rouge"><div class="highlight"><pre class="highlight"><code># 従来（コンテキスト依存）
+「3つ前の会話でCHANGESを送ったあの件、どうなったか」
+
+# Ralph Loop（外部状態依存）
+ループ開始時に: agmsg inbox を確認
+              → DONE task-003 を検知
+              → git log で差分確認
+              → 次の判断
+</code></pre></div></div>
+
+<p>agmsg + gitの構成はこの設計と相性が良い。agmsgのメッセージ履歴とgitのコミット履歴が「何が済んで何が残っているか」の外部ストアになる。</p>
+
+<p><strong>自律的なclearの実装例（Claude Codeへの指示として）:</strong></p>
+
+<div class="language-text highlighter-rouge"><div class="highlight"><pre class="highlight"><code># CLAUDE.md または system prompt に記述
+タスクが1つ完了したら（DONE受信・merge完了後）、次のタスクに移る前に
+以下を実行すること:
+1. 完了内容をAGENTS.mdに記録する
+2. /compact を実行する
+3. agmsg inbox を確認して次のタスクを取得する
+</code></pre></div></div>
+
+<p>これはモデルへの指示としてコンテキストに入れておくことで、人手なしでcompactを呼ばせられる。モデルが指示通りに動く保証は100%ではないが、「タスク完了」という明確なトリガーが存在するため、判断のぶれは起きにくい。</p>
+
+<h3 id="アプローチ3-モデル自身がcompactを判断するopencodeの方式">アプローチ3: モデル自身がcompactを判断する（OpenCodeの方式）</h3>
+
+<p>OpenCodeはこの問題に対して、<strong>モデル自身が<code class="language-plaintext highlighter-rouge">Compress</code>ツールを呼ぶ</strong>設計を取っている。</p>
+
+<p>モデルにはCompressツールが提供されており、「このタスクが終わった、今圧縮するのが適切」と判断したタイミングで自発的に呼び出せる。Claude Codeの自動compactが「上限近傍の緊急措置」として機能するのとは異なり、タスク境界という意味のある区切りで発動できる。</p>
+
+<p>Claude Codeには現時点でこれに相当する機能はない。<code class="language-plaintext highlighter-rouge">/compact</code>は手動コマンドであり、自動compactは上限（〜95%）での緊急措置だ。</p>
+
+<hr>
+
+<h2 id="ツール内蔵のcompactionは緊急措置として位置づける">ツール内蔵のcompactionは「緊急措置」として位置づける</h2>
+
+<p>ツール内蔵のcompactionは、設計で解決できなかった場合のフォールバックとして理解するのが正しい。</p>
+
+<h3 id="claude-code">Claude Code</h3>
+
+<p>コンテキストが上限に近づくと自動でcompactionを実行する。</p>
+
+<ul>
+  <li>200Kモデル: ~167K（~83%）付近でトリガー</li>
+  <li>Opus [1M]モデル: ~367K前後でトリガー（GitHubで報告された実測値）</li>
+  <li>
+<code class="language-plaintext highlighter-rouge">CLAUDE_AUTOCOMPACT_PCT_OVERRIDE</code> で閾値を調整できる</li>
+</ul>
+
+<p>compactionは単純な要約ではなく、9つのセクションに分けた構造化サマリーを生成する（セッションの目的・完了済みタスク・保留中の問題・コードの変更など）。プロンプトキャッシュとの親和性も高く設計されており、compaction後もキャッシュヒットしやすい。</p>
+
+<p>手動実行は <code class="language-plaintext highlighter-rouge">/compact</code>。カスタム指示も付けられる。</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>/compact 完了済みタスクの詳細は省略し、未解決の問題だけ残すこと
+</code></pre></div></div>
+
+<h3 id="codex-cli">Codex CLI</h3>
+
+<p>v0.128からネイティブのMemoriesシステムを導入した（デフォルト無効）。</p>
+
+<p>セッション内のcompactionは、Codexモデルではremote <code class="language-plaintext highlighter-rouge">compact()</code>エンドポイント（AES暗号化blobで返る）、非Codexモデルではローカルのサマリーを使う。</p>
+
+<div class="language-toml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># ~/.codex/config.toml</span>
+<span class="k">[</span><span class="n">memories</span><span class="k">]</span>
+<span class="n">enabled</span> <span class="o">=</span><span class="w"> </span><span class="kc">true</span>
+<span class="n">idle_hours_before_extraction</span> <span class="o">=</span><span class="w"> </span><span class="mi">2</span>
+<span class="n">max_thread_age_days</span> <span class="o">=</span><span class="w"> </span><span class="mi">30</span>
+</code></pre></div></div>
+
+<p>Memoriesが有効だと、セッション終了後にバックグラウンドでインサイトを抽出し、次のセッション開始時に自動注入する。「このプロジェクトのコーディング規約」「よく使うパターン」の引き継ぎに有効だ。</p>
+
+<p>すべてのセッションは <code class="language-plaintext highlighter-rouge">~/.codex/sessions/</code> にJSONLで保存されており、<code class="language-plaintext highlighter-rouge">codex resume --last</code> で直前のセッションに戻れる。</p>
+
+<h3 id="opencode">OpenCode</h3>
+
+<p>モデルへの<code class="language-plaintext highlighter-rouge">Compress</code>ツール提供に加え、96〜99%に達するまでは20,000トークン以上かつ最後の40,000トークンを保護したpruningを先行させる。compactionは本当の最終手段として設計されている。</p>
+
+<hr>
+
+<h2 id="セッション間の記憶-外部メモリ">セッション間の記憶: 外部メモリ</h2>
+
+<p>同一セッション内のcompactionとは別に、<strong>セッションをまたいだ記憶</strong>には外部メモリが必要になる。</p>
+
+<h3 id="letta旧memgpt">Letta（旧MemGPT）</h3>
+
+<p>OSのメモリ階層を模倣した3層構造。</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>core memory    ── 常に文脈に入る（RAMに相当）
+archival memory── 外部検索可能なベクトルストア（ディスクに相当）
+recall memory  ── 会話履歴のサマリー
+</code></pre></div></div>
+
+<p>エージェント自身が<code class="language-plaintext highlighter-rouge">core_memory_append</code>・<code class="language-plaintext highlighter-rouge">archival_memory_search</code>などのツールを呼んでメモリを操作する。モデルが「何を覚えておくか」を能動的に判断する設計だ。</p>
+
+<h3 id="mem0">Mem0</h3>
+
+<p>特定フレームワークに依存しないクロスエージェントの永続メモリ層。Anthropic SDK・OpenAI Agents SDK・Google ADKすべてと統合している。2026年4月のアルゴリズム更新で時系列クエリの精度が+29.6ポイント改善された。</p>
+
+<p>複数エージェントが同じメモリ層を参照できるため、orchestratorとworkerでプロジェクト知識を共有できる。</p>
+
+<h3 id="mcpメモリサーバー">MCPメモリサーバー</h3>
+
+<p>Claude CodeとCodex CLIのどちらからも利用できるMCP経由のメモリサーバーが増えている。</p>
+
+<table>
+  <thead>
+    <tr>
+      <th style="text-align: left">サービス</th>
+      <th style="text-align: left">特徴</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td style="text-align: left">Hindsight</td>
+      <td style="text-align: left">セッションごとのインサイト抽出・ベクトル検索</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">Basic Memory</td>
+      <td style="text-align: left">MarkdownファイルベースのシンプルなMCPサーバー</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">Mem0 MCP</td>
+      <td style="text-align: left">Mem0のメモリ層をMCP経由で利用</td>
+    </tr>
+  </tbody>
+</table>
+
+<p><strong>外部メモリの導入タイミング:</strong> Mem0やLettaは、「同一エージェントに数週間以上のタスクを連続して与える」「複数エージェント間でプロジェクト知識を共有したい」場面で真価を発揮する。初期フェーズではAGENTS.md + agmsg履歴を外部ストアとして使う方が導入コストは低い。</p>
+
+<hr>
+
+<h2 id="チェックポイントと再開-別次元の耐障害性">チェックポイントと再開: 別次元の耐障害性</h2>
+
+<p>コンテキスト管理とは別に、「プロセスがクラッシュしても再開できる」耐障害性も長時間運用では必要になる。</p>
+
+<p><strong>Google ADK</strong> はツール呼び出しのたびにチェックポイントを作成し、コンテナがクラッシュしても現在のステップを読み取って再開できる。<code class="language-plaintext highlighter-rouge">DatabaseSessionService</code>（SQLite/Cloud SQL）で会話状態を永続化し、数日止まる Human-in-the-Loop フローにも対応する。</p>
+
+<p><strong>Microsoft Agent Framework（BUILD 2026）</strong> はループ中のコンテキスト上限到達を検知し、フレームワーク側で自動compactして続行する仕組みを提供する。</p>
+
+<hr>
+
+<h2 id="整理-何がどの問題を解くか">整理: 何がどの問題を解くか</h2>
+
+<table>
+  <thead>
+    <tr>
+      <th style="text-align: left">手段</th>
+      <th style="text-align: left">解く問題</th>
+      <th style="text-align: left">自律性</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td style="text-align: left">サブエージェント（Claude Code）</td>
+      <td style="text-align: left">下位エージェントの文脈汚染を親から遮断</td>
+      <td style="text-align: left">高（設計で解決）</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">Ralph Loop（外部状態 + clearループ）</td>
+      <td style="text-align: left">オーケストレーター自身のコンテキスト蓄積</td>
+      <td style="text-align: left">高（設計で解決）</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">CLAUDE.mdへのcompact指示</td>
+      <td style="text-align: left">タスク境界での自律的compact</td>
+      <td style="text-align: left">中（モデル依存）</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">OpenCode Compressツール</td>
+      <td style="text-align: left">モデルが適切タイミングで自律compact</td>
+      <td style="text-align: left">高</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">Claude Code 自動compact</td>
+      <td style="text-align: left">上限近傍の緊急措置</td>
+      <td style="text-align: left">高（自動）</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">Codex CLI Memories</td>
+      <td style="text-align: left">セッション間のインサイト引き継ぎ</td>
+      <td style="text-align: left">高（バックグラウンド）</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">Letta / Mem0</td>
+      <td style="text-align: left">クロスセッション・クロスエージェントの長期記憶</td>
+      <td style="text-align: left">高（フレームワーク）</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">Google ADK checkpoint</td>
+      <td style="text-align: left">プロセス障害からの再開</td>
+      <td style="text-align: left">高（フレームワーク）</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>「タスク境界でオーケストレーターを自律的にcompactする」専用機能は、2026年6月時点ではClaude Codeにはない。OpenCodeのCompressツールがそれに最も近い。Claude Codeで同等を実現するには、CLAUDE.mdへの指示またはRalph Loop設計で補う。</p>
+
+<hr>
+
+<h2 id="agmsg--claude--codex構成への適用">agmsg + Claude + Codex構成への適用</h2>
+
+<p>この構成でオーケストレーター（Claude）のコンテキストを自律的に管理するなら、次が現実的な設計だ。</p>
+
+<p><strong>CLAUDE.md（または system prompt）に書く:</strong></p>
+
+<div class="language-text highlighter-rouge"><div class="highlight"><pre class="highlight"><code>あなたはagmsgを通じてCodexと協働するオーケストレーターです。
+以下のループで動作してください:
+
+1. agmsg inboxを確認する
+2. DONEを受信したら: git mergeし、AGENTS.mdに完了を記録し、/compact を実行する
+3. /compact後: agmsg inboxを再確認し、次のTASKを発行する
+4. 設計上の判断が必要な場合はBLOCKEDを返し、人間に委ねる
+</code></pre></div></div>
+
+<p><strong>外部ストアの整備:</strong></p>
+
+<div class="language-text highlighter-rouge"><div class="highlight"><pre class="highlight"><code>AGENTS.md
+  ├── 完了済みタスク（task-id・branch・概要）
+  ├── 現在進行中のタスク
+  ├── 積み残しの設計判断
+  └── 方針・制約
+
+agmsgメッセージ履歴
+  └── タスクの受け渡しと結果の正本
+
+gitコミット履歴
+  └── 実装の詳細の正本
+</code></pre></div></div>
+
+<p>Claudeがループの最初にAGENTS.mdを読めば、コンテキストをclearしても「今どこにいるか」を再構築できる。これがRalph Loopを成立させる外部状態だ。</p>
+
+<hr>
+
+<h2 id="まとめ">まとめ</h2>
+
+<p>自律エージェントのコンテキスト管理は、ツールの問題より設計の問題だ。</p>
+
+<p><strong>下位エージェントはタスク単位でセッションを終了できる。</strong> これは設計として明示的に選べる。</p>
+
+<p><strong>上位エージェント（オーケストレーター）の問題は非対称だ。</strong> 長く生かしたいが、コンテキストは積む。これを自律的に解決するには:</p>
+
+<ol>
+  <li>
+<strong>サブエージェント</strong>で下位の文脈汚染を親から遮断する</li>
+  <li>
+<strong>外部ストアを正本にする</strong>ことでclearしても再起動できる設計にする（Ralph Loop）</li>
+  <li>
+<strong>モデルへの明示的な指示</strong>でタスク境界でのcompactを自律的に行わせる</li>
+</ol>
+
+<p>ツール内蔵のcompactionは上限近傍での緊急措置であり、設計の代わりにはならない。外部メモリ（Letta、Mem0）はこの上に重ねてセッション間の記憶を担う。</p>
+
+<p>「いつclearするか」という問いへの答えは、<strong>オーケストレーターがclearしても大丈夫な状態にしておく</strong>ことだ。タイミングの問題を、設計の問題として解く。</p>
+
+<hr>
+
+<h2 id="参考情報">参考情報</h2>
+
+<h3 id="コンテキスト管理とcompaction">コンテキスト管理とcompaction</h3>
+
+<ul>
+  <li>
+<a href="https://gist.github.com/badlogic/cd2ef65b0697c4dbe2d13fbecb0a0a5f">Context Compaction Research: Claude Code, Codex CLI, OpenCode, Amp</a> — 主要ツールのcompaction実装を横断比較した研究</li>
+  <li>
+<a href="https://codex.danielvaughan.com/2026/04/14/context-compaction-deep-dive-codex-cli-claude-code-opencode/">Context Compaction Deep Dive: Codex CLI, Claude Code, and OpenCode</a> — 各ツールのcompaction戦略の詳細比較</li>
+  <li>
+<a href="https://zylos.ai/research/2026-03-31-context-window-management-session-lifecycle-long-running-agents/">Context Window Management for Long-Running AI Agents</a> — 長期運用エージェントのコンテキスト設計</li>
+  <li>
+<a href="https://platform.claude.com/docs/en/build-with-claude/compaction">Compaction — Claude API Docs</a> — Anthropic公式ドキュメント</li>
+  <li>
+<a href="https://codex.danielvaughan.com/2026/05/01/codex-cli-memories-persistent-context-session-memory-ecosystem/">Codex CLI Memories: Native Session Persistence</a> — v0.128のMemoriesシステム詳細</li>
+</ul>
+
+<h3 id="context-rot">context rot</h3>
+
+<ul>
+  <li>
+<a href="https://www.morphllm.com/context-rot">Context Rot: Why LLMs Degrade as Context Grows</a> — context rotの定義・メカニズム</li>
+  <li>
+<a href="https://www.mindstudio.ai/blog/claude-code-compact-command-context-management">How to Use the /compact Command in Claude Code to Prevent Context Rot</a> — 実践的な使い方</li>
+</ul>
+
+<h3 id="オーケストレーターとサブエージェント設計">オーケストレーターとサブエージェント設計</h3>
+
+<ul>
+  <li>
+<a href="https://www.tembo.io/blog/claude-code-subagents">Claude Code Subagents: A 2026 Practical Guide</a> — サブエージェントの使い方とコンテキスト分離</li>
+  <li>
+<a href="https://addyosmani.com/blog/code-agent-orchestra/">The Code Agent Orchestra</a> — Addy Osmani。マルチエージェントコーディングのパターン（Ralph Loopを含む）</li>
+  <li>
+<a href="https://o-mega.ai/articles/long-running-coding-agents-the-2026-guide">Long-Running Coding Agents: The 2026 Guide</a> — 長時間稼働エージェントの設計ガイド</li>
+</ul>
+
+<h3 id="外部メモリフレームワーク">外部メモリ・フレームワーク</h3>
+
+<ul>
+  <li>
+<a href="https://mem0.ai/blog/state-of-ai-agent-memory-2026">State of AI Agent Memory 2026</a> — Mem0によるエージェントメモリの現状レポート</li>
+  <li>
+<a href="https://arxiv.org/html/2603.07670v1">Memory for Autonomous LLM Agents</a> — エージェントメモリの学術的整理</li>
+  <li>
+<a href="https://agentmarketcap.ai/blog/2026/04/10/agent-memory-vendor-landscape-2026-letta-zep-mem0-langmem">Agent Memory at Scale 2026: Letta, Zep, Mem0, and LangMem Compared</a> — 主要フレームワーク比較</li>
+</ul>
+
+<h3 id="チェックポイント長時間ワークフロー">チェックポイント・長時間ワークフロー</h3>
+
+<ul>
+  <li>
+<a href="https://developers.googleblog.com/build-long-running-ai-agents-that-pause-resume-and-never-lose-context-with-adk/">Build Long-running AI agents that pause, resume, and never lose context with ADK</a> — Google Developers Blog</li>
+  <li>
+<a href="https://devblogs.microsoft.com/agent-framework/microsoft-agent-framework-at-build-2026-announce/">Microsoft Agent Framework at BUILD 2026</a> — Agent Harnessのコンテキスト管理機能</li>
+</ul>
+
+
+    </div>
+
+</article>
+<div class="post-nav">
+<a class="previous" href="/jekyll-theme-yat/%E9%96%8B%E7%99%BA/2026/06/06/vercel-frontend-selection.html" title="なぜフロントエンドに Vercel を選ぶのか">なぜフロントエンドに Vercel を選ぶのか</a><a class="next" href="/jekyll-theme-yat/%E9%96%8B%E7%99%BA/2026/06/07/alembic-database-migration-guide.html" title="Alembic でデータベーススキーマの変更を管理する">Alembic でデータベーススキーマの変更を管理する</a>
+</div>
+<div class="post-related">
+      <div>Related Articles</div>
+      <ul>
+        <li><a class="post-link" href="/jekyll-theme-yat/%E9%96%8B%E7%99%BA/2026/06/11/git-flow-guide.html" title="Alembic でデータベーススキーマの変更を管理する">チーム開発のブランチ戦略と Git Flow の使いどころ</a></li>
+<li><a class="post-link" href="/jekyll-theme-yat/%E9%96%8B%E7%99%BA/2026/06/16/notion-database-personal-backend.html" title="Alembic でデータベーススキーマの変更を管理する">なぜ個人開発のバックエンドに Notion データベースを選ぶのか</a></li>
+<li><a class="post-link" href="/jekyll-theme-yat/%E9%96%8B%E7%99%BA/2026/06/13/github-useful-features.html" title="Alembic でデータベーススキーマの変更を管理する">まだ使っていない GitHub の便利機能を整理する</a></li>
+<li><a class="post-link" href="/jekyll-theme-yat/ai%E9%96%8B%E7%99%BA/2026/06/08/agent-reward-hacking-alignment.html" title="Alembic でデータベーススキーマの変更を管理する">エージェントが「ルールの穴」を突く</a></li>
+</ul>
+    </div>
+<div class="post-comments"></div></section>
+</div>
+
+
+  </section>
+  <section class="sidebar" style="margin-left: 15px;">
+    <!-- Get sidebar items --><style type="text/css" media="screen">
+.post-menu ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+</style>
+
+<div class="post-menu">
+  <div class="post-menu-title">TOC</div>
+  <div class="post-menu-content"></div>
+</div>
+
+<script>
+  function generateContent() {
+    var menu = document.querySelector(".post-menu");
+    var menuContent =  menu.querySelector(".post-menu-content");
+    var headings = document.querySelector(".post-content").querySelectorAll("h2, h3, h4, h5, h6");
+
+    // Hide menu when no headings
+    if (headings.length === 0) {
+      return menu.style.display = "none";
+    }
+
+    // Generate post menu
+    var menuHTML = '';
+    for (var i = 0; i < headings.length; i++) {
+      var h = headings[i];
+      menuHTML += (
+        '<li class="h-' + h.tagName.toLowerCase() + '">'
+        + '<a href="#h-' + h.getAttribute('id') + '">' + h.textContent + '</a></li>');
+    }
+
+    menuContent.innerHTML = '<ul>' + menuHTML + '</ul>';
+
+    // The header element
+    var header = document.querySelector('header.site-header');
+
+    function doMenuCollapse(index, over_items) {
+      var items = menuContent.firstChild.children;
+
+      if (over_items == undefined) {
+        over_items = 20;
+      }
+
+      if (items.length < over_items) {
+        return;
+      }
+
+      var activeItem = items[index];
+      var beginItem = activeItem
+      var endItem = activeItem
+      var beginIndex = index;
+      var endIndex = index + 1;
+      while (beginIndex >= 0
+        && !items[beginIndex].classList.contains('h-h2')) {
+        beginIndex -= 1;
+      }
+      while (endIndex < items.length
+        && !items[endIndex].classList.contains('h-h2')) {
+        endIndex += 1;
+      }
+      for (var i = 0; i < beginIndex; i++) {
+        item = items[i]
+        if (!item.classList.contains('h-h2')) {
+          item.style.display = 'none';
+        }
+      }
+      for (var i = beginIndex + 1; i < endIndex; i++) {
+        item = items[i]
+        // if (!item.classList.contains('h-h2')) {
+          item.style.display = '';
+        // }
+      }
+      for (var i = endIndex; i < items.length; i++) {
+        item = items[i]
+        if (!item.classList.contains('h-h2')) {
+          item.style.display = 'none';
+        }
+      }
+    }
+
+    // Init menu collapsed
+    doMenuCollapse(-1);
+
+    // Active the menu item
+    window.addEventListener('scroll', function (event) {
+      var lastActive = menuContent.querySelector('.active');
+      var changed = true;
+      var activeIndex = -1;
+      for (var i = headings.length - 1; i >= 0; i--) {
+        var h = headings[i];
+        var headingRect = h.getBoundingClientRect();
+        var headerRect = header.getBoundingClientRect();
+        var headerTop = Math.floor(headerRect.top);
+        var headerHeight = Math.floor(headerRect.height);
+        var headerHeight = headerTop + headerHeight + 20;
+        if (headingRect.top <= headerHeight) {
+          var id = 'h-' + h.getAttribute('id');
+          var a = menuContent.querySelector('a[href="#' + id  + '"]');
+          var curActive = a.parentNode;
+          if (curActive) {
+            curActive.classList.add('active');
+            activeIndex = i;
+          }
+          if (lastActive == curActive) {
+            changed = false;
+          }
+          break;
+        }
+      }
+      if (changed) {
+        if (lastActive) {
+          lastActive.classList.remove('active');
+        }
+        doMenuCollapse(activeIndex);
+      }
+      event.preventDefault();
+    });
+  }
+  generateContent();
+</script>
+</section>
+</div>
+
+      </div>
+    </main><footer class="site-footer h-card">
+  <data class="u-url" href="/jekyll-theme-yat/"></data>
+
+  <div class="wrapper">
+    <div class="site-footer-inner">
+<div>Waka-DS © 2021-2026</div>
+      <div>Powered by <a title="Jekyll is a simple, blog-aware, static site
+      generator." href="http://jekyllrb.com/">Jekyll</a> &amp; <a title="Yat, yet
+      another theme." href="https://github.com/jeffreytse/jekyll-theme-yat">Yat Theme</a>.</div>
+      <div class="footer-col rss-subscribe">Subscribe <a href="/jekyll-theme-yat/feed.xml">via RSS</a>
+</div>
+    </div>
+  </div>
+</footer>
+</body>
+</html>

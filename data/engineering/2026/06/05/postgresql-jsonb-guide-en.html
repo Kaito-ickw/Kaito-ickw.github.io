@@ -1,0 +1,1279 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <script>
+  (function() {
+    try {
+      var p = localStorage.getItem('preferred_lang');
+      if (!p) return;
+      var path = window.location.pathname;
+      var ja = ['/', '/archives.html', '/categories.html', '/tags.html', '/about.html'];
+      var en = ['/en/', '/en/archives.html', '/en/categories.html', '/en/tags.html', '/en/about.html'];
+      if (p === 'en' && ja.indexOf(path) !== -1) {
+        window.location.replace('/en' + (path === '/' ? '/' : path));
+      } else if (p === 'ja' && en.indexOf(path) !== -1) {
+        window.location.replace(path.slice(3) || '/');
+      }
+    } catch(e) {}
+  })();
+  </script>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="google-translate-customization" content="108d9124921d80c3-80e20d618ff053c8-g4f02ec6f3dba68b7-c">
+<!-- Begin Jekyll SEO tag v2.9.0 -->
+<title>The Complete Guide to PostgreSQL JSONB — Flexible Schemas and Fast Queries | Waka-DS.com</title>
+<meta name="generator" content="Jekyll v4.4.1">
+<meta property="og:title" content="The Complete Guide to PostgreSQL JSONB — Flexible Schemas and Fast Queries">
+<meta name="author" content="Waka-DS">
+<meta property="og:locale" content="en">
+<meta name="description" content="When requirements include “store data before the schema is finalized” or “handle structures whose fields change dynamically,” PostgreSQL’s JSONB type is often a strong option.">
+<meta name="twitter:description" property="og:description" content="When requirements include “store data before the schema is finalized” or “handle structures whose fields change dynamically,” PostgreSQL’s JSONB type is often a strong option.">
+<link rel="canonical" href="/jekyll-theme-yat/data/engineering/2026/06/05/postgresql-jsonb-guide-en.html">
+<meta property="og:url" content="/jekyll-theme-yat/data/engineering/2026/06/05/postgresql-jsonb-guide-en.html">
+<meta property="og:site_name" content="Waka-DS.com">
+<meta property="og:image" content="/jekyll-theme-yat/assets/images/posts/2026-06-05-postgresql-jsonb-guide/eyecatch.png">
+<meta property="og:image:alt" content="A miniature index searching document branches extending from a card database">
+<meta property="og:type" content="article">
+<meta property="article:published_time" content="2026-06-05T00:00:00+00:00">
+<meta property="article:modified_time" content="2026-06-05T00:00:00+00:00">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="/jekyll-theme-yat/assets/images/posts/2026-06-05-postgresql-jsonb-guide/eyecatch.png">
+<meta name="twitter:image:alt" content="A miniature index searching document branches extending from a card database">
+<meta name="twitter:title" content="The Complete Guide to PostgreSQL JSONB — Flexible Schemas and Fast Queries">
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":"Waka-DS"},"dateModified":"2026-06-05T00:00:00+00:00","datePublished":"2026-06-05T00:00:00+00:00","description":"When requirements include “store data before the schema is finalized” or “handle structures whose fields change dynamically,” PostgreSQL’s JSONB type is often a strong option.","headline":"The Complete Guide to PostgreSQL JSONB — Flexible Schemas and Fast Queries","image":{"alt":"A miniature index searching document branches extending from a card database","url":"/jekyll-theme-yat/assets/images/posts/2026-06-05-postgresql-jsonb-guide/eyecatch.png","@type":"imageObject"},"mainEntityOfPage":{"@type":"WebPage","@id":"/jekyll-theme-yat/data/engineering/2026/06/05/postgresql-jsonb-guide-en.html"},"url":"/jekyll-theme-yat/data/engineering/2026/06/05/postgresql-jsonb-guide-en.html"}</script>
+<!-- End Jekyll SEO tag -->
+<link rel="shortcut icon" href="">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=Noto+Sans+JP:wght@400;500;700&amp;display=swap">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+  <link rel="stylesheet" href="/jekyll-theme-yat/assets/css/main.css">
+  <script src="/jekyll-theme-yat/assets/js/main.js"></script><link type="application/atom+xml" rel="alternate" href="/jekyll-theme-yat/feed.xml" title="Waka-DS.com">
+<script>
+  function initGoogleAnalytics() {
+    var doNotTrack = (window.doNotTrack === "1" || navigator.doNotTrack === "1" ||
+      navigator.doNotTrack === "yes" || navigator.msDoNotTrack === "1");
+    var enableDNT = "true" == "true";
+
+    if (!enableDNT || !doNotTrack) {
+      var ga_id = 'G-XNP1RBTG9C';
+
+      var script = document.createElement('script');
+      script.async = true;
+      script.src = 'https://www.googletagmanager.com/gtag/js?id=' + ga_id;
+      document.head.appendChild(script);
+
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', ga_id);
+    }
+  }
+  window.addEventListener("load", initGoogleAnalytics);
+</script>
+<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/styles/default.min.css">
+<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/highlight.min.js"></script>
+<!-- and it's easy to individually load additional languages -->
+<script charset="UTF-8" src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/languages/go.min.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<script>
+// Init highlight js
+document.addEventListener('DOMContentLoaded', function(event) {
+  var els = document.querySelectorAll('pre code')
+
+  function addLangData(block) {
+    var outer = block.parentElement.parentElement.parentElement;
+    var lang = block.getAttribute('data-lang');
+    for (var i = 0; i < outer.classList.length; i++) {
+      var cls = outer.classList[i];
+      if (cls.startsWith('language-')) {
+        lang = cls;
+        break;
+      }
+    }
+    if (!lang) {
+      cls = block.getAttribute('class');
+      lang = cls ? cls.replace('hljs ', '') : '';
+    }
+    if (lang.startsWith('language-')) {
+      lang = lang.substr(9);
+    }
+    block.setAttribute('class', 'hljs ' + lang);
+    block.parentNode.setAttribute('data-lang', lang);
+  }
+
+  function addBadge(block) {
+    var enabled = ('true' || 'true').toLowerCase();
+    if (enabled == 'true') {
+      var pre = block.parentElement;
+      pre.classList.add('badge');
+    }
+  }
+
+  function handle(block) {
+    addLangData(block);
+    addBadge(block)
+    hljs.highlightBlock(block);
+  }
+
+  for (var i = 0; i < els.length; i++) {
+    var el = els[i];
+    handle(el);
+  }
+});
+</script>
+
+<style>
+  /* code language badge */
+  pre.badge::before {
+    content: attr(data-lang);
+    color: #fff;
+    background-color: #0d9488;
+    padding: 0 .5em;
+    border-radius: 0 2px;
+    text-transform: uppercase;
+    text-align: center;
+    min-width: 32px;
+    display: inline-block;
+    position: absolute;
+    right: 0;
+  }
+
+  /* fix wrong badge display for firefox browser */
+  code > table pre::before {
+    display: none;
+  }
+</style>
+</head>
+<body>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<header class="site-header " role="banner">
+
+  <div class="wrapper">
+    <div class="site-header-inner">
+<span class="site-brand"><a class="site-brand-inner" rel="author" href="/jekyll-theme-yat/">
+  <img class="site-favicon" title="Waka-DS.com" src="" onerror="this.style.display='none'">
+  Waka-DS.com
+</a>
+</span><nav class="site-nav">
+          <input type="checkbox" id="nav-trigger" class="nav-trigger">
+          <label for="nav-trigger">
+            <span class="menu-icon">
+              <svg viewbox="0 0 18 15" width="18px" height="15px">
+                <path d="M18,1.484c0,0.82-0.665,1.484-1.484,1.484H1.484C0.665,2.969,0,2.304,0,1.484l0,0C0,0.665,0.665,0,1.484,0 h15.032C17.335,0,18,0.665,18,1.484L18,1.484z M18,7.516C18,8.335,17.335,9,16.516,9H1.484C0.665,9,0,8.335,0,7.516l0,0 c0-0.82,0.665-1.484,1.484-1.484h15.032C17.335,6.031,18,6.696,18,7.516L18,7.516z M18,13.516C18,14.335,17.335,15,16.516,15H1.484 C0.665,15,0,14.335,0,13.516l0,0c0-0.82,0.665-1.483,1.484-1.483h15.032C17.335,12.031,18,12.695,18,13.516L18,13.516z"></path>
+              </svg>
+            </span>
+          </label>
+
+          <div class="trigger">
+<a class="page-link" href="/jekyll-theme-yat/en/about.html">ABOUT</a><a class="page-link" href="/jekyll-theme-yat/en/archives.html">ARCHIVES</a><a class="page-link" href="/jekyll-theme-yat/en/categories.html">CATEGORIES</a><a class="page-link" href="/jekyll-theme-yat/en/">HOME</a><a class="page-link" href="/jekyll-theme-yat/en/tags.html">TAGS</a><span class="page-link">
+                <span class="lang-switcher lang-switcher--nav"><a class="lang-btn" href="/jekyll-theme-yat/%E3%83%87%E3%83%BC%E3%82%BF%E3%82%A8%E3%83%B3%E3%82%B8%E3%83%8B%E3%82%A2%E3%83%AA%E3%83%B3%E3%82%B0/2026/06/05/postgresql-jsonb-guide.html">日本語</a><span class="lang-btn lang-btn--active">English</span></span>
+              </span>
+</div>
+        </nav>
+</div>
+  </div>
+</header>
+
+<script>
+  function initHeader() {
+    var lastScrollY = getScrollPos().y;
+    var documentElement = document.documentElement;
+
+    function storeScrollData() {
+      var y = getScrollPos().y;var scrollStatus = "";
+
+      if (y <= 0) {
+        scrollStatus = "top";
+      } else if ((window.innerHeight + y) >= document.body.offsetHeight) {
+        scrollStatus = "bottom";
+      } else {
+        var isScrollDown = (y - lastScrollY > 0) ? true : false;
+        scrollStatus = isScrollDown ? "down" : "up";
+      }
+
+      lastScrollY = y;
+      documentElement.setAttribute("data-scroll-status", scrollStatus);
+    }
+
+    window.addEventListener('scroll', function(e) {
+      storeScrollData();
+    });
+
+    storeScrollData();
+  }
+  document.addEventListener('DOMContentLoaded', initHeader);
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<script>
+  function hashLocate(hashValue) {
+    hashValue = hashValue.replace(/^.*#h-/, '');
+    hashValue = decodeURIComponent(hashValue);
+    var element = document.getElementById(hashValue);
+
+    if (!element) {
+      return;
+    }
+
+    var header = document.querySelector('header.site-header');
+    var headerRect = header.getBoundingClientRect();
+    var headerTop = Math.floor(headerRect.top);
+    var headerHeight = Math.floor(headerRect.height);
+    var scrollPos = getScrollPos();
+    var offsetY = element.offsetTop - (headerTop + headerHeight + 20);
+
+    if (offsetY == scrollPos.y) {
+      return;
+    }
+
+    if (headerTop == 0  && offsetY > scrollPos.y) {
+      offsetY += headerHeight + 2;
+    } else if (headerTop < 0  && offsetY < scrollPos.y) {
+      offsetY -= headerHeight - 2;
+    }
+
+    smoothScrollTo(offsetY);
+  }
+
+  // The first event occurred
+  window.addEventListener('load', function(event) {
+    if (window.location.hash) {
+      hashLocate(window.location.hash);
+    }
+  });
+
+  // The first event occurred
+  window.addEventListener('click', function(event) {
+    if (event.target.tagName.toLowerCase() == 'a') {
+      hashLocate(event.target.getAttribute('href'));
+    }
+  });
+</script>
+<div class="theme-toggle">
+  <input type="checkbox" id="theme-switch">
+  <label for="theme-switch">
+    <div class="toggle"></div>
+    <div class="names">
+      <p class="light">Light</p>
+      <p class="dark">Dark</p>
+    </div>
+  </label>
+</div>
+
+
+
+
+<script>
+  (function() {
+    var sw = document.getElementById('theme-switch');
+    var html = document.getElementsByTagName('html')[0];
+    var nightModeOption = ('auto' || 'auto').toLowerCase();
+    var storage = nightModeOption === 'manual'
+        ? localStorage
+        : sessionStorage;
+    var themeData = loadThemeData();
+
+    function saveThemeData(data) {
+      storage.setItem('theme', JSON.stringify(data));
+    }
+
+    function loadThemeData() {
+      var data = storage.getItem('theme');
+      try {
+        data = JSON.parse(data ? data : '');
+      } catch(e) {
+        data = { nightShift: undefined, autoToggleAt: 0 };
+        saveThemeData(data);
+      }
+      return data;
+    }
+
+    function handleThemeToggle(nightShift) {
+      themeData.nightShift = nightShift;
+      saveThemeData(themeData);
+      html.dataset.theme = nightShift ? 'dark' : 'light';
+      setTimeout(function() {
+        sw.checked = nightShift ? true : false;
+      }, 50);
+    }
+
+    function autoThemeToggle() {
+      // Next time point of theme toggle
+      var now = new Date();
+      var toggleAt = new Date();
+      var hours = now.getHours();
+      var nightShift = hours >= 19 || hours <=7;
+
+      if (nightShift) {
+        if (hours > 7) {
+          toggleAt.setDate(toggleAt.getDate() + 1);
+        }
+        toggleAt.setHours(7);
+      } else {
+        toggleAt.setHours(19);
+      }
+
+      toggleAt.setMinutes(0);
+      toggleAt.setSeconds(0);
+      toggleAt.setMilliseconds(0)
+
+      var delay = toggleAt.getTime() - now.getTime();
+
+      // auto toggle theme mode
+      setTimeout(function() {
+        handleThemeToggle(!nightShift);
+      }, delay);
+
+      return {
+        nightShift: nightShift,
+        toggleAt: toggleAt.getTime()
+      };
+    }
+
+    // Listen the theme toggle event
+    sw.addEventListener('change', function(event) {
+      handleThemeToggle(event.target.checked);
+    });
+
+    if (nightModeOption == 'auto') {
+      var data = autoThemeToggle();
+
+      // Toggle theme by local setting
+      if (data.toggleAt > themeData.autoToggleAt) {
+        themeData.autoToggleAt = data.toggleAt;
+        handleThemeToggle(data.nightShift);
+      } else {
+        handleThemeToggle(themeData.nightShift);
+      }
+    } else if (nightModeOption == 'manual') {
+      handleThemeToggle(themeData.nightShift);
+    } else {
+      var nightShift = themeData.nightShift;
+      if (nightShift === undefined) {
+        nightShift = nightModeOption === 'on';
+      }
+      handleThemeToggle(nightShift);
+    }
+  })();
+</script>
+<main class="page-content" aria-label="Content">
+      <div class="wrapper">
+        <div class="framework">
+  <section class="main">
+
+     <div class="post post--with-image">
+  <section>
+
+
+
+
+
+
+
+
+
+<header class="post-header">
+  <h1 class="post-title p-name" itemprop="name headline">The Complete Guide to PostgreSQL JSONB — Flexible Schemas and Fast Queries</h1>
+  <h2 class="post-subtitle">A practical guide to JSON vs JSONB, GIN indexes, operators, and more</h2>
+
+  <p class="post-meta">
+    <time class="dt-published" datetime="2026-06-05T00:00:00+00:00" itemprop="datePublished"><i class="fa fa-calendar"></i> Jun 05, 2026
+    </time>
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <span class="post-reading-time left-vsplit"><i class="fa fa-clock-o"></i> About 12 mins</span>
+  </p>
+<div class="post-tags">
+<a class="post-tag" href="/jekyll-theme-yat/tags.html#PostgreSQL">#PostgreSQL</a><a class="post-tag" href="/jekyll-theme-yat/tags.html#JSONB">#JSONB</a><a class="post-tag" href="/jekyll-theme-yat/tags.html#Database">#Database</a><a class="post-tag" href="/jekyll-theme-yat/tags.html#SQL">#SQL</a>
+</div></header>
+<figure class="post-eyecatch">
+  <img src="/jekyll-theme-yat/assets/images/posts/2026-06-05-postgresql-jsonb-guide/eyecatch.png" alt="A miniature index searching document branches extending from a card database" decoding="async" fetchpriority="high">
+</figure><article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
+
+    <div class="post-content e-content" itemprop="articleBody">
+
+      <p>When requirements include “store data before the schema is finalized” or “handle structures whose fields change dynamically,” PostgreSQL’s <strong>JSONB</strong> type is often a strong option.</p>
+
+<p>This article provides a systematic guide to JSONB, from the fundamentals to practical queries, index design, and performance characteristics.</p>
+
+<hr>
+
+<h2 id="json-vs-jsonb--what-is-the-difference">JSON vs JSONB — What Is the Difference?</h2>
+
+<p>PostgreSQL provides two types for storing JSON.</p>
+
+<table>
+  <thead>
+    <tr>
+      <th style="text-align: left"> </th>
+      <th style="text-align: left"><code class="language-plaintext highlighter-rouge">json</code></th>
+      <th style="text-align: left"><code class="language-plaintext highlighter-rouge">jsonb</code></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td style="text-align: left"><strong>Internal representation</strong></td>
+      <td style="text-align: left">Stored as the original text</td>
+      <td style="text-align: left">Converted to and stored in a binary format</td>
+    </tr>
+    <tr>
+      <td style="text-align: left"><strong>Write cost</strong></td>
+      <td style="text-align: left">Low (no conversion)</td>
+      <td style="text-align: left">Slightly higher (binary conversion required)</td>
+    </tr>
+    <tr>
+      <td style="text-align: left"><strong>Read cost</strong></td>
+      <td style="text-align: left">High (parsed every time)</td>
+      <td style="text-align: left">Low (read directly from binary representation)</td>
+    </tr>
+    <tr>
+      <td style="text-align: left"><strong>Indexes</strong></td>
+      <td style="text-align: left">Limited support</td>
+      <td style="text-align: left">Supports GIN indexes</td>
+    </tr>
+    <tr>
+      <td style="text-align: left"><strong>Duplicate keys</strong></td>
+      <td style="text-align: left">Preserved</td>
+      <td style="text-align: left">Only the last value is retained</td>
+    </tr>
+    <tr>
+      <td style="text-align: left"><strong>Key order</strong></td>
+      <td style="text-align: left">Preserved</td>
+      <td style="text-align: left">Not guaranteed</td>
+    </tr>
+    <tr>
+      <td style="text-align: left"><strong>Operators</strong></td>
+      <td style="text-align: left">Basic operators only</td>
+      <td style="text-align: left">Rich set (<code class="language-plaintext highlighter-rouge">@&gt;</code>, <code class="language-plaintext highlighter-rouge">?</code>, <code class="language-plaintext highlighter-rouge">?|</code>, <code class="language-plaintext highlighter-rouge">?&amp;</code>, etc.)</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>In practice, <strong>JSONB is the clear choice when reads outnumber writes and the data must be searchable</strong>. The <code class="language-plaintext highlighter-rouge">json</code> type is mainly useful in unusual cases where key order or duplicate keys must be preserved exactly.</p>
+
+<hr>
+
+<h2 id="basic-table-design">Basic Table Design</h2>
+
+<div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">CREATE</span> <span class="k">TABLE</span> <span class="n">events</span> <span class="p">(</span>
+    <span class="n">id</span>          <span class="n">BIGSERIAL</span> <span class="k">PRIMARY</span> <span class="k">KEY</span><span class="p">,</span>
+    <span class="n">occurred_at</span> <span class="n">TIMESTAMPTZ</span> <span class="k">NOT</span> <span class="k">NULL</span> <span class="k">DEFAULT</span> <span class="n">NOW</span><span class="p">(),</span>
+    <span class="k">source</span>      <span class="nb">TEXT</span>        <span class="k">NOT</span> <span class="k">NULL</span><span class="p">,</span>
+    <span class="n">payload</span>     <span class="n">JSONB</span>       <span class="k">NOT</span> <span class="k">NULL</span>
+<span class="p">);</span>
+</code></pre></div></div>
+
+<p>This design allows any structure to be stored in the <code class="language-plaintext highlighter-rouge">payload</code> column. A common pattern is to keep stable fields such as <code class="language-plaintext highlighter-rouge">occurred_at</code> and <code class="language-plaintext highlighter-rouge">source</code> as relational columns and use JSONB only for the variable portion.</p>
+
+<hr>
+
+<h2 id="basic-reads-and-writes">Basic Reads and Writes</h2>
+
+<h3 id="writing-data">Writing Data</h3>
+
+<div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">INSERT</span> <span class="k">INTO</span> <span class="n">events</span> <span class="p">(</span><span class="k">source</span><span class="p">,</span> <span class="n">payload</span><span class="p">)</span>
+<span class="k">VALUES</span> <span class="p">(</span>
+    <span class="s1">'api'</span><span class="p">,</span>
+    <span class="s1">'{"user_id": 42, "action": "login", "metadata": {"ip": "192.168.1.1", "ua": "Mozilla/5.0"}}'</span>
+<span class="p">);</span>
+</code></pre></div></div>
+
+<h3 id="retrieving-fields">Retrieving Fields</h3>
+
+<div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">-- Retrieve values as text</span>
+<span class="k">SELECT</span> <span class="n">payload</span><span class="o">-&gt;&gt;</span><span class="s1">'user_id'</span>   <span class="k">AS</span> <span class="n">user_id</span><span class="p">,</span>
+       <span class="n">payload</span><span class="o">-&gt;&gt;</span><span class="s1">'action'</span>    <span class="k">AS</span> <span class="n">action</span>
+<span class="k">FROM</span>   <span class="n">events</span><span class="p">;</span>
+
+<span class="c1">-- Retrieve a nested object as JSON</span>
+<span class="k">SELECT</span> <span class="n">payload</span><span class="o">-&gt;</span><span class="s1">'metadata'</span> <span class="k">AS</span> <span class="n">meta</span>
+<span class="k">FROM</span>   <span class="n">events</span><span class="p">;</span>
+
+<span class="c1">-- Traverse a nested path directly</span>
+<span class="k">SELECT</span> <span class="n">payload</span> <span class="o">#&gt;&gt;</span> <span class="s1">'{metadata, ip}'</span> <span class="k">AS</span> <span class="n">ip_address</span>
+<span class="k">FROM</span>   <span class="n">events</span><span class="p">;</span>
+</code></pre></div></div>
+
+<p>How to choose an operator:</p>
+
+<table>
+  <thead>
+    <tr>
+      <th style="text-align: left">Operator</th>
+      <th style="text-align: left">Return type</th>
+      <th style="text-align: left">Use</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td style="text-align: left"><code class="language-plaintext highlighter-rouge">-&gt;</code></td>
+      <td style="text-align: left"><code class="language-plaintext highlighter-rouge">jsonb</code></td>
+      <td style="text-align: left">Retrieve nested JSON</td>
+    </tr>
+    <tr>
+      <td style="text-align: left"><code class="language-plaintext highlighter-rouge">-&gt;&gt;</code></td>
+      <td style="text-align: left"><code class="language-plaintext highlighter-rouge">text</code></td>
+      <td style="text-align: left">Retrieve a leaf value as text</td>
+    </tr>
+    <tr>
+      <td style="text-align: left"><code class="language-plaintext highlighter-rouge">#&gt;</code></td>
+      <td style="text-align: left"><code class="language-plaintext highlighter-rouge">jsonb</code></td>
+      <td style="text-align: left">Traverse a path array</td>
+    </tr>
+    <tr>
+      <td style="text-align: left"><code class="language-plaintext highlighter-rouge">#&gt;&gt;</code></td>
+      <td style="text-align: left"><code class="language-plaintext highlighter-rouge">text</code></td>
+      <td style="text-align: left">Traverse a path array and return text</td>
+    </tr>
+  </tbody>
+</table>
+
+<hr>
+
+<h2 id="search-queries">Search Queries</h2>
+
+<h3 id="exact-and-containment-searches">Exact and Containment Searches</h3>
+
+<div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">-- Check whether payload contains the specified object (@&gt; operator)</span>
+<span class="k">SELECT</span> <span class="o">*</span> <span class="k">FROM</span> <span class="n">events</span>
+<span class="k">WHERE</span>  <span class="n">payload</span> <span class="o">@&gt;</span> <span class="s1">'{"action": "login"}'</span><span class="p">;</span>
+
+<span class="c1">-- Check whether a key exists</span>
+<span class="k">SELECT</span> <span class="o">*</span> <span class="k">FROM</span> <span class="n">events</span>
+<span class="k">WHERE</span>  <span class="n">payload</span> <span class="o">?</span> <span class="s1">'user_id'</span><span class="p">;</span>
+
+<span class="c1">-- Check whether any of the keys exist</span>
+<span class="k">SELECT</span> <span class="o">*</span> <span class="k">FROM</span> <span class="n">events</span>
+<span class="k">WHERE</span>  <span class="n">payload</span> <span class="o">?|</span> <span class="n">ARRAY</span><span class="p">[</span><span class="s1">'user_id'</span><span class="p">,</span> <span class="s1">'session_id'</span><span class="p">];</span>
+
+<span class="c1">-- Check whether all keys exist</span>
+<span class="k">SELECT</span> <span class="o">*</span> <span class="k">FROM</span> <span class="n">events</span>
+<span class="k">WHERE</span>  <span class="n">payload</span> <span class="o">?&amp;</span> <span class="n">ARRAY</span><span class="p">[</span><span class="s1">'action'</span><span class="p">,</span> <span class="s1">'metadata'</span><span class="p">];</span>
+</code></pre></div></div>
+
+<h3 id="comparisons-with-type-casts">Comparisons with Type Casts</h3>
+
+<p>JSONB fields must be cast explicitly when comparing them as numbers or dates.</p>
+
+<div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">-- Numeric comparison</span>
+<span class="k">SELECT</span> <span class="o">*</span> <span class="k">FROM</span> <span class="n">events</span>
+<span class="k">WHERE</span>  <span class="p">(</span><span class="n">payload</span><span class="o">-&gt;&gt;</span><span class="s1">'user_id'</span><span class="p">)::</span><span class="nb">INTEGER</span> <span class="o">&gt;</span> <span class="mi">100</span><span class="p">;</span>
+
+<span class="c1">-- Date comparison</span>
+<span class="k">SELECT</span> <span class="o">*</span> <span class="k">FROM</span> <span class="n">events</span>
+<span class="k">WHERE</span>  <span class="p">(</span><span class="n">payload</span><span class="o">-&gt;&gt;</span><span class="s1">'created_at'</span><span class="p">)::</span><span class="n">TIMESTAMPTZ</span> <span class="o">&gt;</span> <span class="n">NOW</span><span class="p">()</span> <span class="o">-</span> <span class="n">INTERVAL</span> <span class="s1">'1 hour'</span><span class="p">;</span>
+</code></pre></div></div>
+
+<h3 id="searching-array-fields">Searching Array Fields</h3>
+
+<div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">-- Rows whose tags array contains "error"</span>
+<span class="k">SELECT</span> <span class="o">*</span> <span class="k">FROM</span> <span class="n">events</span>
+<span class="k">WHERE</span>  <span class="n">payload</span><span class="o">-&gt;</span><span class="s1">'tags'</span> <span class="o">@&gt;</span> <span class="s1">'["error"]'</span><span class="p">;</span>
+</code></pre></div></div>
+
+<hr>
+
+<h2 id="gin-indexes--the-key-to-fast-jsonb-searches">GIN Indexes — The Key to Fast JSONB Searches</h2>
+
+<p>JSONB searches can be accelerated with a <strong>GIN (Generalized Inverted Index)</strong> index.</p>
+
+<h3 id="default-gin-index">Default GIN Index</h3>
+
+<div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">CREATE</span> <span class="k">INDEX</span> <span class="n">idx_events_payload</span> <span class="k">ON</span> <span class="n">events</span> <span class="k">USING</span> <span class="n">GIN</span> <span class="p">(</span><span class="n">payload</span><span class="p">);</span>
+</code></pre></div></div>
+
+<p>This supports the <code class="language-plaintext highlighter-rouge">@&gt;</code>, <code class="language-plaintext highlighter-rouge">?</code>, <code class="language-plaintext highlighter-rouge">?|</code>, and <code class="language-plaintext highlighter-rouge">?&amp;</code> operators. It is sufficient for most use cases.</p>
+
+<h3 id="jsonb_path_ops">jsonb_path_ops</h3>
+
+<div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">CREATE</span> <span class="k">INDEX</span> <span class="n">idx_events_payload_path</span> <span class="k">ON</span> <span class="n">events</span>
+<span class="k">USING</span> <span class="n">GIN</span> <span class="p">(</span><span class="n">payload</span> <span class="n">jsonb_path_ops</span><span class="p">);</span>
+</code></pre></div></div>
+
+<p>This operator class is specialized for <code class="language-plaintext highlighter-rouge">@&gt;</code>. It often produces a smaller index and better performance, but does not support the <code class="language-plaintext highlighter-rouge">?</code> family of operators.</p>
+
+<h3 id="b-tree-indexes-on-specific-fields">B-Tree Indexes on Specific Fields</h3>
+
+<div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">-- When user_id is queried frequently</span>
+<span class="k">CREATE</span> <span class="k">INDEX</span> <span class="n">idx_events_user_id</span>
+<span class="k">ON</span> <span class="n">events</span> <span class="p">((</span><span class="n">payload</span><span class="o">-&gt;&gt;</span><span class="s1">'user_id'</span><span class="p">));</span>
+
+<span class="c1">-- Include the cast when querying it as a number</span>
+<span class="k">CREATE</span> <span class="k">INDEX</span> <span class="n">idx_events_user_id_int</span>
+<span class="k">ON</span> <span class="n">events</span> <span class="p">(((</span><span class="n">payload</span><span class="o">-&gt;&gt;</span><span class="s1">'user_id'</span><span class="p">)::</span><span class="nb">INTEGER</span><span class="p">));</span>
+</code></pre></div></div>
+
+<p>For frequent point queries on a specific field, a B-tree index may be more efficient than GIN.</p>
+
+<hr>
+
+<h2 id="jsonb_path_query--jsonpath-searches">jsonb_path_query — JSONPath Searches</h2>
+
+<p>PostgreSQL 12 and later support more flexible searches through <strong>JSONPath</strong> syntax.</p>
+
+<div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">-- Events where action is "error" and severity is at least 3</span>
+<span class="k">SELECT</span> <span class="o">*</span>
+<span class="k">FROM</span>   <span class="n">events</span>
+<span class="k">WHERE</span>  <span class="n">payload</span> <span class="o">@?</span> <span class="s1">'$.action ? (@ == "error") &amp;&amp; $.severity ? (@ &gt;= 3)'</span><span class="p">;</span>
+
+<span class="c1">-- Extract values with jsonb_path_query</span>
+<span class="k">SELECT</span> <span class="n">jsonb_path_query</span><span class="p">(</span><span class="n">payload</span><span class="p">,</span> <span class="s1">'$.metadata.ip'</span><span class="p">)</span>
+<span class="k">FROM</span>   <span class="n">events</span>
+<span class="k">WHERE</span>  <span class="k">source</span> <span class="o">=</span> <span class="s1">'api'</span><span class="p">;</span>
+</code></pre></div></div>
+
+<hr>
+
+<h2 id="aggregation">Aggregation</h2>
+
+<h3 id="grouping-by-a-field">Grouping by a Field</h3>
+
+<div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">SELECT</span> <span class="n">payload</span><span class="o">-&gt;&gt;</span><span class="s1">'action'</span>    <span class="k">AS</span> <span class="n">action</span><span class="p">,</span>
+       <span class="k">COUNT</span><span class="p">(</span><span class="o">*</span><span class="p">)</span>              <span class="k">AS</span> <span class="n">cnt</span>
+<span class="k">FROM</span>   <span class="n">events</span>
+<span class="k">GROUP</span>  <span class="k">BY</span> <span class="n">payload</span><span class="o">-&gt;&gt;</span><span class="s1">'action'</span>
+<span class="k">ORDER</span>  <span class="k">BY</span> <span class="n">cnt</span> <span class="k">DESC</span><span class="p">;</span>
+</code></pre></div></div>
+
+<h3 id="jsonb_agg--jsonb_object_agg">jsonb_agg / jsonb_object_agg</h3>
+
+<div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">-- Aggregate payloads into an array for each source</span>
+<span class="k">SELECT</span> <span class="k">source</span><span class="p">,</span>
+       <span class="n">jsonb_agg</span><span class="p">(</span><span class="n">payload</span> <span class="k">ORDER</span> <span class="k">BY</span> <span class="n">occurred_at</span><span class="p">)</span> <span class="k">AS</span> <span class="n">payloads</span>
+<span class="k">FROM</span>   <span class="n">events</span>
+<span class="k">GROUP</span>  <span class="k">BY</span> <span class="k">source</span><span class="p">;</span>
+</code></pre></div></div>
+
+<hr>
+
+<h2 id="handling-schema-evolution">Handling Schema Evolution</h2>
+
+<p>One advantage of JSONB is the ability to <strong>change the schema later</strong>.</p>
+
+<h3 id="adding-and-updating-fields">Adding and Updating Fields</h3>
+
+<div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">-- Add a new field to existing rows</span>
+<span class="k">UPDATE</span> <span class="n">events</span>
+<span class="k">SET</span>    <span class="n">payload</span> <span class="o">=</span> <span class="n">payload</span> <span class="o">||</span> <span class="s1">'{"version": 2}'</span>
+<span class="k">WHERE</span>  <span class="k">source</span> <span class="o">=</span> <span class="s1">'api'</span><span class="p">;</span>
+
+<span class="c1">-- Update a nested field</span>
+<span class="k">UPDATE</span> <span class="n">events</span>
+<span class="k">SET</span>    <span class="n">payload</span> <span class="o">=</span> <span class="n">jsonb_set</span><span class="p">(</span><span class="n">payload</span><span class="p">,</span> <span class="s1">'{metadata, processed}'</span><span class="p">,</span> <span class="s1">'true'</span><span class="p">)</span>
+<span class="k">WHERE</span>  <span class="n">id</span> <span class="o">=</span> <span class="mi">42</span><span class="p">;</span>
+</code></pre></div></div>
+
+<h3 id="removing-fields">Removing Fields</h3>
+
+<div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">-- Remove a top-level key</span>
+<span class="k">UPDATE</span> <span class="n">events</span>
+<span class="k">SET</span>    <span class="n">payload</span> <span class="o">=</span> <span class="n">payload</span> <span class="o">-</span> <span class="s1">'deprecated_field'</span><span class="p">;</span>
+
+<span class="c1">-- Remove a nested key</span>
+<span class="k">UPDATE</span> <span class="n">events</span>
+<span class="k">SET</span>    <span class="n">payload</span> <span class="o">=</span> <span class="n">payload</span> <span class="o">#-</span> <span class="s1">'{metadata, tmp}'</span><span class="p">;</span>
+</code></pre></div></div>
+
+<hr>
+
+<h2 id="performance-design-guidelines">Performance Design Guidelines</h2>
+
+<h3 id="jsonb-vs-relational-columns">JSONB vs Relational Columns</h3>
+
+<p>JSONB should be used as a tradeoff for flexibility. As a rule, <strong>fields that are fixed and queried frequently should be promoted to relational columns</strong>.</p>
+
+<table>
+  <thead>
+    <tr>
+      <th style="text-align: left">Situation</th>
+      <th style="text-align: left">Recommendation</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td style="text-align: left">Frequently searched or joined</td>
+      <td style="text-align: left">Relational column</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">Fluid schema or highly varied fields</td>
+      <td style="text-align: left">JSONB</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">Writes greatly outnumber reads</td>
+      <td style="text-align: left">JSONB (but use GIN carefully)</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">Full-text or similarity search is required</td>
+      <td style="text-align: left">Separate column + tsvector / pgvector</td>
+    </tr>
+  </tbody>
+</table>
+
+<h3 id="the-cost-of-gin-indexes">The Cost of GIN Indexes</h3>
+
+<p>GIN indexes have a <strong>high write cost</strong>. For workloads with heavy INSERT traffic, consider <code class="language-plaintext highlighter-rouge">fastupdate = off</code> or limit the index to the fields that need it.</p>
+
+<div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">-- Disable fastupdate to reduce deferred write overhead</span>
+<span class="k">CREATE</span> <span class="k">INDEX</span> <span class="n">idx_events_payload</span> <span class="k">ON</span> <span class="n">events</span>
+<span class="k">USING</span> <span class="n">GIN</span> <span class="p">(</span><span class="n">payload</span><span class="p">)</span> <span class="k">WITH</span> <span class="p">(</span><span class="n">fastupdate</span> <span class="o">=</span> <span class="k">off</span><span class="p">);</span>
+</code></pre></div></div>
+
+<h3 id="verify-with-explain-analyze">Verify with EXPLAIN ANALYZE</h3>
+
+<div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">EXPLAIN</span> <span class="p">(</span><span class="k">ANALYZE</span><span class="p">,</span> <span class="n">BUFFERS</span><span class="p">)</span>
+<span class="k">SELECT</span> <span class="o">*</span> <span class="k">FROM</span> <span class="n">events</span>
+<span class="k">WHERE</span>  <span class="n">payload</span> <span class="o">@&gt;</span> <span class="s1">'{"action": "error"}'</span><span class="p">;</span>
+</code></pre></div></div>
+
+<p>If the plan contains <code class="language-plaintext highlighter-rouge">Bitmap Index Scan on idx_events_payload</code>, the GIN index is being used. If it shows <code class="language-plaintext highlighter-rouge">Seq Scan</code>, update statistics with <code class="language-plaintext highlighter-rouge">ANALYZE</code> or reconsider the query condition.</p>
+
+<hr>
+
+<h2 id="combining-jsonb-with-generated-columns-postgresql-12">Combining JSONB with Generated Columns (PostgreSQL 12+)</h2>
+
+<p>Fields that require repeated casts are convenient candidates for a <strong>generated column</strong>.</p>
+
+<div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">ALTER</span> <span class="k">TABLE</span> <span class="n">events</span>
+<span class="k">ADD</span> <span class="k">COLUMN</span> <span class="n">user_id</span> <span class="nb">INTEGER</span>
+    <span class="k">GENERATED</span> <span class="n">ALWAYS</span> <span class="k">AS</span> <span class="p">((</span><span class="n">payload</span><span class="o">-&gt;&gt;</span><span class="s1">'user_id'</span><span class="p">)::</span><span class="nb">INTEGER</span><span class="p">)</span> <span class="n">STORED</span><span class="p">;</span>
+
+<span class="k">CREATE</span> <span class="k">INDEX</span> <span class="n">idx_events_uid</span> <span class="k">ON</span> <span class="n">events</span> <span class="p">(</span><span class="n">user_id</span><span class="p">);</span>
+</code></pre></div></div>
+
+<p>This preserves JSONB’s flexibility while providing fast access to selected fields.</p>
+
+<hr>
+
+<h2 id="summary">Summary</h2>
+
+<table>
+  <thead>
+    <tr>
+      <th style="text-align: left">Topic</th>
+      <th style="text-align: left">Key Point</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td style="text-align: left"><strong>json vs jsonb</strong></td>
+      <td style="text-align: left">Choose JSONB when search or indexing is required</td>
+    </tr>
+    <tr>
+      <td style="text-align: left"><strong>Operators</strong></td>
+      <td style="text-align: left">
+<code class="language-plaintext highlighter-rouge">@&gt;</code> (containment) and <code class="language-plaintext highlighter-rouge">?</code> (key existence) are the essentials</td>
+    </tr>
+    <tr>
+      <td style="text-align: left"><strong>Indexes</strong></td>
+      <td style="text-align: left">Start with GIN; consider B-tree for frequent point queries</td>
+    </tr>
+    <tr>
+      <td style="text-align: left"><strong>Schema evolution</strong></td>
+      <td style="text-align: left">Append with <code class="language-plaintext highlighter-rouge">||</code>, update with <code class="language-plaintext highlighter-rouge">jsonb_set</code>, remove with <code class="language-plaintext highlighter-rouge">-</code>
+</td>
+    </tr>
+    <tr>
+      <td style="text-align: left"><strong>Fixed fields</strong></td>
+      <td style="text-align: left">Promote frequently queried fields to relational columns</td>
+    </tr>
+    <tr>
+      <td style="text-align: left"><strong>Generated columns</strong></td>
+      <td style="text-align: left">Combine JSONB flexibility with B-tree performance</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>Using JSONB as an unrestricted container for everything makes later query optimization difficult. A clear division of responsibility — <strong>relational columns for fixed data and JSONB for variable data</strong> — leads to a design that remains maintainable over time.</p>
+
+<hr>
+
+<h2 id="references">References</h2>
+
+<ul>
+  <li><a href="https://www.postgresql.org/docs/current/functions-json.html">PostgreSQL Documentation — JSON Functions and Operators</a></li>
+  <li><a href="https://www.postgresql.org/docs/current/datatype-json.html#JSON-INDEXING">PostgreSQL Documentation — jsonb Indexing</a></li>
+  <li><a href="https://use-the-index-luke.com/">Use The Index, Luke — Indexing JSON</a></li>
+</ul>
+
+
+    </div>
+
+</article>
+<div class="post-nav">
+<a class="previous" href="/jekyll-theme-yat/%E9%96%8B%E7%99%BA/2024/05/14/python-dev02.html" title="Python Web開発のためのGitセットアップ">Python Web開発のためのGitセットアップ</a><a class="next" href="/jekyll-theme-yat/%E3%83%87%E3%83%BC%E3%82%BF%E3%82%A8%E3%83%B3%E3%82%B8%E3%83%8B%E3%82%A2%E3%83%AA%E3%83%B3%E3%82%B0/2026/06/05/postgresql-jsonb-guide.html" title="PostgreSQL JSONB 完全ガイド">PostgreSQL JSONB 完全ガイド</a>
+</div>
+<div class="post-related">
+      <div>Related Articles</div>
+      <ul>
+        <li><a class="post-link" href="/jekyll-theme-yat/%E3%82%A4%E3%83%B3%E3%83%95%E3%83%A9/2026/06/10/tailscale-guide.html" title="PostgreSQL JSONB 完全ガイド">Tailscaleの仕組みと使いどころ</a></li>
+<li><a class="post-link" href="/jekyll-theme-yat/%E9%96%8B%E7%99%BA/2026/06/07/python-black-guide.html" title="PostgreSQL JSONB 完全ガイド">AI コーディング向けの Python フォーマッター Black</a></li>
+<li><a class="post-link" href="/jekyll-theme-yat/%E9%96%8B%E7%99%BA/2023/09/17/docker-data-analysis.html" title="PostgreSQL JSONB 完全ガイド">【Docker &amp; VSCode】Pythonデータ分析環境の構築と運用</a></li>
+<li><a class="post-link" href="/jekyll-theme-yat/%E9%96%8B%E7%99%BA/2026/06/06/vercel-frontend-selection.html" title="PostgreSQL JSONB 完全ガイド">なぜフロントエンドに Vercel を選ぶのか</a></li>
+</ul>
+    </div>
+<div class="post-comments"></div></section>
+</div>
+
+
+  </section>
+  <section class="sidebar" style="margin-left: 15px;">
+    <!-- Get sidebar items --><style type="text/css" media="screen">
+.post-menu ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+</style>
+
+<div class="post-menu">
+  <div class="post-menu-title">TOC</div>
+  <div class="post-menu-content"></div>
+</div>
+
+<script>
+  function generateContent() {
+    var menu = document.querySelector(".post-menu");
+    var menuContent =  menu.querySelector(".post-menu-content");
+    var headings = document.querySelector(".post-content").querySelectorAll("h2, h3, h4, h5, h6");
+
+    // Hide menu when no headings
+    if (headings.length === 0) {
+      return menu.style.display = "none";
+    }
+
+    // Generate post menu
+    var menuHTML = '';
+    for (var i = 0; i < headings.length; i++) {
+      var h = headings[i];
+      menuHTML += (
+        '<li class="h-' + h.tagName.toLowerCase() + '">'
+        + '<a href="#h-' + h.getAttribute('id') + '">' + h.textContent + '</a></li>');
+    }
+
+    menuContent.innerHTML = '<ul>' + menuHTML + '</ul>';
+
+    // The header element
+    var header = document.querySelector('header.site-header');
+
+    function doMenuCollapse(index, over_items) {
+      var items = menuContent.firstChild.children;
+
+      if (over_items == undefined) {
+        over_items = 20;
+      }
+
+      if (items.length < over_items) {
+        return;
+      }
+
+      var activeItem = items[index];
+      var beginItem = activeItem
+      var endItem = activeItem
+      var beginIndex = index;
+      var endIndex = index + 1;
+      while (beginIndex >= 0
+        && !items[beginIndex].classList.contains('h-h2')) {
+        beginIndex -= 1;
+      }
+      while (endIndex < items.length
+        && !items[endIndex].classList.contains('h-h2')) {
+        endIndex += 1;
+      }
+      for (var i = 0; i < beginIndex; i++) {
+        item = items[i]
+        if (!item.classList.contains('h-h2')) {
+          item.style.display = 'none';
+        }
+      }
+      for (var i = beginIndex + 1; i < endIndex; i++) {
+        item = items[i]
+        // if (!item.classList.contains('h-h2')) {
+          item.style.display = '';
+        // }
+      }
+      for (var i = endIndex; i < items.length; i++) {
+        item = items[i]
+        if (!item.classList.contains('h-h2')) {
+          item.style.display = 'none';
+        }
+      }
+    }
+
+    // Init menu collapsed
+    doMenuCollapse(-1);
+
+    // Active the menu item
+    window.addEventListener('scroll', function (event) {
+      var lastActive = menuContent.querySelector('.active');
+      var changed = true;
+      var activeIndex = -1;
+      for (var i = headings.length - 1; i >= 0; i--) {
+        var h = headings[i];
+        var headingRect = h.getBoundingClientRect();
+        var headerRect = header.getBoundingClientRect();
+        var headerTop = Math.floor(headerRect.top);
+        var headerHeight = Math.floor(headerRect.height);
+        var headerHeight = headerTop + headerHeight + 20;
+        if (headingRect.top <= headerHeight) {
+          var id = 'h-' + h.getAttribute('id');
+          var a = menuContent.querySelector('a[href="#' + id  + '"]');
+          var curActive = a.parentNode;
+          if (curActive) {
+            curActive.classList.add('active');
+            activeIndex = i;
+          }
+          if (lastActive == curActive) {
+            changed = false;
+          }
+          break;
+        }
+      }
+      if (changed) {
+        if (lastActive) {
+          lastActive.classList.remove('active');
+        }
+        doMenuCollapse(activeIndex);
+      }
+      event.preventDefault();
+    });
+  }
+  generateContent();
+</script>
+</section>
+</div>
+
+      </div>
+    </main><footer class="site-footer h-card">
+  <data class="u-url" href="/jekyll-theme-yat/"></data>
+
+  <div class="wrapper">
+    <div class="site-footer-inner">
+<div>Waka-DS © 2021-2026</div>
+      <div>Powered by <a title="Jekyll is a simple, blog-aware, static site
+      generator." href="http://jekyllrb.com/">Jekyll</a> &amp; <a title="Yat, yet
+      another theme." href="https://github.com/jeffreytse/jekyll-theme-yat">Yat Theme</a>.</div>
+      <div class="footer-col rss-subscribe">Subscribe <a href="/jekyll-theme-yat/feed.xml">via RSS</a>
+</div>
+    </div>
+  </div>
+</footer>
+</body>
+</html>

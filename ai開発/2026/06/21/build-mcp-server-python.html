@@ -1,0 +1,1331 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <script>
+  (function() {
+    try {
+      var p = localStorage.getItem('preferred_lang');
+      if (!p) return;
+      var path = window.location.pathname;
+      var ja = ['/', '/archives.html', '/categories.html', '/tags.html', '/about.html'];
+      var en = ['/en/', '/en/archives.html', '/en/categories.html', '/en/tags.html', '/en/about.html'];
+      if (p === 'en' && ja.indexOf(path) !== -1) {
+        window.location.replace('/en' + (path === '/' ? '/' : path));
+      } else if (p === 'ja' && en.indexOf(path) !== -1) {
+        window.location.replace(path.slice(3) || '/');
+      }
+    } catch(e) {}
+  })();
+  </script>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="google-translate-customization" content="108d9124921d80c3-80e20d618ff053c8-g4f02ec6f3dba68b7-c">
+<!-- Begin Jekyll SEO tag v2.9.0 -->
+<title>Pythonで小さなMCPサーバーを作る | Waka-DS.com</title>
+<meta name="generator" content="Jekyll v4.4.1">
+<meta property="og:title" content="Pythonで小さなMCPサーバーを作る">
+<meta name="author" content="Waka-DS">
+<meta property="og:locale" content="ja">
+<meta name="description" content="MCPのHost・Client・ServerやJSON-RPCの流れを理解しても、自分でServerを動かすまでは抽象的に見える部分が残る。そこで連載第5回では、ローカルのMarkdownノートを一覧・読み取りできる小さなMCP Serverを作る。">
+<meta name="twitter:description" property="og:description" content="MCPのHost・Client・ServerやJSON-RPCの流れを理解しても、自分でServerを動かすまでは抽象的に見える部分が残る。そこで連載第5回では、ローカルのMarkdownノートを一覧・読み取りできる小さなMCP Serverを作る。">
+<link rel="canonical" href="/jekyll-theme-yat/ai%E9%96%8B%E7%99%BA/2026/06/21/build-mcp-server-python.html">
+<meta property="og:url" content="/jekyll-theme-yat/ai%E9%96%8B%E7%99%BA/2026/06/21/build-mcp-server-python.html">
+<meta property="og:site_name" content="Waka-DS.com">
+<meta property="og:image" content="/jekyll-theme-yat/assets/images/posts/2026-06-21-build-mcp-server-python/eyecatch.png">
+<meta property="og:image:alt" content="小さな機械がノート棚から一覧カードとノートを取り出し書き込み口が塞がれている紙コラージュ風イラスト">
+<meta property="og:type" content="article">
+<meta property="article:published_time" content="2026-06-21T00:00:00+00:00">
+<meta property="article:modified_time" content="2026-06-21T00:00:00+00:00">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="/jekyll-theme-yat/assets/images/posts/2026-06-21-build-mcp-server-python/eyecatch.png">
+<meta name="twitter:image:alt" content="小さな機械がノート棚から一覧カードとノートを取り出し書き込み口が塞がれている紙コラージュ風イラスト">
+<meta name="twitter:title" content="Pythonで小さなMCPサーバーを作る">
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":"Waka-DS"},"dateModified":"2026-06-21T00:00:00+00:00","datePublished":"2026-06-21T00:00:00+00:00","description":"MCPのHost・Client・ServerやJSON-RPCの流れを理解しても、自分でServerを動かすまでは抽象的に見える部分が残る。そこで連載第5回では、ローカルのMarkdownノートを一覧・読み取りできる小さなMCP Serverを作る。","headline":"Pythonで小さなMCPサーバーを作る","image":{"alt":"小さな機械がノート棚から一覧カードとノートを取り出し書き込み口が塞がれている紙コラージュ風イラスト","url":"/jekyll-theme-yat/assets/images/posts/2026-06-21-build-mcp-server-python/eyecatch.png","@type":"imageObject"},"mainEntityOfPage":{"@type":"WebPage","@id":"/jekyll-theme-yat/ai%E9%96%8B%E7%99%BA/2026/06/21/build-mcp-server-python.html"},"url":"/jekyll-theme-yat/ai%E9%96%8B%E7%99%BA/2026/06/21/build-mcp-server-python.html"}</script>
+<!-- End Jekyll SEO tag -->
+<link rel="shortcut icon" href="">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=Noto+Sans+JP:wght@400;500;700&amp;display=swap">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+  <link rel="stylesheet" href="/jekyll-theme-yat/assets/css/main.css">
+  <script src="/jekyll-theme-yat/assets/js/main.js"></script><link type="application/atom+xml" rel="alternate" href="/jekyll-theme-yat/feed.xml" title="Waka-DS.com">
+<script>
+  function initGoogleAnalytics() {
+    var doNotTrack = (window.doNotTrack === "1" || navigator.doNotTrack === "1" ||
+      navigator.doNotTrack === "yes" || navigator.msDoNotTrack === "1");
+    var enableDNT = "true" == "true";
+
+    if (!enableDNT || !doNotTrack) {
+      var ga_id = 'G-XNP1RBTG9C';
+
+      var script = document.createElement('script');
+      script.async = true;
+      script.src = 'https://www.googletagmanager.com/gtag/js?id=' + ga_id;
+      document.head.appendChild(script);
+
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', ga_id);
+    }
+  }
+  window.addEventListener("load", initGoogleAnalytics);
+</script>
+<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/styles/default.min.css">
+<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/highlight.min.js"></script>
+<!-- and it's easy to individually load additional languages -->
+<script charset="UTF-8" src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/languages/go.min.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<script>
+// Init highlight js
+document.addEventListener('DOMContentLoaded', function(event) {
+  var els = document.querySelectorAll('pre code')
+
+  function addLangData(block) {
+    var outer = block.parentElement.parentElement.parentElement;
+    var lang = block.getAttribute('data-lang');
+    for (var i = 0; i < outer.classList.length; i++) {
+      var cls = outer.classList[i];
+      if (cls.startsWith('language-')) {
+        lang = cls;
+        break;
+      }
+    }
+    if (!lang) {
+      cls = block.getAttribute('class');
+      lang = cls ? cls.replace('hljs ', '') : '';
+    }
+    if (lang.startsWith('language-')) {
+      lang = lang.substr(9);
+    }
+    block.setAttribute('class', 'hljs ' + lang);
+    block.parentNode.setAttribute('data-lang', lang);
+  }
+
+  function addBadge(block) {
+    var enabled = ('true' || 'true').toLowerCase();
+    if (enabled == 'true') {
+      var pre = block.parentElement;
+      pre.classList.add('badge');
+    }
+  }
+
+  function handle(block) {
+    addLangData(block);
+    addBadge(block)
+    hljs.highlightBlock(block);
+  }
+
+  for (var i = 0; i < els.length; i++) {
+    var el = els[i];
+    handle(el);
+  }
+});
+</script>
+
+<style>
+  /* code language badge */
+  pre.badge::before {
+    content: attr(data-lang);
+    color: #fff;
+    background-color: #0d9488;
+    padding: 0 .5em;
+    border-radius: 0 2px;
+    text-transform: uppercase;
+    text-align: center;
+    min-width: 32px;
+    display: inline-block;
+    position: absolute;
+    right: 0;
+  }
+
+  /* fix wrong badge display for firefox browser */
+  code > table pre::before {
+    display: none;
+  }
+</style>
+</head>
+<body>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<header class="site-header " role="banner">
+
+  <div class="wrapper">
+    <div class="site-header-inner">
+<span class="site-brand"><a class="site-brand-inner" rel="author" href="/jekyll-theme-yat/">
+  <img class="site-favicon" title="Waka-DS.com" src="" onerror="this.style.display='none'">
+  Waka-DS.com
+</a>
+</span><nav class="site-nav">
+          <input type="checkbox" id="nav-trigger" class="nav-trigger">
+          <label for="nav-trigger">
+            <span class="menu-icon">
+              <svg viewbox="0 0 18 15" width="18px" height="15px">
+                <path d="M18,1.484c0,0.82-0.665,1.484-1.484,1.484H1.484C0.665,2.969,0,2.304,0,1.484l0,0C0,0.665,0.665,0,1.484,0 h15.032C17.335,0,18,0.665,18,1.484L18,1.484z M18,7.516C18,8.335,17.335,9,16.516,9H1.484C0.665,9,0,8.335,0,7.516l0,0 c0-0.82,0.665-1.484,1.484-1.484h15.032C17.335,6.031,18,6.696,18,7.516L18,7.516z M18,13.516C18,14.335,17.335,15,16.516,15H1.484 C0.665,15,0,14.335,0,13.516l0,0c0-0.82,0.665-1.483,1.484-1.483h15.032C17.335,12.031,18,12.695,18,13.516L18,13.516z"></path>
+              </svg>
+            </span>
+          </label>
+
+          <div class="trigger">
+<a class="page-link" href="/jekyll-theme-yat/about.html">ABOUT</a><a class="page-link" href="/jekyll-theme-yat/archives.html">ARCHIVES</a><a class="page-link" href="/jekyll-theme-yat/categories.html">CATEGORIES</a><a class="page-link" href="/jekyll-theme-yat/">HOME</a><a class="page-link" href="/jekyll-theme-yat/tags.html">TAGS</a>
+</div>
+        </nav>
+</div>
+  </div>
+</header>
+
+<script>
+  function initHeader() {
+    var lastScrollY = getScrollPos().y;
+    var documentElement = document.documentElement;
+
+    function storeScrollData() {
+      var y = getScrollPos().y;var scrollStatus = "";
+
+      if (y <= 0) {
+        scrollStatus = "top";
+      } else if ((window.innerHeight + y) >= document.body.offsetHeight) {
+        scrollStatus = "bottom";
+      } else {
+        var isScrollDown = (y - lastScrollY > 0) ? true : false;
+        scrollStatus = isScrollDown ? "down" : "up";
+      }
+
+      lastScrollY = y;
+      documentElement.setAttribute("data-scroll-status", scrollStatus);
+    }
+
+    window.addEventListener('scroll', function(e) {
+      storeScrollData();
+    });
+
+    storeScrollData();
+  }
+  document.addEventListener('DOMContentLoaded', initHeader);
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<script>
+  function hashLocate(hashValue) {
+    hashValue = hashValue.replace(/^.*#h-/, '');
+    hashValue = decodeURIComponent(hashValue);
+    var element = document.getElementById(hashValue);
+
+    if (!element) {
+      return;
+    }
+
+    var header = document.querySelector('header.site-header');
+    var headerRect = header.getBoundingClientRect();
+    var headerTop = Math.floor(headerRect.top);
+    var headerHeight = Math.floor(headerRect.height);
+    var scrollPos = getScrollPos();
+    var offsetY = element.offsetTop - (headerTop + headerHeight + 20);
+
+    if (offsetY == scrollPos.y) {
+      return;
+    }
+
+    if (headerTop == 0  && offsetY > scrollPos.y) {
+      offsetY += headerHeight + 2;
+    } else if (headerTop < 0  && offsetY < scrollPos.y) {
+      offsetY -= headerHeight - 2;
+    }
+
+    smoothScrollTo(offsetY);
+  }
+
+  // The first event occurred
+  window.addEventListener('load', function(event) {
+    if (window.location.hash) {
+      hashLocate(window.location.hash);
+    }
+  });
+
+  // The first event occurred
+  window.addEventListener('click', function(event) {
+    if (event.target.tagName.toLowerCase() == 'a') {
+      hashLocate(event.target.getAttribute('href'));
+    }
+  });
+</script>
+<div class="theme-toggle">
+  <input type="checkbox" id="theme-switch">
+  <label for="theme-switch">
+    <div class="toggle"></div>
+    <div class="names">
+      <p class="light">Light</p>
+      <p class="dark">Dark</p>
+    </div>
+  </label>
+</div>
+
+
+
+
+<script>
+  (function() {
+    var sw = document.getElementById('theme-switch');
+    var html = document.getElementsByTagName('html')[0];
+    var nightModeOption = ('auto' || 'auto').toLowerCase();
+    var storage = nightModeOption === 'manual'
+        ? localStorage
+        : sessionStorage;
+    var themeData = loadThemeData();
+
+    function saveThemeData(data) {
+      storage.setItem('theme', JSON.stringify(data));
+    }
+
+    function loadThemeData() {
+      var data = storage.getItem('theme');
+      try {
+        data = JSON.parse(data ? data : '');
+      } catch(e) {
+        data = { nightShift: undefined, autoToggleAt: 0 };
+        saveThemeData(data);
+      }
+      return data;
+    }
+
+    function handleThemeToggle(nightShift) {
+      themeData.nightShift = nightShift;
+      saveThemeData(themeData);
+      html.dataset.theme = nightShift ? 'dark' : 'light';
+      setTimeout(function() {
+        sw.checked = nightShift ? true : false;
+      }, 50);
+    }
+
+    function autoThemeToggle() {
+      // Next time point of theme toggle
+      var now = new Date();
+      var toggleAt = new Date();
+      var hours = now.getHours();
+      var nightShift = hours >= 19 || hours <=7;
+
+      if (nightShift) {
+        if (hours > 7) {
+          toggleAt.setDate(toggleAt.getDate() + 1);
+        }
+        toggleAt.setHours(7);
+      } else {
+        toggleAt.setHours(19);
+      }
+
+      toggleAt.setMinutes(0);
+      toggleAt.setSeconds(0);
+      toggleAt.setMilliseconds(0)
+
+      var delay = toggleAt.getTime() - now.getTime();
+
+      // auto toggle theme mode
+      setTimeout(function() {
+        handleThemeToggle(!nightShift);
+      }, delay);
+
+      return {
+        nightShift: nightShift,
+        toggleAt: toggleAt.getTime()
+      };
+    }
+
+    // Listen the theme toggle event
+    sw.addEventListener('change', function(event) {
+      handleThemeToggle(event.target.checked);
+    });
+
+    if (nightModeOption == 'auto') {
+      var data = autoThemeToggle();
+
+      // Toggle theme by local setting
+      if (data.toggleAt > themeData.autoToggleAt) {
+        themeData.autoToggleAt = data.toggleAt;
+        handleThemeToggle(data.nightShift);
+      } else {
+        handleThemeToggle(themeData.nightShift);
+      }
+    } else if (nightModeOption == 'manual') {
+      handleThemeToggle(themeData.nightShift);
+    } else {
+      var nightShift = themeData.nightShift;
+      if (nightShift === undefined) {
+        nightShift = nightModeOption === 'on';
+      }
+      handleThemeToggle(nightShift);
+    }
+  })();
+</script>
+<main class="page-content" aria-label="Content">
+      <div class="wrapper">
+        <div class="framework">
+  <section class="main">
+
+     <div class="post post--with-image">
+  <section>
+
+
+
+
+
+
+
+
+
+<header class="post-header">
+  <h1 class="post-title p-name" itemprop="name headline">Pythonで小さなMCPサーバーを作る</h1>
+  <h2 class="post-subtitle">読み取り専用のノートツールで実装と通信を観察する</h2>
+
+  <p class="post-meta">
+    <time class="dt-published" datetime="2026-06-21T00:00:00+00:00" itemprop="datePublished"><i class="fa fa-calendar"></i> Jun 21, 2026
+    </time>
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <span class="post-reading-time left-vsplit"><i class="fa fa-clock-o"></i> About 27 mins</span>
+  </p>
+<div class="post-tags">
+<a class="post-tag" href="/jekyll-theme-yat/tags.html#MCP">#MCP</a><a class="post-tag" href="/jekyll-theme-yat/tags.html#Python">#Python</a><a class="post-tag" href="/jekyll-theme-yat/tags.html#AI%E3%82%A8%E3%83%BC%E3%82%B8%E3%82%A7%E3%83%B3%E3%83%88">#AIエージェント</a><a class="post-tag" href="/jekyll-theme-yat/tags.html#API">#API</a><a class="post-tag" href="/jekyll-theme-yat/tags.html#CLI">#CLI</a>
+</div></header>
+<figure class="post-eyecatch">
+  <img src="/jekyll-theme-yat/assets/images/posts/2026-06-21-build-mcp-server-python/eyecatch.png" alt="小さな機械がノート棚から一覧カードとノートを取り出し書き込み口が塞がれている紙コラージュ風イラスト" decoding="async" fetchpriority="high">
+</figure><article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
+
+    <div class="post-content e-content" itemprop="articleBody">
+
+      <p>MCPのHost・Client・ServerやJSON-RPCの流れを理解しても、自分でServerを動かすまでは抽象的に見える部分が残る。そこで連載第5回では、ローカルのMarkdownノートを一覧・読み取りできる小さなMCP Serverを作る。</p>
+
+<p>公開するToolは<code class="language-plaintext highlighter-rouge">list_notes</code>と<code class="language-plaintext highlighter-rouge">read_note</code>の2つだけである。ファイルを書き換えるToolも、任意のパスを読む機能も持たせない。この程度のServerでも、Toolの名前と説明、入力・出力スキーマ、stdio、エラー、ログという実装の要点を一通り観察できる。</p>
+
+<p>前回の<a href="/jekyll-theme-yat/ai%E9%96%8B%E7%99%BA/2026/06/20/mcp-json-rpc-lifecycle.html">「MCPの接続と通信をJSON-RPCから理解する」</a>では、初期化から<code class="language-plaintext highlighter-rouge">tools/call</code>までをプロトコル側から追った。今回は同じ流れをServer実装の側から見る。</p>
+
+<p>本稿のコードは公式のMCP Python SDKに含まれる<code class="language-plaintext highlighter-rouge">FastMCP</code>を使う。MCP仕様が定めるメッセージと、Python SDKが提供するデコレーターや型変換は別の層である。この区別も実装しながら確認していく。</p>
+
+<nav class="mcp-series-index" aria-label="MCPサーバー連載">
+  <p><strong>MCPサーバー連載（全7回）</strong></p>
+  <ol>
+    <li>
+      
+        <a href="/jekyll-theme-yat/ai%E9%96%8B%E7%99%BA/2026/06/17/mcp-protocol-overview.html">MCPは何を標準化するプロトコルなのか</a>
+      
+    </li>
+    <li>
+      
+        <a href="/jekyll-theme-yat/ai%E9%96%8B%E7%99%BA/2026/06/18/mcp-host-client-server.html">MCPのHost・Client・Serverを整理する</a>
+      
+    </li>
+    <li>
+      
+        <a href="/jekyll-theme-yat/ai%E9%96%8B%E7%99%BA/2026/06/19/mcp-tools-resources-prompts.html">MCPのTools・Resources・Promptsを使い分ける</a>
+      
+    </li>
+    <li>
+      
+        <a href="/jekyll-theme-yat/ai%E9%96%8B%E7%99%BA/2026/06/20/mcp-json-rpc-lifecycle.html">MCPの接続と通信をJSON-RPCから理解する</a>
+      
+    </li>
+    <li>
+      
+        <strong aria-current="page">Pythonで小さなMCPサーバーを作る（この記事）</strong>
+      
+    </li>
+    <li>
+      
+        <a href="/jekyll-theme-yat/ai%E9%96%8B%E7%99%BA/2026/06/22/mcp-local-remote-transports.html">ローカルMCPとリモートMCPの違い</a>
+      
+    </li>
+    <li>
+      
+        <a href="/jekyll-theme-yat/ai%E9%96%8B%E7%99%BA/2026/06/23/mcp-security-operations.html">MCPサーバーを安全に運用する</a>
+      
+    </li>
+  </ol>
+</nav>
+
+<hr>
+
+<h2 id="今回作るもの">今回作るもの</h2>
+
+<p>構成は次のようになる。</p>
+
+<p><img class="mermaid" src="https://mermaid.ink/svg/eyJjb2RlIjoiZmxvd2NoYXJ0IFRCXG5Vc2VyW1wi44Om44O844K244O8XCJdXG5Ib3N0W1wiTUNQIEhvc3RcIl1cbkNsaWVudFtcIk1DUCBDbGllbnRcIl1cblNlcnZlcltcIlB5dGhvbiBNQ1AgU2VydmVyXCJdXG5MaXN0W1wibGlzdF9ub3Rlc1wiXVxuUmVhZFtcInJlYWRfbm90ZVwiXVxuTm90ZXNbXCJub3Rlcy8qLm1kXCJdXG4lJS1cblVzZXIgLS0-IEhvc3Rcbkhvc3QgLS0-IENsaWVudFxuQ2xpZW50IC0tPnxcInN0ZGlvIC8gSlNPTi1SUENcInwgU2VydmVyXG5TZXJ2ZXIgLS0-IExpc3RcblNlcnZlciAtLT4gUmVhZFxuTGlzdCAtLT4gTm90ZXNcblJlYWQgLS0-IE5vdGVzIiwibWVybWFpZCI6bnVsbH0"></p>
+
+<p><code class="language-plaintext highlighter-rouge">list_notes</code>は読み取り可能なノート名とサイズを返す。<code class="language-plaintext highlighter-rouge">read_note</code>は一覧に出たファイル名を受け取り、その内容を返す。どちらも読み取り専用で、アクセス範囲はServerと同じディレクトリにある<code class="language-plaintext highlighter-rouge">notes/</code>以下へ限定する。</p>
+
+<p>この制約は説明用の飾りではない。LLMが生成する引数は、一般のWeb APIへ届く入力と同じく検証対象である。<code class="language-plaintext highlighter-rouge">read_note("../../.ssh/config")</code>のような入力を通せば、「ノートを読む」というToolの説明に反して任意のファイルを読めてしまう。</p>
+
+<h2 id="プロジェクトを用意する">プロジェクトを用意する</h2>
+
+<p>公式Python SDKのREADMEは<code class="language-plaintext highlighter-rouge">uv</code>を使った依存関係管理を案内している。ここでも同じ構成にする。</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>uv init notes-mcp
+<span class="nb">cd </span>notes-mcp
+uv add <span class="s2">"mcp[cli]"</span>
+<span class="nb">mkdir </span>notes
+<span class="nb">touch </span>notes/first.md
+</code></pre></div></div>
+
+<p><code class="language-plaintext highlighter-rouge">notes/first.md</code>には、動作確認用の短い文章を書いておく。</p>
+
+<div class="language-markdown highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="gh"># 最初のノート</span>
+
+MCP Serverから読み取るためのテストデータ。
+</code></pre></div></div>
+
+<p>SDKのバージョン番号は記事中で固定しない。実際のプロジェクトでは、依存関係を追加した時点の<code class="language-plaintext highlighter-rouge">uv.lock</code>をリポジトリへ保存し、更新時に差分とテスト結果を確認する方が再現しやすい。記事に書いた特定バージョンを長期間コピーし続けることと、プロジェクトで検証済みの依存関係を固定することは別である。</p>
+
+<h2 id="serverを実装する">Serverを実装する</h2>
+
+<p>プロジェクト直下に<code class="language-plaintext highlighter-rouge">server.py</code>を作り、次のコードを置く。</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">import</span> <span class="n">logging</span>
+<span class="kn">import</span> <span class="n">sys</span>
+<span class="kn">from</span> <span class="n">pathlib</span> <span class="kn">import</span> <span class="n">Path</span>
+
+<span class="kn">from</span> <span class="n">mcp.server.fastmcp</span> <span class="kn">import</span> <span class="n">FastMCP</span>
+<span class="kn">from</span> <span class="n">pydantic</span> <span class="kn">import</span> <span class="n">BaseModel</span><span class="p">,</span> <span class="n">Field</span>
+
+
+<span class="n">BASE_DIR</span> <span class="o">=</span> <span class="nc">Path</span><span class="p">(</span><span class="n">__file__</span><span class="p">).</span><span class="nf">resolve</span><span class="p">().</span><span class="n">parent</span>
+<span class="n">NOTES_DIR</span> <span class="o">=</span> <span class="n">BASE_DIR</span> <span class="o">/</span> <span class="sh">"</span><span class="s">notes</span><span class="sh">"</span>
+<span class="n">MAX_NOTE_BYTES</span> <span class="o">=</span> <span class="mi">64</span> <span class="o">*</span> <span class="mi">1024</span>
+
+<span class="n">logging</span><span class="p">.</span><span class="nf">basicConfig</span><span class="p">(</span>
+    <span class="n">level</span><span class="o">=</span><span class="n">logging</span><span class="p">.</span><span class="n">INFO</span><span class="p">,</span>
+    <span class="nb">format</span><span class="o">=</span><span class="sh">"</span><span class="s">%(levelname)s %(message)s</span><span class="sh">"</span><span class="p">,</span>
+    <span class="n">stream</span><span class="o">=</span><span class="n">sys</span><span class="p">.</span><span class="n">stderr</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="p">.</span><span class="nf">getLogger</span><span class="p">(</span><span class="n">__name__</span><span class="p">)</span>
+
+<span class="n">mcp</span> <span class="o">=</span> <span class="nc">FastMCP</span><span class="p">(</span>
+    <span class="sh">"</span><span class="s">local-notes</span><span class="sh">"</span><span class="p">,</span>
+    <span class="n">instructions</span><span class="o">=</span><span class="sh">"</span><span class="s">Read Markdown notes stored in the local notes directory.</span><span class="sh">"</span><span class="p">,</span>
+<span class="p">)</span>
+
+
+<span class="k">class</span> <span class="nc">NoteSummary</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
+    <span class="n">name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="nc">Field</span><span class="p">(</span><span class="n">description</span><span class="o">=</span><span class="sh">"</span><span class="s">Markdown file name</span><span class="sh">"</span><span class="p">)</span>
+    <span class="n">size_bytes</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="nc">Field</span><span class="p">(</span><span class="n">description</span><span class="o">=</span><span class="sh">"</span><span class="s">File size in bytes</span><span class="sh">"</span><span class="p">)</span>
+
+
+<span class="k">class</span> <span class="nc">NoteContent</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
+    <span class="n">name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="nc">Field</span><span class="p">(</span><span class="n">description</span><span class="o">=</span><span class="sh">"</span><span class="s">Markdown file name</span><span class="sh">"</span><span class="p">)</span>
+    <span class="n">content</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="nc">Field</span><span class="p">(</span><span class="n">description</span><span class="o">=</span><span class="sh">"</span><span class="s">UTF-8 Markdown content</span><span class="sh">"</span><span class="p">)</span>
+
+
+<span class="k">def</span> <span class="nf">safe_note_path</span><span class="p">(</span><span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Path</span><span class="p">:</span>
+    <span class="sh">"""</span><span class="s">Resolve one file name inside NOTES_DIR or reject it.</span><span class="sh">"""</span>
+    <span class="k">if</span> <span class="nc">Path</span><span class="p">(</span><span class="n">name</span><span class="p">).</span><span class="n">name</span> <span class="o">!=</span> <span class="n">name</span> <span class="ow">or</span> <span class="ow">not</span> <span class="n">name</span><span class="p">.</span><span class="nf">endswith</span><span class="p">(</span><span class="sh">"</span><span class="s">.md</span><span class="sh">"</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="nc">ValueError</span><span class="p">(</span><span class="sh">"</span><span class="s">name must be a Markdown file name without directories</span><span class="sh">"</span><span class="p">)</span>
+
+    <span class="n">notes_root</span> <span class="o">=</span> <span class="n">NOTES_DIR</span><span class="p">.</span><span class="nf">resolve</span><span class="p">()</span>
+    <span class="n">original_path</span> <span class="o">=</span> <span class="n">notes_root</span> <span class="o">/</span> <span class="n">name</span>
+    <span class="n">resolved_path</span> <span class="o">=</span> <span class="n">original_path</span><span class="p">.</span><span class="nf">resolve</span><span class="p">()</span>
+
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">resolved_path</span><span class="p">.</span><span class="nf">is_relative_to</span><span class="p">(</span><span class="n">notes_root</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="nc">ValueError</span><span class="p">(</span><span class="sh">"</span><span class="s">note path is outside the notes directory</span><span class="sh">"</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">original_path</span><span class="p">.</span><span class="nf">is_symlink</span><span class="p">():</span>
+        <span class="k">raise</span> <span class="nc">ValueError</span><span class="p">(</span><span class="sh">"</span><span class="s">symbolic links are not supported</span><span class="sh">"</span><span class="p">)</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">resolved_path</span><span class="p">.</span><span class="nf">is_file</span><span class="p">():</span>
+        <span class="k">raise</span> <span class="nc">ValueError</span><span class="p">(</span><span class="sh">"</span><span class="s">note does not exist</span><span class="sh">"</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">resolved_path</span><span class="p">.</span><span class="nf">stat</span><span class="p">().</span><span class="n">st_size</span> <span class="o">&gt;</span> <span class="n">MAX_NOTE_BYTES</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="nc">ValueError</span><span class="p">(</span><span class="sh">"</span><span class="s">note is too large</span><span class="sh">"</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">resolved_path</span>
+
+
+<span class="nd">@mcp.tool</span><span class="p">()</span>
+<span class="k">def</span> <span class="nf">list_notes</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="n">NoteSummary</span><span class="p">]:</span>
+    <span class="sh">"""</span><span class="s">List readable Markdown notes. Use this before read_note.</span><span class="sh">"""</span>
+    <span class="n">notes</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">NoteSummary</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+
+    <span class="k">for</span> <span class="n">path</span> <span class="ow">in</span> <span class="nf">sorted</span><span class="p">(</span><span class="n">NOTES_DIR</span><span class="p">.</span><span class="nf">glob</span><span class="p">(</span><span class="sh">"</span><span class="s">*.md</span><span class="sh">"</span><span class="p">)):</span>
+        <span class="k">if</span> <span class="n">path</span><span class="p">.</span><span class="nf">is_file</span><span class="p">()</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">path</span><span class="p">.</span><span class="nf">is_symlink</span><span class="p">():</span>
+            <span class="n">notes</span><span class="p">.</span><span class="nf">append</span><span class="p">(</span>
+                <span class="nc">NoteSummary</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="n">path</span><span class="p">.</span><span class="n">name</span><span class="p">,</span> <span class="n">size_bytes</span><span class="o">=</span><span class="n">path</span><span class="p">.</span><span class="nf">stat</span><span class="p">().</span><span class="n">st_size</span><span class="p">)</span>
+            <span class="p">)</span>
+
+    <span class="n">logger</span><span class="p">.</span><span class="nf">info</span><span class="p">(</span><span class="sh">"</span><span class="s">listed %d notes</span><span class="sh">"</span><span class="p">,</span> <span class="nf">len</span><span class="p">(</span><span class="n">notes</span><span class="p">))</span>
+    <span class="k">return</span> <span class="n">notes</span>
+
+
+<span class="nd">@mcp.tool</span><span class="p">()</span>
+<span class="k">def</span> <span class="nf">read_note</span><span class="p">(</span><span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">NoteContent</span><span class="p">:</span>
+    <span class="sh">"""</span><span class="s">Read one Markdown note returned by list_notes.
+
+    Args:
+        name: File name such as first.md. Directory paths are not accepted.
+    </span><span class="sh">"""</span>
+    <span class="n">path</span> <span class="o">=</span> <span class="nf">safe_note_path</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
+    <span class="n">logger</span><span class="p">.</span><span class="nf">info</span><span class="p">(</span><span class="sh">"</span><span class="s">reading note %s</span><span class="sh">"</span><span class="p">,</span> <span class="n">path</span><span class="p">.</span><span class="n">name</span><span class="p">)</span>
+    <span class="k">return</span> <span class="nc">NoteContent</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="n">path</span><span class="p">.</span><span class="n">name</span><span class="p">,</span> <span class="n">content</span><span class="o">=</span><span class="n">path</span><span class="p">.</span><span class="nf">read_text</span><span class="p">(</span><span class="n">encoding</span><span class="o">=</span><span class="sh">"</span><span class="s">utf-8</span><span class="sh">"</span><span class="p">))</span>
+
+
+<span class="k">if</span> <span class="n">__name__</span> <span class="o">==</span> <span class="sh">"</span><span class="s">__main__</span><span class="sh">"</span><span class="p">:</span>
+    <span class="n">NOTES_DIR</span><span class="p">.</span><span class="nf">mkdir</span><span class="p">(</span><span class="n">exist_ok</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+    <span class="n">mcp</span><span class="p">.</span><span class="nf">run</span><span class="p">(</span><span class="n">transport</span><span class="o">=</span><span class="sh">"</span><span class="s">stdio</span><span class="sh">"</span><span class="p">)</span>
+</code></pre></div></div>
+
+<p>Serverのコードとして書いたのは、普通のPython関数と入力検証が大半である。<code class="language-plaintext highlighter-rouge">FastMCP</code>が担当するのは、それらの関数をMCPのToolとして公開し、stdio上のJSON-RPCメッセージと関数呼び出しを仲介する部分だ。</p>
+
+<h2 id="tool定義は型とdocstringから作られる">Tool定義は型とdocstringから作られる</h2>
+
+<p><code class="language-plaintext highlighter-rouge">@mcp.tool()</code>を付けると、FastMCPは関数名、docstring、型注釈をもとにTool定義を生成する。</p>
+
+<p><code class="language-plaintext highlighter-rouge">read_note</code>の場合、概念的には次の情報が<code class="language-plaintext highlighter-rouge">tools/list</code>の結果へ現れる。</p>
+
+<table>
+  <thead>
+    <tr>
+      <th style="text-align: left">Python側</th>
+      <th style="text-align: left">Tool定義での役割</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td style="text-align: left">関数名<code class="language-plaintext highlighter-rouge">read_note</code>
+</td>
+      <td style="text-align: left">Toolの名前</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">docstring</td>
+      <td style="text-align: left">Toolの説明</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">引数<code class="language-plaintext highlighter-rouge">name: str</code>
+</td>
+      <td style="text-align: left">入力スキーマ</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">戻り値<code class="language-plaintext highlighter-rouge">NoteContent</code>
+</td>
+      <td style="text-align: left">構造化された出力スキーマ</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>MCP仕様はToolが<code class="language-plaintext highlighter-rouge">name</code>、<code class="language-plaintext highlighter-rouge">description</code>、<code class="language-plaintext highlighter-rouge">inputSchema</code>などを持つことを定めている。一方、「Python関数の型注釈からJSON Schemaを生成する」のはSDKの支援機能である。他言語のSDKや低水準APIでは、同じMCP Toolを別の方法で定義できる。</p>
+
+<p>型が合えば十分というわけでもない。<code class="language-plaintext highlighter-rouge">name</code>が文字列であることはスキーマで検証できるが、その文字列が<code class="language-plaintext highlighter-rouge">notes/</code>の外を指さないことまでは分からない。型検証の後に、アプリケーション固有の境界検証が必要になる。</p>
+
+<h3 id="説明文もインターフェースの一部になる">説明文もインターフェースの一部になる</h3>
+
+<p>Toolの説明は人間向けのコメントに見えるが、HostはTool定義をモデルへ渡し、モデルは名前・説明・スキーマを手掛かりに呼び出すToolを選ぶ。</p>
+
+<p><code class="language-plaintext highlighter-rouge">list_notes</code>に「<code class="language-plaintext highlighter-rouge">read_note</code>より先に使う」と書いたのは、存在しないファイル名をモデルが推測するより、一覧から選ばせる方が安定するためである。ただし、説明文はアクセス制御ではない。モデルが説明に従うことを期待して、<code class="language-plaintext highlighter-rouge">safe_note_path</code>を省略してはいけない。</p>
+
+<h2 id="読み取り範囲をコードで閉じる">読み取り範囲をコードで閉じる</h2>
+
+<p><code class="language-plaintext highlighter-rouge">safe_note_path</code>では複数の検査を行っている。</p>
+
+<table>
+  <thead>
+    <tr>
+      <th style="text-align: left">検査</th>
+      <th style="text-align: left">防ぎたい入力・状態</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td style="text-align: left"><code class="language-plaintext highlighter-rouge">Path(name).name == name</code></td>
+      <td style="text-align: left">
+<code class="language-plaintext highlighter-rouge">../secret.md</code>やサブディレクトリ指定</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">
+<code class="language-plaintext highlighter-rouge">.md</code>サフィックス</td>
+      <td style="text-align: left">想定外の形式の読み取り</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">
+<code class="language-plaintext highlighter-rouge">resolve()</code>後の包含確認</td>
+      <td style="text-align: left">パストラバーサル</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">シンボリックリンク拒否</td>
+      <td style="text-align: left">
+<code class="language-plaintext highlighter-rouge">notes/</code>外へのリンク</td>
+    </tr>
+    <tr>
+      <td style="text-align: left"><code class="language-plaintext highlighter-rouge">is_file()</code></td>
+      <td style="text-align: left">存在しないパスやディレクトリ</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">サイズ上限</td>
+      <td style="text-align: left">巨大な内容をコンテキストへ返すこと</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>この例では分かりやすさを優先してファイル名だけを受け取っている。サブディレクトリも扱うなら、単純にスラッシュを許可するだけでは足りない。正規化後のパスが許可されたroot内にあるかを検証し、リンクやOSごとの差もテストする必要がある。</p>
+
+<p>また、64 KiBという上限はMCP仕様の制限ではなく、このServerが決めた運用上の制約である。実際の上限は、ノートの用途、Hostが結果をどうコンテキストへ入れるか、応答時間などを見て決める。</p>
+
+<h2 id="stdioではstdoutを通信専用にする">stdioではstdoutを通信専用にする</h2>
+
+<p>stdio transportでは、ClientがServerを子プロセスとして起動する。Serverは<code class="language-plaintext highlighter-rouge">stdin</code>からJSON-RPCメッセージを読み、<code class="language-plaintext highlighter-rouge">stdout</code>へJSON-RPCメッセージを返す。</p>
+
+<p><img class="mermaid" src="https://mermaid.ink/svg/eyJjb2RlIjoiZmxvd2NoYXJ0IFRCXG5DbGllbnRbXCJNQ1AgQ2xpZW50XCJdXG5TdGRpbltcInNlcnZlciBzdGRpblwiXVxuUHl0aG9uW1wic2VydmVyLnB5XCJdXG5TdGRvdXRbXCJzZXJ2ZXIgc3Rkb3V0XCJdXG5TdGRlcnJbXCJzZXJ2ZXIgc3RkZXJyXCJdXG5Mb2dzW1wi44Ot44Kw6KGo56S644O75Y-O6ZuGXCJdXG4lJS1cbkNsaWVudCAtLT58XCJKU09OLVJQQ1wifCBTdGRpblxuU3RkaW4gLS0-IFB5dGhvblxuUHl0aG9uIC0tPnxcIkpTT04tUlBD44Gu44G_XCJ8IFN0ZG91dFxuU3Rkb3V0IC0tPiBDbGllbnRcblB5dGhvbiAtLT58XCLoqLrmlq3jg63jgrBcInwgU3RkZXJyXG5TdGRlcnIgLS0-IExvZ3MiLCJtZXJtYWlkIjpudWxsfQ"></p>
+
+<p>そのため、<code class="language-plaintext highlighter-rouge">print("Server started")</code>を何気なく追加すると、Clientから見ればJSON-RPCではない文字列が通信路へ混ざる。公式仕様は、stdio Serverが有効なMCPメッセージ以外を<code class="language-plaintext highlighter-rouge">stdout</code>へ書くことを禁止している。</p>
+
+<p>サンプルでは<code class="language-plaintext highlighter-rouge">logging.basicConfig(..., stream=sys.stderr)</code>を明示した。<code class="language-plaintext highlighter-rouge">stderr</code>のログはClientが取得・転送・無視できる。なお、<code class="language-plaintext highlighter-rouge">stderr</code>に出たこと自体は必ずしもエラーを意味しないため、ログレベルを併記している。</p>
+
+<h2 id="inspectorでserverを観察する">InspectorでServerを観察する</h2>
+
+<p>会話型のHostへ登録する前に、MCP InspectorでTool定義と実行結果を確認すると切り分けやすい。InspectorはServerへ接続し、Resources、Prompts、Tools、通知などを画面から調べられる公式の開発ツールである。</p>
+
+<p>プロジェクトの絶対パスを確認して、次のように起動する。</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">pwd
+</span>npx <span class="nt">-y</span> @modelcontextprotocol/inspector <span class="se">\</span>
+  uv <span class="se">\</span>
+  <span class="nt">--directory</span> /absolute/path/to/notes-mcp <span class="se">\</span>
+  run <span class="se">\</span>
+  server.py
+</code></pre></div></div>
+
+<p><code class="language-plaintext highlighter-rouge">npx -y</code>は必要なInspectorパッケージを取得して実行するため、外部コードのダウンロードを伴う。組織の端末では、利用を許可されたパッケージとバージョン管理方針に従う必要がある。</p>
+
+<p>Inspectorが開いたら、次の順に確認する。</p>
+
+<ol>
+  <li>TransportがSTDIOになっていることを確認して接続する</li>
+  <li>Toolsタブで<code class="language-plaintext highlighter-rouge">list_notes</code>と<code class="language-plaintext highlighter-rouge">read_note</code>が表示されることを確認する</li>
+  <li>
+<code class="language-plaintext highlighter-rouge">read_note</code>の説明と入力スキーマに<code class="language-plaintext highlighter-rouge">name</code>があることを確認する</li>
+  <li>
+<code class="language-plaintext highlighter-rouge">list_notes</code>を実行し、<code class="language-plaintext highlighter-rouge">first.md</code>が返ることを確認する</li>
+  <li>
+<code class="language-plaintext highlighter-rouge">read_note</code>へ<code class="language-plaintext highlighter-rouge">first.md</code>を渡し、本文が返ることを確認する</li>
+  <li>通知・ログ表示で<code class="language-plaintext highlighter-rouge">listed 1 notes</code>や<code class="language-plaintext highlighter-rouge">reading note first.md</code>を確認する</li>
+</ol>
+
+<p>Inspectorでは、モデルのTool選択を挟まずに直接呼び出せる。ここで失敗するならServerまたは接続設定の問題であり、ここでは成功するのに会話から呼ばれないなら、Toolの説明、Hostの設定、モデルの判断などを次に疑える。</p>
+
+<h2 id="失敗する入力も試す">失敗する入力も試す</h2>
+
+<p>成功ケースだけでは入力境界を確認できない。<code class="language-plaintext highlighter-rouge">read_note</code>へ次の値を渡し、拒否されることを確かめる。</p>
+
+<div class="language-text highlighter-rouge"><div class="highlight"><pre class="highlight"><code>missing.md
+../secret.md
+subdir/note.md
+note.txt
+</code></pre></div></div>
+
+<p>さらに、<code class="language-plaintext highlighter-rouge">notes/link.md</code>を<code class="language-plaintext highlighter-rouge">notes/</code>外のファイルへのシンボリックリンクとして作った場合も拒否される。巨大ファイルは64 KiBを超えた時点で読み取りを拒否する。</p>
+
+<p>このとき大切なのは、プロセス全体を終了させず、対象のTool呼び出しをエラーとして返せることだ。入力ミス一つでServerが落ちれば、Clientは再接続や再初期化からやり直すことになる。</p>
+
+<h2 id="hostへ登録するときに渡しているもの">Hostへ登録するときに渡しているもの</h2>
+
+<p>stdio ServerをHostへ登録する設定は、製品ごとにファイル名やUIが異なる。ただし、基本的に必要なのはServerを起動するコマンド、引数、必要なら環境変数である。</p>
+
+<p>概念的な設定は次の形になる。</p>
+
+<div class="language-json highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">{</span><span class="w">
+  </span><span class="nl">"mcpServers"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+    </span><span class="nl">"local-notes"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+      </span><span class="nl">"command"</span><span class="p">:</span><span class="w"> </span><span class="s2">"uv"</span><span class="p">,</span><span class="w">
+      </span><span class="nl">"args"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
+        </span><span class="s2">"--directory"</span><span class="p">,</span><span class="w">
+        </span><span class="s2">"/absolute/path/to/notes-mcp"</span><span class="p">,</span><span class="w">
+        </span><span class="s2">"run"</span><span class="p">,</span><span class="w">
+        </span><span class="s2">"server.py"</span><span class="w">
+      </span><span class="p">]</span><span class="w">
+    </span><span class="p">}</span><span class="w">
+  </span><span class="p">}</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></code></pre></div></div>
+
+<p>Hostはこのコマンドを実行して子プロセスを作り、標準入出力へ接続する。<code class="language-plaintext highlighter-rouge">server.py</code>を事前に別ターミナルで常駐させ、そのポートへ接続しているわけではない。</p>
+
+<p>相対パスはHostの起動ディレクトリに左右されるため、設定ではプロジェクトの絶対パスを使う方がよい。<code class="language-plaintext highlighter-rouge">uv</code>自体がHostから見つからない場合は、<code class="language-plaintext highlighter-rouge">command</code>に実行ファイルの絶対パスが必要になる。</p>
+
+<p>APIキーを使うServerでは環境変数を設定へ渡すこともある。ただし、設定ファイルへ秘密情報を直書きする設計は避け、Hostの秘密情報管理やOSの資格情報ストアを使う。今回のServerはローカルファイルの読み取りだけなので、外部サービスの資格情報を必要としない。</p>
+
+<h2 id="この実装から見える責任分界">この実装から見える責任分界</h2>
+
+<p>小さなServerでも、MCP仕様、SDK、Server実装、Hostの責任は分かれている。</p>
+
+<table>
+  <thead>
+    <tr>
+      <th style="text-align: left">層</th>
+      <th style="text-align: left">この例で担当すること</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td style="text-align: left">MCP仕様</td>
+      <td style="text-align: left">初期化、<code class="language-plaintext highlighter-rouge">tools/list</code>、<code class="language-plaintext highlighter-rouge">tools/call</code>、メッセージ形式、stdioの規則</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">Python SDK</td>
+      <td style="text-align: left">デコレーター、型からのスキーマ生成、stdioループ、エラーの変換</td>
+    </tr>
+    <tr>
+      <td style="text-align: left"><code class="language-plaintext highlighter-rouge">server.py</code></td>
+      <td style="text-align: left">Toolの意味、アクセス可能なファイル、サイズ上限、ログ内容</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">Host</td>
+      <td style="text-align: left">Serverプロセスの起動、Tool定義をモデルへ渡すこと、承認と表示</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">モデル</td>
+      <td style="text-align: left">ユーザーの依頼からToolと引数を提案すること</td>
+    </tr>
+  </tbody>
+</table>
+
+<p><code class="language-plaintext highlighter-rouge">FastMCP</code>を使うとJSON-RPCを直接組み立てずに済むが、Serverの安全性までSDKが自動で決めるわけではない。どのデータへアクセスできるか、どこまで返すか、書き込みを許すかはServer側の設計である。</p>
+
+<h2 id="実運用へ広げる前に足すもの">実運用へ広げる前に足すもの</h2>
+
+<p>今回のServerは理解用としては十分だが、そのまま複数ユーザー向けサービスへ公開する設計ではない。用途を広げるなら、少なくとも次を検討する。</p>
+
+<ul>
+  <li>Tool単位・利用者単位の認可</li>
+  <li>タイムアウト、同時実行数、出力サイズの制限</li>
+  <li>機密値を除外した監査ログ</li>
+  <li>ファイル更新中の整合性と文字コードエラー</li>
+  <li>Toolの契約に対する自動テスト</li>
+  <li>SDK更新時のInspector・対応Hostでの互換性確認</li>
+  <li>書き込みToolを追加する場合の明示的な承認と再確認</li>
+</ul>
+
+<p>外部へ公開するなら、transportもstdioからStreamable HTTPへ変わることが多い。ただし<code class="language-plaintext highlighter-rouge">mcp.run()</code>の引数だけを変えれば運用設計まで完了するわけではない。認証、セッション、ネットワーク、複数Client、再接続を考える必要がある。</p>
+
+<h2 id="まとめ">まとめ</h2>
+
+<p>今回の2 Toolから確認できる要点は次の通りである。</p>
+
+<table>
+  <thead>
+    <tr>
+      <th style="text-align: left">観察点</th>
+      <th style="text-align: left">押さえる内容</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td style="text-align: left">Tool定義</td>
+      <td style="text-align: left">名前、説明、型注釈からSDKがスキーマを生成する</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">入力検証</td>
+      <td style="text-align: left">JSON Schemaとは別にパスやサイズの境界を検証する</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">出力</td>
+      <td style="text-align: left">型付きモデルで構造化された結果を返せる</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">stdio</td>
+      <td style="text-align: left">
+<code class="language-plaintext highlighter-rouge">stdin</code>と<code class="language-plaintext highlighter-rouge">stdout</code>はMCP通信、ログは<code class="language-plaintext highlighter-rouge">stderr</code>へ出す</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">Inspector</td>
+      <td style="text-align: left">モデルを介さずTool一覧・スキーマ・結果・ログを確認する</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">責任分界</td>
+      <td style="text-align: left">仕様、SDK、Server、Host、モデルの責任を混ぜない</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>自作してみると、MCP Serverは「AIそのもの」ではなく、既存の処理やデータを決められた契約で公開するアダプターに近いことが分かる。そのアダプターにどの権限を持たせるかは、実装者が決めなければならない。</p>
+
+<p>次回の<a href="/jekyll-theme-yat/ai%E9%96%8B%E7%99%BA/2026/06/22/mcp-local-remote-transports.html">「ローカルMCPとリモートMCPの違い」</a>では、今回使ったstdioとStreamable HTTPを、プロセス、セッション、認証、配置の違いから比較する。</p>
+
+<h2 id="参考">参考</h2>
+
+<ul>
+  <li><a href="https://github.com/modelcontextprotocol/python-sdk">MCP Python SDK（公式GitHub）</a></li>
+  <li><a href="https://modelcontextprotocol.io/docs/develop/build-server">Build an MCP server（MCP公式ドキュメント）</a></li>
+  <li><a href="https://modelcontextprotocol.io/docs/tools/inspector">MCP Inspector（MCP公式ドキュメント）</a></li>
+  <li><a href="https://modelcontextprotocol.io/specification/2025-11-25/basic/transports">Transports（MCP仕様 2025-11-25）</a></li>
+</ul>
+
+
+    </div>
+
+</article>
+<div class="post-nav">
+<a class="previous" href="/jekyll-theme-yat/ai%E9%96%8B%E7%99%BA/2026/06/20/mcp-json-rpc-lifecycle.html" title="MCPの接続と通信をJSON-RPCから理解する">MCPの接続と通信をJSON-RPCから理解する</a><a class="next" href="/jekyll-theme-yat/ai%E9%96%8B%E7%99%BA/2026/06/22/mcp-local-remote-transports.html" title="ローカルMCPとリモートMCPの違い">ローカルMCPとリモートMCPの違い</a>
+</div>
+<div class="post-related">
+      <div>Related Articles</div>
+      <ul>
+        <li><a class="post-link" href="/jekyll-theme-yat/%E9%96%8B%E7%99%BA/2026/06/16/notion-database-personal-backend.html" title="ローカルMCPとリモートMCPの違い">なぜ個人開発のバックエンドに Notion データベースを選ぶのか</a></li>
+<li><a class="post-link" href="/jekyll-theme-yat/%E9%96%8B%E7%99%BA/2024/05/13/python-dev01.html" title="ローカルMCPとリモートMCPの違い">Docker ComposeとDockerfileでPython開発環境を構築する</a></li>
+<li><a class="post-link" href="/jekyll-theme-yat/ai%E9%96%8B%E7%99%BA/2026/06/09/claude-code-android-patterns.html" title="ローカルMCPとリモートMCPの違い">Android から Claude Code を使うパターンと選び方</a></li>
+<li><a class="post-link" href="/jekyll-theme-yat/ai%E9%96%8B%E7%99%BA/2026/06/18/google-workspace-studio-guide.html" title="ローカルMCPとリモートMCPの違い">Google Workspace Studio の活用アイデア</a></li>
+</ul>
+    </div>
+<div class="post-comments"></div></section>
+</div>
+
+
+  </section>
+  <section class="sidebar" style="margin-left: 15px;">
+    <!-- Get sidebar items --><style type="text/css" media="screen">
+.post-menu ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+</style>
+
+<div class="post-menu">
+  <div class="post-menu-title">TOC</div>
+  <div class="post-menu-content"></div>
+</div>
+
+<script>
+  function generateContent() {
+    var menu = document.querySelector(".post-menu");
+    var menuContent =  menu.querySelector(".post-menu-content");
+    var headings = document.querySelector(".post-content").querySelectorAll("h2, h3, h4, h5, h6");
+
+    // Hide menu when no headings
+    if (headings.length === 0) {
+      return menu.style.display = "none";
+    }
+
+    // Generate post menu
+    var menuHTML = '';
+    for (var i = 0; i < headings.length; i++) {
+      var h = headings[i];
+      menuHTML += (
+        '<li class="h-' + h.tagName.toLowerCase() + '">'
+        + '<a href="#h-' + h.getAttribute('id') + '">' + h.textContent + '</a></li>');
+    }
+
+    menuContent.innerHTML = '<ul>' + menuHTML + '</ul>';
+
+    // The header element
+    var header = document.querySelector('header.site-header');
+
+    function doMenuCollapse(index, over_items) {
+      var items = menuContent.firstChild.children;
+
+      if (over_items == undefined) {
+        over_items = 20;
+      }
+
+      if (items.length < over_items) {
+        return;
+      }
+
+      var activeItem = items[index];
+      var beginItem = activeItem
+      var endItem = activeItem
+      var beginIndex = index;
+      var endIndex = index + 1;
+      while (beginIndex >= 0
+        && !items[beginIndex].classList.contains('h-h2')) {
+        beginIndex -= 1;
+      }
+      while (endIndex < items.length
+        && !items[endIndex].classList.contains('h-h2')) {
+        endIndex += 1;
+      }
+      for (var i = 0; i < beginIndex; i++) {
+        item = items[i]
+        if (!item.classList.contains('h-h2')) {
+          item.style.display = 'none';
+        }
+      }
+      for (var i = beginIndex + 1; i < endIndex; i++) {
+        item = items[i]
+        // if (!item.classList.contains('h-h2')) {
+          item.style.display = '';
+        // }
+      }
+      for (var i = endIndex; i < items.length; i++) {
+        item = items[i]
+        if (!item.classList.contains('h-h2')) {
+          item.style.display = 'none';
+        }
+      }
+    }
+
+    // Init menu collapsed
+    doMenuCollapse(-1);
+
+    // Active the menu item
+    window.addEventListener('scroll', function (event) {
+      var lastActive = menuContent.querySelector('.active');
+      var changed = true;
+      var activeIndex = -1;
+      for (var i = headings.length - 1; i >= 0; i--) {
+        var h = headings[i];
+        var headingRect = h.getBoundingClientRect();
+        var headerRect = header.getBoundingClientRect();
+        var headerTop = Math.floor(headerRect.top);
+        var headerHeight = Math.floor(headerRect.height);
+        var headerHeight = headerTop + headerHeight + 20;
+        if (headingRect.top <= headerHeight) {
+          var id = 'h-' + h.getAttribute('id');
+          var a = menuContent.querySelector('a[href="#' + id  + '"]');
+          var curActive = a.parentNode;
+          if (curActive) {
+            curActive.classList.add('active');
+            activeIndex = i;
+          }
+          if (lastActive == curActive) {
+            changed = false;
+          }
+          break;
+        }
+      }
+      if (changed) {
+        if (lastActive) {
+          lastActive.classList.remove('active');
+        }
+        doMenuCollapse(activeIndex);
+      }
+      event.preventDefault();
+    });
+  }
+  generateContent();
+</script>
+</section>
+</div>
+
+      </div>
+    </main><footer class="site-footer h-card">
+  <data class="u-url" href="/jekyll-theme-yat/"></data>
+
+  <div class="wrapper">
+    <div class="site-footer-inner">
+<div>Waka-DS © 2021-2026</div>
+      <div>Powered by <a title="Jekyll is a simple, blog-aware, static site
+      generator." href="http://jekyllrb.com/">Jekyll</a> &amp; <a title="Yat, yet
+      another theme." href="https://github.com/jeffreytse/jekyll-theme-yat">Yat Theme</a>.</div>
+      <div class="footer-col rss-subscribe">Subscribe <a href="/jekyll-theme-yat/feed.xml">via RSS</a>
+</div>
+    </div>
+  </div>
+</footer>
+</body>
+</html>

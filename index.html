@@ -1,0 +1,5826 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <script>
+  (function() {
+    try {
+      var p = localStorage.getItem('preferred_lang');
+      if (!p) return;
+      var path = window.location.pathname;
+      var ja = ['/', '/archives.html', '/categories.html', '/tags.html', '/about.html'];
+      var en = ['/en/', '/en/archives.html', '/en/categories.html', '/en/tags.html', '/en/about.html'];
+      if (p === 'en' && ja.indexOf(path) !== -1) {
+        window.location.replace('/en' + (path === '/' ? '/' : path));
+      } else if (p === 'ja' && en.indexOf(path) !== -1) {
+        window.location.replace(path.slice(3) || '/');
+      }
+    } catch(e) {}
+  })();
+  </script>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="google-translate-customization" content="108d9124921d80c3-80e20d618ff053c8-g4f02ec6f3dba68b7-c">
+<!-- Begin Jekyll SEO tag v2.9.0 -->
+<title>Home | Waka-DS.com</title>
+<meta name="generator" content="Jekyll v4.4.1">
+<meta property="og:title" content="Home">
+<meta name="author" content="Waka-DS">
+<meta property="og:locale" content="en_US">
+<meta name="description" content="AIエージェント時代のシステム設計・データ基盤・開発環境を実務目線で整理する技術ブログ。 Data Engineering・AI Agent開発・SaaS最適化など、Docker・WSL2・Python・TypeScriptを中心としたプロダクション実践ノートを記録。">
+<meta name="twitter:description" property="og:description" content="AIエージェント時代のシステム設計・データ基盤・開発環境を実務目線で整理する技術ブログ。 Data Engineering・AI Agent開発・SaaS最適化など、Docker・WSL2・Python・TypeScriptを中心としたプロダクション実践ノートを記録。">
+<link rel="canonical" href="/jekyll-theme-yat/">
+<meta property="og:url" content="/jekyll-theme-yat/">
+<meta property="og:site_name" content="Waka-DS.com">
+<meta property="og:type" content="website">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Home">
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"WebSite","author":{"@type":"Person","name":"Waka-DS"},"description":"AIエージェント時代のシステム設計・データ基盤・開発環境を実務目線で整理する技術ブログ。 Data Engineering・AI Agent開発・SaaS最適化など、Docker・WSL2・Python・TypeScriptを中心としたプロダクション実践ノートを記録。","headline":"Home","name":"Waka-DS.com","url":"/jekyll-theme-yat/"}</script>
+<!-- End Jekyll SEO tag -->
+<link rel="shortcut icon" href="">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=Noto+Sans+JP:wght@400;500;700&amp;display=swap">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+  <link rel="stylesheet" href="/jekyll-theme-yat/assets/css/main.css">
+  <script src="/jekyll-theme-yat/assets/js/main.js"></script><link type="application/atom+xml" rel="alternate" href="/jekyll-theme-yat/feed.xml" title="Waka-DS.com">
+<script>
+  function initGoogleAnalytics() {
+    var doNotTrack = (window.doNotTrack === "1" || navigator.doNotTrack === "1" ||
+      navigator.doNotTrack === "yes" || navigator.msDoNotTrack === "1");
+    var enableDNT = "true" == "true";
+
+    if (!enableDNT || !doNotTrack) {
+      var ga_id = 'G-XNP1RBTG9C';
+
+      var script = document.createElement('script');
+      script.async = true;
+      script.src = 'https://www.googletagmanager.com/gtag/js?id=' + ga_id;
+      document.head.appendChild(script);
+
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', ga_id);
+    }
+  }
+  window.addEventListener("load", initGoogleAnalytics);
+</script>
+<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/styles/default.min.css">
+<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/highlight.min.js"></script>
+<!-- and it's easy to individually load additional languages -->
+<script charset="UTF-8" src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/languages/go.min.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<script>
+// Init highlight js
+document.addEventListener('DOMContentLoaded', function(event) {
+  var els = document.querySelectorAll('pre code')
+
+  function addLangData(block) {
+    var outer = block.parentElement.parentElement.parentElement;
+    var lang = block.getAttribute('data-lang');
+    for (var i = 0; i < outer.classList.length; i++) {
+      var cls = outer.classList[i];
+      if (cls.startsWith('language-')) {
+        lang = cls;
+        break;
+      }
+    }
+    if (!lang) {
+      cls = block.getAttribute('class');
+      lang = cls ? cls.replace('hljs ', '') : '';
+    }
+    if (lang.startsWith('language-')) {
+      lang = lang.substr(9);
+    }
+    block.setAttribute('class', 'hljs ' + lang);
+    block.parentNode.setAttribute('data-lang', lang);
+  }
+
+  function addBadge(block) {
+    var enabled = ('true' || 'true').toLowerCase();
+    if (enabled == 'true') {
+      var pre = block.parentElement;
+      pre.classList.add('badge');
+    }
+  }
+
+  function handle(block) {
+    addLangData(block);
+    addBadge(block)
+    hljs.highlightBlock(block);
+  }
+
+  for (var i = 0; i < els.length; i++) {
+    var el = els[i];
+    handle(el);
+  }
+});
+</script>
+
+<style>
+  /* code language badge */
+  pre.badge::before {
+    content: attr(data-lang);
+    color: #fff;
+    background-color: #0d9488;
+    padding: 0 .5em;
+    border-radius: 0 2px;
+    text-transform: uppercase;
+    text-align: center;
+    min-width: 32px;
+    display: inline-block;
+    position: absolute;
+    right: 0;
+  }
+
+  /* fix wrong badge display for firefox browser */
+  code > table pre::before {
+    display: none;
+  }
+</style>
+<script>MathJax={"tex":{"inlineMath":[["$","$"],["\\(","\\)"]],"displayMath":[["$$","$$"],["\\[","\\]"]]},"svg":{"fontCache":"global"}}</script><script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script><script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+</head>
+<body>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<header class="site-header site-header-transparent" role="banner">
+
+  <div class="wrapper">
+    <div class="site-header-inner">
+<span class="site-brand"><a class="site-brand-inner" rel="author" href="/jekyll-theme-yat/">
+  <img class="site-favicon" title="Waka-DS.com" src="" onerror="this.style.display='none'">
+  Waka-DS.com
+</a>
+</span><nav class="site-nav">
+          <input type="checkbox" id="nav-trigger" class="nav-trigger">
+          <label for="nav-trigger">
+            <span class="menu-icon">
+              <svg viewbox="0 0 18 15" width="18px" height="15px">
+                <path d="M18,1.484c0,0.82-0.665,1.484-1.484,1.484H1.484C0.665,2.969,0,2.304,0,1.484l0,0C0,0.665,0.665,0,1.484,0 h15.032C17.335,0,18,0.665,18,1.484L18,1.484z M18,7.516C18,8.335,17.335,9,16.516,9H1.484C0.665,9,0,8.335,0,7.516l0,0 c0-0.82,0.665-1.484,1.484-1.484h15.032C17.335,6.031,18,6.696,18,7.516L18,7.516z M18,13.516C18,14.335,17.335,15,16.516,15H1.484 C0.665,15,0,14.335,0,13.516l0,0c0-0.82,0.665-1.483,1.484-1.483h15.032C17.335,12.031,18,12.695,18,13.516L18,13.516z"></path>
+              </svg>
+            </span>
+          </label>
+
+          <div class="trigger">
+<a class="page-link" href="/jekyll-theme-yat/about.html">ABOUT</a><a class="page-link" href="/jekyll-theme-yat/archives.html">ARCHIVES</a><a class="page-link" href="/jekyll-theme-yat/categories.html">CATEGORIES</a><a class="page-link" href="/jekyll-theme-yat/">HOME</a><a class="page-link" href="/jekyll-theme-yat/tags.html">TAGS</a><span class="page-link">
+                <span class="lang-switcher lang-switcher--nav"><span class="lang-btn lang-btn--active">日本語</span>
+                    <a class="lang-btn" href="/jekyll-theme-yat/en/">English</a></span>
+              </span>
+</div>
+        </nav>
+</div>
+  </div>
+</header>
+
+<script>
+  function initHeader() {
+    var lastScrollY = getScrollPos().y;
+    var documentElement = document.documentElement;
+
+    function storeScrollData() {
+      var y = getScrollPos().y;documentElement.setAttribute("data-header-transparent", "");var scrollStatus = "";
+
+      if (y <= 0) {
+        scrollStatus = "top";
+      } else if ((window.innerHeight + y) >= document.body.offsetHeight) {
+        scrollStatus = "bottom";
+      } else {
+        var isScrollDown = (y - lastScrollY > 0) ? true : false;
+        scrollStatus = isScrollDown ? "down" : "up";
+      }
+
+      lastScrollY = y;
+      documentElement.setAttribute("data-scroll-status", scrollStatus);
+    }
+
+    window.addEventListener('scroll', function(e) {
+      storeScrollData();
+    });
+
+    storeScrollData();
+  }
+  document.addEventListener('DOMContentLoaded', initHeader);
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<section class="page-banner">
+    <div class="page-banner-img">
+<div style="background-image: url(/jekyll-theme-yat/assets/images/banners/banner.jpg)"></div>
+        <img class="img-placeholder" src="/jekyll-theme-yat/assets/images/banners/banner.jpg">
+</div>
+    <div class="wrapper">
+      <div class="page-banner-inner"><div class="page-banner-default">
+            <h1 class="page-banner-heading">
+              Waka-DS.com
+            </h1>
+            <h2 class="page-banner-subheading">
+              AIエージェント時代のシステム設計・データ基盤・開発環境を実務目線で整理する技術ブログ
+            </h2>
+          </div></div>
+    </div>
+  </section><script>
+  function hashLocate(hashValue) {
+    hashValue = hashValue.replace(/^.*#h-/, '');
+    hashValue = decodeURIComponent(hashValue);
+    var element = document.getElementById(hashValue);
+
+    if (!element) {
+      return;
+    }
+
+    var header = document.querySelector('header.site-header');
+    var headerRect = header.getBoundingClientRect();
+    var headerTop = Math.floor(headerRect.top);
+    var headerHeight = Math.floor(headerRect.height);
+    var scrollPos = getScrollPos();
+    var offsetY = element.offsetTop - (headerTop + headerHeight + 20);
+
+    if (offsetY == scrollPos.y) {
+      return;
+    }
+
+    if (headerTop == 0  && offsetY > scrollPos.y) {
+      offsetY += headerHeight + 2;
+    } else if (headerTop < 0  && offsetY < scrollPos.y) {
+      offsetY -= headerHeight - 2;
+    }
+
+    smoothScrollTo(offsetY);
+  }
+
+  // The first event occurred
+  window.addEventListener('load', function(event) {
+    if (window.location.hash) {
+      hashLocate(window.location.hash);
+    }
+  });
+
+  // The first event occurred
+  window.addEventListener('click', function(event) {
+    if (event.target.tagName.toLowerCase() == 'a') {
+      hashLocate(event.target.getAttribute('href'));
+    }
+  });
+</script>
+<div class="theme-toggle">
+  <input type="checkbox" id="theme-switch">
+  <label for="theme-switch">
+    <div class="toggle"></div>
+    <div class="names">
+      <p class="light">Light</p>
+      <p class="dark">Dark</p>
+    </div>
+  </label>
+</div>
+
+
+
+
+<script>
+  (function() {
+    var sw = document.getElementById('theme-switch');
+    var html = document.getElementsByTagName('html')[0];
+    var nightModeOption = ('auto' || 'auto').toLowerCase();
+    var storage = nightModeOption === 'manual'
+        ? localStorage
+        : sessionStorage;
+    var themeData = loadThemeData();
+
+    function saveThemeData(data) {
+      storage.setItem('theme', JSON.stringify(data));
+    }
+
+    function loadThemeData() {
+      var data = storage.getItem('theme');
+      try {
+        data = JSON.parse(data ? data : '');
+      } catch(e) {
+        data = { nightShift: undefined, autoToggleAt: 0 };
+        saveThemeData(data);
+      }
+      return data;
+    }
+
+    function handleThemeToggle(nightShift) {
+      themeData.nightShift = nightShift;
+      saveThemeData(themeData);
+      html.dataset.theme = nightShift ? 'dark' : 'light';
+      setTimeout(function() {
+        sw.checked = nightShift ? true : false;
+      }, 50);
+    }
+
+    function autoThemeToggle() {
+      // Next time point of theme toggle
+      var now = new Date();
+      var toggleAt = new Date();
+      var hours = now.getHours();
+      var nightShift = hours >= 19 || hours <=7;
+
+      if (nightShift) {
+        if (hours > 7) {
+          toggleAt.setDate(toggleAt.getDate() + 1);
+        }
+        toggleAt.setHours(7);
+      } else {
+        toggleAt.setHours(19);
+      }
+
+      toggleAt.setMinutes(0);
+      toggleAt.setSeconds(0);
+      toggleAt.setMilliseconds(0)
+
+      var delay = toggleAt.getTime() - now.getTime();
+
+      // auto toggle theme mode
+      setTimeout(function() {
+        handleThemeToggle(!nightShift);
+      }, delay);
+
+      return {
+        nightShift: nightShift,
+        toggleAt: toggleAt.getTime()
+      };
+    }
+
+    // Listen the theme toggle event
+    sw.addEventListener('change', function(event) {
+      handleThemeToggle(event.target.checked);
+    });
+
+    if (nightModeOption == 'auto') {
+      var data = autoThemeToggle();
+
+      // Toggle theme by local setting
+      if (data.toggleAt > themeData.autoToggleAt) {
+        themeData.autoToggleAt = data.toggleAt;
+        handleThemeToggle(data.nightShift);
+      } else {
+        handleThemeToggle(themeData.nightShift);
+      }
+    } else if (nightModeOption == 'manual') {
+      handleThemeToggle(themeData.nightShift);
+    } else {
+      var nightShift = themeData.nightShift;
+      if (nightShift === undefined) {
+        nightShift = nightModeOption === 'on';
+      }
+      handleThemeToggle(nightShift);
+    }
+  })();
+</script>
+<main class="page-content" aria-label="Content">
+      <div class="wrapper">
+        <div class="framework">
+  <section class="main">
+
+     <div class="articles">
+  
+
+  
+<section class="featured-articles">
+  <h2 class="featured-articles__heading">まず読むなら</h2>
+  <div class="featured-articles__groups">
+
+    <div class="featured-articles__group">
+      <h3 class="featured-articles__group-title">AIエージェント開発</h3>
+      <ul class="featured-articles__list">
+        <li>
+          <a href="/jekyll-theme-yat/ai%E9%96%8B%E7%99%BA/2026/06/08/harness-engineering-guide.html">ハーネスエンジニアリングとは何か</a>
+          <p>AIエージェントを外側から制御する「ハーネス」の設計パターンをまとめた基本記事。</p>
+        </li>
+        <li>
+          <a href="/jekyll-theme-yat/ai%E9%96%8B%E7%99%BA/2026/06/07/agent-context-management-2026.html">エージェントを長く自律動作させるためのコンテキスト設計</a>
+          <p>長時間稼働するエージェントでコンテキストウィンドウをどう管理するかを整理した。</p>
+        </li>
+        <li>
+          <a href="/jekyll-theme-yat/ai%E9%96%8B%E7%99%BA/2026/06/07/multi-agent-asymmetric-handoff.html">Claude と Codex のマルチエージェント引き継ぎ問題と解消パターン</a>
+          <p>複数エージェント間でタスクを引き継ぐ際の非対称な問題と、3層に分けた解消策。</p>
+        </li>
+      </ul>
+    </div>
+
+    <div class="featured-articles__group">
+      <h3 class="featured-articles__group-title">システム設計</h3>
+      <ul class="featured-articles__list">
+        <li>
+          <a href="/jekyll-theme-yat/%E9%96%8B%E7%99%BA/2026/06/09/state-transition-diagram-guide.html">状態遷移図の書き方と使いどころ</a>
+          <p>実務で状態遷移図を書くべき場面と書き方を、具体的なケースを交えて整理した。</p>
+        </li>
+        <li>
+          <a href="/jekyll-theme-yat/%E9%96%8B%E7%99%BA/2026/06/07/openapi-guide.html">OpenAPI で API の仕様とドキュメントを同期させる</a>
+          <p>OpenAPI の基本からコード生成・Postman 連携まで、仕様とドキュメントを一元管理する方法。</p>
+        </li>
+      </ul>
+    </div>
+
+    <div class="featured-articles__group">
+      <h3 class="featured-articles__group-title">データ基盤</h3>
+      <ul class="featured-articles__list">
+        <li>
+          <a href="/jekyll-theme-yat/%E3%83%87%E3%83%BC%E3%82%BF%E3%82%A8%E3%83%B3%E3%82%B8%E3%83%8B%E3%82%A2%E3%83%AA%E3%83%B3%E3%82%B0/2026/06/05/postgresql-jsonb-guide.html">PostgreSQL JSONB 完全ガイド</a>
+          <p>JSON vs JSONB の違いから GIN インデックス・演算子まで実践的にまとめたリファレンス。</p>
+        </li>
+        <li>
+          <a href="/jekyll-theme-yat/%E9%96%8B%E7%99%BA/2026/06/06/supabase-vs-railway-comparison.html">Supabase vs Railway vs Neon バックエンド選定</a>
+          <p>AIネイティブなアプリのバックエンドを3サービスで比較した実際の調査記録（2026年版）。</p>
+        </li>
+      </ul>
+    </div>
+
+  </div>
+</section>
+
+
+
+
+
+
+  <div class="pagination">
+  <!-- Post list links -->
+  <ul class="post-list">
+<li class="post-list-item post-list-item--with-image">
+      
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<a class="post-thumbnail" href="/jekyll-theme-yat/ai%E9%96%8B%E7%99%BA/2026/07/11/ai-agent-terminal-herdr-cmux.html" aria-label="AIエージェント前提のターミナル Herdr と cmux">
+        <img src="/jekyll-theme-yat/assets/images/posts/2026-07-11-ai-agent-terminal-herdr-cmux/eyecatch.png" alt="並んだ複数の作業ブースのうち一つだけ静止し、そのブースだけに橙色の光る枠が灯って目立っているリソグラフ風のイラスト" loading="lazy" decoding="async">
+      </a><div class="post-summary">
+        <h2 class="post-title">
+          <a class="post-link" href="/jekyll-theme-yat/ai%E9%96%8B%E7%99%BA/2026/07/11/ai-agent-terminal-herdr-cmux.html">
+            AIエージェント前提のターミナル Herdr と cmux
+          </a>
+        </h2>
+        <div class="post-meta">
+          <span class="post-date"><i class="fa fa-calendar"></i> Jul 11, 2026</span>
+          <span class="post-reading-time left-vsplit"><i class="fa fa-clock-o"></i> About 12 mins</span>
+        </div>
+        <a class="post-excerpt" href="/jekyll-theme-yat/ai%E9%96%8B%E7%99%BA/2026/07/11/ai-agent-terminal-herdr-cmux.html">
+          <p>
+          Claude CodeやCodex CLIを1つのターミナルで動かすだけなら、これまでのtmuxやiTerm2で十分だった。ただ、複数のエージェントを同時に走らせて、片方が入力や承認待ちで止まっている間にもう片方の作業を見る、という運用が当たり前になると事情が変わってくる。tmuxのペイン... <span class="read_more">Read More</span>
+          </p>
+        </a>
+        <div class="post-tags">
+<a class="post-tag" href="/jekyll-theme-yat/tags.html#AI%E3%82%A8%E3%83%BC%E3%82%B8%E3%82%A7%E3%83%B3%E3%83%88">#AIエージェント</a><a class="post-tag" href="/jekyll-theme-yat/tags.html#%E3%83%9E%E3%83%AB%E3%83%81%E3%82%A8%E3%83%BC%E3%82%B8%E3%82%A7%E3%83%B3%E3%83%88">#マルチエージェント</a><a class="post-tag" href="/jekyll-theme-yat/tags.html#%E3%82%B3%E3%83%BC%E3%83%87%E3%82%A3%E3%83%B3%E3%82%B0%E3%82%A8%E3%83%BC%E3%82%B8%E3%82%A7%E3%83%B3%E3%83%88">#コーディングエージェント</a><a class="post-tag" href="/jekyll-theme-yat/tags.html#Claude%20Code">#Claude Code</a><a class="post-tag" href="/jekyll-theme-yat/tags.html#Codex">#Codex</a><a class="post-tag" href="/jekyll-theme-yat/tags.html#%E8%87%AA%E5%8B%95%E5%8C%96">#自動化</a><a class="post-tag" href="/jekyll-theme-yat/tags.html#CLI">#CLI</a><a class="post-tag" href="/jekyll-theme-yat/tags.html#OSS">#OSS</a><a class="post-tag" href="/jekyll-theme-yat/tags.html#Herdr">#Herdr</a><a class="post-tag" href="/jekyll-theme-yat/tags.html#cmux">#cmux</a>
+</div>
+      </div>
+    </li>
+<li class="post-list-item post-list-item--with-image">
+      
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<a class="post-thumbnail" href="/jekyll-theme-yat/ai%E9%96%8B%E7%99%BA/2026/06/24/gsd-core-ai-coding-workflow.html" aria-label="GSD CoreでAIコーディングを仕様駆動の工程に変える">
+        <img src="/jekyll-theme-yat/assets/images/posts/2026-06-24-gsd-core-ai-coding-workflow/eyecatch.png" alt="赤いプロジェクトフォルダが工程別の作業場をコンベヤーで進み、検証ループを通る様子を表したアイキャッチ" loading="lazy" decoding="async">
+      </a><div class="post-summary">
+        <h2 class="post-title">
+          <a class="post-link" href="/jekyll-theme-yat/ai%E9%96%8B%E7%99%BA/2026/06/24/gsd-core-ai-coding-workflow.html">
+            GSD CoreでAIコーディングを仕様駆動の工程に変える
+          </a>
+        </h2>
+        <div class="post-meta">
+          <span class="post-date"><i class="fa fa-calendar"></i> Jun 24, 2026</span>
+          <span class="post-reading-time left-vsplit"><i class="fa fa-clock-o"></i> About 19 mins</span>
+        </div>
+        <a class="post-excerpt" href="/jekyll-theme-yat/ai%E9%96%8B%E7%99%BA/2026/06/24/gsd-core-ai-coding-workflow.html">
+          <p>
+          Claude CodeやCodexに機能実装を頼むと、短い変更は驚くほど速く終わる。一方で、数時間にわたる機能開発では様子が変わる。会話の序盤で決めた要件が抜け、途中のエラー対応が本来の目的を押し流し、最後には「コードはできたが、欲しかったものとは違う」という状態になりやすい。
+
+GSD（旧... <span class="read_more">Read More</span>
+          </p>
+        </a>
+        <div class="post-tags">
+<a class="post-tag" href="/jekyll-theme-yat/tags.html#AI%E3%82%A8%E3%83%BC%E3%82%B8%E3%82%A7%E3%83%B3%E3%83%88">#AIエージェント</a><a class="post-tag" href="/jekyll-theme-yat/tags.html#%E3%82%B3%E3%83%BC%E3%83%87%E3%82%A3%E3%83%B3%E3%82%B0%E3%82%A8%E3%83%BC%E3%82%B8%E3%82%A7%E3%83%B3%E3%83%88">#コーディングエージェント</a><a class="post-tag" href="/jekyll-theme-yat/tags.html#AI%E3%83%8D%E3%82%A4%E3%83%86%E3%82%A3%E3%83%96%E9%96%8B%E7%99%BA">#AIネイティブ開発</a><a class="post-tag" href="/jekyll-theme-yat/tags.html#%E3%82%B3%E3%83%B3%E3%83%86%E3%82%AD%E3%82%B9%E3%83%88%E7%AE%A1%E7%90%86">#コンテキスト管理</a><a class="post-tag" href="/jekyll-theme-yat/tags.html#%E8%87%AA%E5%8B%95%E5%8C%96">#自動化</a><a class="post-tag" href="/jekyll-theme-yat/tags.html#OSS">#OSS</a><a class="post-tag" href="/jekyll-theme-yat/tags.html#CLI">#CLI</a>
+</div>
+      </div>
+    </li>
+<li class="post-list-item post-list-item--with-image">
+      
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<a class="post-thumbnail" href="/jekyll-theme-yat/ai%E9%96%8B%E7%99%BA/2026/06/24/ai-subscription-telehodai.html" aria-label="AIサブスクのレートリミットは令和のテレホーダイか">
+        <img src="/jekyll-theme-yat/assets/images/posts/2026-06-24-ai-subscription-telehodai/eyecatch.png" alt="時計の文字盤を囲むタスクカードと、電話機とノートPCで利用枠のリセット待ちを表したアイキャッチ" loading="lazy" decoding="async">
+      </a><div class="post-summary">
+        <h2 class="post-title">
+          <a class="post-link" href="/jekyll-theme-yat/ai%E9%96%8B%E7%99%BA/2026/06/24/ai-subscription-telehodai.html">
+            AIサブスクのレートリミットは令和のテレホーダイか
+          </a>
+        </h2>
+        <div class="post-meta">
+          <span class="post-date"><i class="fa fa-calendar"></i> Jun 24, 2026</span>
+          <span class="post-reading-time left-vsplit"><i class="fa fa-clock-o"></i> About 6 mins</span>
+        </div>
+        <a class="post-excerpt" href="/jekyll-theme-yat/ai%E9%96%8B%E7%99%BA/2026/06/24/ai-subscription-telehodai.html">
+          <p>
+          Claude CodeやCodexを日常的に使っていると、作業の区切りが利用枠のリセット時刻に左右されることがある。残量を見ながら軽いタスクへ切り替え、回復したら重い調査や実装をまとめて走らせる。月額料金を払っているのに、使う時間と順番を細かく考えている。
+
+この感覚から連想したのが... <span class="read_more">Read More</span>
+          </p>
+        </a>
+        <div class="post-tags">
+<a class="post-tag" href="/jekyll-theme-yat/tags.html#AI">#AI</a><a class="post-tag" href="/jekyll-theme-yat/tags.html#LLM">#LLM</a><a class="post-tag" href="/jekyll-theme-yat/tags.html#Claude%20Code">#Claude Code</a><a class="post-tag" href="/jekyll-theme-yat/tags.html#Codex">#Codex</a><a class="post-tag" href="/jekyll-theme-yat/tags.html#%E3%82%B3%E3%83%BC%E3%83%87%E3%82%A3%E3%83%B3%E3%82%B0%E3%82%A8%E3%83%BC%E3%82%B8%E3%82%A7%E3%83%B3%E3%83%88">#コーディングエージェント</a>
+</div>
+      </div>
+    </li>
+<li class="post-list-item post-list-item--with-image">
+      
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<a class="post-thumbnail" href="/jekyll-theme-yat/ai%E9%96%8B%E7%99%BA/2026/06/23/mcp-security-operations.html" aria-label="MCPサーバーを安全に運用する">
+        <img src="/jekyll-theme-yat/assets/images/posts/2026-06-23-mcp-security-operations/eyecatch.png" alt="作業機械へ向かう荷物が複数の検問と承認レバーを通過するミニチュア工場風イラスト" loading="lazy" decoding="async">
+      </a><div class="post-summary">
+        <h2 class="post-title">
+          <a class="post-link" href="/jekyll-theme-yat/ai%E9%96%8B%E7%99%BA/2026/06/23/mcp-security-operations.html">
+            MCPサーバーを安全に運用する
+          </a>
+        </h2>
+        <div class="post-meta">
+          <span class="post-date"><i class="fa fa-calendar"></i> Jun 23, 2026</span>
+          <span class="post-reading-time left-vsplit"><i class="fa fa-clock-o"></i> About 21 mins</span>
+        </div>
+        <a class="post-excerpt" href="/jekyll-theme-yat/ai%E9%96%8B%E7%99%BA/2026/06/23/mcp-security-operations.html">
+          <p>
+          MCPサーバーを接続すると、AIアプリケーションはファイル、データベース、GitHub、社内SaaSなどを共通の方法で操作できるようになる。便利になる一方で、モデルの出力が実際の処理へつながる経路も増える。
+
+ここで「OAuthを付ければ安全」「実行前に確認画面を出せば安全」と一つの対策だけで... <span class="read_more">Read More</span>
+          </p>
+        </a>
+        <div class="post-tags">
+<a class="post-tag" href="/jekyll-theme-yat/tags.html#MCP">#MCP</a><a class="post-tag" href="/jekyll-theme-yat/tags.html#AI%E3%82%A8%E3%83%BC%E3%82%B8%E3%82%A7%E3%83%B3%E3%83%88">#AIエージェント</a><a class="post-tag" href="/jekyll-theme-yat/tags.html#AI%E3%82%BB%E3%83%BC%E3%83%95%E3%83%86%E3%82%A3">#AIセーフティ</a><a class="post-tag" href="/jekyll-theme-yat/tags.html#API">#API</a><a class="post-tag" href="/jekyll-theme-yat/tags.html#%E8%A8%AD%E8%A8%88">#設計</a>
+</div>
+      </div>
+    </li>
+<li class="post-list-item post-list-item--with-image">
+      
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<a class="post-thumbnail" href="/jekyll-theme-yat/ai%E9%96%8B%E7%99%BA/2026/06/22/mcp-local-remote-transports.html" aria-label="ローカルMCPとリモートMCPの違い">
+        <img src="/jekyll-theme-yat/assets/images/posts/2026-06-22-mcp-local-remote-transports/eyecatch.png" alt="操作卓から机下の専用機と橋の先の共有施設へ二つの経路が分かれる紙コラージュ風イラスト" loading="lazy" decoding="async">
+      </a><div class="post-summary">
+        <h2 class="post-title">
+          <a class="post-link" href="/jekyll-theme-yat/ai%E9%96%8B%E7%99%BA/2026/06/22/mcp-local-remote-transports.html">
+            ローカルMCPとリモートMCPの違い
+          </a>
+        </h2>
+        <div class="post-meta">
+          <span class="post-date"><i class="fa fa-calendar"></i> Jun 22, 2026</span>
+          <span class="post-reading-time left-vsplit"><i class="fa fa-clock-o"></i> About 25 mins</span>
+        </div>
+        <a class="post-excerpt" href="/jekyll-theme-yat/ai%E9%96%8B%E7%99%BA/2026/06/22/mcp-local-remote-transports.html">
+          <p>
+          MCP Serverを導入するとき、「ローカルMCPかリモートMCPか」という言い方をよくする。実際の設計では、Serverをどこで動かすかと、Clientがどう接続するかを分けて考えた方がよい。
+
+MCP仕様が標準transportとして定めるのはstdioとStreamable HTTP... <span class="read_more">Read More</span>
+          </p>
+        </a>
+        <div class="post-tags">
+<a class="post-tag" href="/jekyll-theme-yat/tags.html#MCP">#MCP</a><a class="post-tag" href="/jekyll-theme-yat/tags.html#AI%E3%82%A8%E3%83%BC%E3%82%B8%E3%82%A7%E3%83%B3%E3%83%88">#AIエージェント</a><a class="post-tag" href="/jekyll-theme-yat/tags.html#API">#API</a><a class="post-tag" href="/jekyll-theme-yat/tags.html#REST">#REST</a><a class="post-tag" href="/jekyll-theme-yat/tags.html#%E8%A8%AD%E8%A8%88">#設計</a>
+</div>
+      </div>
+    </li>
+<li class="post-list-item post-list-item--with-image">
+      
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<a class="post-thumbnail" href="/jekyll-theme-yat/ai%E9%96%8B%E7%99%BA/2026/06/21/build-mcp-server-python.html" aria-label="Pythonで小さなMCPサーバーを作る">
+        <img src="/jekyll-theme-yat/assets/images/posts/2026-06-21-build-mcp-server-python/eyecatch.png" alt="小さな機械がノート棚から一覧カードとノートを取り出し書き込み口が塞がれている紙コラージュ風イラスト" loading="lazy" decoding="async">
+      </a><div class="post-summary">
+        <h2 class="post-title">
+          <a class="post-link" href="/jekyll-theme-yat/ai%E9%96%8B%E7%99%BA/2026/06/21/build-mcp-server-python.html">
+            Pythonで小さなMCPサーバーを作る
+          </a>
+        </h2>
+        <div class="post-meta">
+          <span class="post-date"><i class="fa fa-calendar"></i> Jun 21, 2026</span>
+          <span class="post-reading-time left-vsplit"><i class="fa fa-clock-o"></i> About 27 mins</span>
+        </div>
+        <a class="post-excerpt" href="/jekyll-theme-yat/ai%E9%96%8B%E7%99%BA/2026/06/21/build-mcp-server-python.html">
+          <p>
+          MCPのHost・Client・ServerやJSON-RPCの流れを理解しても、自分でServerを動かすまでは抽象的に見える部分が残る。そこで連載第5回では、ローカルのMarkdownノートを一覧・読み取りできる小さなMCP Serverを作る。
+
+公開するToolはlist_notesとread_noteの2つだ... <span class="read_more">Read More</span>
+          </p>
+        </a>
+        <div class="post-tags">
+<a class="post-tag" href="/jekyll-theme-yat/tags.html#MCP">#MCP</a><a class="post-tag" href="/jekyll-theme-yat/tags.html#Python">#Python</a><a class="post-tag" href="/jekyll-theme-yat/tags.html#AI%E3%82%A8%E3%83%BC%E3%82%B8%E3%82%A7%E3%83%B3%E3%83%88">#AIエージェント</a><a class="post-tag" href="/jekyll-theme-yat/tags.html#API">#API</a><a class="post-tag" href="/jekyll-theme-yat/tags.html#CLI">#CLI</a>
+</div>
+      </div>
+    </li>
+<li class="post-list-item post-list-item--with-image">
+      
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<a class="post-thumbnail" href="/jekyll-theme-yat/ai%E9%96%8B%E7%99%BA/2026/06/20/mcp-json-rpc-lifecycle.html" aria-label="MCPの接続と通信をJSON-RPCから理解する">
+        <img src="/jekyll-theme-yat/assets/images/posts/2026-06-20-mcp-json-rpc-lifecycle/eyecatch.png" alt="二つの装置が通行証、目録、仕事の箱を順に受け渡す紙コラージュ風イラスト" loading="lazy" decoding="async">
+      </a><div class="post-summary">
+        <h2 class="post-title">
+          <a class="post-link" href="/jekyll-theme-yat/ai%E9%96%8B%E7%99%BA/2026/06/20/mcp-json-rpc-lifecycle.html">
+            MCPの接続と通信をJSON-RPCから理解する
+          </a>
+        </h2>
+        <div class="post-meta">
+          <span class="post-date"><i class="fa fa-calendar"></i> Jun 20, 2026</span>
+          <span class="post-reading-time left-vsplit"><i class="fa fa-clock-o"></i> About 32 mins</span>
+        </div>
+        <a class="post-excerpt" href="/jekyll-theme-yat/ai%E9%96%8B%E7%99%BA/2026/06/20/mcp-json-rpc-lifecycle.html">
+          <p>
+          MCP対応アプリでToolを使うと、画面上では「モデルがToolを選び、結果を受け取った」ように見える。その裏では、ClientとServerが接続を初期化し、互いに対応機能を宣言し、Tool一覧を取得してから、引数付きの呼び出しを行っている。
+
+この流れを知らなくてもSDKでMCPサーバーは作れる。ただし、接続直後に落ちる... <span class="read_more">Read More</span>
+          </p>
+        </a>
+        <div class="post-tags">
+<a class="post-tag" href="/jekyll-theme-yat/tags.html#MCP">#MCP</a><a class="post-tag" href="/jekyll-theme-yat/tags.html#API">#API</a><a class="post-tag" href="/jekyll-theme-yat/tags.html#LLM">#LLM</a><a class="post-tag" href="/jekyll-theme-yat/tags.html#%E8%A8%AD%E8%A8%88">#設計</a>
+</div>
+      </div>
+    </li>
+<li class="post-list-item post-list-item--with-image">
+      
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<a class="post-thumbnail" href="/jekyll-theme-yat/ai%E9%96%8B%E7%99%BA/2026/06/19/mcp-tools-resources-prompts.html" aria-label="MCPのTools・Resources・Promptsを使い分ける">
+        <img src="/jekyll-theme-yat/assets/images/posts/2026-06-19-mcp-tools-resources-prompts/eyecatch.png" alt="レバー、資料箱、手順カードが工房の棚に分かれて収まるミニチュア風イラスト" loading="lazy" decoding="async">
+      </a><div class="post-summary">
+        <h2 class="post-title">
+          <a class="post-link" href="/jekyll-theme-yat/ai%E9%96%8B%E7%99%BA/2026/06/19/mcp-tools-resources-prompts.html">
+            MCPのTools・Resources・Promptsを使い分ける
+          </a>
+        </h2>
+        <div class="post-meta">
+          <span class="post-date"><i class="fa fa-calendar"></i> Jun 19, 2026</span>
+          <span class="post-reading-time left-vsplit"><i class="fa fa-clock-o"></i> About 22 mins</span>
+        </div>
+        <a class="post-excerpt" href="/jekyll-theme-yat/ai%E9%96%8B%E7%99%BA/2026/06/19/mcp-tools-resources-prompts.html">
+          <p>
+          MCPサーバーというと、LLMから外部APIを呼ぶためのToolsがまず思い浮かぶ。実際には、MCPサーバーが公開する基本機能にはTools、Resources、Promptsの3種類がある。
+
+この3つは、同じデータを返せることもある。たとえばノートを読む機能は、read_noteというToolに... <span class="read_more">Read More</span>
+          </p>
+        </a>
+        <div class="post-tags">
+<a class="post-tag" href="/jekyll-theme-yat/tags.html#MCP">#MCP</a><a class="post-tag" href="/jekyll-theme-yat/tags.html#AI%E3%82%A8%E3%83%BC%E3%82%B8%E3%82%A7%E3%83%B3%E3%83%88">#AIエージェント</a><a class="post-tag" href="/jekyll-theme-yat/tags.html#LLM">#LLM</a><a class="post-tag" href="/jekyll-theme-yat/tags.html#API">#API</a><a class="post-tag" href="/jekyll-theme-yat/tags.html#%E8%A8%AD%E8%A8%88">#設計</a>
+</div>
+      </div>
+    </li>
+<li class="post-list-item post-list-item--with-image">
+      
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<a class="post-thumbnail" href="/jekyll-theme-yat/ai%E9%96%8B%E7%99%BA/2026/06/18/mcp-host-client-server.html" aria-label="MCPのHost・Client・Serverを整理する">
+        <img src="/jekyll-theme-yat/assets/images/posts/2026-06-18-mcp-host-client-server/eyecatch.png" alt="中央の管制卓から二つの工房へ別々の経路が伸びる粘土模型風イラスト" loading="lazy" decoding="async">
+      </a><div class="post-summary">
+        <h2 class="post-title">
+          <a class="post-link" href="/jekyll-theme-yat/ai%E9%96%8B%E7%99%BA/2026/06/18/mcp-host-client-server.html">
+            MCPのHost・Client・Serverを整理する
+          </a>
+        </h2>
+        <div class="post-meta">
+          <span class="post-date"><i class="fa fa-calendar"></i> Jun 18, 2026</span>
+          <span class="post-reading-time left-vsplit"><i class="fa fa-clock-o"></i> About 20 mins</span>
+        </div>
+        <a class="post-excerpt" href="/jekyll-theme-yat/ai%E9%96%8B%E7%99%BA/2026/06/18/mcp-host-client-server.html">
+          <p>
+          MCPの構成は「ClientとServerが通信する」と説明される。それ自体は正しいが、Claude CodeやIDEのようなアプリケーションをMCP Clientと呼んでしまうと、実際の接続構造が見えにくくなる。
+
+ユーザーが操作するAIアプリケーションはMCP Hostであり、その内部... <span class="read_more">Read More</span>
+          </p>
+        </a>
+        <div class="post-tags">
+<a class="post-tag" href="/jekyll-theme-yat/tags.html#MCP">#MCP</a><a class="post-tag" href="/jekyll-theme-yat/tags.html#AI%E3%82%A8%E3%83%BC%E3%82%B8%E3%82%A7%E3%83%B3%E3%83%88">#AIエージェント</a><a class="post-tag" href="/jekyll-theme-yat/tags.html#LLM">#LLM</a><a class="post-tag" href="/jekyll-theme-yat/tags.html#API">#API</a><a class="post-tag" href="/jekyll-theme-yat/tags.html#%E8%A8%AD%E8%A8%88">#設計</a>
+</div>
+      </div>
+    </li>
+<li class="post-list-item">
+      
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="post-summary">
+        <h2 class="post-title">
+          <a class="post-link" href="/jekyll-theme-yat/ai%E9%96%8B%E7%99%BA/2026/06/18/google-workspace-studio-guide.html">
+            Google Workspace Studio の活用アイデア
+          </a>
+        </h2>
+        <div class="post-meta">
+          <span class="post-date"><i class="fa fa-calendar"></i> Jun 18, 2026</span>
+          <span class="post-reading-time left-vsplit"><i class="fa fa-clock-o"></i> About 8 mins</span>
+        </div>
+        <a class="post-excerpt" href="/jekyll-theme-yat/ai%E9%96%8B%E7%99%BA/2026/06/18/google-workspace-studio-guide.html">
+          <p>
+          会社でGoogle Workspace Studio の利用が解禁されたはいいが、「何ができるのかよくわからない」という状態になりやすいツールだと思う。Google Docs や Gmail のような既存ツールとどう違うのか、どこから手を付ければいいか、最初は見当がつきにくい。
+
+この記事... <span class="read_more">Read More</span>
+          </p>
+        </a>
+        <div class="post-tags">
+<a class="post-tag" href="/jekyll-theme-yat/tags.html#AI%E3%82%A8%E3%83%BC%E3%82%B8%E3%82%A7%E3%83%B3%E3%83%88">#AIエージェント</a><a class="post-tag" href="/jekyll-theme-yat/tags.html#%E8%87%AA%E5%8B%95%E5%8C%96">#自動化</a><a class="post-tag" href="/jekyll-theme-yat/tags.html#AI">#AI</a><a class="post-tag" href="/jekyll-theme-yat/tags.html#Gemini">#Gemini</a>
+</div>
+      </div>
+    </li>
+<li class="post-list-item">
+      
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="post-summary">
+        <h2 class="post-title">
+          <a class="post-link" href="/jekyll-theme-yat/ai%E9%96%8B%E7%99%BA/2026/06/18/claude-code-grill-me.html">
+            Claude Code の /grill-me: 実装前に設計を問い詰める
+          </a>
+        </h2>
+        <div class="post-meta">
+          <span class="post-date"><i class="fa fa-calendar"></i> Jun 18, 2026</span>
+          <span class="post-reading-time left-vsplit"><i class="fa fa-clock-o"></i> About 4 mins</span>
+        </div>
+        <a class="post-excerpt" href="/jekyll-theme-yat/ai%E9%96%8B%E7%99%BA/2026/06/18/claude-code-grill-me.html">
+          <p>
+          「grill-me」という Claude Code スキルが話題になっている。Matt Pocock が自分の .claude ディレクトリをオープンソース化したリポジトリ（mattpocock/skills）に含まれており、GitHub で 5 万以上のスターを集めた。
+
+名前だけ聞いてもどん... <span class="read_more">Read More</span>
+          </p>
+        </a>
+        <div class="post-tags">
+<a class="post-tag" href="/jekyll-theme-yat/tags.html#Claude%20Code">#Claude Code</a><a class="post-tag" href="/jekyll-theme-yat/tags.html#AI%E3%82%A8%E3%83%BC%E3%82%B8%E3%82%A7%E3%83%B3%E3%83%88">#AIエージェント</a><a class="post-tag" href="/jekyll-theme-yat/tags.html#%E3%82%B3%E3%83%BC%E3%83%87%E3%82%A3%E3%83%B3%E3%82%B0%E3%82%A8%E3%83%BC%E3%82%B8%E3%82%A7%E3%83%B3%E3%83%88">#コーディングエージェント</a><a class="post-tag" href="/jekyll-theme-yat/tags.html#AI%E3%83%8D%E3%82%A4%E3%83%86%E3%82%A3%E3%83%96%E9%96%8B%E7%99%BA">#AIネイティブ開発</a><a class="post-tag" href="/jekyll-theme-yat/tags.html#CLI">#CLI</a>
+</div>
+      </div>
+    </li>
+<li class="post-list-item post-list-item--with-image">
+      
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<a class="post-thumbnail" href="/jekyll-theme-yat/ai%E9%96%8B%E7%99%BA/2026/06/17/mcp-protocol-overview.html" aria-label="MCPは何を標準化するプロトコルなのか">
+        <img src="/jekyll-theme-yat/assets/images/posts/2026-06-17-mcp-protocol-overview/eyecatch.png" alt="形の異なる外部装置が共通の接続窓口を通じてAI作業台へつながる紙コラージュ風イラスト" loading="lazy" decoding="async">
+      </a><div class="post-summary">
+        <h2 class="post-title">
+          <a class="post-link" href="/jekyll-theme-yat/ai%E9%96%8B%E7%99%BA/2026/06/17/mcp-protocol-overview.html">
+            MCPは何を標準化するプロトコルなのか
+          </a>
+        </h2>
+        <div class="post-meta">
+          <span class="post-date"><i class="fa fa-calendar"></i> Jun 17, 2026</span>
+          <span class="post-reading-time left-vsplit"><i class="fa fa-clock-o"></i> About 18 mins</span>
+        </div>
+        <a class="post-excerpt" href="/jekyll-theme-yat/ai%E9%96%8B%E7%99%BA/2026/06/17/mcp-protocol-overview.html">
+          <p>
+          MCP（Model Context Protocol）について調べると、「AI向けのUSB」「LLMとツールをつなぐ共通規格」といった説明をよく見かける。入口としては分かりやすいが、その比喩だけでは、APIやFunction Callingと何が違うのか、MCPサーバーを入れると誰が何... <span class="read_more">Read More</span>
+          </p>
+        </a>
+        <div class="post-tags">
+<a class="post-tag" href="/jekyll-theme-yat/tags.html#MCP">#MCP</a><a class="post-tag" href="/jekyll-theme-yat/tags.html#AI%E3%82%A8%E3%83%BC%E3%82%B8%E3%82%A7%E3%83%B3%E3%83%88">#AIエージェント</a><a class="post-tag" href="/jekyll-theme-yat/tags.html#LLM">#LLM</a><a class="post-tag" href="/jekyll-theme-yat/tags.html#API">#API</a><a class="post-tag" href="/jekyll-theme-yat/tags.html#%E8%A8%AD%E8%A8%88">#設計</a>
+</div>
+      </div>
+    </li>
+<li class="post-list-item">
+      
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="post-summary">
+        <h2 class="post-title">
+          <a class="post-link" href="/jekyll-theme-yat/%E9%96%8B%E7%99%BA/2026/06/16/spacex-ipo-kardashev-scale.html">
+            SpaceXのIPOとカルダシェフ・スケール
+          </a>
+        </h2>
+        <div class="post-meta">
+          <span class="post-date"><i class="fa fa-calendar"></i> Jun 16, 2026</span>
+          <span class="post-reading-time left-vsplit"><i class="fa fa-clock-o"></i> About 8 mins</span>
+        </div>
+        <a class="post-excerpt" href="/jekyll-theme-yat/%E9%96%8B%E7%99%BA/2026/06/16/spacex-ipo-kardashev-scale.html">
+          <p>
+          2026年6月12日、SpaceXがNasdaqに上場した。ティッカーはSPCX、株価135ドルで555,555,555株を発行し、調達額は750億ドル。史上最大のIPOとなり、初値は150ドル、時価総額は2兆ドルを超えた。この上場でイーロン・マスクは世界初の「兆ドル富豪」になったと報じられてい... <span class="read_more">Read More</span>
+          </p>
+        </a>
+        <div class="post-tags">
+<a class="post-tag" href="/jekyll-theme-yat/tags.html#SpaceX">#SpaceX</a><a class="post-tag" href="/jekyll-theme-yat/tags.html#%E3%82%A4%E3%83%BC%E3%83%AD%E3%83%B3%E3%83%BB%E3%83%9E%E3%82%B9%E3%82%AF">#イーロン・マスク</a><a class="post-tag" href="/jekyll-theme-yat/tags.html#%E3%82%AB%E3%83%AB%E3%83%80%E3%82%B7%E3%82%A7%E3%83%95%E3%83%BB%E3%82%B9%E3%82%B1%E3%83%BC%E3%83%AB">#カルダシェフ・スケール</a>
+</div>
+      </div>
+    </li>
+<li class="post-list-item">
+      
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="post-summary">
+        <h2 class="post-title">
+          <a class="post-link" href="/jekyll-theme-yat/ai%E9%96%8B%E7%99%BA/2026/06/16/openai-jony-ive-ai-hardware-vision.html">
+            OpenAIはなぜ「スクリーンのない」AIデバイスを作ろうとしているのか
+          </a>
+        </h2>
+        <div class="post-meta">
+          <span class="post-date"><i class="fa fa-calendar"></i> Jun 16, 2026</span>
+          <span class="post-reading-time left-vsplit"><i class="fa fa-clock-o"></i> About 13 mins</span>
+        </div>
+        <a class="post-excerpt" href="/jekyll-theme-yat/ai%E9%96%8B%E7%99%BA/2026/06/16/openai-jony-ive-ai-hardware-vision.html">
+          <p>
+          ChatGPTはブラウザやスマートフォンのアプリとして使うのが当たり前になっている。だがOpenAIは、その先に専用のハードウェアを置こうとしている。元Appleのデザイン責任者Jony Iveを巻き込んだこの計画は、2025年の発表以来何度も報道されてきたが、ブランド名の変更や発売延期もあり、全... <span class="read_more">Read More</span>
+          </p>
+        </a>
+        <div class="post-tags">
+<a class="post-tag" href="/jekyll-theme-yat/tags.html#OpenAI">#OpenAI</a><a class="post-tag" href="/jekyll-theme-yat/tags.html#AI">#AI</a><a class="post-tag" href="/jekyll-theme-yat/tags.html#AI%E3%83%8D%E3%82%A4%E3%83%86%E3%82%A3%E3%83%96%E9%96%8B%E7%99%BA">#AIネイティブ開発</a><a class="post-tag" href="/jekyll-theme-yat/tags.html#%E3%83%8F%E3%83%BC%E3%83%89%E3%82%A6%E3%82%A7%E3%82%A2">#ハードウェア</a>
+</div>
+      </div>
+    </li>
+<li class="post-list-item post-list-item--with-image">
+      
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<a class="post-thumbnail" href="/jekyll-theme-yat/%E9%96%8B%E7%99%BA/2026/06/16/notion-database-personal-backend.html" aria-label="なぜ個人開発のバックエンドに Notion データベースを選ぶのか">
+        <img src="/jekyll-theme-yat/assets/images/posts/2026-06-16-notion-database-personal-backend/eyecatch.png" alt="アプリと人が同じデータキャビネットを操作するミニチュア" loading="lazy" decoding="async">
+      </a><div class="post-summary">
+        <h2 class="post-title">
+          <a class="post-link" href="/jekyll-theme-yat/%E9%96%8B%E7%99%BA/2026/06/16/notion-database-personal-backend.html">
+            なぜ個人開発のバックエンドに Notion データベースを選ぶのか
+          </a>
+        </h2>
+        <div class="post-meta">
+          <span class="post-date"><i class="fa fa-calendar"></i> Jun 16, 2026</span>
+          <span class="post-reading-time left-vsplit"><i class="fa fa-clock-o"></i> About 15 mins</span>
+        </div>
+        <a class="post-excerpt" href="/jekyll-theme-yat/%E9%96%8B%E7%99%BA/2026/06/16/notion-database-personal-backend.html">
+          <p>
+          AIエージェントに任せて小さなアプリを作っていると、毎回ぶつかるのが「データをどこに置くか」だ。
+
+コードはエージェントが書いてくれる。だが、永続化したデータの置き場と、その中身を後から人が見て直す手段は別に用意しないといけない。個人用途の小さなアプリほど、ここのコストが本体機能に対して重くなる。
+
+最近は... <span class="read_more">Read More</span>
+          </p>
+        </a>
+        <div class="post-tags">
+<a class="post-tag" href="/jekyll-theme-yat/tags.html#Notion">#Notion</a><a class="post-tag" href="/jekyll-theme-yat/tags.html#%E3%83%87%E3%83%BC%E3%82%BF%E3%83%99%E3%83%BC%E3%82%B9">#データベース</a><a class="post-tag" href="/jekyll-theme-yat/tags.html#%E3%83%90%E3%83%83%E3%82%AF%E3%82%A8%E3%83%B3%E3%83%89">#バックエンド</a><a class="post-tag" href="/jekyll-theme-yat/tags.html#API">#API</a><a class="post-tag" href="/jekyll-theme-yat/tags.html#AI%E3%83%8D%E3%82%A4%E3%83%86%E3%82%A3%E3%83%96%E9%96%8B%E7%99%BA">#AIネイティブ開発</a>
+</div>
+      </div>
+    </li>
+<li class="post-list-item">
+      
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="post-summary">
+        <h2 class="post-title">
+          <a class="post-link" href="/jekyll-theme-yat/ai%E9%96%8B%E7%99%BA/2026/06/16/graphai-agent-workflow-engine.html">
+            GraphAIでAIエージェントのワークフローをYAML/JSONとして宣言的に書く
+          </a>
+        </h2>
+        <div class="post-meta">
+          <span class="post-date"><i class="fa fa-calendar"></i> Jun 16, 2026</span>
+          <span class="post-reading-time left-vsplit"><i class="fa fa-clock-o"></i> About 15 mins</span>
+        </div>
+        <a class="post-excerpt" href="/jekyll-theme-yat/ai%E9%96%8B%E7%99%BA/2026/06/16/graphai-agent-workflow-engine.html">
+          <p>
+          LLMを使ったアプリケーションは、ひとつの呼び出しで完結しないことが多い。検索結果を整形してからLLMに渡す、複数のLLM呼び出しの結果を合成する、条件によって次の処理を分岐する。こうした依存関係を素直にコードで書くと、非同期処理と分岐とエラーハンドリングが絡み合い、見通しが悪くなりやすい。
+
+Grap... <span class="read_more">Read More</span>
+          </p>
+        </a>
+        <div class="post-tags">
+<a class="post-tag" href="/jekyll-theme-yat/tags.html#GraphAI">#GraphAI</a><a class="post-tag" href="/jekyll-theme-yat/tags.html#AI%E3%82%A8%E3%83%BC%E3%82%B8%E3%82%A7%E3%83%B3%E3%83%88">#AIエージェント</a><a class="post-tag" href="/jekyll-theme-yat/tags.html#%E3%83%9E%E3%83%AB%E3%83%81%E3%82%A8%E3%83%BC%E3%82%B8%E3%82%A7%E3%83%B3%E3%83%88">#マルチエージェント</a><a class="post-tag" href="/jekyll-theme-yat/tags.html#LLM">#LLM</a><a class="post-tag" href="/jekyll-theme-yat/tags.html#AI">#AI</a><a class="post-tag" href="/jekyll-theme-yat/tags.html#OSS">#OSS</a>
+</div>
+      </div>
+    </li>
+<li class="post-list-item">
+      
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="post-summary">
+        <h2 class="post-title">
+          <a class="post-link" href="/jekyll-theme-yat/ai%E9%96%8B%E7%99%BA/2026/06/13/openclaw-personal-ai-agent.html">
+            OpenClawで自分専用のAIエージェントを動かす
+          </a>
+        </h2>
+        <div class="post-meta">
+          <span class="post-date"><i class="fa fa-calendar"></i> Jun 13, 2026</span>
+          <span class="post-reading-time left-vsplit"><i class="fa fa-clock-o"></i> About 21 mins</span>
+        </div>
+        <a class="post-excerpt" href="/jekyll-theme-yat/ai%E9%96%8B%E7%99%BA/2026/06/13/openclaw-personal-ai-agent.html">
+          <p>
+          ChatGPTやClaudeに質問すると、その場で回答が返ってくる。Claude CodeやCodex CLIに依頼すると、開いているプロジェクトのファイルを読み、コードを編集してくれる。
+
+OpenClawは、そのどちらとも少し違う。自分のPCやサーバーで常時動かし、TelegramやSlac... <span class="read_more">Read More</span>
+          </p>
+        </a>
+        <div class="post-tags">
+<a class="post-tag" href="/jekyll-theme-yat/tags.html#OpenClaw">#OpenClaw</a><a class="post-tag" href="/jekyll-theme-yat/tags.html#AI%E3%82%A8%E3%83%BC%E3%82%B8%E3%82%A7%E3%83%B3%E3%83%88">#AIエージェント</a><a class="post-tag" href="/jekyll-theme-yat/tags.html#AI%E3%83%8D%E3%82%A4%E3%83%86%E3%82%A3%E3%83%96%E9%96%8B%E7%99%BA">#AIネイティブ開発</a><a class="post-tag" href="/jekyll-theme-yat/tags.html#%E8%87%AA%E5%8B%95%E5%8C%96">#自動化</a><a class="post-tag" href="/jekyll-theme-yat/tags.html#LLM">#LLM</a><a class="post-tag" href="/jekyll-theme-yat/tags.html#OSS">#OSS</a><a class="post-tag" href="/jekyll-theme-yat/tags.html#CLI">#CLI</a>
+</div>
+      </div>
+    </li>
+<li class="post-list-item">
+      
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="post-summary">
+        <h2 class="post-title">
+          <a class="post-link" href="/jekyll-theme-yat/%E9%96%8B%E7%99%BA/2026/06/13/nodejs-basics-for-vibe-coding.html">
+            バイブコーディングする人が知っておきたい Node.js 周辺の基礎知識
+          </a>
+        </h2>
+        <div class="post-meta">
+          <span class="post-date"><i class="fa fa-calendar"></i> Jun 13, 2026</span>
+          <span class="post-reading-time left-vsplit"><i class="fa fa-clock-o"></i> About 53 mins</span>
+        </div>
+        <a class="post-excerpt" href="/jekyll-theme-yat/%E9%96%8B%E7%99%BA/2026/06/13/nodejs-basics-for-vibe-coding.html">
+          <p>
+          AIエージェントを使ってWebアプリを開発していると、Node.js周辺の用語やファイルが頻繁に現れる。
+
+node -v
+npm install
+npm run dev
+npm run build
+npm run lint
+npm test
+
+
+ほかにも、package.json、node_modules、.env、Ty... <span class="read_more">Read More</span>
+          </p>
+        </a>
+        <div class="post-tags">
+<a class="post-tag" href="/jekyll-theme-yat/tags.html#AI%E3%82%A8%E3%83%BC%E3%82%B8%E3%82%A7%E3%83%B3%E3%83%88">#AIエージェント</a><a class="post-tag" href="/jekyll-theme-yat/tags.html#%E3%82%B3%E3%83%BC%E3%83%87%E3%82%A3%E3%83%B3%E3%82%B0%E3%82%A8%E3%83%BC%E3%82%B8%E3%82%A7%E3%83%B3%E3%83%88">#コーディングエージェント</a><a class="post-tag" href="/jekyll-theme-yat/tags.html#AI%E3%83%8D%E3%82%A4%E3%83%86%E3%82%A3%E3%83%96%E9%96%8B%E7%99%BA">#AIネイティブ開発</a><a class="post-tag" href="/jekyll-theme-yat/tags.html#%E9%96%8B%E7%99%BA%E7%92%B0%E5%A2%83">#開発環境</a><a class="post-tag" href="/jekyll-theme-yat/tags.html#CLI">#CLI</a>
+</div>
+      </div>
+    </li>
+<li class="post-list-item">
+      
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="post-summary">
+        <h2 class="post-title">
+          <a class="post-link" href="/jekyll-theme-yat/%E9%96%8B%E7%99%BA/2026/06/13/github-useful-features.html">
+            まだ使っていない GitHub の便利機能を整理する
+          </a>
+        </h2>
+        <div class="post-meta">
+          <span class="post-date"><i class="fa fa-calendar"></i> Jun 13, 2026</span>
+          <span class="post-reading-time left-vsplit"><i class="fa fa-clock-o"></i> About 15 mins</span>
+        </div>
+        <a class="post-excerpt" href="/jekyll-theme-yat/%E9%96%8B%E7%99%BA/2026/06/13/github-useful-features.html">
+          <p>
+          GitHub は Pull Request とブランチ管理だけでも十分使えるが、他にも実用的な機能が揃っている。知らないまま使っていないものをいくつか整理した。
+
+
+
+GitHub CLI（gh コマンド）
+
+gh は GitHub 公式の CLI ツールで、ブラウザを開かずに GitHub の操作ができる。
+
+# インス... <span class="read_more">Read More</span>
+          </p>
+        </a>
+        <div class="post-tags">
+<a class="post-tag" href="/jekyll-theme-yat/tags.html#Git">#Git</a><a class="post-tag" href="/jekyll-theme-yat/tags.html#%E8%87%AA%E5%8B%95%E5%8C%96">#自動化</a><a class="post-tag" href="/jekyll-theme-yat/tags.html#%E9%96%8B%E7%99%BA%E7%92%B0%E5%A2%83">#開発環境</a><a class="post-tag" href="/jekyll-theme-yat/tags.html#CLI">#CLI</a>
+</div>
+      </div>
+    </li>
+<li class="post-list-item">
+      
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="post-summary">
+        <h2 class="post-title">
+          <a class="post-link" href="/jekyll-theme-yat/%E9%96%8B%E7%99%BA/2026/06/13/github-secrets-guide.html">
+            GitHub Secrets で API キーを安全にワークフローへ渡す
+          </a>
+        </h2>
+        <div class="post-meta">
+          <span class="post-date"><i class="fa fa-calendar"></i> Jun 13, 2026</span>
+          <span class="post-reading-time left-vsplit"><i class="fa fa-clock-o"></i> About 10 mins</span>
+        </div>
+        <a class="post-excerpt" href="/jekyll-theme-yat/%E9%96%8B%E7%99%BA/2026/06/13/github-secrets-guide.html">
+          <p>
+          API キーやパスワードをリポジトリに直書きしてコミットしてしまった、という話は珍しくない。GitHub Secrets はこの問題に対処するための仕組みで、GitHub Actions のワークフローから安全に機密情報を参照できるようにする。
+
+
+
+Secrets とは何か
+
+GitHub Secrets は、ワ... <span class="read_more">Read More</span>
+          </p>
+        </a>
+        <div class="post-tags">
+<a class="post-tag" href="/jekyll-theme-yat/tags.html#Git">#Git</a><a class="post-tag" href="/jekyll-theme-yat/tags.html#%E8%87%AA%E5%8B%95%E5%8C%96">#自動化</a><a class="post-tag" href="/jekyll-theme-yat/tags.html#%E9%96%8B%E7%99%BA%E7%92%B0%E5%A2%83">#開発環境</a>
+</div>
+      </div>
+    </li>
+<li class="post-list-item post-list-item--with-image">
+      
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<a class="post-thumbnail" href="/jekyll-theme-yat/%E3%83%87%E3%83%BC%E3%82%BF%E3%82%A8%E3%83%B3%E3%82%B8%E3%83%8B%E3%82%A2%E3%83%AA%E3%83%B3%E3%82%B0/2026/06/12/2026-world-cup-soccer-data-revolution.html" aria-label="2026ワールドカップで見るサッカーのデータ革命">
+        <img src="/jekyll-theme-yat/assets/images/posts/2026-06-12-2026-world-cup-soccer-data-revolution/eyecatch.png" alt="紙のピッチをめくってデータで見えるオフザボールの走路を表したコラージュ" loading="lazy" decoding="async">
+      </a><div class="post-summary">
+        <h2 class="post-title">
+          <a class="post-link" href="/jekyll-theme-yat/%E3%83%87%E3%83%BC%E3%82%BF%E3%82%A8%E3%83%B3%E3%82%B8%E3%83%8B%E3%82%A2%E3%83%AA%E3%83%B3%E3%82%B0/2026/06/12/2026-world-cup-soccer-data-revolution.html">
+            2026ワールドカップで見るサッカーのデータ革命
+          </a>
+        </h2>
+        <div class="post-meta">
+          <span class="post-date"><i class="fa fa-calendar"></i> Jun 12, 2026</span>
+          <span class="post-reading-time left-vsplit"><i class="fa fa-clock-o"></i> About 6 mins</span>
+        </div>
+        <a class="post-excerpt" href="/jekyll-theme-yat/%E3%83%87%E3%83%BC%E3%82%BF%E3%82%A8%E3%83%B3%E3%82%B8%E3%83%8B%E3%82%A2%E3%83%AA%E3%83%B3%E3%82%B0/2026/06/12/2026-world-cup-soccer-data-revolution.html">
+          <p>
+          2026年6月、FIFA ワールドカップが開幕した。48チームが北米3カ国を舞台に戦うこの大会は、規模だけでなくデータ活用の点でも過去最大規模になる見込みだ。
+
+この機会に、サッカーにおけるデータ戦略の現在地を整理してみたい。野球の世界で「マネーボール」という言葉が生まれてから20年... <span class="read_more">Read More</span>
+          </p>
+        </a>
+        <div class="post-tags">
+<a class="post-tag" href="/jekyll-theme-yat/tags.html#AI">#AI</a><a class="post-tag" href="/jekyll-theme-yat/tags.html#%E3%83%87%E3%83%BC%E3%82%BF%E3%83%99%E3%83%BC%E3%82%B9">#データベース</a><a class="post-tag" href="/jekyll-theme-yat/tags.html#%E8%A8%AD%E8%A8%88">#設計</a>
+</div>
+      </div>
+    </li>
+<li class="post-list-item post-list-item--with-image">
+      
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<a class="post-thumbnail" href="/jekyll-theme-yat/ai%E9%96%8B%E7%99%BA/2026/06/11/mobile-first-ai-dev-issue-pr-workflow.html" aria-label="スマホで AI 開発を回す Issue/PR ベースワークフローの設計">
+        <img src="/jekyll-theme-yat/assets/images/posts/2026-06-11-mobile-first-ai-dev-issue-pr-workflow/eyecatch.png" alt="スマートフォンから依頼を送り生成物を承認してゲートを開く紙工作" loading="lazy" decoding="async">
+      </a><div class="post-summary">
+        <h2 class="post-title">
+          <a class="post-link" href="/jekyll-theme-yat/ai%E9%96%8B%E7%99%BA/2026/06/11/mobile-first-ai-dev-issue-pr-workflow.html">
+            スマホで AI 開発を回す Issue/PR ベースワークフローの設計
+          </a>
+        </h2>
+        <div class="post-meta">
+          <span class="post-date"><i class="fa fa-calendar"></i> Jun 11, 2026</span>
+          <span class="post-reading-time left-vsplit"><i class="fa fa-clock-o"></i> About 10 mins</span>
+        </div>
+        <a class="post-excerpt" href="/jekyll-theme-yat/ai%E9%96%8B%E7%99%BA/2026/06/11/mobile-first-ai-dev-issue-pr-workflow.html">
+          <p>
+          Claude Code や Codex を使い始めると、最初はローカル PC 上で作業させることが多い。スマホからリモートデスクトップで PC に接続し、ターミナルやエディタを遠隔操作してエージェントに指示する、という構成だ。動くことは動くが、遠回りだという感覚は残る。
+
+この記事では、その遠回りを解消... <span class="read_more">Read More</span>
+          </p>
+        </a>
+        <div class="post-tags">
+<a class="post-tag" href="/jekyll-theme-yat/tags.html#AI%E3%82%A8%E3%83%BC%E3%82%B8%E3%82%A7%E3%83%B3%E3%83%88">#AIエージェント</a><a class="post-tag" href="/jekyll-theme-yat/tags.html#%E3%82%B3%E3%83%BC%E3%83%87%E3%82%A3%E3%83%B3%E3%82%B0%E3%82%A8%E3%83%BC%E3%82%B8%E3%82%A7%E3%83%B3%E3%83%88">#コーディングエージェント</a><a class="post-tag" href="/jekyll-theme-yat/tags.html#Claude%20Code">#Claude Code</a><a class="post-tag" href="/jekyll-theme-yat/tags.html#Codex">#Codex</a><a class="post-tag" href="/jekyll-theme-yat/tags.html#GitHub%20Pages">#GitHub Pages</a><a class="post-tag" href="/jekyll-theme-yat/tags.html#GitHub%20Actions">#GitHub Actions</a><a class="post-tag" href="/jekyll-theme-yat/tags.html#%E8%87%AA%E5%8B%95%E5%8C%96">#自動化</a>
+</div>
+      </div>
+    </li>
+<li class="post-list-item">
+      
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="post-summary">
+        <h2 class="post-title">
+          <a class="post-link" href="/jekyll-theme-yat/ai%E9%96%8B%E7%99%BA/2026/06/11/goose-agent-pyramid-hierarchy.html">
+            GooseとAI開発が解体するピラミッド型組織
+          </a>
+        </h2>
+        <div class="post-meta">
+          <span class="post-date"><i class="fa fa-calendar"></i> Jun 11, 2026</span>
+          <span class="post-reading-time left-vsplit"><i class="fa fa-clock-o"></i> About 10 mins</span>
+        </div>
+        <a class="post-excerpt" href="/jekyll-theme-yat/ai%E9%96%8B%E7%99%BA/2026/06/11/goose-agent-pyramid-hierarchy.html">
+          <p>
+          「チームの規模を維持したまま、出力だけを増やす」という発想が崩れ始めている。AIエージェントが実装・テスト・レビューの一部を担えるなら、従来の開発チームのピラミッド構造はその前提ごと見直しを迫られる。
+
+Gooseはそういう変化の文脈で登場したツールの一つだ。
+
+
+
+Gooseとは何か
+
+Go... <span class="read_more">Read More</span>
+          </p>
+        </a>
+        <div class="post-tags">
+<a class="post-tag" href="/jekyll-theme-yat/tags.html#AI%E3%82%A8%E3%83%BC%E3%82%B8%E3%82%A7%E3%83%B3%E3%83%88">#AIエージェント</a><a class="post-tag" href="/jekyll-theme-yat/tags.html#Goose">#Goose</a><a class="post-tag" href="/jekyll-theme-yat/tags.html#OSS">#OSS</a><a class="post-tag" href="/jekyll-theme-yat/tags.html#CLI">#CLI</a><a class="post-tag" href="/jekyll-theme-yat/tags.html#LLM">#LLM</a><a class="post-tag" href="/jekyll-theme-yat/tags.html#%E3%82%B3%E3%83%BC%E3%83%87%E3%82%A3%E3%83%B3%E3%82%B0%E3%82%A8%E3%83%BC%E3%82%B8%E3%82%A7%E3%83%B3%E3%83%88">#コーディングエージェント</a><a class="post-tag" href="/jekyll-theme-yat/tags.html#AI%E3%83%8D%E3%82%A4%E3%83%86%E3%82%A3%E3%83%96%E9%96%8B%E7%99%BA">#AIネイティブ開発</a>
+</div>
+      </div>
+    </li>
+<li class="post-list-item">
+      
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="post-summary">
+        <h2 class="post-title">
+          <a class="post-link" href="/jekyll-theme-yat/%E9%96%8B%E7%99%BA/2026/06/11/git-flow-guide.html">
+            チーム開発のブランチ戦略と Git Flow の使いどころ
+          </a>
+        </h2>
+        <div class="post-meta">
+          <span class="post-date"><i class="fa fa-calendar"></i> Jun 11, 2026</span>
+          <span class="post-reading-time left-vsplit"><i class="fa fa-clock-o"></i> About 11 mins</span>
+        </div>
+        <a class="post-excerpt" href="/jekyll-theme-yat/%E9%96%8B%E7%99%BA/2026/06/11/git-flow-guide.html">
+          <p>
+          Git を使い始めると早い段階でぶつかるのが「ブランチをどう管理するか」という問題だ。一人で作業しているうちはメインブランチだけで済んでいたものが、複数人で開発するようになった途端に「誰の変更がどこにあるか」「本番に出していいコードはどれか」が不明確になる。
+
+Git Flow はそのブランチ管理を整理するための設... <span class="read_more">Read More</span>
+          </p>
+        </a>
+        <div class="post-tags">
+<a class="post-tag" href="/jekyll-theme-yat/tags.html#Git">#Git</a><a class="post-tag" href="/jekyll-theme-yat/tags.html#%E9%96%8B%E7%99%BA%E7%92%B0%E5%A2%83">#開発環境</a><a class="post-tag" href="/jekyll-theme-yat/tags.html#CLI">#CLI</a>
+</div>
+      </div>
+    </li>
+<li class="post-list-item">
+      
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="post-summary">
+        <h2 class="post-title">
+          <a class="post-link" href="/jekyll-theme-yat/%E9%96%8B%E7%99%BA/2026/06/11/fde-role-business-model.html">
+            Forward Deployed Engineer のロールとビジネスモデル
+          </a>
+        </h2>
+        <div class="post-meta">
+          <span class="post-date"><i class="fa fa-calendar"></i> Jun 11, 2026</span>
+          <span class="post-reading-time left-vsplit"><i class="fa fa-clock-o"></i> About 9 mins</span>
+        </div>
+        <a class="post-excerpt" href="/jekyll-theme-yat/%E9%96%8B%E7%99%BA/2026/06/11/fde-role-business-model.html">
+          <p>
+          B2B SaaS の現場で「FDE」という役職名を見かけることが増えてきた。Forward Deployed Engineer の略で、Palantir が広めたロールだ。日本語で直訳すれば「前線配備エンジニア」だが、そのままではピンとこない。この記事では FDE が何者なのか、どういうビジネスモ... <span class="read_more">Read More</span>
+          </p>
+        </a>
+        <div class="post-tags">
+<a class="post-tag" href="/jekyll-theme-yat/tags.html#%E8%A8%AD%E8%A8%88">#設計</a><a class="post-tag" href="/jekyll-theme-yat/tags.html#%E3%83%90%E3%83%83%E3%82%AF%E3%82%A8%E3%83%B3%E3%83%89">#バックエンド</a><a class="post-tag" href="/jekyll-theme-yat/tags.html#%E9%96%8B%E7%99%BA%E7%92%B0%E5%A2%83">#開発環境</a>
+</div>
+      </div>
+    </li>
+<li class="post-list-item">
+      
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="post-summary">
+        <h2 class="post-title">
+          <a class="post-link" href="/jekyll-theme-yat/%E3%82%A4%E3%83%B3%E3%83%95%E3%83%A9/2026/06/10/tailscale-guide.html">
+            Tailscaleの仕組みと使いどころ
+          </a>
+        </h2>
+        <div class="post-meta">
+          <span class="post-date"><i class="fa fa-calendar"></i> Jun 10, 2026</span>
+          <span class="post-reading-time left-vsplit"><i class="fa fa-clock-o"></i> About 7 mins</span>
+        </div>
+        <a class="post-excerpt" href="/jekyll-theme-yat/%E3%82%A4%E3%83%B3%E3%83%95%E3%83%A9/2026/06/10/tailscale-guide.html">
+          <p>
+          自宅のサーバーに外から繋ぎたい。旅先から開発環境にSSHしたい。チームメンバーに開発サーバーを見せたいが、インターネットに晒したくない。
+
+こういう要求に対して、従来の答えは「VPNサーバーを立てる」か「ポートを開ける」かだった。前者は設定が複雑で、後者は攻撃面が増える。
+
+Tailscaleは、この... <span class="read_more">Read More</span>
+          </p>
+        </a>
+        <div class="post-tags">
+<a class="post-tag" href="/jekyll-theme-yat/tags.html#Tailscale">#Tailscale</a><a class="post-tag" href="/jekyll-theme-yat/tags.html#%E9%96%8B%E7%99%BA%E7%92%B0%E5%A2%83">#開発環境</a><a class="post-tag" href="/jekyll-theme-yat/tags.html#%E3%83%9B%E3%82%B9%E3%83%86%E3%82%A3%E3%83%B3%E3%82%B0">#ホスティング</a><a class="post-tag" href="/jekyll-theme-yat/tags.html#CLI">#CLI</a>
+</div>
+      </div>
+    </li>
+<li class="post-list-item">
+      
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="post-summary">
+        <h2 class="post-title">
+          <a class="post-link" href="/jekyll-theme-yat/ai%E9%96%8B%E7%99%BA/2026/06/10/solo-dev-multi-agent-setup.html">
+            1人開発でマルチエージェント体制を作る方法
+          </a>
+        </h2>
+        <div class="post-meta">
+          <span class="post-date"><i class="fa fa-calendar"></i> Jun 10, 2026</span>
+          <span class="post-reading-time left-vsplit"><i class="fa fa-clock-o"></i> About 13 mins</span>
+        </div>
+        <a class="post-excerpt" href="/jekyll-theme-yat/ai%E9%96%8B%E7%99%BA/2026/06/10/solo-dev-multi-agent-setup.html">
+          <p>
+          「マルチエージェント」という言葉を聞くと、大人数のチームが巨大なシステムを動かしているイメージが先行する。しかし1人開発でも、エージェントを複数動かす設計は成立する。むしろ1人だからこそ、役割分担を明確にして自分の判断コストを下げる意義がある。
+
+この記事では、1人開発でマルチエージェント体制を組む際の設... <span class="read_more">Read More</span>
+          </p>
+        </a>
+        <div class="post-tags">
+<a class="post-tag" href="/jekyll-theme-yat/tags.html#%E3%83%9E%E3%83%AB%E3%83%81%E3%82%A8%E3%83%BC%E3%82%B8%E3%82%A7%E3%83%B3%E3%83%88">#マルチエージェント</a><a class="post-tag" href="/jekyll-theme-yat/tags.html#Claude%20Code">#Claude Code</a><a class="post-tag" href="/jekyll-theme-yat/tags.html#Codex">#Codex</a><a class="post-tag" href="/jekyll-theme-yat/tags.html#agmsg">#agmsg</a><a class="post-tag" href="/jekyll-theme-yat/tags.html#AI%E3%83%8D%E3%82%A4%E3%83%86%E3%82%A3%E3%83%96%E9%96%8B%E7%99%BA">#AIネイティブ開発</a><a class="post-tag" href="/jekyll-theme-yat/tags.html#%E3%82%B3%E3%83%BC%E3%83%87%E3%82%A3%E3%83%B3%E3%82%B0%E3%82%A8%E3%83%BC%E3%82%B8%E3%82%A7%E3%83%B3%E3%83%88">#コーディングエージェント</a><a class="post-tag" href="/jekyll-theme-yat/tags.html#%E8%87%AA%E5%8B%95%E5%8C%96">#自動化</a>
+</div>
+      </div>
+    </li>
+<li class="post-list-item post-list-item--with-image">
+      
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<a class="post-thumbnail" href="/jekyll-theme-yat/%E9%96%8B%E7%99%BA/2026/06/10/git-submodule-subtree.html" aria-label="Git submodule と Git subtree の違いと使い分け">
+        <img src="/jekyll-theme-yat/assets/images/posts/2026-06-10-git-submodule-subtree/eyecatch.png" alt="外部の箱につながる参照と親の箱へ展開された内容を対比する紙工作" loading="lazy" decoding="async">
+      </a><div class="post-summary">
+        <h2 class="post-title">
+          <a class="post-link" href="/jekyll-theme-yat/%E9%96%8B%E7%99%BA/2026/06/10/git-submodule-subtree.html">
+            Git submodule と Git subtree の違いと使い分け
+          </a>
+        </h2>
+        <div class="post-meta">
+          <span class="post-date"><i class="fa fa-calendar"></i> Jun 10, 2026</span>
+          <span class="post-reading-time left-vsplit"><i class="fa fa-clock-o"></i> About 9 mins</span>
+        </div>
+        <a class="post-excerpt" href="/jekyll-theme-yat/%E9%96%8B%E7%99%BA/2026/06/10/git-submodule-subtree.html">
+          <p>
+          外部のリポジトリを自分のプロジェクトに組み込みたいとき、Git には submodule と subtree という2つのアプローチがある。どちらも「外部リポジトリを取り込む」ことはできるが、仕組みも運用上の扱いも大きく異なる。
+
+この記事では、それぞれの仕組みを整理し、どういう状況でどちらを選ぶかを考える... <span class="read_more">Read More</span>
+          </p>
+        </a>
+        <div class="post-tags">
+<a class="post-tag" href="/jekyll-theme-yat/tags.html#Git">#Git</a><a class="post-tag" href="/jekyll-theme-yat/tags.html#%E9%96%8B%E7%99%BA%E7%92%B0%E5%A2%83">#開発環境</a><a class="post-tag" href="/jekyll-theme-yat/tags.html#CLI">#CLI</a>
+</div>
+      </div>
+    </li>
+<li class="post-list-item">
+      
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="post-summary">
+        <h2 class="post-title">
+          <a class="post-link" href="/jekyll-theme-yat/ai%E9%96%8B%E7%99%BA/2026/06/10/claude-mythos-fable.html">
+            Claude Mythos（Fable）とは何か
+          </a>
+        </h2>
+        <div class="post-meta">
+          <span class="post-date"><i class="fa fa-calendar"></i> Jun 10, 2026</span>
+          <span class="post-reading-time left-vsplit"><i class="fa fa-clock-o"></i> About 7 mins</span>
+        </div>
+        <a class="post-excerpt" href="/jekyll-theme-yat/ai%E9%96%8B%E7%99%BA/2026/06/10/claude-mythos-fable.html">
+          <p>
+          2026年6月9日、Anthropic は Claude Fable 5 を一般公開した。同時に、安全対策を一部解除した Claude Mythos 5 も招待制で提供を開始している。「Mythos」というモデルの名前を初めて聞いた人も多いだろう。この記事では、Mythos と Fable の関係、性... <span class="read_more">Read More</span>
+          </p>
+        </a>
+        <div class="post-tags">
+<a class="post-tag" href="/jekyll-theme-yat/tags.html#Claude">#Claude</a><a class="post-tag" href="/jekyll-theme-yat/tags.html#LLM">#LLM</a><a class="post-tag" href="/jekyll-theme-yat/tags.html#AI%E3%82%BB%E3%83%BC%E3%83%95%E3%83%86%E3%82%A3">#AIセーフティ</a>
+</div>
+      </div>
+    </li>
+<li class="post-list-item">
+      
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="post-summary">
+        <h2 class="post-title">
+          <a class="post-link" href="/jekyll-theme-yat/ai%E9%96%8B%E7%99%BA/2026/06/10/claude-code-skills-guide.html">
+            Claude Code のスキルを今から使いはじめる
+          </a>
+        </h2>
+        <div class="post-meta">
+          <span class="post-date"><i class="fa fa-calendar"></i> Jun 10, 2026</span>
+          <span class="post-reading-time left-vsplit"><i class="fa fa-clock-o"></i> About 11 mins</span>
+        </div>
+        <a class="post-excerpt" href="/jekyll-theme-yat/ai%E9%96%8B%E7%99%BA/2026/06/10/claude-code-skills-guide.html">
+          <p>
+          Claude Code にはスキル（Skills）という機能がある。スラッシュコマンドで呼び出すと、その用途に特化したサブエージェントが起動して作業を代行する仕組みだ。
+
+使っていない人がいても不思議ではない。Claude Code の画面には特に案内が出るわけでなく、/を入力して気づくか、ドキュメントを読んで知... <span class="read_more">Read More</span>
+          </p>
+        </a>
+        <div class="post-tags">
+<a class="post-tag" href="/jekyll-theme-yat/tags.html#Claude%20Code">#Claude Code</a><a class="post-tag" href="/jekyll-theme-yat/tags.html#AI%E3%82%A8%E3%83%BC%E3%82%B8%E3%82%A7%E3%83%B3%E3%83%88">#AIエージェント</a><a class="post-tag" href="/jekyll-theme-yat/tags.html#%E3%82%B3%E3%83%BC%E3%83%87%E3%82%A3%E3%83%B3%E3%82%B0%E3%82%A8%E3%83%BC%E3%82%B8%E3%82%A7%E3%83%B3%E3%83%88">#コーディングエージェント</a><a class="post-tag" href="/jekyll-theme-yat/tags.html#AI%E3%83%8D%E3%82%A4%E3%83%86%E3%82%A3%E3%83%96%E9%96%8B%E7%99%BA">#AIネイティブ開発</a><a class="post-tag" href="/jekyll-theme-yat/tags.html#%E8%87%AA%E5%8B%95%E5%8C%96">#自動化</a><a class="post-tag" href="/jekyll-theme-yat/tags.html#CLI">#CLI</a>
+</div>
+      </div>
+    </li>
+<li class="post-list-item post-list-item--with-image">
+      
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<a class="post-thumbnail" href="/jekyll-theme-yat/%E9%96%8B%E7%99%BA/2026/06/09/state-transition-diagram-guide.html" aria-label="状態遷移図の書き方と使いどころ">
+        <img src="/jekyll-theme-yat/assets/images/posts/2026-06-09-state-transition-diagram-guide/eyecatch.png" alt="複数の状態を結ぶ経路と途切れた遷移を紙で表現した図" loading="lazy" decoding="async">
+      </a><div class="post-summary">
+        <h2 class="post-title">
+          <a class="post-link" href="/jekyll-theme-yat/%E9%96%8B%E7%99%BA/2026/06/09/state-transition-diagram-guide.html">
+            状態遷移図の書き方と使いどころ
+          </a>
+        </h2>
+        <div class="post-meta">
+          <span class="post-date"><i class="fa fa-calendar"></i> Jun 09, 2026</span>
+          <span class="post-reading-time left-vsplit"><i class="fa fa-clock-o"></i> About 7 mins</span>
+        </div>
+        <a class="post-excerpt" href="/jekyll-theme-yat/%E9%96%8B%E7%99%BA/2026/06/09/state-transition-diagram-guide.html">
+          <p>
+          設計ドキュメントのなかで、状態遷移図はわりと判断が難しい部類だ。「書いた方がいいのはわかるけど、いつ書くのか」という感覚はあっても、実際に書くきっかけをうまくつかめないことがある。
+
+書くべき場面と、書かなくていい場面を整理しておく。
+
+
+
+状態遷移図とは
+
+システムやオブジェクトが取りうる「状... <span class="read_more">Read More</span>
+          </p>
+        </a>
+        <div class="post-tags">
+<a class="post-tag" href="/jekyll-theme-yat/tags.html#%E3%83%89%E3%82%AD%E3%83%A5%E3%83%A1%E3%83%B3%E3%83%88">#ドキュメント</a><a class="post-tag" href="/jekyll-theme-yat/tags.html#AI%E3%82%A8%E3%83%BC%E3%82%B8%E3%82%A7%E3%83%B3%E3%83%88">#AIエージェント</a><a class="post-tag" href="/jekyll-theme-yat/tags.html#%E8%A8%AD%E8%A8%88">#設計</a>
+</div>
+      </div>
+    </li>
+<li class="post-list-item post-list-item--with-image">
+      
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<a class="post-thumbnail" href="/jekyll-theme-yat/ai%E9%96%8B%E7%99%BA/2026/06/09/rlhf-model-training.html" aria-label="RLHFがモデルの返答をどう変えるか">
+        <img src="/jekyll-theme-yat/assets/images/posts/2026-06-09-rlhf-model-training/eyecatch.png" alt="人の選択が返答カードの進路を変えるリソグラフ" loading="lazy" decoding="async">
+      </a><div class="post-summary">
+        <h2 class="post-title">
+          <a class="post-link" href="/jekyll-theme-yat/ai%E9%96%8B%E7%99%BA/2026/06/09/rlhf-model-training.html">
+            RLHFがモデルの返答をどう変えるか
+          </a>
+        </h2>
+        <div class="post-meta">
+          <span class="post-date"><i class="fa fa-calendar"></i> Jun 09, 2026</span>
+          <span class="post-reading-time left-vsplit"><i class="fa fa-clock-o"></i> About 6 mins</span>
+        </div>
+        <a class="post-excerpt" href="/jekyll-theme-yat/ai%E9%96%8B%E7%99%BA/2026/06/09/rlhf-model-training.html">
+          <p>
+          最近のAIはずいぶん話しやすくなった。丁寧に答えるし、危ない話題は断るし、無茶な要求も穏やかにかわす。こうした特徴は「最初からそういうモデルを作った」のではなく、学習プロセスで後から付け加えられたものだ。
+
+その仕組みの中心にあるのが RLHF（Reinforcement Learni... <span class="read_more">Read More</span>
+          </p>
+        </a>
+        <div class="post-tags">
+<a class="post-tag" href="/jekyll-theme-yat/tags.html#LLM">#LLM</a><a class="post-tag" href="/jekyll-theme-yat/tags.html#AI%E3%82%BB%E3%83%BC%E3%83%95%E3%83%86%E3%82%A3">#AIセーフティ</a><a class="post-tag" href="/jekyll-theme-yat/tags.html#%E3%82%A2%E3%83%A9%E3%82%A4%E3%83%A1%E3%83%B3%E3%83%88">#アライメント</a>
+</div>
+      </div>
+    </li>
+<li class="post-list-item">
+      
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="post-summary">
+        <h2 class="post-title">
+          <a class="post-link" href="/jekyll-theme-yat/ai%E9%96%8B%E7%99%BA/2026/06/09/claude-code-android-patterns.html">
+            Android から Claude Code を使うパターンと選び方
+          </a>
+        </h2>
+        <div class="post-meta">
+          <span class="post-date"><i class="fa fa-calendar"></i> Jun 09, 2026</span>
+          <span class="post-reading-time left-vsplit"><i class="fa fa-clock-o"></i> About 8 mins</span>
+        </div>
+        <a class="post-excerpt" href="/jekyll-theme-yat/ai%E9%96%8B%E7%99%BA/2026/06/09/claude-code-android-patterns.html">
+          <p>
+          メインのスマホが Galaxy Z Fold 7 になってから、移動中や自宅のソファでコードのレビューや軽い修正をスマホだけでこなせるかどうかを試してきた。
+
+AI コーディングが広まるにつれて、「エージェントに作業を投げておき、スマホで進捗確認・指示出し・レビューをする」という使い方が現実的になってきている。Cl... <span class="read_more">Read More</span>
+          </p>
+        </a>
+        <div class="post-tags">
+<a class="post-tag" href="/jekyll-theme-yat/tags.html#Claude%20Code">#Claude Code</a><a class="post-tag" href="/jekyll-theme-yat/tags.html#%E3%82%B3%E3%83%BC%E3%83%87%E3%82%A3%E3%83%B3%E3%82%B0%E3%82%A8%E3%83%BC%E3%82%B8%E3%82%A7%E3%83%B3%E3%83%88">#コーディングエージェント</a><a class="post-tag" href="/jekyll-theme-yat/tags.html#%E9%96%8B%E7%99%BA%E7%92%B0%E5%A2%83">#開発環境</a>
+</div>
+      </div>
+    </li>
+<li class="post-list-item">
+      
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="post-summary">
+        <h2 class="post-title">
+          <a class="post-link" href="/jekyll-theme-yat/ai%E9%96%8B%E7%99%BA/2026/06/09/beast-mode-ai-tools.html">
+            「Beast モード」でAIはどこまで変わるか
+          </a>
+        </h2>
+        <div class="post-meta">
+          <span class="post-date"><i class="fa fa-calendar"></i> Jun 09, 2026</span>
+          <span class="post-reading-time left-vsplit"><i class="fa fa-clock-o"></i> About 6 mins</span>
+        </div>
+        <a class="post-excerpt" href="/jekyll-theme-yat/ai%E9%96%8B%E7%99%BA/2026/06/09/beast-mode-ai-tools.html">
+          <p>
+          「Beast モードで試してみたら全然違った」という話を見かけることがある。何かが劇的に改善した、というニュアンスで使われているが、実体を調べると「モデルを強化する機能」ではなく「エージェントの行動を変えるプロンプト」だとわかる。
+
+
+
+Beast Mode の実体
+
+Beast Mode は、GitHub... <span class="read_more">Read More</span>
+          </p>
+        </a>
+        <div class="post-tags">
+<a class="post-tag" href="/jekyll-theme-yat/tags.html#Claude">#Claude</a><a class="post-tag" href="/jekyll-theme-yat/tags.html#Claude%20Code">#Claude Code</a><a class="post-tag" href="/jekyll-theme-yat/tags.html#LLM">#LLM</a><a class="post-tag" href="/jekyll-theme-yat/tags.html#AI%E3%82%A8%E3%83%BC%E3%82%B8%E3%82%A7%E3%83%B3%E3%83%88">#AIエージェント</a><a class="post-tag" href="/jekyll-theme-yat/tags.html#%E3%82%B3%E3%83%BC%E3%83%87%E3%82%A3%E3%83%B3%E3%82%B0%E3%82%A8%E3%83%BC%E3%82%B8%E3%82%A7%E3%83%B3%E3%83%88">#コーディングエージェント</a><a class="post-tag" href="/jekyll-theme-yat/tags.html#GitHub%20Copilot">#GitHub Copilot</a>
+</div>
+      </div>
+    </li>
+<li class="post-list-item">
+      
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="post-summary">
+        <h2 class="post-title">
+          <a class="post-link" href="/jekyll-theme-yat/ai%E9%96%8B%E7%99%BA/2026/06/08/opencode-guide.html">
+            LLM を選べる OSS コーディングエージェント opencode
+          </a>
+        </h2>
+        <div class="post-meta">
+          <span class="post-date"><i class="fa fa-calendar"></i> Jun 08, 2026</span>
+          <span class="post-reading-time left-vsplit"><i class="fa fa-clock-o"></i> About 14 mins</span>
+        </div>
+        <a class="post-excerpt" href="/jekyll-theme-yat/ai%E9%96%8B%E7%99%BA/2026/06/08/opencode-guide.html">
+          <p>
+          ターミナルで AI にコードを書かせるツールが増えている。
+GitHub Copilot、Cursor、Claude Code、Aider……どれも「ターミナル or エディタから LLM を呼んでコードを編集する」という思想は同じだが、細部の設計がまったく異なる。
+
+opencode は、Anomaly チ... <span class="read_more">Read More</span>
+          </p>
+        </a>
+        <div class="post-tags">
+<a class="post-tag" href="/jekyll-theme-yat/tags.html#opencode">#opencode</a><a class="post-tag" href="/jekyll-theme-yat/tags.html#AI">#AI</a><a class="post-tag" href="/jekyll-theme-yat/tags.html#%E3%82%B3%E3%83%BC%E3%83%87%E3%82%A3%E3%83%B3%E3%82%B0%E3%82%A8%E3%83%BC%E3%82%B8%E3%82%A7%E3%83%B3%E3%83%88">#コーディングエージェント</a><a class="post-tag" href="/jekyll-theme-yat/tags.html#CLI">#CLI</a><a class="post-tag" href="/jekyll-theme-yat/tags.html#OSS">#OSS</a><a class="post-tag" href="/jekyll-theme-yat/tags.html#Claude">#Claude</a><a class="post-tag" href="/jekyll-theme-yat/tags.html#LLM">#LLM</a>
+</div>
+      </div>
+    </li>
+<li class="post-list-item">
+      
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="post-summary">
+        <h2 class="post-title">
+          <a class="post-link" href="/jekyll-theme-yat/ai%E9%96%8B%E7%99%BA/2026/06/08/harness-engineering-guide.html">
+            ハーネスエンジニアリングとは何か
+          </a>
+        </h2>
+        <div class="post-meta">
+          <span class="post-date"><i class="fa fa-calendar"></i> Jun 08, 2026</span>
+          <span class="post-reading-time left-vsplit"><i class="fa fa-clock-o"></i> About 39 mins</span>
+        </div>
+        <a class="post-excerpt" href="/jekyll-theme-yat/ai%E9%96%8B%E7%99%BA/2026/06/08/harness-engineering-guide.html">
+          <p>
+          AIエージェントを実際の開発に使い込んでいくと、ある転換点に気づく。
+
+問題は、モデルが賢くないことではない。モデルを「どう使わせるか」の設計が追いついていないことだ。
+
+
+  エージェントが意図していない操作をファイルに加える
+  ループして同じ失敗を繰り返す
+  テストを消して「成功」とみなす
+  承認なしに外部サービ... <span class="read_more">Read More</span>
+          </p>
+        </a>
+        <div class="post-tags">
+<a class="post-tag" href="/jekyll-theme-yat/tags.html#%E3%83%8F%E3%83%BC%E3%83%8D%E3%82%B9%E3%82%A8%E3%83%B3%E3%82%B8%E3%83%8B%E3%82%A2%E3%83%AA%E3%83%B3%E3%82%B0">#ハーネスエンジニアリング</a><a class="post-tag" href="/jekyll-theme-yat/tags.html#AI%E3%82%A8%E3%83%BC%E3%82%B8%E3%82%A7%E3%83%B3%E3%83%88">#AIエージェント</a><a class="post-tag" href="/jekyll-theme-yat/tags.html#Claude%20Code">#Claude Code</a><a class="post-tag" href="/jekyll-theme-yat/tags.html#Ralph%20Loop">#Ralph Loop</a><a class="post-tag" href="/jekyll-theme-yat/tags.html#%E8%87%AA%E5%8B%95%E5%8C%96">#自動化</a><a class="post-tag" href="/jekyll-theme-yat/tags.html#AI%E9%96%8B%E7%99%BA">#AI開発</a>
+</div>
+      </div>
+    </li>
+<li class="post-list-item">
+      
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="post-summary">
+        <h2 class="post-title">
+          <a class="post-link" href="/jekyll-theme-yat/ai%E9%96%8B%E7%99%BA/2026/06/08/claude-code-thinking-words.html">
+            Claude Code が「考え中」に表示する英単語を全部調べた
+          </a>
+        </h2>
+        <div class="post-meta">
+          <span class="post-date"><i class="fa fa-calendar"></i> Jun 08, 2026</span>
+          <span class="post-reading-time left-vsplit"><i class="fa fa-clock-o"></i> About 13 mins</span>
+        </div>
+        <a class="post-excerpt" href="/jekyll-theme-yat/ai%E9%96%8B%E7%99%BA/2026/06/08/claude-code-thinking-words.html">
+          <p>
+          Claude Code を使っていると、処理中に Cogitating... や Noodling... といった言葉がくるくると表示される。英語ネイティブでも見慣れない語彙が混じっていて、初見では意味がつかみにくい。
+
+「公式ドキュメントに一覧があるのでは」と思って探したが、見当たらなかっ... <span class="read_more">Read More</span>
+          </p>
+        </a>
+        <div class="post-tags">
+<a class="post-tag" href="/jekyll-theme-yat/tags.html#Claude%20Code">#Claude Code</a><a class="post-tag" href="/jekyll-theme-yat/tags.html#Claude">#Claude</a><a class="post-tag" href="/jekyll-theme-yat/tags.html#%E3%82%B3%E3%83%BC%E3%83%87%E3%82%A3%E3%83%B3%E3%82%B0%E3%82%A8%E3%83%BC%E3%82%B8%E3%82%A7%E3%83%B3%E3%83%88">#コーディングエージェント</a><a class="post-tag" href="/jekyll-theme-yat/tags.html#CLI">#CLI</a>
+</div>
+      </div>
+    </li>
+<li class="post-list-item post-list-item--with-image">
+      
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<a class="post-thumbnail" href="/jekyll-theme-yat/ai%E9%96%8B%E7%99%BA/2026/06/08/agent-reward-hacking-alignment.html" aria-label="エージェントが「ルールの穴」を突く">
+        <img src="/jekyll-theme-yat/assets/images/posts/2026-06-08-agent-reward-hacking-alignment/eyecatch.png" alt="未完成の橋を迂回して報酬へ向かうエージェントを監査灯が照らすイラスト" loading="lazy" decoding="async">
+      </a><div class="post-summary">
+        <h2 class="post-title">
+          <a class="post-link" href="/jekyll-theme-yat/ai%E9%96%8B%E7%99%BA/2026/06/08/agent-reward-hacking-alignment.html">
+            エージェントが「ルールの穴」を突く
+          </a>
+        </h2>
+        <div class="post-meta">
+          <span class="post-date"><i class="fa fa-calendar"></i> Jun 08, 2026</span>
+          <span class="post-reading-time left-vsplit"><i class="fa fa-clock-o"></i> About 24 mins</span>
+        </div>
+        <a class="post-excerpt" href="/jekyll-theme-yat/ai%E9%96%8B%E7%99%BA/2026/06/08/agent-reward-hacking-alignment.html">
+          <p>
+          エージェントに「テストを通過させてください」と指示すると、テストを削除することがある。
+
+「エラーの数を減らしてください」と指示すると、エラーを握り潰す処理を追加することがある。
+
+「ユーザー満足度スコアを上げてください」と指示すると、ユーザーが聞きたいことを言うだけになることがある。
+
+これらは、エ... <span class="read_more">Read More</span>
+          </p>
+        </a>
+        <div class="post-tags">
+<a class="post-tag" href="/jekyll-theme-yat/tags.html#AI%E3%82%A8%E3%83%BC%E3%82%B8%E3%82%A7%E3%83%B3%E3%83%88">#AIエージェント</a><a class="post-tag" href="/jekyll-theme-yat/tags.html#AI%E3%82%BB%E3%83%BC%E3%83%95%E3%83%86%E3%82%A3">#AIセーフティ</a><a class="post-tag" href="/jekyll-theme-yat/tags.html#%E5%A0%B1%E9%85%AC%E3%83%8F%E3%83%83%E3%82%AD%E3%83%B3%E3%82%B0">#報酬ハッキング</a><a class="post-tag" href="/jekyll-theme-yat/tags.html#%E3%82%A2%E3%83%A9%E3%82%A4%E3%83%A1%E3%83%B3%E3%83%88">#アライメント</a><a class="post-tag" href="/jekyll-theme-yat/tags.html#%E3%83%8F%E3%83%BC%E3%83%8D%E3%82%B9%E3%82%A8%E3%83%B3%E3%82%B8%E3%83%8B%E3%82%A2%E3%83%AA%E3%83%B3%E3%82%B0">#ハーネスエンジニアリング</a>
+</div>
+      </div>
+    </li>
+<li class="post-list-item">
+      
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="post-summary">
+        <h2 class="post-title">
+          <a class="post-link" href="/jekyll-theme-yat/%E9%96%8B%E7%99%BA/2026/06/07/python-black-guide.html">
+            AI コーディング向けの Python フォーマッター Black
+          </a>
+        </h2>
+        <div class="post-meta">
+          <span class="post-date"><i class="fa fa-calendar"></i> Jun 07, 2026</span>
+          <span class="post-reading-time left-vsplit"><i class="fa fa-clock-o"></i> About 26 mins</span>
+        </div>
+        <a class="post-excerpt" href="/jekyll-theme-yat/%E9%96%8B%E7%99%BA/2026/06/07/python-black-guide.html">
+          <p>
+          AI に Python コードを書かせていると、同じプロジェクトの中でも次のような違いが生まれやすい。
+
+
+  シングルクォートとダブルクォートが混在する
+  引数が1行に詰め込まれる
+  改行や空白の入れ方がファイルごとに違う
+  人間と AI が編集するたびに、関係のない整形差分が発生する
+
+
+コードは動くため、後回しにしがちな... <span class="read_more">Read More</span>
+          </p>
+        </a>
+        <div class="post-tags">
+<a class="post-tag" href="/jekyll-theme-yat/tags.html#Python">#Python</a><a class="post-tag" href="/jekyll-theme-yat/tags.html#Black">#Black</a><a class="post-tag" href="/jekyll-theme-yat/tags.html#%E3%82%B3%E3%83%BC%E3%83%89%E3%83%95%E3%82%A9%E3%83%BC%E3%83%9E%E3%83%83%E3%82%BF%E3%83%BC">#コードフォーマッター</a><a class="post-tag" href="/jekyll-theme-yat/tags.html#AI%E3%83%8D%E3%82%A4%E3%83%86%E3%82%A3%E3%83%96%E9%96%8B%E7%99%BA">#AIネイティブ開発</a><a class="post-tag" href="/jekyll-theme-yat/tags.html#%E9%96%8B%E7%99%BA%E7%92%B0%E5%A2%83">#開発環境</a>
+</div>
+      </div>
+    </li>
+<li class="post-list-item">
+      
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="post-summary">
+        <h2 class="post-title">
+          <a class="post-link" href="/jekyll-theme-yat/%E9%96%8B%E7%99%BA/2026/06/07/openapi-guide.html">
+            OpenAPI で API の仕様とドキュメントを同期させる
+          </a>
+        </h2>
+        <div class="post-meta">
+          <span class="post-date"><i class="fa fa-calendar"></i> Jun 07, 2026</span>
+          <span class="post-reading-time left-vsplit"><i class="fa fa-clock-o"></i> About 18 mins</span>
+        </div>
+        <a class="post-excerpt" href="/jekyll-theme-yat/%E9%96%8B%E7%99%BA/2026/06/07/openapi-guide.html">
+          <p>
+          API を開発していると、こんな場面に必ず出くわす。
+
+
+  フロントエンドとバックエンドで「パラメータ名が違う」「レスポンスの形が変わった」が頻発する
+  Postman のコレクションを手で更新し続けるのが辛い
+  API の仕様をドキュメントに書いたが、コードと乖離してきた
+  他チームや外部パートナーに API を公開したい... <span class="read_more">Read More</span>
+          </p>
+        </a>
+        <div class="post-tags">
+<a class="post-tag" href="/jekyll-theme-yat/tags.html#OpenAPI">#OpenAPI</a><a class="post-tag" href="/jekyll-theme-yat/tags.html#Swagger">#Swagger</a><a class="post-tag" href="/jekyll-theme-yat/tags.html#API">#API</a><a class="post-tag" href="/jekyll-theme-yat/tags.html#REST">#REST</a><a class="post-tag" href="/jekyll-theme-yat/tags.html#%E3%83%90%E3%83%83%E3%82%AF%E3%82%A8%E3%83%B3%E3%83%89">#バックエンド</a><a class="post-tag" href="/jekyll-theme-yat/tags.html#%E3%83%89%E3%82%AD%E3%83%A5%E3%83%A1%E3%83%B3%E3%83%88">#ドキュメント</a>
+</div>
+      </div>
+    </li>
+<li class="post-list-item post-list-item--with-image">
+      
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<a class="post-thumbnail" href="/jekyll-theme-yat/ai%E9%96%8B%E7%99%BA/2026/06/07/multi-agent-asymmetric-handoff.html" aria-label="Claude と Codex のマルチエージェント引き継ぎ問題と解消パターン">
+        <img src="/jekyll-theme-yat/assets/images/posts/2026-06-07-multi-agent-asymmetric-handoff/eyecatch.png" alt="複数のコンピューター間でメッセージと処理が引き継がれる様子" loading="lazy" decoding="async">
+      </a><div class="post-summary">
+        <h2 class="post-title">
+          <a class="post-link" href="/jekyll-theme-yat/ai%E9%96%8B%E7%99%BA/2026/06/07/multi-agent-asymmetric-handoff.html">
+            Claude と Codex のマルチエージェント引き継ぎ問題と解消パターン
+          </a>
+        </h2>
+        <div class="post-meta">
+          <span class="post-date"><i class="fa fa-calendar"></i> Jun 07, 2026</span>
+          <span class="post-reading-time left-vsplit"><i class="fa fa-clock-o"></i> About 41 mins</span>
+        </div>
+        <a class="post-excerpt" href="/jekyll-theme-yat/ai%E9%96%8B%E7%99%BA/2026/06/07/multi-agent-asymmetric-handoff.html">
+          <p>
+          AIエージェントを複数組み合わせて開発を進めると、ある非対称な問題にぶつかる。
+
+一方向はうまく動く。Codexが実装を終えてメッセージを送ると、待機中のClaudeが検知してレビューを始める。しかし逆方向はそうではない。ClaudeがレビューしてCodexへ修正依頼を送っても、すでに停止したCodexは自分でそれを拾いに来... <span class="read_more">Read More</span>
+          </p>
+        </a>
+        <div class="post-tags">
+<a class="post-tag" href="/jekyll-theme-yat/tags.html#%E3%83%9E%E3%83%AB%E3%83%81%E3%82%A8%E3%83%BC%E3%82%B8%E3%82%A7%E3%83%B3%E3%83%88">#マルチエージェント</a><a class="post-tag" href="/jekyll-theme-yat/tags.html#Claude%20Code">#Claude Code</a><a class="post-tag" href="/jekyll-theme-yat/tags.html#Codex">#Codex</a><a class="post-tag" href="/jekyll-theme-yat/tags.html#agmsg">#agmsg</a><a class="post-tag" href="/jekyll-theme-yat/tags.html#%E8%87%AA%E5%8B%95%E5%8C%96">#自動化</a>
+</div>
+      </div>
+    </li>
+<li class="post-list-item">
+      
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="post-summary">
+        <h2 class="post-title">
+          <a class="post-link" href="/jekyll-theme-yat/%E9%96%8B%E7%99%BA/2026/06/07/alembic-database-migration-guide.html">
+            Alembic でデータベーススキーマの変更を管理する
+          </a>
+        </h2>
+        <div class="post-meta">
+          <span class="post-date"><i class="fa fa-calendar"></i> Jun 07, 2026</span>
+          <span class="post-reading-time left-vsplit"><i class="fa fa-clock-o"></i> About 51 mins</span>
+        </div>
+        <a class="post-excerpt" href="/jekyll-theme-yat/%E9%96%8B%E7%99%BA/2026/06/07/alembic-database-migration-guide.html">
+          <p>
+          AI ネイティブなログアプリの Phase 2 では、テーブル追加やカラム変更が増えてくる。
+
+開発初期は Supabase の SQL Editor や psql で直接 DDL を実行しても進められる。しかし、環境や開発者が増えると、次の問題が起きやすい。
+
+
+  開発環境と本番環境でテーブル構造が違う
+  誰が、いつ、何のた... <span class="read_more">Read More</span>
+          </p>
+        </a>
+        <div class="post-tags">
+<a class="post-tag" href="/jekyll-theme-yat/tags.html#Alembic">#Alembic</a><a class="post-tag" href="/jekyll-theme-yat/tags.html#SQLAlchemy">#SQLAlchemy</a><a class="post-tag" href="/jekyll-theme-yat/tags.html#PostgreSQL">#PostgreSQL</a><a class="post-tag" href="/jekyll-theme-yat/tags.html#%E3%83%87%E3%83%BC%E3%82%BF%E3%83%99%E3%83%BC%E3%82%B9">#データベース</a><a class="post-tag" href="/jekyll-theme-yat/tags.html#%E3%83%9E%E3%82%A4%E3%82%B0%E3%83%AC%E3%83%BC%E3%82%B7%E3%83%A7%E3%83%B3">#マイグレーション</a><a class="post-tag" href="/jekyll-theme-yat/tags.html#AI%E3%83%8D%E3%82%A4%E3%83%86%E3%82%A3%E3%83%96%E9%96%8B%E7%99%BA">#AIネイティブ開発</a>
+</div>
+      </div>
+    </li>
+<li class="post-list-item post-list-item--with-image">
+      
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<a class="post-thumbnail" href="/jekyll-theme-yat/ai%E9%96%8B%E7%99%BA/2026/06/07/agent-context-management-2026.html" aria-label="エージェントを長く自律動作させるためのコンテキスト設計">
+        <img src="/jekyll-theme-yat/assets/images/posts/2026-06-07-agent-context-management-2026/eyecatch.png" alt="完了した作業を外部アーカイブへ移して机を空けるミニチュアの管制室" loading="lazy" decoding="async">
+      </a><div class="post-summary">
+        <h2 class="post-title">
+          <a class="post-link" href="/jekyll-theme-yat/ai%E9%96%8B%E7%99%BA/2026/06/07/agent-context-management-2026.html">
+            エージェントを長く自律動作させるためのコンテキスト設計
+          </a>
+        </h2>
+        <div class="post-meta">
+          <span class="post-date"><i class="fa fa-calendar"></i> Jun 07, 2026</span>
+          <span class="post-reading-time left-vsplit"><i class="fa fa-clock-o"></i> About 23 mins</span>
+        </div>
+        <a class="post-excerpt" href="/jekyll-theme-yat/ai%E9%96%8B%E7%99%BA/2026/06/07/agent-context-management-2026.html">
+          <p>
+          エージェントに多くのタスクを自律的にやらせようとすると、ある非対称な問題にぶつかる。
+
+下位エージェント（実装担当） はタスクが終わるたびにセッションを終了できる。次のタスクは白紙のコンテキストで始まる。コンテキスト管理の問題はあまり起きない。
+
+上位エージェント（オーケストレーター） はそうはいか... <span class="read_more">Read More</span>
+          </p>
+        </a>
+        <div class="post-tags">
+<a class="post-tag" href="/jekyll-theme-yat/tags.html#%E3%83%9E%E3%83%AB%E3%83%81%E3%82%A8%E3%83%BC%E3%82%B8%E3%82%A7%E3%83%B3%E3%83%88">#マルチエージェント</a><a class="post-tag" href="/jekyll-theme-yat/tags.html#%E3%82%B3%E3%83%B3%E3%83%86%E3%82%AD%E3%82%B9%E3%83%88%E7%AE%A1%E7%90%86">#コンテキスト管理</a><a class="post-tag" href="/jekyll-theme-yat/tags.html#Claude%20Code">#Claude Code</a><a class="post-tag" href="/jekyll-theme-yat/tags.html#Codex%20CLI">#Codex CLI</a><a class="post-tag" href="/jekyll-theme-yat/tags.html#LLM">#LLM</a>
+</div>
+      </div>
+    </li>
+<li class="post-list-item">
+      
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="post-summary">
+        <h2 class="post-title">
+          <a class="post-link" href="/jekyll-theme-yat/%E9%96%8B%E7%99%BA/2026/06/06/vercel-frontend-selection.html">
+            なぜフロントエンドに Vercel を選ぶのか
+          </a>
+        </h2>
+        <div class="post-meta">
+          <span class="post-date"><i class="fa fa-calendar"></i> Jun 06, 2026</span>
+          <span class="post-reading-time left-vsplit"><i class="fa fa-clock-o"></i> About 12 mins</span>
+        </div>
+        <a class="post-excerpt" href="/jekyll-theme-yat/%E9%96%8B%E7%99%BA/2026/06/06/vercel-frontend-selection.html">
+          <p>
+          バックエンド選定の記事では フロントエンド → Vercel と一言で済ませたが、これにも選定理由がある。
+
+フロントエンドのホスティングは Vercel / Netlify / Cloudflare Pages の三つ巴になっており、それぞれトレードオフが違う。この記事では 2026年6月時点の最新情報をもとに整理する... <span class="read_more">Read More</span>
+          </p>
+        </a>
+        <div class="post-tags">
+<a class="post-tag" href="/jekyll-theme-yat/tags.html#Vercel">#Vercel</a><a class="post-tag" href="/jekyll-theme-yat/tags.html#Netlify">#Netlify</a><a class="post-tag" href="/jekyll-theme-yat/tags.html#Cloudflare">#Cloudflare</a><a class="post-tag" href="/jekyll-theme-yat/tags.html#Next.js">#Next.js</a><a class="post-tag" href="/jekyll-theme-yat/tags.html#%E3%83%95%E3%83%AD%E3%83%B3%E3%83%88%E3%82%A8%E3%83%B3%E3%83%89">#フロントエンド</a><a class="post-tag" href="/jekyll-theme-yat/tags.html#%E3%83%9B%E3%82%B9%E3%83%86%E3%82%A3%E3%83%B3%E3%82%B0">#ホスティング</a>
+</div>
+      </div>
+    </li>
+<li class="post-list-item">
+      
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="post-summary">
+        <h2 class="post-title">
+          <a class="post-link" href="/jekyll-theme-yat/%E9%96%8B%E7%99%BA/2026/06/06/supabase-vs-railway-comparison.html">
+            Supabase vs Railway vs Neon バックエンド選定 (2026年版)
+          </a>
+        </h2>
+        <div class="post-meta">
+          <span class="post-date"><i class="fa fa-calendar"></i> Jun 06, 2026</span>
+          <span class="post-reading-time left-vsplit"><i class="fa fa-clock-o"></i> About 24 mins</span>
+        </div>
+        <a class="post-excerpt" href="/jekyll-theme-yat/%E9%96%8B%E7%99%BA/2026/06/06/supabase-vs-railway-comparison.html">
+          <p>
+          AIネイティブなログアプリを個人で開発している。
+バックエンドの選定を進める中で Supabase と Railway のどちらにするか迷い、ついでに Neon や PlanetScale も候補に挙がってきた。
+
+この記事では 2026年6月時点の最新情報をもとに、各サービスの特徴・料金・ユースケースを整理する。
+
+
+... <span class="read_more">Read More</span>
+          </p>
+        </a>
+        <div class="post-tags">
+<a class="post-tag" href="/jekyll-theme-yat/tags.html#Supabase">#Supabase</a><a class="post-tag" href="/jekyll-theme-yat/tags.html#Railway">#Railway</a><a class="post-tag" href="/jekyll-theme-yat/tags.html#Neon">#Neon</a><a class="post-tag" href="/jekyll-theme-yat/tags.html#BaaS">#BaaS</a><a class="post-tag" href="/jekyll-theme-yat/tags.html#PaaS">#PaaS</a><a class="post-tag" href="/jekyll-theme-yat/tags.html#%E3%83%90%E3%83%83%E3%82%AF%E3%82%A8%E3%83%B3%E3%83%89">#バックエンド</a>
+</div>
+      </div>
+    </li>
+<li class="post-list-item post-list-item--with-image">
+      
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<a class="post-thumbnail" href="/jekyll-theme-yat/%E3%83%87%E3%83%BC%E3%82%BF%E3%82%A8%E3%83%B3%E3%82%B8%E3%83%8B%E3%82%A2%E3%83%AA%E3%83%B3%E3%82%B0/2026/06/05/postgresql-jsonb-guide.html" aria-label="PostgreSQL JSONB 完全ガイド">
+        <img src="/jekyll-theme-yat/assets/images/posts/2026-06-05-postgresql-jsonb-guide/eyecatch.png" alt="カード式データベースから伸びるJSON文書の枝を検索するミニチュア" loading="lazy" decoding="async">
+      </a><div class="post-summary">
+        <h2 class="post-title">
+          <a class="post-link" href="/jekyll-theme-yat/%E3%83%87%E3%83%BC%E3%82%BF%E3%82%A8%E3%83%B3%E3%82%B8%E3%83%8B%E3%82%A2%E3%83%AA%E3%83%B3%E3%82%B0/2026/06/05/postgresql-jsonb-guide.html">
+            PostgreSQL JSONB 完全ガイド
+          </a>
+        </h2>
+        <div class="post-meta">
+          <span class="post-date"><i class="fa fa-calendar"></i> Jun 05, 2026</span>
+          <span class="post-reading-time left-vsplit"><i class="fa fa-clock-o"></i> About 19 mins</span>
+        </div>
+        <a class="post-excerpt" href="/jekyll-theme-yat/%E3%83%87%E3%83%BC%E3%82%BF%E3%82%A8%E3%83%B3%E3%82%B8%E3%83%8B%E3%82%A2%E3%83%AA%E3%83%B3%E3%82%B0/2026/06/05/postgresql-jsonb-guide.html">
+          <p>
+          「スキーマが固まっていない段階でもデータを保存したい」「フィールドが動的に増減する構造を扱いたい」── こういった要件に直面したとき、PostgreSQL の JSONB 型が選択肢に上がることが多い。
+
+この記事では JSONB の基本から、実用的なクエリ・インデックス設計・パフォーマンス特性まで体系的に整理する。
+
+
+
+JSON と JSONB ... <span class="read_more">Read More</span>
+          </p>
+        </a>
+        <div class="post-tags">
+<a class="post-tag" href="/jekyll-theme-yat/tags.html#PostgreSQL">#PostgreSQL</a><a class="post-tag" href="/jekyll-theme-yat/tags.html#JSONB">#JSONB</a><a class="post-tag" href="/jekyll-theme-yat/tags.html#%E3%83%87%E3%83%BC%E3%82%BF%E3%83%99%E3%83%BC%E3%82%B9">#データベース</a><a class="post-tag" href="/jekyll-theme-yat/tags.html#SQL">#SQL</a>
+</div>
+      </div>
+    </li>
+<li class="post-list-item">
+      
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="post-summary">
+        <h2 class="post-title">
+          <a class="post-link" href="/jekyll-theme-yat/%E9%96%8B%E7%99%BA/2024/05/14/python-dev02.html">
+            Python Web開発のためのGitセットアップ
+          </a>
+        </h2>
+        <div class="post-meta">
+          <span class="post-date"><i class="fa fa-calendar"></i> May 14, 2024</span>
+          <span class="post-reading-time left-vsplit"><i class="fa fa-clock-o"></i> About 1 min</span>
+        </div>
+        <a class="post-excerpt" href="/jekyll-theme-yat/%E9%96%8B%E7%99%BA/2024/05/14/python-dev02.html">
+          <p>
+          はじめに
+
+Python環境構築の2回目となる今回は、Web開発に欠かせないGitのセットアップについて解説していきます。Gitはバージョン管理システムで、個人開発でも役立つだけでなく、特にチーム開発では必須のツールとなっています。Gitを活用することで、ソースコードの変更履歴を記録し、いつでも過去の状態に戻すことができます。また、複数人で同時に開発を行う際も、コンフリクトを適切に解決しながら作業を進められます。
+
+Gitのメリット
+
+Gitを使うメリットは以下のようなものがあります。
+
+
+  ソースコードの変更履歴を記録できる
+  過去の状態に簡単に戻れる
+  複数人での並行作業が可能
+  ブランチを使ったフィーチャー作業が行える
+  リモートリポジトリと連携できる
+
+
+Gitのイン... <span class="read_more">Read More</span>
+          </p>
+        </a>
+        <div class="post-tags">
+<a class="post-tag" href="/jekyll-theme-yat/tags.html#Git">#Git</a><a class="post-tag" href="/jekyll-theme-yat/tags.html#%E9%96%8B%E7%99%BA%E7%92%B0%E5%A2%83">#開発環境</a><a class="post-tag" href="/jekyll-theme-yat/tags.html#Python">#Python</a><a class="post-tag" href="/jekyll-theme-yat/tags.html#Web%E9%96%8B%E7%99%BA">#Web開発</a>
+</div>
+      </div>
+    </li>
+<li class="post-list-item">
+      
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="post-summary">
+        <h2 class="post-title">
+          <a class="post-link" href="/jekyll-theme-yat/%E9%96%8B%E7%99%BA/2024/05/13/python-dev01.html">
+            Docker ComposeとDockerfileでPython開発環境を構築する
+          </a>
+        </h2>
+        <div class="post-meta">
+          <span class="post-date"><i class="fa fa-calendar"></i> May 13, 2024</span>
+          <span class="post-reading-time left-vsplit"><i class="fa fa-clock-o"></i> About 1 min</span>
+        </div>
+        <a class="post-excerpt" href="/jekyll-theme-yat/%E9%96%8B%E7%99%BA/2024/05/13/python-dev01.html">
+          <p>
+          はじめに
+
+今回から複数回に渡り、DockerとPythonを使った開発環境の構築手順を解説していきます。本記事は、その第一回目として、Docker ComposeとDockerfileを使ってPython開発環境を構築する手順について説明します。
+
+Docker コンテナの起動
+
+Python 3系の最新バージョンである python:3 Docker イメージを利用します。イメージのタグを指定しない場合、常に最新のPython 3系のバージョンがプルされます。まずはイメージをプルしましょう。
+
+docker pull python:3
+
+
+pipとrequirements.txt
+
+Pythonでは、パッケージ管理ツールとして pip が一般的に使われています。pip では、必要な... <span class="read_more">Read More</span>
+          </p>
+        </a>
+        <div class="post-tags">
+<a class="post-tag" href="/jekyll-theme-yat/tags.html#Python">#Python</a><a class="post-tag" href="/jekyll-theme-yat/tags.html#Docker">#Docker</a><a class="post-tag" href="/jekyll-theme-yat/tags.html#Docker%20Compose">#Docker Compose</a><a class="post-tag" href="/jekyll-theme-yat/tags.html#Dockerfile">#Dockerfile</a><a class="post-tag" href="/jekyll-theme-yat/tags.html#%E9%96%8B%E7%99%BA%E7%92%B0%E5%A2%83">#開発環境</a>
+</div>
+      </div>
+    </li>
+<li class="post-list-item">
+      
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="post-summary">
+        <h2 class="post-title">
+          <a class="post-link" href="/jekyll-theme-yat/%E9%96%8B%E7%99%BA/2023/09/17/docker-data-analysis.html">
+            【Docker &amp; VSCode】Pythonデータ分析環境の構築と運用
+          </a>
+        </h2>
+        <div class="post-meta">
+          <span class="post-date"><i class="fa fa-calendar"></i> Sep 17, 2023</span>
+          <span class="post-reading-time left-vsplit"><i class="fa fa-clock-o"></i> About 1 min</span>
+        </div>
+        <a class="post-excerpt" href="/jekyll-theme-yat/%E9%96%8B%E7%99%BA/2023/09/17/docker-data-analysis.html">
+          <p>
+          はじめに
+
+この記事では、VSCodeのRemote Containers拡張機能を利用し、DockerでPythonのデータ分析環境を構築、運用する手法について解説します。
+
+前提条件
+
+
+  Dockerがインストール済みである
+  使用するエディタはVSCode
+  ターミナルはVSCode上から利用
+
+
+手順
+
+1. プロジェクトディレクトリの作成
+
+環境はプロジェクトごとに用意する想定です。
+今回は、 python_data_analysis_vscode というプロジェクトを作成していきます。
+
+mkdir python_data_analysis_vscode
+cd python_data_analysis_vscode
+
+
+2. Dockerfileの作成
+
+続いて、D... <span class="read_more">Read More</span>
+          </p>
+        </a>
+        <div class="post-tags">
+<a class="post-tag" href="/jekyll-theme-yat/tags.html#Docker">#Docker</a><a class="post-tag" href="/jekyll-theme-yat/tags.html#VSCode">#VSCode</a><a class="post-tag" href="/jekyll-theme-yat/tags.html#Python">#Python</a><a class="post-tag" href="/jekyll-theme-yat/tags.html#Data%20Analysis">#Data Analysis</a>
+</div>
+      </div>
+    </li>
+<li class="post-list-item">
+      
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="post-summary">
+        <h2 class="post-title">
+          <a class="post-link" href="/jekyll-theme-yat/%E9%96%8B%E7%99%BA/2023/06/24/vscode-shortcut.html">
+            【VSCode】よく使うショートカット10選
+          </a>
+        </h2>
+        <div class="post-meta">
+          <span class="post-date"><i class="fa fa-calendar"></i> Jun 24, 2023</span>
+          <span class="post-reading-time left-vsplit"><i class="fa fa-clock-o"></i> About 1 min</span>
+        </div>
+        <a class="post-excerpt" href="/jekyll-theme-yat/%E9%96%8B%E7%99%BA/2023/06/24/vscode-shortcut.html">
+          <p>
+          Visual Studio Code(通称VSCode)はMicrosoftが開発したエディタで、多くのエンジニアが利用している定番エディタとなっています。
+
+VSCodeはその高度な機能性と拡張性から、コードの編集やデバッグ、Gitの統合、コードの自動補完やリファクタリングなど、幅広いタスクを効率的にこなすことができます。
+
+その便利さを最大限に活かすためには、ショートカットキーを使いこなすことがかなり重要です。
+この記事では、VSCodeで覚えておくと便利なショートカット10選を紹介します。
+
+
+  
+    
+      ショートカットキー
+      機能
+    
+  
+  
+    
+      Ctrl + F, Ctrl + H
+      コードの検索と置換。Ctrl... <span class="read_more">Read More</span>
+          </p>
+        </a>
+        <div class="post-tags"><a class="post-tag" href="/jekyll-theme-yat/tags.html#VSCode">#VSCode</a></div>
+      </div>
+    </li>
+<li class="post-list-item">
+      
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="post-summary">
+        <h2 class="post-title">
+          <a class="post-link" href="/jekyll-theme-yat/%E3%83%96%E3%83%AD%E3%82%B0/2023/06/03/github-pages-jekyll.html">
+            JekyllとGitHub Pagesを使ったブログサイトの記事更新手順
+          </a>
+        </h2>
+        <div class="post-meta">
+          <span class="post-date"><i class="fa fa-calendar"></i> Jun 03, 2023</span>
+          <span class="post-reading-time left-vsplit"><i class="fa fa-clock-o"></i> About 1 min</span>
+        </div>
+        <a class="post-excerpt" href="/jekyll-theme-yat/%E3%83%96%E3%83%AD%E3%82%B0/2023/06/03/github-pages-jekyll.html">
+          <p>
+          このサイトでは、Jekyllというツールを使ってブログ記事を作成しています。
+手順はとてもシンプルで、Markdown形式で記事を作成し、ローカル環境で確認したら、GitHubにアップロードするだけです。
+GitHub Actionによって自動的にビルドが行われ、サイトが更新されます。
+
+手順を覚えてしまえば、誰でも簡単にブログ記事をアップできるようになります。
+詳しい手順は以下の通りです。
+
+
+  Markdown形式で記事を執筆: 
+まずは新しい記事をMarkdown形式で書きます。
+Jekyllの場合、通常_postsフォルダの中にyyyy-mm-dd-title.mdという形式でファイルを作成します。
+ここで、yyyy-mm-ddは記事の公開日、titleは記事のタイトルを示し... <span class="read_more">Read More</span>
+          </p>
+        </a>
+        <div class="post-tags">
+<a class="post-tag" href="/jekyll-theme-yat/tags.html#GitHub%20Pages">#GitHub Pages</a><a class="post-tag" href="/jekyll-theme-yat/tags.html#Jekyll">#Jekyll</a>
+</div>
+      </div>
+    </li>
+<li class="post-list-item">
+      
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="post-summary">
+        <h2 class="post-title">
+          <a class="post-link" href="/jekyll-theme-yat/%E3%83%96%E3%83%AD%E3%82%B0/2023/05/26/google-analytics.html">
+            JekyllとGitHub PagesでGoogle Analyticsを導入する
+          </a>
+        </h2>
+        <div class="post-meta">
+          <span class="post-date"><i class="fa fa-calendar"></i> May 26, 2023</span>
+          <span class="post-reading-time left-vsplit"><i class="fa fa-clock-o"></i> About 2 mins</span>
+        </div>
+        <a class="post-excerpt" href="/jekyll-theme-yat/%E3%83%96%E3%83%AD%E3%82%B0/2023/05/26/google-analytics.html">
+          <p>
+          GitHub PagesでホストされているJekyllサイトにGoogle Analyticsを導入する方法を解説します。
+
+はじめに
+
+Google Analyticsは、ウェブサイトのトラフィックを計測するための強力なツールです。この記事では、GitHub PagesでホストされるJekyllサイトにGoogle Analyticsを導入する方法について詳しく説明します。
+
+Google Analyticsの設定
+
+まず、Google AnalyticsのトラッキングIDが必要です。以下の手順で取得します。
+
+
+  Google Analyticsのウェブサイトにアクセスします。
+  新しいプロパティを作成します。
+  そのプロパティのトラッキングIDを取得します。
+
+
+取得したト... <span class="read_more">Read More</span>
+          </p>
+        </a>
+        <div class="post-tags">
+<a class="post-tag" href="/jekyll-theme-yat/tags.html#Jekyll">#Jekyll</a><a class="post-tag" href="/jekyll-theme-yat/tags.html#GitHub%20Pages">#GitHub Pages</a><a class="post-tag" href="/jekyll-theme-yat/tags.html#Google%20Analytics">#Google Analytics</a>
+</div>
+      </div>
+    </li>
+<li class="post-list-item">
+      
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="post-summary">
+        <h2 class="post-title">
+          <a class="post-link" href="/jekyll-theme-yat/%E9%96%8B%E7%99%BA/2023/05/25/python-venv.html">
+            Pythonとvenv: 仮想環境のスムーズな管理まとめ
+          </a>
+        </h2>
+        <div class="post-meta">
+          <span class="post-date"><i class="fa fa-calendar"></i> May 25, 2023</span>
+          <span class="post-reading-time left-vsplit"><i class="fa fa-clock-o"></i> About 1 min</span>
+        </div>
+        <a class="post-excerpt" href="/jekyll-theme-yat/%E9%96%8B%E7%99%BA/2023/05/25/python-venv.html">
+          <p>
+          はじめに
+
+Pythonのプログラムを開発する際、異なるプロジェクトで異なるパッケージを使用する場合があります。これらのパッケージはバージョンによって挙動が変わることがあります。そのため、プロジェクトごとに独立した環境を持つことが推奨されます。これを実現するために、Pythonにはvenvという仮想環境が用意されています。
+
+以下に、venvの使い方を詳しく解説します。
+
+
+  仮想環境の作成
+
+
+最初に仮想環境を作成します。ここでは、例として myenv という名前の仮想環境を作成します。
+
+bashCopy code
+
+python3 -m venv myenv
+
+
+  仮想環境の有効化
+
+
+次に、作成した仮想環境を有効化します。この手順はOSによって異なります。
+
+
+  Linu... <span class="read_more">Read More</span>
+          </p>
+        </a>
+        <div class="post-tags">
+<a class="post-tag" href="/jekyll-theme-yat/tags.html#Python">#Python</a><a class="post-tag" href="/jekyll-theme-yat/tags.html#venv">#venv</a>
+</div>
+      </div>
+    </li>
+<li class="post-list-item">
+      
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="post-summary">
+        <h2 class="post-title">
+          <a class="post-link" href="/jekyll-theme-yat/%E9%96%8B%E7%99%BA/2023/05/05/docker-mount.html">
+            DockerでUbuntuを動かそう！- マウント編
+          </a>
+        </h2>
+        <div class="post-meta">
+          <span class="post-date"><i class="fa fa-calendar"></i> May 05, 2023</span>
+          <span class="post-reading-time left-vsplit"><i class="fa fa-clock-o"></i> About 1 min</span>
+        </div>
+        <a class="post-excerpt" href="/jekyll-theme-yat/%E9%96%8B%E7%99%BA/2023/05/05/docker-mount.html">
+          <p>
+          DockerでUbuntuを動かす - マウント編
+
+前回はDocker初心者の方向けに、DockerでUbuntuを動かす方法について解説しました。今回は、Dockerコンテナ内でのファイル操作について学びましょう。
+
+概要
+
+Dockerコンテナ内で作成したファイルをホストマシンに保存する場合、マウントを利用します。マウントを使えば、Dockerコンテナ内で作業した結果を、ホストマシンでも利用することができます。
+
+マウントの方法
+
+マウントには、以下の2種類があります。
+
+
+  バインドマウント
+  ボリュームマウント
+
+
+バインドマウント
+
+バインドマウントは、ホストマシンのディレクトリをDockerコンテナ内にマウントする方法です。以下のようなコマンドで実行します。
+
+$ s... <span class="read_more">Read More</span>
+          </p>
+        </a>
+        <div class="post-tags">
+<a class="post-tag" href="/jekyll-theme-yat/tags.html#Docker">#Docker</a><a class="post-tag" href="/jekyll-theme-yat/tags.html#Ubuntu">#Ubuntu</a>
+</div>
+      </div>
+    </li>
+<li class="post-list-item">
+      
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="post-summary">
+        <h2 class="post-title">
+          <a class="post-link" href="/jekyll-theme-yat/%E9%96%8B%E7%99%BA/2023/05/04/docker-ubuntu.html">
+            DockerでUbuntuを動かそう！
+          </a>
+        </h2>
+        <div class="post-meta">
+          <span class="post-date"><i class="fa fa-calendar"></i> May 04, 2023</span>
+          <span class="post-reading-time left-vsplit"><i class="fa fa-clock-o"></i> About 1 min</span>
+        </div>
+        <a class="post-excerpt" href="/jekyll-theme-yat/%E9%96%8B%E7%99%BA/2023/05/04/docker-ubuntu.html">
+          <p>
+          今回はDocker初心者の方向けに、DockerでUbuntuを動かす方法について解説します。
+この記事を読むことで、Dockerの基本コマンドを習得し、DockerからのUbuntu環境の構築ができるようになります。
+
+概要
+
+Dockerは、アプリケーションをコンテナ化することで、環境依存性を排除し、開発・運用の効率化を図ることができます。また、Dockerコンテナは軽量であるため、仮想マシンよりも高速に起動することができます。
+
+Dockerのインストール
+
+まずは、Dockerをインストールしましょう。以下のコマンドを実行してください。
+
+$ sudo apt-get update
+$ sudo apt-get install docker.io
+
+
+これで、Dockerがイン... <span class="read_more">Read More</span>
+          </p>
+        </a>
+        <div class="post-tags">
+<a class="post-tag" href="/jekyll-theme-yat/tags.html#Docker">#Docker</a><a class="post-tag" href="/jekyll-theme-yat/tags.html#Ubuntu">#Ubuntu</a>
+</div>
+      </div>
+    </li>
+<li class="post-list-item">
+      
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="post-summary">
+        <h2 class="post-title">
+          <a class="post-link" href="/jekyll-theme-yat/%E9%96%8B%E7%99%BA/2023/05/03/git-entry.html">
+            Git入門
+          </a>
+        </h2>
+        <div class="post-meta">
+          <span class="post-date"><i class="fa fa-calendar"></i> May 03, 2023</span>
+          <span class="post-reading-time left-vsplit"><i class="fa fa-clock-o"></i> About 1 min</span>
+        </div>
+        <a class="post-excerpt" href="/jekyll-theme-yat/%E9%96%8B%E7%99%BA/2023/05/03/git-entry.html">
+          <p>
+          Gitとは、バージョン管理システムの一つです。プログラマ向けのツールとして有名なGitですが、初心者にとっては敷居が高いと感じるかもしれません。しかし、Gitの基本コマンドを押さえれば、Github上での開発やファイルのバックアップなど様々な活用方法があります。
+
+Gitとは？
+
+Gitは、変更履歴を管理するためのシステムです。あるファイルやディレクトリに対して、過去の状態に戻すことができたり、複数人での開発時に同じコードを共有することができます。また、Githubと連携することで、世界中の開発者と協力してプロジェクトを進めることもできます。
+
+Gitの基本コマンド
+
+初期設定
+
+まずはGitを使用するための初期設定を行いましょう。
+
+$ git config --global use... <span class="read_more">Read More</span>
+          </p>
+        </a>
+        <div class="post-tags"><a class="post-tag" href="/jekyll-theme-yat/tags.html#Git">#Git</a></div>
+      </div>
+    </li>
+</ul>
+
+  <!-- Pagination links -->
+</div>
+</div>
+
+
+  </section>
+  <section class="sidebar" style="margin-left: 15px;">
+    <!-- Get sidebar items -->
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="common-list">
+  <ul>
+<li>
+      <a href="/jekyll-theme-yat/index.html">
+        All<span>56</span>
+      </a>
+    </li>
+
+    
+      <li>
+        <a href="/jekyll-theme-yat/categories.html#h-AI%E9%96%8B%E7%99%BA">
+          AI開発 <span>29</span>
+        </a>
+      </li>
+    
+      <li>
+        <a href="/jekyll-theme-yat/categories.html#h-%E3%82%A4%E3%83%B3%E3%83%95%E3%83%A9">
+          インフラ <span>1</span>
+        </a>
+      </li>
+    
+      <li>
+        <a href="/jekyll-theme-yat/categories.html#h-%E3%83%87%E3%83%BC%E3%82%BF%E3%82%A8%E3%83%B3%E3%82%B8%E3%83%8B%E3%82%A2%E3%83%AA%E3%83%B3%E3%82%B0">
+          データエンジニアリング <span>2</span>
+        </a>
+      </li>
+    
+      <li>
+        <a href="/jekyll-theme-yat/categories.html#h-%E3%83%96%E3%83%AD%E3%82%B0">
+          ブログ <span>2</span>
+        </a>
+      </li>
+    
+      <li>
+        <a href="/jekyll-theme-yat/categories.html#h-%E9%96%8B%E7%99%BA">
+          開発 <span>22</span>
+        </a>
+      </li>
+    
+  </ul>
+</div>
+
+</section>
+</div>
+
+      </div>
+    </main><footer class="site-footer h-card">
+  <data class="u-url" href="/jekyll-theme-yat/"></data>
+
+  <div class="wrapper">
+    <div class="site-footer-inner">
+<div>Waka-DS © 2021-2026</div>
+      <div>Powered by <a title="Jekyll is a simple, blog-aware, static site
+      generator." href="http://jekyllrb.com/">Jekyll</a> &amp; <a title="Yat, yet
+      another theme." href="https://github.com/jeffreytse/jekyll-theme-yat">Yat Theme</a>.</div>
+      <div class="footer-col rss-subscribe">Subscribe <a href="/jekyll-theme-yat/feed.xml">via RSS</a>
+</div>
+    </div>
+  </div>
+</footer>
+</body>
+</html>

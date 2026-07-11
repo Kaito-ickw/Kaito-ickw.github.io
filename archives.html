@@ -1,0 +1,1387 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <script>
+  (function() {
+    try {
+      var p = localStorage.getItem('preferred_lang');
+      if (!p) return;
+      var path = window.location.pathname;
+      var ja = ['/', '/archives.html', '/categories.html', '/tags.html', '/about.html'];
+      var en = ['/en/', '/en/archives.html', '/en/categories.html', '/en/tags.html', '/en/about.html'];
+      if (p === 'en' && ja.indexOf(path) !== -1) {
+        window.location.replace('/en' + (path === '/' ? '/' : path));
+      } else if (p === 'ja' && en.indexOf(path) !== -1) {
+        window.location.replace(path.slice(3) || '/');
+      }
+    } catch(e) {}
+  })();
+  </script>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="google-translate-customization" content="108d9124921d80c3-80e20d618ff053c8-g4f02ec6f3dba68b7-c">
+<!-- Begin Jekyll SEO tag v2.9.0 -->
+<title>Archives | Waka-DS.com</title>
+<meta name="generator" content="Jekyll v4.4.1">
+<meta property="og:title" content="Archives">
+<meta name="author" content="Waka-DS">
+<meta property="og:locale" content="en_US">
+<meta name="description" content="AIエージェント時代のシステム設計・データ基盤・開発環境を実務目線で整理する技術ブログ。 Data Engineering・AI Agent開発・SaaS最適化など、Docker・WSL2・Python・TypeScriptを中心としたプロダクション実践ノートを記録。">
+<meta name="twitter:description" property="og:description" content="AIエージェント時代のシステム設計・データ基盤・開発環境を実務目線で整理する技術ブログ。 Data Engineering・AI Agent開発・SaaS最適化など、Docker・WSL2・Python・TypeScriptを中心としたプロダクション実践ノートを記録。">
+<link rel="canonical" href="/jekyll-theme-yat/archives.html">
+<meta property="og:url" content="/jekyll-theme-yat/archives.html">
+<meta property="og:site_name" content="Waka-DS.com">
+<meta property="og:type" content="website">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Archives">
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"WebPage","author":{"@type":"Person","name":"Waka-DS"},"description":"AIエージェント時代のシステム設計・データ基盤・開発環境を実務目線で整理する技術ブログ。 Data Engineering・AI Agent開発・SaaS最適化など、Docker・WSL2・Python・TypeScriptを中心としたプロダクション実践ノートを記録。","headline":"Archives","url":"/jekyll-theme-yat/archives.html"}</script>
+<!-- End Jekyll SEO tag -->
+<link rel="shortcut icon" href="">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=Noto+Sans+JP:wght@400;500;700&amp;display=swap">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+  <link rel="stylesheet" href="/jekyll-theme-yat/assets/css/main.css">
+  <script src="/jekyll-theme-yat/assets/js/main.js"></script><link type="application/atom+xml" rel="alternate" href="/jekyll-theme-yat/feed.xml" title="Waka-DS.com">
+<script>
+  function initGoogleAnalytics() {
+    var doNotTrack = (window.doNotTrack === "1" || navigator.doNotTrack === "1" ||
+      navigator.doNotTrack === "yes" || navigator.msDoNotTrack === "1");
+    var enableDNT = "true" == "true";
+
+    if (!enableDNT || !doNotTrack) {
+      var ga_id = 'G-XNP1RBTG9C';
+
+      var script = document.createElement('script');
+      script.async = true;
+      script.src = 'https://www.googletagmanager.com/gtag/js?id=' + ga_id;
+      document.head.appendChild(script);
+
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', ga_id);
+    }
+  }
+  window.addEventListener("load", initGoogleAnalytics);
+</script>
+<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/styles/default.min.css">
+<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/highlight.min.js"></script>
+<!-- and it's easy to individually load additional languages -->
+<script charset="UTF-8" src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/languages/go.min.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<script>
+// Init highlight js
+document.addEventListener('DOMContentLoaded', function(event) {
+  var els = document.querySelectorAll('pre code')
+
+  function addLangData(block) {
+    var outer = block.parentElement.parentElement.parentElement;
+    var lang = block.getAttribute('data-lang');
+    for (var i = 0; i < outer.classList.length; i++) {
+      var cls = outer.classList[i];
+      if (cls.startsWith('language-')) {
+        lang = cls;
+        break;
+      }
+    }
+    if (!lang) {
+      cls = block.getAttribute('class');
+      lang = cls ? cls.replace('hljs ', '') : '';
+    }
+    if (lang.startsWith('language-')) {
+      lang = lang.substr(9);
+    }
+    block.setAttribute('class', 'hljs ' + lang);
+    block.parentNode.setAttribute('data-lang', lang);
+  }
+
+  function addBadge(block) {
+    var enabled = ('true' || 'true').toLowerCase();
+    if (enabled == 'true') {
+      var pre = block.parentElement;
+      pre.classList.add('badge');
+    }
+  }
+
+  function handle(block) {
+    addLangData(block);
+    addBadge(block)
+    hljs.highlightBlock(block);
+  }
+
+  for (var i = 0; i < els.length; i++) {
+    var el = els[i];
+    handle(el);
+  }
+});
+</script>
+
+<style>
+  /* code language badge */
+  pre.badge::before {
+    content: attr(data-lang);
+    color: #fff;
+    background-color: #0d9488;
+    padding: 0 .5em;
+    border-radius: 0 2px;
+    text-transform: uppercase;
+    text-align: center;
+    min-width: 32px;
+    display: inline-block;
+    position: absolute;
+    right: 0;
+  }
+
+  /* fix wrong badge display for firefox browser */
+  code > table pre::before {
+    display: none;
+  }
+</style>
+</head>
+<body>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<header class="site-header " role="banner">
+
+  <div class="wrapper">
+    <div class="site-header-inner">
+<span class="site-brand"><a class="site-brand-inner" rel="author" href="/jekyll-theme-yat/">
+  <img class="site-favicon" title="Waka-DS.com" src="" onerror="this.style.display='none'">
+  Waka-DS.com
+</a>
+</span><nav class="site-nav">
+          <input type="checkbox" id="nav-trigger" class="nav-trigger">
+          <label for="nav-trigger">
+            <span class="menu-icon">
+              <svg viewbox="0 0 18 15" width="18px" height="15px">
+                <path d="M18,1.484c0,0.82-0.665,1.484-1.484,1.484H1.484C0.665,2.969,0,2.304,0,1.484l0,0C0,0.665,0.665,0,1.484,0 h15.032C17.335,0,18,0.665,18,1.484L18,1.484z M18,7.516C18,8.335,17.335,9,16.516,9H1.484C0.665,9,0,8.335,0,7.516l0,0 c0-0.82,0.665-1.484,1.484-1.484h15.032C17.335,6.031,18,6.696,18,7.516L18,7.516z M18,13.516C18,14.335,17.335,15,16.516,15H1.484 C0.665,15,0,14.335,0,13.516l0,0c0-0.82,0.665-1.483,1.484-1.483h15.032C17.335,12.031,18,12.695,18,13.516L18,13.516z"></path>
+              </svg>
+            </span>
+          </label>
+
+          <div class="trigger">
+<a class="page-link" href="/jekyll-theme-yat/about.html">ABOUT</a><a class="page-link" href="/jekyll-theme-yat/archives.html">ARCHIVES</a><a class="page-link" href="/jekyll-theme-yat/categories.html">CATEGORIES</a><a class="page-link" href="/jekyll-theme-yat/">HOME</a><a class="page-link" href="/jekyll-theme-yat/tags.html">TAGS</a><span class="page-link">
+                <span class="lang-switcher lang-switcher--nav"><span class="lang-btn lang-btn--active">日本語</span>
+                    <a class="lang-btn" href="/jekyll-theme-yat/en/archives.html">English</a></span>
+              </span>
+</div>
+        </nav>
+</div>
+  </div>
+</header>
+
+<script>
+  function initHeader() {
+    var lastScrollY = getScrollPos().y;
+    var documentElement = document.documentElement;
+
+    function storeScrollData() {
+      var y = getScrollPos().y;var scrollStatus = "";
+
+      if (y <= 0) {
+        scrollStatus = "top";
+      } else if ((window.innerHeight + y) >= document.body.offsetHeight) {
+        scrollStatus = "bottom";
+      } else {
+        var isScrollDown = (y - lastScrollY > 0) ? true : false;
+        scrollStatus = isScrollDown ? "down" : "up";
+      }
+
+      lastScrollY = y;
+      documentElement.setAttribute("data-scroll-status", scrollStatus);
+    }
+
+    window.addEventListener('scroll', function(e) {
+      storeScrollData();
+    });
+
+    storeScrollData();
+  }
+  document.addEventListener('DOMContentLoaded', initHeader);
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<script>
+  function hashLocate(hashValue) {
+    hashValue = hashValue.replace(/^.*#h-/, '');
+    hashValue = decodeURIComponent(hashValue);
+    var element = document.getElementById(hashValue);
+
+    if (!element) {
+      return;
+    }
+
+    var header = document.querySelector('header.site-header');
+    var headerRect = header.getBoundingClientRect();
+    var headerTop = Math.floor(headerRect.top);
+    var headerHeight = Math.floor(headerRect.height);
+    var scrollPos = getScrollPos();
+    var offsetY = element.offsetTop - (headerTop + headerHeight + 20);
+
+    if (offsetY == scrollPos.y) {
+      return;
+    }
+
+    if (headerTop == 0  && offsetY > scrollPos.y) {
+      offsetY += headerHeight + 2;
+    } else if (headerTop < 0  && offsetY < scrollPos.y) {
+      offsetY -= headerHeight - 2;
+    }
+
+    smoothScrollTo(offsetY);
+  }
+
+  // The first event occurred
+  window.addEventListener('load', function(event) {
+    if (window.location.hash) {
+      hashLocate(window.location.hash);
+    }
+  });
+
+  // The first event occurred
+  window.addEventListener('click', function(event) {
+    if (event.target.tagName.toLowerCase() == 'a') {
+      hashLocate(event.target.getAttribute('href'));
+    }
+  });
+</script>
+<div class="theme-toggle">
+  <input type="checkbox" id="theme-switch">
+  <label for="theme-switch">
+    <div class="toggle"></div>
+    <div class="names">
+      <p class="light">Light</p>
+      <p class="dark">Dark</p>
+    </div>
+  </label>
+</div>
+
+
+
+
+<script>
+  (function() {
+    var sw = document.getElementById('theme-switch');
+    var html = document.getElementsByTagName('html')[0];
+    var nightModeOption = ('auto' || 'auto').toLowerCase();
+    var storage = nightModeOption === 'manual'
+        ? localStorage
+        : sessionStorage;
+    var themeData = loadThemeData();
+
+    function saveThemeData(data) {
+      storage.setItem('theme', JSON.stringify(data));
+    }
+
+    function loadThemeData() {
+      var data = storage.getItem('theme');
+      try {
+        data = JSON.parse(data ? data : '');
+      } catch(e) {
+        data = { nightShift: undefined, autoToggleAt: 0 };
+        saveThemeData(data);
+      }
+      return data;
+    }
+
+    function handleThemeToggle(nightShift) {
+      themeData.nightShift = nightShift;
+      saveThemeData(themeData);
+      html.dataset.theme = nightShift ? 'dark' : 'light';
+      setTimeout(function() {
+        sw.checked = nightShift ? true : false;
+      }, 50);
+    }
+
+    function autoThemeToggle() {
+      // Next time point of theme toggle
+      var now = new Date();
+      var toggleAt = new Date();
+      var hours = now.getHours();
+      var nightShift = hours >= 19 || hours <=7;
+
+      if (nightShift) {
+        if (hours > 7) {
+          toggleAt.setDate(toggleAt.getDate() + 1);
+        }
+        toggleAt.setHours(7);
+      } else {
+        toggleAt.setHours(19);
+      }
+
+      toggleAt.setMinutes(0);
+      toggleAt.setSeconds(0);
+      toggleAt.setMilliseconds(0)
+
+      var delay = toggleAt.getTime() - now.getTime();
+
+      // auto toggle theme mode
+      setTimeout(function() {
+        handleThemeToggle(!nightShift);
+      }, delay);
+
+      return {
+        nightShift: nightShift,
+        toggleAt: toggleAt.getTime()
+      };
+    }
+
+    // Listen the theme toggle event
+    sw.addEventListener('change', function(event) {
+      handleThemeToggle(event.target.checked);
+    });
+
+    if (nightModeOption == 'auto') {
+      var data = autoThemeToggle();
+
+      // Toggle theme by local setting
+      if (data.toggleAt > themeData.autoToggleAt) {
+        themeData.autoToggleAt = data.toggleAt;
+        handleThemeToggle(data.nightShift);
+      } else {
+        handleThemeToggle(themeData.nightShift);
+      }
+    } else if (nightModeOption == 'manual') {
+      handleThemeToggle(themeData.nightShift);
+    } else {
+      var nightShift = themeData.nightShift;
+      if (nightShift === undefined) {
+        nightShift = nightModeOption === 'on';
+      }
+      handleThemeToggle(nightShift);
+    }
+  })();
+</script>
+<main class="page-content" aria-label="Content">
+      <div class="wrapper">
+        <div class="framework">
+  <section class="main">
+
+     
+
+
+
+
+
+
+  
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+  
+  <div class="page-segments">
+  <ul class="page-segments-list">
+    
+    <h2 id="2026" class="segment-name">2026</h2>
+      
+      
+        
+        <li> 
+<span class="post-meta">Jul 11, 2026</span>
+<span>
+  <a class="post-link" href="/jekyll-theme-yat/ai%E9%96%8B%E7%99%BA/2026/07/11/ai-agent-terminal-herdr-cmux.html">
+    AIエージェント前提のターミナル Herdr と cmux
+  </a>
+</span>
+ </li>
+        
+      
+        
+        <li> 
+<span class="post-meta">Jun 24, 2026</span>
+<span>
+  <a class="post-link" href="/jekyll-theme-yat/ai%E9%96%8B%E7%99%BA/2026/06/24/gsd-core-ai-coding-workflow.html">
+    GSD CoreでAIコーディングを仕様駆動の工程に変える
+  </a>
+</span>
+ </li>
+        
+      
+        
+        <li> 
+<span class="post-meta">Jun 24, 2026</span>
+<span>
+  <a class="post-link" href="/jekyll-theme-yat/ai%E9%96%8B%E7%99%BA/2026/06/24/ai-subscription-telehodai.html">
+    AIサブスクのレートリミットは令和のテレホーダイか
+  </a>
+</span>
+ </li>
+        
+      
+        
+        <li> 
+<span class="post-meta">Jun 23, 2026</span>
+<span>
+  <a class="post-link" href="/jekyll-theme-yat/ai%E9%96%8B%E7%99%BA/2026/06/23/mcp-security-operations.html">
+    MCPサーバーを安全に運用する
+  </a>
+</span>
+ </li>
+        
+      
+        
+        <li> 
+<span class="post-meta">Jun 22, 2026</span>
+<span>
+  <a class="post-link" href="/jekyll-theme-yat/ai%E9%96%8B%E7%99%BA/2026/06/22/mcp-local-remote-transports.html">
+    ローカルMCPとリモートMCPの違い
+  </a>
+</span>
+ </li>
+        
+      
+        
+        <li> 
+<span class="post-meta">Jun 21, 2026</span>
+<span>
+  <a class="post-link" href="/jekyll-theme-yat/ai%E9%96%8B%E7%99%BA/2026/06/21/build-mcp-server-python.html">
+    Pythonで小さなMCPサーバーを作る
+  </a>
+</span>
+ </li>
+        
+      
+        
+        <li> 
+<span class="post-meta">Jun 20, 2026</span>
+<span>
+  <a class="post-link" href="/jekyll-theme-yat/ai%E9%96%8B%E7%99%BA/2026/06/20/mcp-json-rpc-lifecycle.html">
+    MCPの接続と通信をJSON-RPCから理解する
+  </a>
+</span>
+ </li>
+        
+      
+        
+        <li> 
+<span class="post-meta">Jun 19, 2026</span>
+<span>
+  <a class="post-link" href="/jekyll-theme-yat/ai%E9%96%8B%E7%99%BA/2026/06/19/mcp-tools-resources-prompts.html">
+    MCPのTools・Resources・Promptsを使い分ける
+  </a>
+</span>
+ </li>
+        
+      
+        
+        <li> 
+<span class="post-meta">Jun 18, 2026</span>
+<span>
+  <a class="post-link" href="/jekyll-theme-yat/ai%E9%96%8B%E7%99%BA/2026/06/18/mcp-host-client-server.html">
+    MCPのHost・Client・Serverを整理する
+  </a>
+</span>
+ </li>
+        
+      
+        
+        <li> 
+<span class="post-meta">Jun 18, 2026</span>
+<span>
+  <a class="post-link" href="/jekyll-theme-yat/ai%E9%96%8B%E7%99%BA/2026/06/18/google-workspace-studio-guide.html">
+    Google Workspace Studio の活用アイデア
+  </a>
+</span>
+ </li>
+        
+      
+        
+        <li> 
+<span class="post-meta">Jun 18, 2026</span>
+<span>
+  <a class="post-link" href="/jekyll-theme-yat/ai%E9%96%8B%E7%99%BA/2026/06/18/claude-code-grill-me.html">
+    Claude Code の /grill-me: 実装前に設計を問い詰める
+  </a>
+</span>
+ </li>
+        
+      
+        
+        <li> 
+<span class="post-meta">Jun 17, 2026</span>
+<span>
+  <a class="post-link" href="/jekyll-theme-yat/ai%E9%96%8B%E7%99%BA/2026/06/17/mcp-protocol-overview.html">
+    MCPは何を標準化するプロトコルなのか
+  </a>
+</span>
+ </li>
+        
+      
+        
+        <li> 
+<span class="post-meta">Jun 16, 2026</span>
+<span>
+  <a class="post-link" href="/jekyll-theme-yat/%E9%96%8B%E7%99%BA/2026/06/16/spacex-ipo-kardashev-scale.html">
+    SpaceXのIPOとカルダシェフ・スケール
+  </a>
+</span>
+ </li>
+        
+      
+        
+        <li> 
+<span class="post-meta">Jun 16, 2026</span>
+<span>
+  <a class="post-link" href="/jekyll-theme-yat/ai%E9%96%8B%E7%99%BA/2026/06/16/openai-jony-ive-ai-hardware-vision.html">
+    OpenAIはなぜ「スクリーンのない」AIデバイスを作ろうとしているのか
+  </a>
+</span>
+ </li>
+        
+      
+        
+        <li> 
+<span class="post-meta">Jun 16, 2026</span>
+<span>
+  <a class="post-link" href="/jekyll-theme-yat/%E9%96%8B%E7%99%BA/2026/06/16/notion-database-personal-backend.html">
+    なぜ個人開発のバックエンドに Notion データベースを選ぶのか
+  </a>
+</span>
+ </li>
+        
+      
+        
+        <li> 
+<span class="post-meta">Jun 16, 2026</span>
+<span>
+  <a class="post-link" href="/jekyll-theme-yat/ai%E9%96%8B%E7%99%BA/2026/06/16/graphai-agent-workflow-engine.html">
+    GraphAIでAIエージェントのワークフローをYAML/JSONとして宣言的に書く
+  </a>
+</span>
+ </li>
+        
+      
+        
+        <li> 
+<span class="post-meta">Jun 13, 2026</span>
+<span>
+  <a class="post-link" href="/jekyll-theme-yat/ai%E9%96%8B%E7%99%BA/2026/06/13/openclaw-personal-ai-agent.html">
+    OpenClawで自分専用のAIエージェントを動かす
+  </a>
+</span>
+ </li>
+        
+      
+        
+        <li> 
+<span class="post-meta">Jun 13, 2026</span>
+<span>
+  <a class="post-link" href="/jekyll-theme-yat/%E9%96%8B%E7%99%BA/2026/06/13/nodejs-basics-for-vibe-coding.html">
+    バイブコーディングする人が知っておきたい Node.js 周辺の基礎知識
+  </a>
+</span>
+ </li>
+        
+      
+        
+        <li> 
+<span class="post-meta">Jun 13, 2026</span>
+<span>
+  <a class="post-link" href="/jekyll-theme-yat/%E9%96%8B%E7%99%BA/2026/06/13/github-useful-features.html">
+    まだ使っていない GitHub の便利機能を整理する
+  </a>
+</span>
+ </li>
+        
+      
+        
+        <li> 
+<span class="post-meta">Jun 13, 2026</span>
+<span>
+  <a class="post-link" href="/jekyll-theme-yat/%E9%96%8B%E7%99%BA/2026/06/13/github-secrets-guide.html">
+    GitHub Secrets で API キーを安全にワークフローへ渡す
+  </a>
+</span>
+ </li>
+        
+      
+        
+        <li> 
+<span class="post-meta">Jun 12, 2026</span>
+<span>
+  <a class="post-link" href="/jekyll-theme-yat/%E3%83%87%E3%83%BC%E3%82%BF%E3%82%A8%E3%83%B3%E3%82%B8%E3%83%8B%E3%82%A2%E3%83%AA%E3%83%B3%E3%82%B0/2026/06/12/2026-world-cup-soccer-data-revolution.html">
+    2026ワールドカップで見るサッカーのデータ革命
+  </a>
+</span>
+ </li>
+        
+      
+        
+        <li> 
+<span class="post-meta">Jun 11, 2026</span>
+<span>
+  <a class="post-link" href="/jekyll-theme-yat/ai%E9%96%8B%E7%99%BA/2026/06/11/mobile-first-ai-dev-issue-pr-workflow.html">
+    スマホで AI 開発を回す Issue/PR ベースワークフローの設計
+  </a>
+</span>
+ </li>
+        
+      
+        
+        <li> 
+<span class="post-meta">Jun 11, 2026</span>
+<span>
+  <a class="post-link" href="/jekyll-theme-yat/ai%E9%96%8B%E7%99%BA/2026/06/11/goose-agent-pyramid-hierarchy.html">
+    GooseとAI開発が解体するピラミッド型組織
+  </a>
+</span>
+ </li>
+        
+      
+        
+        <li> 
+<span class="post-meta">Jun 11, 2026</span>
+<span>
+  <a class="post-link" href="/jekyll-theme-yat/%E9%96%8B%E7%99%BA/2026/06/11/git-flow-guide.html">
+    チーム開発のブランチ戦略と Git Flow の使いどころ
+  </a>
+</span>
+ </li>
+        
+      
+        
+        <li> 
+<span class="post-meta">Jun 11, 2026</span>
+<span>
+  <a class="post-link" href="/jekyll-theme-yat/%E9%96%8B%E7%99%BA/2026/06/11/fde-role-business-model.html">
+    Forward Deployed Engineer のロールとビジネスモデル
+  </a>
+</span>
+ </li>
+        
+      
+        
+        <li> 
+<span class="post-meta">Jun 10, 2026</span>
+<span>
+  <a class="post-link" href="/jekyll-theme-yat/%E3%82%A4%E3%83%B3%E3%83%95%E3%83%A9/2026/06/10/tailscale-guide.html">
+    Tailscaleの仕組みと使いどころ
+  </a>
+</span>
+ </li>
+        
+      
+        
+        <li> 
+<span class="post-meta">Jun 10, 2026</span>
+<span>
+  <a class="post-link" href="/jekyll-theme-yat/ai%E9%96%8B%E7%99%BA/2026/06/10/solo-dev-multi-agent-setup.html">
+    1人開発でマルチエージェント体制を作る方法
+  </a>
+</span>
+ </li>
+        
+      
+        
+        <li> 
+<span class="post-meta">Jun 10, 2026</span>
+<span>
+  <a class="post-link" href="/jekyll-theme-yat/%E9%96%8B%E7%99%BA/2026/06/10/git-submodule-subtree.html">
+    Git submodule と Git subtree の違いと使い分け
+  </a>
+</span>
+ </li>
+        
+      
+        
+        <li> 
+<span class="post-meta">Jun 10, 2026</span>
+<span>
+  <a class="post-link" href="/jekyll-theme-yat/ai%E9%96%8B%E7%99%BA/2026/06/10/claude-mythos-fable.html">
+    Claude Mythos（Fable）とは何か
+  </a>
+</span>
+ </li>
+        
+      
+        
+        <li> 
+<span class="post-meta">Jun 10, 2026</span>
+<span>
+  <a class="post-link" href="/jekyll-theme-yat/ai%E9%96%8B%E7%99%BA/2026/06/10/claude-code-skills-guide.html">
+    Claude Code のスキルを今から使いはじめる
+  </a>
+</span>
+ </li>
+        
+      
+        
+        <li> 
+<span class="post-meta">Jun 09, 2026</span>
+<span>
+  <a class="post-link" href="/jekyll-theme-yat/%E9%96%8B%E7%99%BA/2026/06/09/state-transition-diagram-guide.html">
+    状態遷移図の書き方と使いどころ
+  </a>
+</span>
+ </li>
+        
+      
+        
+        <li> 
+<span class="post-meta">Jun 09, 2026</span>
+<span>
+  <a class="post-link" href="/jekyll-theme-yat/ai%E9%96%8B%E7%99%BA/2026/06/09/rlhf-model-training.html">
+    RLHFがモデルの返答をどう変えるか
+  </a>
+</span>
+ </li>
+        
+      
+        
+        <li> 
+<span class="post-meta">Jun 09, 2026</span>
+<span>
+  <a class="post-link" href="/jekyll-theme-yat/ai%E9%96%8B%E7%99%BA/2026/06/09/claude-code-android-patterns.html">
+    Android から Claude Code を使うパターンと選び方
+  </a>
+</span>
+ </li>
+        
+      
+        
+        <li> 
+<span class="post-meta">Jun 09, 2026</span>
+<span>
+  <a class="post-link" href="/jekyll-theme-yat/ai%E9%96%8B%E7%99%BA/2026/06/09/beast-mode-ai-tools.html">
+    「Beast モード」でAIはどこまで変わるか
+  </a>
+</span>
+ </li>
+        
+      
+        
+        <li> 
+<span class="post-meta">Jun 08, 2026</span>
+<span>
+  <a class="post-link" href="/jekyll-theme-yat/ai%E9%96%8B%E7%99%BA/2026/06/08/opencode-guide.html">
+    LLM を選べる OSS コーディングエージェント opencode
+  </a>
+</span>
+ </li>
+        
+      
+        
+        <li> 
+<span class="post-meta">Jun 08, 2026</span>
+<span>
+  <a class="post-link" href="/jekyll-theme-yat/ai%E9%96%8B%E7%99%BA/2026/06/08/harness-engineering-guide.html">
+    ハーネスエンジニアリングとは何か
+  </a>
+</span>
+ </li>
+        
+      
+        
+        <li> 
+<span class="post-meta">Jun 08, 2026</span>
+<span>
+  <a class="post-link" href="/jekyll-theme-yat/ai%E9%96%8B%E7%99%BA/2026/06/08/claude-code-thinking-words.html">
+    Claude Code が「考え中」に表示する英単語を全部調べた
+  </a>
+</span>
+ </li>
+        
+      
+        
+        <li> 
+<span class="post-meta">Jun 08, 2026</span>
+<span>
+  <a class="post-link" href="/jekyll-theme-yat/ai%E9%96%8B%E7%99%BA/2026/06/08/agent-reward-hacking-alignment.html">
+    エージェントが「ルールの穴」を突く
+  </a>
+</span>
+ </li>
+        
+      
+        
+        <li> 
+<span class="post-meta">Jun 07, 2026</span>
+<span>
+  <a class="post-link" href="/jekyll-theme-yat/%E9%96%8B%E7%99%BA/2026/06/07/python-black-guide.html">
+    AI コーディング向けの Python フォーマッター Black
+  </a>
+</span>
+ </li>
+        
+      
+        
+        <li> 
+<span class="post-meta">Jun 07, 2026</span>
+<span>
+  <a class="post-link" href="/jekyll-theme-yat/%E9%96%8B%E7%99%BA/2026/06/07/openapi-guide.html">
+    OpenAPI で API の仕様とドキュメントを同期させる
+  </a>
+</span>
+ </li>
+        
+      
+        
+        <li> 
+<span class="post-meta">Jun 07, 2026</span>
+<span>
+  <a class="post-link" href="/jekyll-theme-yat/ai%E9%96%8B%E7%99%BA/2026/06/07/multi-agent-asymmetric-handoff.html">
+    Claude と Codex のマルチエージェント引き継ぎ問題と解消パターン
+  </a>
+</span>
+ </li>
+        
+      
+        
+        <li> 
+<span class="post-meta">Jun 07, 2026</span>
+<span>
+  <a class="post-link" href="/jekyll-theme-yat/%E9%96%8B%E7%99%BA/2026/06/07/alembic-database-migration-guide.html">
+    Alembic でデータベーススキーマの変更を管理する
+  </a>
+</span>
+ </li>
+        
+      
+        
+        <li> 
+<span class="post-meta">Jun 07, 2026</span>
+<span>
+  <a class="post-link" href="/jekyll-theme-yat/ai%E9%96%8B%E7%99%BA/2026/06/07/agent-context-management-2026.html">
+    エージェントを長く自律動作させるためのコンテキスト設計
+  </a>
+</span>
+ </li>
+        
+      
+        
+        <li> 
+<span class="post-meta">Jun 06, 2026</span>
+<span>
+  <a class="post-link" href="/jekyll-theme-yat/%E9%96%8B%E7%99%BA/2026/06/06/vercel-frontend-selection.html">
+    なぜフロントエンドに Vercel を選ぶのか
+  </a>
+</span>
+ </li>
+        
+      
+        
+        <li> 
+<span class="post-meta">Jun 06, 2026</span>
+<span>
+  <a class="post-link" href="/jekyll-theme-yat/%E9%96%8B%E7%99%BA/2026/06/06/supabase-vs-railway-comparison.html">
+    Supabase vs Railway vs Neon バックエンド選定 (2026年版)
+  </a>
+</span>
+ </li>
+        
+      
+        
+        <li> 
+<span class="post-meta">Jun 05, 2026</span>
+<span>
+  <a class="post-link" href="/jekyll-theme-yat/%E3%83%87%E3%83%BC%E3%82%BF%E3%82%A8%E3%83%B3%E3%82%B8%E3%83%8B%E3%82%A2%E3%83%AA%E3%83%B3%E3%82%B0/2026/06/05/postgresql-jsonb-guide.html">
+    PostgreSQL JSONB 完全ガイド
+  </a>
+</span>
+ </li>
+        
+      
+    
+    <h2 id="2024" class="segment-name">2024</h2>
+      
+      
+        
+        <li> 
+<span class="post-meta">May 14, 2024</span>
+<span>
+  <a class="post-link" href="/jekyll-theme-yat/%E9%96%8B%E7%99%BA/2024/05/14/python-dev02.html">
+    Python Web開発のためのGitセットアップ
+  </a>
+</span>
+ </li>
+        
+      
+        
+        <li> 
+<span class="post-meta">May 13, 2024</span>
+<span>
+  <a class="post-link" href="/jekyll-theme-yat/%E9%96%8B%E7%99%BA/2024/05/13/python-dev01.html">
+    Docker ComposeとDockerfileでPython開発環境を構築する
+  </a>
+</span>
+ </li>
+        
+      
+    
+    <h2 id="2023" class="segment-name">2023</h2>
+      
+      
+        
+        <li> 
+<span class="post-meta">Sep 17, 2023</span>
+<span>
+  <a class="post-link" href="/jekyll-theme-yat/%E9%96%8B%E7%99%BA/2023/09/17/docker-data-analysis.html">
+    【Docker &amp; VSCode】Pythonデータ分析環境の構築と運用
+  </a>
+</span>
+ </li>
+        
+      
+        
+        <li> 
+<span class="post-meta">Jun 24, 2023</span>
+<span>
+  <a class="post-link" href="/jekyll-theme-yat/%E9%96%8B%E7%99%BA/2023/06/24/vscode-shortcut.html">
+    【VSCode】よく使うショートカット10選
+  </a>
+</span>
+ </li>
+        
+      
+        
+        <li> 
+<span class="post-meta">Jun 03, 2023</span>
+<span>
+  <a class="post-link" href="/jekyll-theme-yat/%E3%83%96%E3%83%AD%E3%82%B0/2023/06/03/github-pages-jekyll.html">
+    JekyllとGitHub Pagesを使ったブログサイトの記事更新手順
+  </a>
+</span>
+ </li>
+        
+      
+        
+        <li> 
+<span class="post-meta">May 26, 2023</span>
+<span>
+  <a class="post-link" href="/jekyll-theme-yat/%E3%83%96%E3%83%AD%E3%82%B0/2023/05/26/google-analytics.html">
+    JekyllとGitHub PagesでGoogle Analyticsを導入する
+  </a>
+</span>
+ </li>
+        
+      
+        
+        <li> 
+<span class="post-meta">May 25, 2023</span>
+<span>
+  <a class="post-link" href="/jekyll-theme-yat/%E9%96%8B%E7%99%BA/2023/05/25/python-venv.html">
+    Pythonとvenv: 仮想環境のスムーズな管理まとめ
+  </a>
+</span>
+ </li>
+        
+      
+        
+        <li> 
+<span class="post-meta">May 05, 2023</span>
+<span>
+  <a class="post-link" href="/jekyll-theme-yat/%E9%96%8B%E7%99%BA/2023/05/05/docker-mount.html">
+    DockerでUbuntuを動かそう！- マウント編
+  </a>
+</span>
+ </li>
+        
+      
+        
+        <li> 
+<span class="post-meta">May 04, 2023</span>
+<span>
+  <a class="post-link" href="/jekyll-theme-yat/%E9%96%8B%E7%99%BA/2023/05/04/docker-ubuntu.html">
+    DockerでUbuntuを動かそう！
+  </a>
+</span>
+ </li>
+        
+      
+        
+        <li> 
+<span class="post-meta">May 03, 2023</span>
+<span>
+  <a class="post-link" href="/jekyll-theme-yat/%E9%96%8B%E7%99%BA/2023/05/03/git-entry.html">
+    Git入門
+  </a>
+</span>
+ </li>
+        
+      
+    
+  </ul>
+</div>
+
+
+  </section>
+  <section class="sidebar" style="margin-left: 15px;">
+    <!-- Get sidebar items -->
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="common-list">
+  <ul>
+<li>
+      <a href="/jekyll-theme-yat/index.html">
+        All<span>56</span>
+      </a>
+    </li>
+
+    
+      <li>
+        <a href="/jekyll-theme-yat/archives.html#h-2023">
+          2023 <span>8</span>
+        </a>
+      </li>
+    
+      <li>
+        <a href="/jekyll-theme-yat/archives.html#h-2024">
+          2024 <span>2</span>
+        </a>
+      </li>
+    
+      <li>
+        <a href="/jekyll-theme-yat/archives.html#h-2026">
+          2026 <span>46</span>
+        </a>
+      </li>
+    
+  </ul>
+</div>
+
+</section>
+</div>
+
+      </div>
+    </main><footer class="site-footer h-card">
+  <data class="u-url" href="/jekyll-theme-yat/"></data>
+
+  <div class="wrapper">
+    <div class="site-footer-inner">
+<div>Waka-DS © 2021-2026</div>
+      <div>Powered by <a title="Jekyll is a simple, blog-aware, static site
+      generator." href="http://jekyllrb.com/">Jekyll</a> &amp; <a title="Yat, yet
+      another theme." href="https://github.com/jeffreytse/jekyll-theme-yat">Yat Theme</a>.</div>
+      <div class="footer-col rss-subscribe">Subscribe <a href="/jekyll-theme-yat/feed.xml">via RSS</a>
+</div>
+    </div>
+  </div>
+</footer>
+</body>
+</html>

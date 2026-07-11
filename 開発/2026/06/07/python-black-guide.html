@@ -1,0 +1,1457 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <script>
+  (function() {
+    try {
+      var p = localStorage.getItem('preferred_lang');
+      if (!p) return;
+      var path = window.location.pathname;
+      var ja = ['/', '/archives.html', '/categories.html', '/tags.html', '/about.html'];
+      var en = ['/en/', '/en/archives.html', '/en/categories.html', '/en/tags.html', '/en/about.html'];
+      if (p === 'en' && ja.indexOf(path) !== -1) {
+        window.location.replace('/en' + (path === '/' ? '/' : path));
+      } else if (p === 'ja' && en.indexOf(path) !== -1) {
+        window.location.replace(path.slice(3) || '/');
+      }
+    } catch(e) {}
+  })();
+  </script>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="google-translate-customization" content="108d9124921d80c3-80e20d618ff053c8-g4f02ec6f3dba68b7-c">
+<!-- Begin Jekyll SEO tag v2.9.0 -->
+<title>AI コーディング向けの Python フォーマッター Black | Waka-DS.com</title>
+<meta name="generator" content="Jekyll v4.4.1">
+<meta property="og:title" content="AI コーディング向けの Python フォーマッター Black">
+<meta name="author" content="Waka-DS">
+<meta property="og:locale" content="ja">
+<meta name="description" content="AI に Python コードを書かせていると、同じプロジェクトの中でも次のような違いが生まれやすい。">
+<meta name="twitter:description" property="og:description" content="AI に Python コードを書かせていると、同じプロジェクトの中でも次のような違いが生まれやすい。">
+<link rel="canonical" href="/jekyll-theme-yat/%E9%96%8B%E7%99%BA/2026/06/07/python-black-guide.html">
+<meta property="og:url" content="/jekyll-theme-yat/%E9%96%8B%E7%99%BA/2026/06/07/python-black-guide.html">
+<meta property="og:site_name" content="Waka-DS.com">
+<meta property="og:type" content="article">
+<meta property="article:published_time" content="2026-06-07T00:00:00+00:00">
+<meta property="article:modified_time" content="2026-06-07T00:00:00+00:00">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="AI コーディング向けの Python フォーマッター Black">
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":"Waka-DS"},"dateModified":"2026-06-07T00:00:00+00:00","datePublished":"2026-06-07T00:00:00+00:00","description":"AI に Python コードを書かせていると、同じプロジェクトの中でも次のような違いが生まれやすい。","headline":"AI コーディング向けの Python フォーマッター Black","mainEntityOfPage":{"@type":"WebPage","@id":"/jekyll-theme-yat/%E9%96%8B%E7%99%BA/2026/06/07/python-black-guide.html"},"url":"/jekyll-theme-yat/%E9%96%8B%E7%99%BA/2026/06/07/python-black-guide.html"}</script>
+<!-- End Jekyll SEO tag -->
+<link rel="shortcut icon" href="">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=Noto+Sans+JP:wght@400;500;700&amp;display=swap">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+  <link rel="stylesheet" href="/jekyll-theme-yat/assets/css/main.css">
+  <script src="/jekyll-theme-yat/assets/js/main.js"></script><link type="application/atom+xml" rel="alternate" href="/jekyll-theme-yat/feed.xml" title="Waka-DS.com">
+<script>
+  function initGoogleAnalytics() {
+    var doNotTrack = (window.doNotTrack === "1" || navigator.doNotTrack === "1" ||
+      navigator.doNotTrack === "yes" || navigator.msDoNotTrack === "1");
+    var enableDNT = "true" == "true";
+
+    if (!enableDNT || !doNotTrack) {
+      var ga_id = 'G-XNP1RBTG9C';
+
+      var script = document.createElement('script');
+      script.async = true;
+      script.src = 'https://www.googletagmanager.com/gtag/js?id=' + ga_id;
+      document.head.appendChild(script);
+
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', ga_id);
+    }
+  }
+  window.addEventListener("load", initGoogleAnalytics);
+</script>
+<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/styles/default.min.css">
+<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/highlight.min.js"></script>
+<!-- and it's easy to individually load additional languages -->
+<script charset="UTF-8" src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/languages/go.min.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<script>
+// Init highlight js
+document.addEventListener('DOMContentLoaded', function(event) {
+  var els = document.querySelectorAll('pre code')
+
+  function addLangData(block) {
+    var outer = block.parentElement.parentElement.parentElement;
+    var lang = block.getAttribute('data-lang');
+    for (var i = 0; i < outer.classList.length; i++) {
+      var cls = outer.classList[i];
+      if (cls.startsWith('language-')) {
+        lang = cls;
+        break;
+      }
+    }
+    if (!lang) {
+      cls = block.getAttribute('class');
+      lang = cls ? cls.replace('hljs ', '') : '';
+    }
+    if (lang.startsWith('language-')) {
+      lang = lang.substr(9);
+    }
+    block.setAttribute('class', 'hljs ' + lang);
+    block.parentNode.setAttribute('data-lang', lang);
+  }
+
+  function addBadge(block) {
+    var enabled = ('true' || 'true').toLowerCase();
+    if (enabled == 'true') {
+      var pre = block.parentElement;
+      pre.classList.add('badge');
+    }
+  }
+
+  function handle(block) {
+    addLangData(block);
+    addBadge(block)
+    hljs.highlightBlock(block);
+  }
+
+  for (var i = 0; i < els.length; i++) {
+    var el = els[i];
+    handle(el);
+  }
+});
+</script>
+
+<style>
+  /* code language badge */
+  pre.badge::before {
+    content: attr(data-lang);
+    color: #fff;
+    background-color: #0d9488;
+    padding: 0 .5em;
+    border-radius: 0 2px;
+    text-transform: uppercase;
+    text-align: center;
+    min-width: 32px;
+    display: inline-block;
+    position: absolute;
+    right: 0;
+  }
+
+  /* fix wrong badge display for firefox browser */
+  code > table pre::before {
+    display: none;
+  }
+</style>
+</head>
+<body>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<header class="site-header " role="banner">
+
+  <div class="wrapper">
+    <div class="site-header-inner">
+<span class="site-brand"><a class="site-brand-inner" rel="author" href="/jekyll-theme-yat/">
+  <img class="site-favicon" title="Waka-DS.com" src="" onerror="this.style.display='none'">
+  Waka-DS.com
+</a>
+</span><nav class="site-nav">
+          <input type="checkbox" id="nav-trigger" class="nav-trigger">
+          <label for="nav-trigger">
+            <span class="menu-icon">
+              <svg viewbox="0 0 18 15" width="18px" height="15px">
+                <path d="M18,1.484c0,0.82-0.665,1.484-1.484,1.484H1.484C0.665,2.969,0,2.304,0,1.484l0,0C0,0.665,0.665,0,1.484,0 h15.032C17.335,0,18,0.665,18,1.484L18,1.484z M18,7.516C18,8.335,17.335,9,16.516,9H1.484C0.665,9,0,8.335,0,7.516l0,0 c0-0.82,0.665-1.484,1.484-1.484h15.032C17.335,6.031,18,6.696,18,7.516L18,7.516z M18,13.516C18,14.335,17.335,15,16.516,15H1.484 C0.665,15,0,14.335,0,13.516l0,0c0-0.82,0.665-1.483,1.484-1.483h15.032C17.335,12.031,18,12.695,18,13.516L18,13.516z"></path>
+              </svg>
+            </span>
+          </label>
+
+          <div class="trigger">
+<a class="page-link" href="/jekyll-theme-yat/about.html">ABOUT</a><a class="page-link" href="/jekyll-theme-yat/archives.html">ARCHIVES</a><a class="page-link" href="/jekyll-theme-yat/categories.html">CATEGORIES</a><a class="page-link" href="/jekyll-theme-yat/">HOME</a><a class="page-link" href="/jekyll-theme-yat/tags.html">TAGS</a><span class="page-link">
+                <span class="lang-switcher lang-switcher--nav"><span class="lang-btn lang-btn--active">日本語</span><a class="lang-btn" href="/jekyll-theme-yat/development/2026/06/07/python-black-guide-en.html">English</a></span>
+              </span>
+</div>
+        </nav>
+</div>
+  </div>
+</header>
+
+<script>
+  function initHeader() {
+    var lastScrollY = getScrollPos().y;
+    var documentElement = document.documentElement;
+
+    function storeScrollData() {
+      var y = getScrollPos().y;var scrollStatus = "";
+
+      if (y <= 0) {
+        scrollStatus = "top";
+      } else if ((window.innerHeight + y) >= document.body.offsetHeight) {
+        scrollStatus = "bottom";
+      } else {
+        var isScrollDown = (y - lastScrollY > 0) ? true : false;
+        scrollStatus = isScrollDown ? "down" : "up";
+      }
+
+      lastScrollY = y;
+      documentElement.setAttribute("data-scroll-status", scrollStatus);
+    }
+
+    window.addEventListener('scroll', function(e) {
+      storeScrollData();
+    });
+
+    storeScrollData();
+  }
+  document.addEventListener('DOMContentLoaded', initHeader);
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<script>
+  function hashLocate(hashValue) {
+    hashValue = hashValue.replace(/^.*#h-/, '');
+    hashValue = decodeURIComponent(hashValue);
+    var element = document.getElementById(hashValue);
+
+    if (!element) {
+      return;
+    }
+
+    var header = document.querySelector('header.site-header');
+    var headerRect = header.getBoundingClientRect();
+    var headerTop = Math.floor(headerRect.top);
+    var headerHeight = Math.floor(headerRect.height);
+    var scrollPos = getScrollPos();
+    var offsetY = element.offsetTop - (headerTop + headerHeight + 20);
+
+    if (offsetY == scrollPos.y) {
+      return;
+    }
+
+    if (headerTop == 0  && offsetY > scrollPos.y) {
+      offsetY += headerHeight + 2;
+    } else if (headerTop < 0  && offsetY < scrollPos.y) {
+      offsetY -= headerHeight - 2;
+    }
+
+    smoothScrollTo(offsetY);
+  }
+
+  // The first event occurred
+  window.addEventListener('load', function(event) {
+    if (window.location.hash) {
+      hashLocate(window.location.hash);
+    }
+  });
+
+  // The first event occurred
+  window.addEventListener('click', function(event) {
+    if (event.target.tagName.toLowerCase() == 'a') {
+      hashLocate(event.target.getAttribute('href'));
+    }
+  });
+</script>
+<div class="theme-toggle">
+  <input type="checkbox" id="theme-switch">
+  <label for="theme-switch">
+    <div class="toggle"></div>
+    <div class="names">
+      <p class="light">Light</p>
+      <p class="dark">Dark</p>
+    </div>
+  </label>
+</div>
+
+
+
+
+<script>
+  (function() {
+    var sw = document.getElementById('theme-switch');
+    var html = document.getElementsByTagName('html')[0];
+    var nightModeOption = ('auto' || 'auto').toLowerCase();
+    var storage = nightModeOption === 'manual'
+        ? localStorage
+        : sessionStorage;
+    var themeData = loadThemeData();
+
+    function saveThemeData(data) {
+      storage.setItem('theme', JSON.stringify(data));
+    }
+
+    function loadThemeData() {
+      var data = storage.getItem('theme');
+      try {
+        data = JSON.parse(data ? data : '');
+      } catch(e) {
+        data = { nightShift: undefined, autoToggleAt: 0 };
+        saveThemeData(data);
+      }
+      return data;
+    }
+
+    function handleThemeToggle(nightShift) {
+      themeData.nightShift = nightShift;
+      saveThemeData(themeData);
+      html.dataset.theme = nightShift ? 'dark' : 'light';
+      setTimeout(function() {
+        sw.checked = nightShift ? true : false;
+      }, 50);
+    }
+
+    function autoThemeToggle() {
+      // Next time point of theme toggle
+      var now = new Date();
+      var toggleAt = new Date();
+      var hours = now.getHours();
+      var nightShift = hours >= 19 || hours <=7;
+
+      if (nightShift) {
+        if (hours > 7) {
+          toggleAt.setDate(toggleAt.getDate() + 1);
+        }
+        toggleAt.setHours(7);
+      } else {
+        toggleAt.setHours(19);
+      }
+
+      toggleAt.setMinutes(0);
+      toggleAt.setSeconds(0);
+      toggleAt.setMilliseconds(0)
+
+      var delay = toggleAt.getTime() - now.getTime();
+
+      // auto toggle theme mode
+      setTimeout(function() {
+        handleThemeToggle(!nightShift);
+      }, delay);
+
+      return {
+        nightShift: nightShift,
+        toggleAt: toggleAt.getTime()
+      };
+    }
+
+    // Listen the theme toggle event
+    sw.addEventListener('change', function(event) {
+      handleThemeToggle(event.target.checked);
+    });
+
+    if (nightModeOption == 'auto') {
+      var data = autoThemeToggle();
+
+      // Toggle theme by local setting
+      if (data.toggleAt > themeData.autoToggleAt) {
+        themeData.autoToggleAt = data.toggleAt;
+        handleThemeToggle(data.nightShift);
+      } else {
+        handleThemeToggle(themeData.nightShift);
+      }
+    } else if (nightModeOption == 'manual') {
+      handleThemeToggle(themeData.nightShift);
+    } else {
+      var nightShift = themeData.nightShift;
+      if (nightShift === undefined) {
+        nightShift = nightModeOption === 'on';
+      }
+      handleThemeToggle(nightShift);
+    }
+  })();
+</script>
+<main class="page-content" aria-label="Content">
+      <div class="wrapper">
+        <div class="framework">
+  <section class="main">
+
+     <div class="post">
+  <section>
+
+
+
+
+
+
+
+
+
+<header class="post-header">
+  <h1 class="post-title p-name" itemprop="name headline">AI コーディング向けの Python フォーマッター Black</h1>
+  <h2 class="post-subtitle">フォーマッターの役割から設定・VS Code・CIでの使い方までやさしく解説</h2>
+
+  <p class="post-meta">
+    <time class="dt-published" datetime="2026-06-07T00:00:00+00:00" itemprop="datePublished"><i class="fa fa-calendar"></i> Jun 07, 2026
+    </time>
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <span class="post-reading-time left-vsplit"><i class="fa fa-clock-o"></i> About 26 mins</span>
+  </p>
+<div class="post-tags">
+<a class="post-tag" href="/jekyll-theme-yat/tags.html#Python">#Python</a><a class="post-tag" href="/jekyll-theme-yat/tags.html#Black">#Black</a><a class="post-tag" href="/jekyll-theme-yat/tags.html#%E3%82%B3%E3%83%BC%E3%83%89%E3%83%95%E3%82%A9%E3%83%BC%E3%83%9E%E3%83%83%E3%82%BF%E3%83%BC">#コードフォーマッター</a><a class="post-tag" href="/jekyll-theme-yat/tags.html#AI%E3%83%8D%E3%82%A4%E3%83%86%E3%82%A3%E3%83%96%E9%96%8B%E7%99%BA">#AIネイティブ開発</a><a class="post-tag" href="/jekyll-theme-yat/tags.html#%E9%96%8B%E7%99%BA%E7%92%B0%E5%A2%83">#開発環境</a>
+</div></header>
+<article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
+
+    <div class="post-content e-content" itemprop="articleBody">
+
+      <p>AI に Python コードを書かせていると、同じプロジェクトの中でも次のような違いが生まれやすい。</p>
+
+<ul>
+  <li>シングルクォートとダブルクォートが混在する</li>
+  <li>引数が1行に詰め込まれる</li>
+  <li>改行や空白の入れ方がファイルごとに違う</li>
+  <li>人間と AI が編集するたびに、関係のない整形差分が発生する</li>
+</ul>
+
+<p>コードは動くため、後回しにしがちな問題だ。しかし、変更量が増えるほどコードレビューが読みにくくなり、本当に確認すべきロジックの変更が埋もれてしまう。</p>
+
+<p>この「コードの見た目」を自動で統一するのが <strong>Black</strong> である。</p>
+
+<hr>
+
+<h2 id="結論を先に">結論を先に</h2>
+
+<p>Black は、Python コードを決められたスタイルに自動整形する <strong>コードフォーマッター</strong> である。</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>black <span class="nb">.</span>
+</code></pre></div></div>
+
+<p>基本的にはこのコマンドだけで、プロジェクト内の Python ファイルをまとめて整形できる。</p>
+
+<p>Black の役割を一言で表すなら、次のようになる。</p>
+
+<blockquote>
+  <p>コードの書き方を人間や AI に考えさせず、プロジェクト全体で同じ見た目にする。</p>
+</blockquote>
+
+<p>Black はバグを見つけるツールではない。コードを高速化するツールでもない。<strong>ロジックはそのままに、表記を統一するためのツール</strong>である。</p>
+
+<hr>
+
+<h2 id="black-は何をしているのか">Black は何をしているのか</h2>
+
+<p>Python では、同じ処理をさまざまな見た目で書ける。</p>
+
+<p>たとえば、次のコードは実行できるが、空白や改行が不統一で読みにくい。</p>
+
+<h3 id="black-を実行する前">Black を実行する前</h3>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">from</span> <span class="n">typing</span> <span class="kn">import</span>  <span class="n">Any</span><span class="p">,</span><span class="n">Dict</span>
+
+<span class="k">def</span> <span class="nf">build_prompt</span><span class="p">(</span><span class="n">user_name</span><span class="p">:</span><span class="nb">str</span><span class="p">,</span><span class="n">logs</span><span class="p">:</span><span class="nb">list</span><span class="p">[</span><span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span><span class="n">Any</span><span class="p">]],</span><span class="n">model</span><span class="p">:</span> <span class="nb">str</span><span class="o">=</span><span class="sh">'</span><span class="s">gpt-4.1</span><span class="sh">'</span><span class="p">,</span><span class="n">max_output_tokens</span><span class="p">:</span><span class="nb">int</span><span class="o">=</span><span class="mi">1000</span><span class="p">):</span>
+  <span class="n">messages</span><span class="o">=</span><span class="p">[{</span><span class="sh">'</span><span class="s">role</span><span class="sh">'</span><span class="p">:</span><span class="sh">'</span><span class="s">system</span><span class="sh">'</span><span class="p">,</span><span class="sh">'</span><span class="s">content</span><span class="sh">'</span><span class="p">:</span><span class="sh">'</span><span class="s">You are a log analyst.</span><span class="sh">'</span><span class="p">},{</span><span class="sh">'</span><span class="s">role</span><span class="sh">'</span><span class="p">:</span><span class="sh">'</span><span class="s">user</span><span class="sh">'</span><span class="p">,</span><span class="sh">'</span><span class="s">content</span><span class="sh">'</span><span class="p">:</span><span class="sa">f</span><span class="sh">'</span><span class="s">Analyze logs for </span><span class="si">{</span><span class="n">user_name</span><span class="si">}</span><span class="s">: </span><span class="si">{</span><span class="n">logs</span><span class="si">}</span><span class="sh">'</span><span class="p">}]</span>
+  <span class="k">return</span> <span class="p">{</span><span class="sh">'</span><span class="s">model</span><span class="sh">'</span><span class="p">:</span><span class="n">model</span><span class="p">,</span><span class="sh">'</span><span class="s">messages</span><span class="sh">'</span><span class="p">:</span><span class="n">messages</span><span class="p">,</span><span class="sh">'</span><span class="s">max_output_tokens</span><span class="sh">'</span><span class="p">:</span><span class="n">max_output_tokens</span><span class="p">}</span>
+</code></pre></div></div>
+
+<p>このファイルに Black を実行する。</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>black app.py
+</code></pre></div></div>
+
+<h3 id="black-を実行した後">Black を実行した後</h3>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">from</span> <span class="n">typing</span> <span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Dict</span>
+
+
+<span class="k">def</span> <span class="nf">build_prompt</span><span class="p">(</span>
+    <span class="n">user_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+    <span class="n">logs</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]],</span>
+    <span class="n">model</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="sh">"</span><span class="s">gpt-4.1</span><span class="sh">"</span><span class="p">,</span>
+    <span class="n">max_output_tokens</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1000</span><span class="p">,</span>
+<span class="p">):</span>
+    <span class="n">messages</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="p">{</span><span class="sh">"</span><span class="s">role</span><span class="sh">"</span><span class="p">:</span> <span class="sh">"</span><span class="s">system</span><span class="sh">"</span><span class="p">,</span> <span class="sh">"</span><span class="s">content</span><span class="sh">"</span><span class="p">:</span> <span class="sh">"</span><span class="s">You are a log analyst.</span><span class="sh">"</span><span class="p">},</span>
+        <span class="p">{</span>
+            <span class="sh">"</span><span class="s">role</span><span class="sh">"</span><span class="p">:</span> <span class="sh">"</span><span class="s">user</span><span class="sh">"</span><span class="p">,</span>
+            <span class="sh">"</span><span class="s">content</span><span class="sh">"</span><span class="p">:</span> <span class="sa">f</span><span class="sh">"</span><span class="s">Analyze logs for </span><span class="si">{</span><span class="n">user_name</span><span class="si">}</span><span class="s">: </span><span class="si">{</span><span class="n">logs</span><span class="si">}</span><span class="sh">"</span><span class="p">,</span>
+        <span class="p">},</span>
+    <span class="p">]</span>
+    <span class="k">return</span> <span class="p">{</span>
+        <span class="sh">"</span><span class="s">model</span><span class="sh">"</span><span class="p">:</span> <span class="n">model</span><span class="p">,</span>
+        <span class="sh">"</span><span class="s">messages</span><span class="sh">"</span><span class="p">:</span> <span class="n">messages</span><span class="p">,</span>
+        <span class="sh">"</span><span class="s">max_output_tokens</span><span class="sh">"</span><span class="p">:</span> <span class="n">max_output_tokens</span><span class="p">,</span>
+    <span class="p">}</span>
+</code></pre></div></div>
+
+<p>処理内容は変えず、次のような部分が自動で修正されている。</p>
+
+<ul>
+  <li>演算子や型注釈の前後に空白を入れる</li>
+  <li>長い行を複数行に分割する</li>
+  <li>インデントを統一する</li>
+  <li>文字列のクォートを原則としてダブルクォートに統一する</li>
+  <li>複数行の引数や要素の末尾にカンマを付ける</li>
+  <li>関数間に必要な空行を入れる</li>
+</ul>
+
+<p>人間が一つずつ直す必要はない。Black を何度実行しても、同じ入力は同じ形式に整えられる。</p>
+
+<hr>
+
+<h2 id="フォーマッターとリンターの違い">フォーマッターとリンターの違い</h2>
+
+<p>Black を理解するときに最も重要なのが、<strong>フォーマッターとリンターを分けて考えること</strong>である。</p>
+
+<table>
+  <thead>
+    <tr>
+      <th style="text-align: left">ツールの種類</th>
+      <th style="text-align: left">代表例</th>
+      <th style="text-align: left">主な役割</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td style="text-align: left">フォーマッター</td>
+      <td style="text-align: left">Black</td>
+      <td style="text-align: left">空白・改行・クォートなどを自動整形する</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">リンター</td>
+      <td style="text-align: left">Ruff、Flake8</td>
+      <td style="text-align: left">未使用変数や危険な書き方などを検出する</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">型チェッカー</td>
+      <td style="text-align: left">mypy、Pyright</td>
+      <td style="text-align: left">型の矛盾を検出する</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">テスト</td>
+      <td style="text-align: left">pytest</td>
+      <td style="text-align: left">実際の振る舞いが期待どおりか確認する</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>たとえば、次のコードを Black に渡しても、論理的なバグは直らない。</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">def</span> <span class="nf">calculate_average</span><span class="p">(</span><span class="n">total</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">count</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+    <span class="k">return</span> <span class="n">total</span> <span class="o">/</span> <span class="n">count</span>
+</code></pre></div></div>
+
+<p><code class="language-plaintext highlighter-rouge">count</code> が <code class="language-plaintext highlighter-rouge">0</code> なら <code class="language-plaintext highlighter-rouge">ZeroDivisionError</code> が発生するが、これは見た目の問題ではない。Black の担当範囲外である。</p>
+
+<p>Black を導入しても、リンター・型チェック・テストは引き続き必要になる。</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>black <span class="nb">.</span>
+ruff check <span class="nb">.</span>
+mypy <span class="nb">.</span>
+pytest
+</code></pre></div></div>
+
+<p>それぞれ別の角度からコードを確認するため、組み合わせて使うことで効果を発揮する。</p>
+
+<blockquote>
+  <p><code class="language-plaintext highlighter-rouge">ruff format</code> は Black と同じフォーマッターの役割を持つ。Black を使うプロジェクトで両方のフォーマッターを同時に動かす必要はない。一方、<code class="language-plaintext highlighter-rouge">ruff check</code> はリンターなので Black と併用できる。</p>
+</blockquote>
+
+<hr>
+
+<h2 id="なぜ-black-は設定項目が少ないのか">なぜ Black は設定項目が少ないのか</h2>
+
+<p>Black は <strong>opinionated formatter</strong> と呼ばれる。日本語にすると「強い方針を持ったフォーマッター」という意味に近い。</p>
+
+<p>一般的なツールでは、インデント・クォート・改行位置などを細かく設定できる。しかし、設定が多いと「どのスタイルにするか」という議論が再び発生する。</p>
+
+<p>Black は設定の自由度を意図的に抑え、ツール側で多くの判断を行う。</p>
+
+<div class="language-text highlighter-rouge"><div class="highlight"><pre class="highlight"><code>この改行はどちらが読みやすいか
+シングルクォートとダブルクォートのどちらを使うか
+引数の末尾にカンマを付けるか
+</code></pre></div></div>
+
+<p>こうした議論をやめて、ロジックや設計のレビューに時間を使うことが Black の思想である。</p>
+
+<h3 id="デフォルトの行長は88文字">デフォルトの行長は88文字</h3>
+
+<p>Black のデフォルトでは、1行の長さを <strong>88文字</strong> として整形する。</p>
+
+<p>PEP 8 でよく知られている79文字より少し長い。コード全体が必要以上に縦長になることを避けつつ、横に長すぎないバランスとして採用されている。</p>
+
+<p>ただし、88文字は絶対的な上限ではない。文字列や分割できない式などでは、Black が88文字を超える行を残すこともある。</p>
+
+<hr>
+
+<h2 id="インストールと基本操作">インストールと基本操作</h2>
+
+<p>2026年6月時点の Black は、Black 自体を実行する環境として Python 3.10 以上を必要とする。</p>
+
+<h3 id="pip-を使う場合">pip を使う場合</h3>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>python <span class="nt">-m</span> pip <span class="nb">install </span>black
+</code></pre></div></div>
+
+<h3 id="uv-を使う場合">uv を使う場合</h3>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>uv add <span class="nt">--dev</span> black
+</code></pre></div></div>
+
+<p>プロジェクトの開発用依存関係として追加しておくと、チームや CI でも同じバージョンを使いやすい。</p>
+
+<h3 id="ファイルを一つ整形する">ファイルを一つ整形する</h3>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>black app.py
+</code></pre></div></div>
+
+<h3 id="ディレクトリ全体を整形する">ディレクトリ全体を整形する</h3>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>black src tests
+</code></pre></div></div>
+
+<h3 id="プロジェクト全体を整形する">プロジェクト全体を整形する</h3>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>black <span class="nb">.</span>
+</code></pre></div></div>
+
+<p>環境によって <code class="language-plaintext highlighter-rouge">black</code> コマンドが見つからない場合は、モジュールとして実行できる。</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>python <span class="nt">-m</span> black <span class="nb">.</span>
+</code></pre></div></div>
+
+<hr>
+
+<h2 id="ファイルを書き換えずに確認する">ファイルを書き換えずに確認する</h2>
+
+<p>Black は通常、対象ファイルをその場で書き換える。まず変更内容だけ確認したい場合は <code class="language-plaintext highlighter-rouge">--diff</code> を使う。</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>black <span class="nt">--diff</span> <span class="nb">.</span>
+</code></pre></div></div>
+
+<p>CI などで「整形が必要なファイルがあるか」だけを判定する場合は <code class="language-plaintext highlighter-rouge">--check</code> を使う。</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>black <span class="nt">--check</span> <span class="nb">.</span>
+</code></pre></div></div>
+
+<table>
+  <thead>
+    <tr>
+      <th style="text-align: left">コマンド</th>
+      <th style="text-align: center">ファイルの書き換え</th>
+      <th style="text-align: left">用途</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td style="text-align: left"><code class="language-plaintext highlighter-rouge">black .</code></td>
+      <td style="text-align: center">する</td>
+      <td style="text-align: left">ローカルで整形する</td>
+    </tr>
+    <tr>
+      <td style="text-align: left"><code class="language-plaintext highlighter-rouge">black --diff .</code></td>
+      <td style="text-align: center">しない</td>
+      <td style="text-align: left">変更予定の差分を見る</td>
+    </tr>
+    <tr>
+      <td style="text-align: left"><code class="language-plaintext highlighter-rouge">black --check .</code></td>
+      <td style="text-align: center">しない</td>
+      <td style="text-align: left">整形済みか判定する</td>
+    </tr>
+    <tr>
+      <td style="text-align: left"><code class="language-plaintext highlighter-rouge">black --check --diff .</code></td>
+      <td style="text-align: center">しない</td>
+      <td style="text-align: left">CIで判定し、差分も表示する</td>
+    </tr>
+  </tbody>
+</table>
+
+<p><code class="language-plaintext highlighter-rouge">--check</code> は整形が必要なファイルを見つけると終了コード <code class="language-plaintext highlighter-rouge">1</code> を返す。そのため、CI のチェックとしてそのまま利用できる。</p>
+
+<hr>
+
+<h2 id="pyprojecttoml-で設定を共有する">pyproject.toml で設定を共有する</h2>
+
+<p>Black の設定は、プロジェクトルートの <code class="language-plaintext highlighter-rouge">pyproject.toml</code> に記述する。</p>
+
+<div class="language-toml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">[</span><span class="n">project</span><span class="k">]</span>
+<span class="n">requires-python</span> <span class="o">=</span><span class="w"> </span><span class="s">"&gt;=3.11"</span>
+
+<span class="k">[</span><span class="n">tool</span><span class="k">.</span><span class="n">black</span><span class="k">]</span>
+<span class="n">line-length</span> <span class="o">=</span><span class="w"> </span><span class="mi">88</span>
+<span class="n">target-version</span> <span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="s">"py311"</span><span class="p">]</span>
+<span class="n">extend-exclude</span> <span class="o">=</span><span class="w"> </span><span class="s">'''
+(
+  /migrations/
+  | /generated/
+)
+'''</span>
+</code></pre></div></div>
+
+<p>主な項目は次のとおり。</p>
+
+<table>
+  <thead>
+    <tr>
+      <th style="text-align: left">設定</th>
+      <th style="text-align: left">意味</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td style="text-align: left"><code class="language-plaintext highlighter-rouge">line-length</code></td>
+      <td style="text-align: left">基準とする1行の文字数</td>
+    </tr>
+    <tr>
+      <td style="text-align: left"><code class="language-plaintext highlighter-rouge">target-version</code></td>
+      <td style="text-align: left">対象プロジェクトが対応する Python バージョン</td>
+    </tr>
+    <tr>
+      <td style="text-align: left"><code class="language-plaintext highlighter-rouge">extend-exclude</code></td>
+      <td style="text-align: left">自動生成ファイルなど、追加で除外するパス</td>
+    </tr>
+  </tbody>
+</table>
+
+<p><code class="language-plaintext highlighter-rouge">target-version</code> は「Black を実行する Python のバージョン」ではなく、<strong>整形対象のコードが対応する Python バージョン</strong>を示す。</p>
+
+<p>設定を増やす前に、まずは Black のデフォルトを使うのがおすすめである。チーム内で特別な理由がある場合だけ変更すると、Black の「スタイル議論を減らす」という利点を維持できる。</p>
+
+<hr>
+
+<h2 id="vs-code-で保存時に自動整形する">VS Code で保存時に自動整形する</h2>
+
+<p>毎回ターミナルで <code class="language-plaintext highlighter-rouge">black .</code> を実行するより、ファイル保存時に自動整形すると使い忘れが減る。</p>
+
+<p>VS Code では <strong>Black Formatter</strong> 拡張機能をインストールし、<code class="language-plaintext highlighter-rouge">.vscode/settings.json</code> に次の設定を追加する。</p>
+
+<div class="language-json highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">{</span><span class="w">
+  </span><span class="nl">"[python]"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+    </span><span class="nl">"editor.defaultFormatter"</span><span class="p">:</span><span class="w"> </span><span class="s2">"ms-python.black-formatter"</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"editor.formatOnSave"</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="w">
+  </span><span class="p">}</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></code></pre></div></div>
+
+<p>これで Python ファイルを保存するたびに Black が実行される。</p>
+
+<p>ただし、保存時整形だけに依存すると、拡張機能を入れていないメンバーや AI エージェントが未整形のコードをコミットできてしまう。最終的には CI のチェックも併用した方が確実である。</p>
+
+<hr>
+
+<h2 id="pre-commit-でコミット前に整形する">pre-commit でコミット前に整形する</h2>
+
+<p>コミット前に Black を自動実行するなら、<code class="language-plaintext highlighter-rouge">pre-commit</code> が使える。</p>
+
+<p><code class="language-plaintext highlighter-rouge">.pre-commit-config.yaml</code> を作成する。</p>
+
+<div class="language-yaml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="na">repos</span><span class="pi">:</span>
+  <span class="pi">-</span> <span class="na">repo</span><span class="pi">:</span> <span class="s">https://github.com/psf/black-pre-commit-mirror</span>
+    <span class="na">rev</span><span class="pi">:</span> <span class="s">26.5.1</span>
+    <span class="na">hooks</span><span class="pi">:</span>
+      <span class="pi">-</span> <span class="na">id</span><span class="pi">:</span> <span class="s">black</span>
+        <span class="na">language_version</span><span class="pi">:</span> <span class="s">python3.11</span>
+</code></pre></div></div>
+
+<p>その後、フックを有効にする。</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>python <span class="nt">-m</span> pip <span class="nb">install </span>pre-commit
+pre-commit <span class="nb">install</span>
+</code></pre></div></div>
+
+<p>以後は <code class="language-plaintext highlighter-rouge">git commit</code> の直前に Black が実行される。ファイルが整形された場合は、その変更を確認して再度コミットする。</p>
+
+<p><code class="language-plaintext highlighter-rouge">rev</code> には Black のバージョンを固定する。ローカル・pre-commit・CI でバージョンをそろえると、環境ごとに整形結果が変わるリスクを抑えられる。</p>
+
+<hr>
+
+<h2 id="github-actions-で未整形コードを検出する">GitHub Actions で未整形コードを検出する</h2>
+
+<p>GitHub 上でも Black を確認するには、<code class="language-plaintext highlighter-rouge">.github/workflows/black.yml</code> を追加する。</p>
+
+<div class="language-yaml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="na">name</span><span class="pi">:</span> <span class="s">Black</span>
+
+<span class="na">on</span><span class="pi">:</span>
+  <span class="na">push</span><span class="pi">:</span>
+  <span class="na">pull_request</span><span class="pi">:</span>
+
+<span class="na">jobs</span><span class="pi">:</span>
+  <span class="na">black</span><span class="pi">:</span>
+    <span class="na">runs-on</span><span class="pi">:</span> <span class="s">ubuntu-latest</span>
+    <span class="na">steps</span><span class="pi">:</span>
+      <span class="pi">-</span> <span class="na">uses</span><span class="pi">:</span> <span class="s">actions/checkout@v6</span>
+      <span class="pi">-</span> <span class="na">uses</span><span class="pi">:</span> <span class="s">psf/black@stable</span>
+        <span class="na">with</span><span class="pi">:</span>
+          <span class="na">options</span><span class="pi">:</span> <span class="s2">"</span><span class="s">--check</span><span class="nv"> </span><span class="s">--diff"</span>
+          <span class="na">src</span><span class="pi">:</span> <span class="s2">"</span><span class="s">."</span>
+          <span class="na">version</span><span class="pi">:</span> <span class="s2">"</span><span class="s">26.5.1"</span>
+</code></pre></div></div>
+
+<p>未整形のコードが含まれているとチェックが失敗し、Black がどこを変更するか差分で確認できる。</p>
+
+<p>CI ではファイルを自動修正するのではなく、<code class="language-plaintext highlighter-rouge">--check</code> で問題を通知する構成が基本となる。修正はローカルや開発エージェント側で行い、確認したうえでコミットする。</p>
+
+<hr>
+
+<h2 id="ai-ネイティブ開発で-black-が役立つ理由">AI ネイティブ開発で Black が役立つ理由</h2>
+
+<p>AI ネイティブなアプリ開発では、人間だけでなく複数の AI エージェントがコードを生成・編集する。</p>
+
+<p>各モデルは異なる書き方を返すことがあり、プロンプトで細かいスタイルを指定しても完全には統一できない。ここで Black を使うと、生成元に関係なく最終的な形式をそろえられる。</p>
+
+<h3 id="1-プロンプトを短くできる">1. プロンプトを短くできる</h3>
+
+<p>AI に毎回「ダブルクォートを使う」「1行88文字にする」「末尾カンマを付ける」と指示する必要がなくなる。</p>
+
+<p>スタイルは Black に任せ、AI への指示を要件・設計・エラー処理に集中できる。</p>
+
+<h3 id="2-コードレビューでロジックに集中できる">2. コードレビューでロジックに集中できる</h3>
+
+<p>整形だけの差分が減るため、レビューでは次のような本質的な変更を追いやすくなる。</p>
+
+<ul>
+  <li>プロンプトの組み立て方が変わった</li>
+  <li>LLM API のタイムアウト処理が追加された</li>
+  <li>ログ保存のトランザクション境界が変わった</li>
+  <li>ユーザー入力の検証が追加された</li>
+</ul>
+
+<h3 id="3-エージェント間の出力を正規化できる">3. エージェント間の出力を正規化できる</h3>
+
+<p>人間、コード生成 AI、リファクタリング用エージェントの全員が異なるスタイルで書いても、最後に Black を通せば同じ形式になる。</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># AI がコードを生成・編集</span>
+
+<span class="c"># 表記を統一</span>
+black <span class="nb">.</span>
+
+<span class="c"># 静的な問題を検出</span>
+ruff check <span class="nb">.</span>
+
+<span class="c"># 振る舞いを確認</span>
+pytest
+</code></pre></div></div>
+
+<p>Black は AI の代わりにコード品質を保証するものではない。しかし、<strong>AI が生む表記のばらつきを機械的に吸収する工程</strong>として非常に相性がよい。</p>
+
+<hr>
+
+<h2 id="black-を部分的に無効化する方法">Black を部分的に無効化する方法</h2>
+
+<p>特殊なレイアウトを維持したい場合は、<code class="language-plaintext highlighter-rouge"># fmt: skip</code> でその行だけ整形対象から外せる。</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">matrix</span> <span class="o">=</span> <span class="p">[[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">]]</span>  <span class="c1"># fmt: skip
+</span></code></pre></div></div>
+
+<p>複数行を除外する場合は <code class="language-plaintext highlighter-rouge"># fmt: off</code> と <code class="language-plaintext highlighter-rouge"># fmt: on</code> で囲む。</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># fmt: off
+</span><span class="n">COMMAND_TABLE</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="sh">"</span><span class="s">start</span><span class="sh">"</span><span class="p">:</span>  <span class="n">handle_start</span><span class="p">,</span>
+    <span class="sh">"</span><span class="s">stop</span><span class="sh">"</span><span class="p">:</span>   <span class="n">handle_stop</span><span class="p">,</span>
+    <span class="sh">"</span><span class="s">status</span><span class="sh">"</span><span class="p">:</span> <span class="n">handle_status</span><span class="p">,</span>
+<span class="p">}</span>
+<span class="c1"># fmt: on
+</span></code></pre></div></div>
+
+<p>ただし、例外を増やすとプロジェクト内の統一感が失われる。本当にレイアウト自体に意味がある場合だけ使うのがよい。</p>
+
+<hr>
+
+<h2 id="導入時によく起きる問題">導入時によく起きる問題</h2>
+
+<h3 id="最初の実行で大量の差分が出る">最初の実行で大量の差分が出る</h3>
+
+<p>既存プロジェクトに初めて Black を実行すると、ほぼすべての Python ファイルが変更されることがある。</p>
+
+<p>機能変更と同じコミットに混ぜるとレビューが難しくなるため、<strong>Black の初回適用だけを独立したコミットまたは Pull Request にする</strong>のがおすすめである。</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>black <span class="nb">.</span>
+git add <span class="nb">.</span>
+git commit <span class="nt">-m</span> <span class="s2">"Apply Black formatting"</span>
+</code></pre></div></div>
+
+<h3 id="メンバーごとに結果が変わる">メンバーごとに結果が変わる</h3>
+
+<p>Black の大きなスタイルは安定しているが、バージョンによって細かな整形結果が変わる可能性はある。</p>
+
+<p>依存関係、pre-commit、CI で利用する Black のバージョンをそろえ、更新時はチーム全体でまとめて更新する。</p>
+
+<h3 id="black-がインポート順を整理してくれない">Black がインポート順を整理してくれない</h3>
+
+<p>Black はインポート文の見た目は整えるが、標準ライブラリ・外部ライブラリ・自作モジュールの並び替えを担当するツールではない。</p>
+
+<p>インポート順の整理には Ruff の import rules や isort を使う。isort を使う場合は Black と衝突しないように <code class="language-plaintext highlighter-rouge">profile = "black"</code> を設定する。</p>
+
+<div class="language-toml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">[</span><span class="n">tool</span><span class="k">.</span><span class="n">isort</span><span class="k">]</span>
+<span class="n">profile</span> <span class="o">=</span><span class="w"> </span><span class="s">"black"</span>
+</code></pre></div></div>
+
+<h3 id="black-を通したから安全だと思ってしまう">Black を通したから安全だと思ってしまう</h3>
+
+<p>Black は通常、整形前後のコードが実質的に同じ構文木になるか安全チェックを行う。しかし、これはアプリケーションの正しさを確認するテストではない。</p>
+
+<p>認証、権限、課金、LLM の出力検証、データベース更新などは、別途テストとレビューが必要である。</p>
+
+<hr>
+
+<h2 id="おすすめの最小構成">おすすめの最小構成</h2>
+
+<p>個人開発や小規模チームなら、最初から複雑な設定を用意する必要はない。</p>
+
+<h3 id="1-開発用依存関係に-black-を追加">1. 開発用依存関係に Black を追加</h3>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>uv add <span class="nt">--dev</span> black
+</code></pre></div></div>
+
+<h3 id="2-pyprojecttoml-に対象バージョンだけ記載">2. pyproject.toml に対象バージョンだけ記載</h3>
+
+<div class="language-toml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">[</span><span class="n">tool</span><span class="k">.</span><span class="n">black</span><span class="k">]</span>
+<span class="n">target-version</span> <span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="s">"py311"</span><span class="p">]</span>
+</code></pre></div></div>
+
+<h3 id="3-vs-code-の保存時整形を有効化">3. VS Code の保存時整形を有効化</h3>
+
+<div class="language-json highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">{</span><span class="w">
+  </span><span class="nl">"[python]"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+    </span><span class="nl">"editor.defaultFormatter"</span><span class="p">:</span><span class="w"> </span><span class="s2">"ms-python.black-formatter"</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"editor.formatOnSave"</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="w">
+  </span><span class="p">}</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></code></pre></div></div>
+
+<h3 id="4-ci-で未整形コードを拒否">4. CI で未整形コードを拒否</h3>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>black <span class="nt">--check</span> <span class="nb">.</span>
+</code></pre></div></div>
+
+<p>この構成なら、普段は保存時に自動整形され、漏れた場合だけ CI が検出してくれる。</p>
+
+<hr>
+
+<h2 id="まとめ">まとめ</h2>
+
+<table>
+  <thead>
+    <tr>
+      <th style="text-align: left">ポイント</th>
+      <th style="text-align: left">内容</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td style="text-align: left"><strong>Black の正体</strong></td>
+      <td style="text-align: left">Python コードの見た目を自動統一するフォーマッター</td>
+    </tr>
+    <tr>
+      <td style="text-align: left"><strong>主な対象</strong></td>
+      <td style="text-align: left">空白、改行、インデント、クォート、末尾カンマ</td>
+    </tr>
+    <tr>
+      <td style="text-align: left"><strong>対象外</strong></td>
+      <td style="text-align: left">バグ検出、型チェック、テスト、性能改善</td>
+    </tr>
+    <tr>
+      <td style="text-align: left"><strong>基本コマンド</strong></td>
+      <td style="text-align: left"><code class="language-plaintext highlighter-rouge">black .</code></td>
+    </tr>
+    <tr>
+      <td style="text-align: left"><strong>確認だけ行う</strong></td>
+      <td style="text-align: left"><code class="language-plaintext highlighter-rouge">black --check --diff .</code></td>
+    </tr>
+    <tr>
+      <td style="text-align: left"><strong>設定ファイル</strong></td>
+      <td style="text-align: left">
+<code class="language-plaintext highlighter-rouge">pyproject.toml</code> の <code class="language-plaintext highlighter-rouge">[tool.black]</code>
+</td>
+    </tr>
+    <tr>
+      <td style="text-align: left"><strong>AI開発での価値</strong></td>
+      <td style="text-align: left">人間と複数AIの書式差を自動で正規化する</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>Black の本当の価値は、コードをきれいに見せることだけではない。</p>
+
+<p><strong>「どの書き方が正しいか」を議論する時間をなくし、設計・ロジック・テストに集中できる状態を作ること</strong>にある。</p>
+
+<p>AI がコードを書く量が増えるほど、生成されたコードを一定の形式へ戻す機械的な工程が重要になる。Black は、そのためのシンプルで再現性の高い基盤として利用できる。</p>
+
+<hr>
+
+<h2 id="参考">参考</h2>
+
+<ul>
+  <li><a href="https://black.readthedocs.io/en/stable/">Black 公式ドキュメント</a></li>
+  <li><a href="https://black.readthedocs.io/en/stable/getting_started.html">Black ── Getting Started</a></li>
+  <li><a href="https://black.readthedocs.io/en/stable/usage_and_configuration/the_basics.html">Black ── Usage and Configuration</a></li>
+  <li><a href="https://black.readthedocs.io/en/stable/the_black_code_style/current_style.html">Black ── The Black Code Style</a></li>
+  <li><a href="https://black.readthedocs.io/en/stable/integrations/source_version_control.html">Black ── Version Control Integration</a></li>
+  <li><a href="https://black.readthedocs.io/en/stable/integrations/github_actions.html">Black ── GitHub Actions Integration</a></li>
+  <li><a href="https://github.com/psf/black">psf/black GitHub Repository</a></li>
+</ul>
+
+
+    </div>
+
+</article>
+<div class="post-nav">
+<span></span><a class="next" href="/jekyll-theme-yat/ai%E9%96%8B%E7%99%BA/2026/06/08/agent-reward-hacking-alignment.html" title="エージェントが「ルールの穴」を突く">エージェントが「ルールの穴」を突く</a>
+</div>
+<div class="post-related">
+      <div>Related Articles</div>
+      <ul>
+        <li><a class="post-link" href="/jekyll-theme-yat/ai%E9%96%8B%E7%99%BA/2026/06/18/mcp-host-client-server.html" title="エージェントが「ルールの穴」を突く">MCPのHost・Client・Serverを整理する</a></li>
+<li><a class="post-link" href="/jekyll-theme-yat/%E9%96%8B%E7%99%BA/2026/06/09/state-transition-diagram-guide.html" title="エージェントが「ルールの穴」を突く">状態遷移図の書き方と使いどころ</a></li>
+<li><a class="post-link" href="/jekyll-theme-yat/ai%E9%96%8B%E7%99%BA/2026/06/08/claude-code-thinking-words.html" title="エージェントが「ルールの穴」を突く">Claude Code が「考え中」に表示する英単語を全部調べた</a></li>
+<li><a class="post-link" href="/jekyll-theme-yat/ai%E9%96%8B%E7%99%BA/2026/06/23/mcp-security-operations.html" title="エージェントが「ルールの穴」を突く">MCPサーバーを安全に運用する</a></li>
+</ul>
+    </div>
+<div class="post-comments"></div></section>
+</div>
+
+
+  </section>
+  <section class="sidebar" style="margin-left: 15px;">
+    <!-- Get sidebar items --><style type="text/css" media="screen">
+.post-menu ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+</style>
+
+<div class="post-menu">
+  <div class="post-menu-title">TOC</div>
+  <div class="post-menu-content"></div>
+</div>
+
+<script>
+  function generateContent() {
+    var menu = document.querySelector(".post-menu");
+    var menuContent =  menu.querySelector(".post-menu-content");
+    var headings = document.querySelector(".post-content").querySelectorAll("h2, h3, h4, h5, h6");
+
+    // Hide menu when no headings
+    if (headings.length === 0) {
+      return menu.style.display = "none";
+    }
+
+    // Generate post menu
+    var menuHTML = '';
+    for (var i = 0; i < headings.length; i++) {
+      var h = headings[i];
+      menuHTML += (
+        '<li class="h-' + h.tagName.toLowerCase() + '">'
+        + '<a href="#h-' + h.getAttribute('id') + '">' + h.textContent + '</a></li>');
+    }
+
+    menuContent.innerHTML = '<ul>' + menuHTML + '</ul>';
+
+    // The header element
+    var header = document.querySelector('header.site-header');
+
+    function doMenuCollapse(index, over_items) {
+      var items = menuContent.firstChild.children;
+
+      if (over_items == undefined) {
+        over_items = 20;
+      }
+
+      if (items.length < over_items) {
+        return;
+      }
+
+      var activeItem = items[index];
+      var beginItem = activeItem
+      var endItem = activeItem
+      var beginIndex = index;
+      var endIndex = index + 1;
+      while (beginIndex >= 0
+        && !items[beginIndex].classList.contains('h-h2')) {
+        beginIndex -= 1;
+      }
+      while (endIndex < items.length
+        && !items[endIndex].classList.contains('h-h2')) {
+        endIndex += 1;
+      }
+      for (var i = 0; i < beginIndex; i++) {
+        item = items[i]
+        if (!item.classList.contains('h-h2')) {
+          item.style.display = 'none';
+        }
+      }
+      for (var i = beginIndex + 1; i < endIndex; i++) {
+        item = items[i]
+        // if (!item.classList.contains('h-h2')) {
+          item.style.display = '';
+        // }
+      }
+      for (var i = endIndex; i < items.length; i++) {
+        item = items[i]
+        if (!item.classList.contains('h-h2')) {
+          item.style.display = 'none';
+        }
+      }
+    }
+
+    // Init menu collapsed
+    doMenuCollapse(-1);
+
+    // Active the menu item
+    window.addEventListener('scroll', function (event) {
+      var lastActive = menuContent.querySelector('.active');
+      var changed = true;
+      var activeIndex = -1;
+      for (var i = headings.length - 1; i >= 0; i--) {
+        var h = headings[i];
+        var headingRect = h.getBoundingClientRect();
+        var headerRect = header.getBoundingClientRect();
+        var headerTop = Math.floor(headerRect.top);
+        var headerHeight = Math.floor(headerRect.height);
+        var headerHeight = headerTop + headerHeight + 20;
+        if (headingRect.top <= headerHeight) {
+          var id = 'h-' + h.getAttribute('id');
+          var a = menuContent.querySelector('a[href="#' + id  + '"]');
+          var curActive = a.parentNode;
+          if (curActive) {
+            curActive.classList.add('active');
+            activeIndex = i;
+          }
+          if (lastActive == curActive) {
+            changed = false;
+          }
+          break;
+        }
+      }
+      if (changed) {
+        if (lastActive) {
+          lastActive.classList.remove('active');
+        }
+        doMenuCollapse(activeIndex);
+      }
+      event.preventDefault();
+    });
+  }
+  generateContent();
+</script>
+</section>
+</div>
+
+      </div>
+    </main><footer class="site-footer h-card">
+  <data class="u-url" href="/jekyll-theme-yat/"></data>
+
+  <div class="wrapper">
+    <div class="site-footer-inner">
+<div>Waka-DS © 2021-2026</div>
+      <div>Powered by <a title="Jekyll is a simple, blog-aware, static site
+      generator." href="http://jekyllrb.com/">Jekyll</a> &amp; <a title="Yat, yet
+      another theme." href="https://github.com/jeffreytse/jekyll-theme-yat">Yat Theme</a>.</div>
+      <div class="footer-col rss-subscribe">Subscribe <a href="/jekyll-theme-yat/feed.xml">via RSS</a>
+</div>
+    </div>
+  </div>
+</footer>
+</body>
+</html>

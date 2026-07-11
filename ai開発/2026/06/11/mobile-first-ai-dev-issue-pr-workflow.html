@@ -1,0 +1,1040 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <script>
+  (function() {
+    try {
+      var p = localStorage.getItem('preferred_lang');
+      if (!p) return;
+      var path = window.location.pathname;
+      var ja = ['/', '/archives.html', '/categories.html', '/tags.html', '/about.html'];
+      var en = ['/en/', '/en/archives.html', '/en/categories.html', '/en/tags.html', '/en/about.html'];
+      if (p === 'en' && ja.indexOf(path) !== -1) {
+        window.location.replace('/en' + (path === '/' ? '/' : path));
+      } else if (p === 'ja' && en.indexOf(path) !== -1) {
+        window.location.replace(path.slice(3) || '/');
+      }
+    } catch(e) {}
+  })();
+  </script>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="google-translate-customization" content="108d9124921d80c3-80e20d618ff053c8-g4f02ec6f3dba68b7-c">
+<!-- Begin Jekyll SEO tag v2.9.0 -->
+<title>スマホで AI 開発を回す Issue/PR ベースワークフローの設計 | Waka-DS.com</title>
+<meta name="generator" content="Jekyll v4.4.1">
+<meta property="og:title" content="スマホで AI 開発を回す Issue/PR ベースワークフローの設計">
+<meta name="author" content="Waka-DS">
+<meta property="og:locale" content="ja">
+<meta name="description" content="Claude Code や Codex を使い始めると、最初はローカル PC 上で作業させることが多い。スマホからリモートデスクトップで PC に接続し、ターミナルやエディタを遠隔操作してエージェントに指示する、という構成だ。動くことは動くが、遠回りだという感覚は残る。">
+<meta name="twitter:description" property="og:description" content="Claude Code や Codex を使い始めると、最初はローカル PC 上で作業させることが多い。スマホからリモートデスクトップで PC に接続し、ターミナルやエディタを遠隔操作してエージェントに指示する、という構成だ。動くことは動くが、遠回りだという感覚は残る。">
+<link rel="canonical" href="/jekyll-theme-yat/ai%E9%96%8B%E7%99%BA/2026/06/11/mobile-first-ai-dev-issue-pr-workflow.html">
+<meta property="og:url" content="/jekyll-theme-yat/ai%E9%96%8B%E7%99%BA/2026/06/11/mobile-first-ai-dev-issue-pr-workflow.html">
+<meta property="og:site_name" content="Waka-DS.com">
+<meta property="og:image" content="/jekyll-theme-yat/assets/images/posts/2026-06-11-mobile-first-ai-dev-issue-pr-workflow/eyecatch.png">
+<meta property="og:image:alt" content="スマートフォンから依頼を送り生成物を承認してゲートを開く紙工作">
+<meta property="og:type" content="article">
+<meta property="article:published_time" content="2026-06-11T00:00:00+00:00">
+<meta property="article:modified_time" content="2026-06-11T00:00:00+00:00">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="/jekyll-theme-yat/assets/images/posts/2026-06-11-mobile-first-ai-dev-issue-pr-workflow/eyecatch.png">
+<meta name="twitter:image:alt" content="スマートフォンから依頼を送り生成物を承認してゲートを開く紙工作">
+<meta name="twitter:title" content="スマホで AI 開発を回す Issue/PR ベースワークフローの設計">
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":"Waka-DS"},"dateModified":"2026-06-11T00:00:00+00:00","datePublished":"2026-06-11T00:00:00+00:00","description":"Claude Code や Codex を使い始めると、最初はローカル PC 上で作業させることが多い。スマホからリモートデスクトップで PC に接続し、ターミナルやエディタを遠隔操作してエージェントに指示する、という構成だ。動くことは動くが、遠回りだという感覚は残る。","headline":"スマホで AI 開発を回す Issue/PR ベースワークフローの設計","image":{"alt":"スマートフォンから依頼を送り生成物を承認してゲートを開く紙工作","url":"/jekyll-theme-yat/assets/images/posts/2026-06-11-mobile-first-ai-dev-issue-pr-workflow/eyecatch.png","@type":"imageObject"},"mainEntityOfPage":{"@type":"WebPage","@id":"/jekyll-theme-yat/ai%E9%96%8B%E7%99%BA/2026/06/11/mobile-first-ai-dev-issue-pr-workflow.html"},"url":"/jekyll-theme-yat/ai%E9%96%8B%E7%99%BA/2026/06/11/mobile-first-ai-dev-issue-pr-workflow.html"}</script>
+<!-- End Jekyll SEO tag -->
+<link rel="shortcut icon" href="">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=Noto+Sans+JP:wght@400;500;700&amp;display=swap">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+  <link rel="stylesheet" href="/jekyll-theme-yat/assets/css/main.css">
+  <script src="/jekyll-theme-yat/assets/js/main.js"></script><link type="application/atom+xml" rel="alternate" href="/jekyll-theme-yat/feed.xml" title="Waka-DS.com">
+<script>
+  function initGoogleAnalytics() {
+    var doNotTrack = (window.doNotTrack === "1" || navigator.doNotTrack === "1" ||
+      navigator.doNotTrack === "yes" || navigator.msDoNotTrack === "1");
+    var enableDNT = "true" == "true";
+
+    if (!enableDNT || !doNotTrack) {
+      var ga_id = 'G-XNP1RBTG9C';
+
+      var script = document.createElement('script');
+      script.async = true;
+      script.src = 'https://www.googletagmanager.com/gtag/js?id=' + ga_id;
+      document.head.appendChild(script);
+
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', ga_id);
+    }
+  }
+  window.addEventListener("load", initGoogleAnalytics);
+</script>
+<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/styles/default.min.css">
+<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/highlight.min.js"></script>
+<!-- and it's easy to individually load additional languages -->
+<script charset="UTF-8" src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/languages/go.min.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<script>
+// Init highlight js
+document.addEventListener('DOMContentLoaded', function(event) {
+  var els = document.querySelectorAll('pre code')
+
+  function addLangData(block) {
+    var outer = block.parentElement.parentElement.parentElement;
+    var lang = block.getAttribute('data-lang');
+    for (var i = 0; i < outer.classList.length; i++) {
+      var cls = outer.classList[i];
+      if (cls.startsWith('language-')) {
+        lang = cls;
+        break;
+      }
+    }
+    if (!lang) {
+      cls = block.getAttribute('class');
+      lang = cls ? cls.replace('hljs ', '') : '';
+    }
+    if (lang.startsWith('language-')) {
+      lang = lang.substr(9);
+    }
+    block.setAttribute('class', 'hljs ' + lang);
+    block.parentNode.setAttribute('data-lang', lang);
+  }
+
+  function addBadge(block) {
+    var enabled = ('true' || 'true').toLowerCase();
+    if (enabled == 'true') {
+      var pre = block.parentElement;
+      pre.classList.add('badge');
+    }
+  }
+
+  function handle(block) {
+    addLangData(block);
+    addBadge(block)
+    hljs.highlightBlock(block);
+  }
+
+  for (var i = 0; i < els.length; i++) {
+    var el = els[i];
+    handle(el);
+  }
+});
+</script>
+
+<style>
+  /* code language badge */
+  pre.badge::before {
+    content: attr(data-lang);
+    color: #fff;
+    background-color: #0d9488;
+    padding: 0 .5em;
+    border-radius: 0 2px;
+    text-transform: uppercase;
+    text-align: center;
+    min-width: 32px;
+    display: inline-block;
+    position: absolute;
+    right: 0;
+  }
+
+  /* fix wrong badge display for firefox browser */
+  code > table pre::before {
+    display: none;
+  }
+</style>
+</head>
+<body>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<header class="site-header " role="banner">
+
+  <div class="wrapper">
+    <div class="site-header-inner">
+<span class="site-brand"><a class="site-brand-inner" rel="author" href="/jekyll-theme-yat/">
+  <img class="site-favicon" title="Waka-DS.com" src="" onerror="this.style.display='none'">
+  Waka-DS.com
+</a>
+</span><nav class="site-nav">
+          <input type="checkbox" id="nav-trigger" class="nav-trigger">
+          <label for="nav-trigger">
+            <span class="menu-icon">
+              <svg viewbox="0 0 18 15" width="18px" height="15px">
+                <path d="M18,1.484c0,0.82-0.665,1.484-1.484,1.484H1.484C0.665,2.969,0,2.304,0,1.484l0,0C0,0.665,0.665,0,1.484,0 h15.032C17.335,0,18,0.665,18,1.484L18,1.484z M18,7.516C18,8.335,17.335,9,16.516,9H1.484C0.665,9,0,8.335,0,7.516l0,0 c0-0.82,0.665-1.484,1.484-1.484h15.032C17.335,6.031,18,6.696,18,7.516L18,7.516z M18,13.516C18,14.335,17.335,15,16.516,15H1.484 C0.665,15,0,14.335,0,13.516l0,0c0-0.82,0.665-1.483,1.484-1.483h15.032C17.335,12.031,18,12.695,18,13.516L18,13.516z"></path>
+              </svg>
+            </span>
+          </label>
+
+          <div class="trigger">
+<a class="page-link" href="/jekyll-theme-yat/about.html">ABOUT</a><a class="page-link" href="/jekyll-theme-yat/archives.html">ARCHIVES</a><a class="page-link" href="/jekyll-theme-yat/categories.html">CATEGORIES</a><a class="page-link" href="/jekyll-theme-yat/">HOME</a><a class="page-link" href="/jekyll-theme-yat/tags.html">TAGS</a>
+</div>
+        </nav>
+</div>
+  </div>
+</header>
+
+<script>
+  function initHeader() {
+    var lastScrollY = getScrollPos().y;
+    var documentElement = document.documentElement;
+
+    function storeScrollData() {
+      var y = getScrollPos().y;var scrollStatus = "";
+
+      if (y <= 0) {
+        scrollStatus = "top";
+      } else if ((window.innerHeight + y) >= document.body.offsetHeight) {
+        scrollStatus = "bottom";
+      } else {
+        var isScrollDown = (y - lastScrollY > 0) ? true : false;
+        scrollStatus = isScrollDown ? "down" : "up";
+      }
+
+      lastScrollY = y;
+      documentElement.setAttribute("data-scroll-status", scrollStatus);
+    }
+
+    window.addEventListener('scroll', function(e) {
+      storeScrollData();
+    });
+
+    storeScrollData();
+  }
+  document.addEventListener('DOMContentLoaded', initHeader);
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<script>
+  function hashLocate(hashValue) {
+    hashValue = hashValue.replace(/^.*#h-/, '');
+    hashValue = decodeURIComponent(hashValue);
+    var element = document.getElementById(hashValue);
+
+    if (!element) {
+      return;
+    }
+
+    var header = document.querySelector('header.site-header');
+    var headerRect = header.getBoundingClientRect();
+    var headerTop = Math.floor(headerRect.top);
+    var headerHeight = Math.floor(headerRect.height);
+    var scrollPos = getScrollPos();
+    var offsetY = element.offsetTop - (headerTop + headerHeight + 20);
+
+    if (offsetY == scrollPos.y) {
+      return;
+    }
+
+    if (headerTop == 0  && offsetY > scrollPos.y) {
+      offsetY += headerHeight + 2;
+    } else if (headerTop < 0  && offsetY < scrollPos.y) {
+      offsetY -= headerHeight - 2;
+    }
+
+    smoothScrollTo(offsetY);
+  }
+
+  // The first event occurred
+  window.addEventListener('load', function(event) {
+    if (window.location.hash) {
+      hashLocate(window.location.hash);
+    }
+  });
+
+  // The first event occurred
+  window.addEventListener('click', function(event) {
+    if (event.target.tagName.toLowerCase() == 'a') {
+      hashLocate(event.target.getAttribute('href'));
+    }
+  });
+</script>
+<div class="theme-toggle">
+  <input type="checkbox" id="theme-switch">
+  <label for="theme-switch">
+    <div class="toggle"></div>
+    <div class="names">
+      <p class="light">Light</p>
+      <p class="dark">Dark</p>
+    </div>
+  </label>
+</div>
+
+
+
+
+<script>
+  (function() {
+    var sw = document.getElementById('theme-switch');
+    var html = document.getElementsByTagName('html')[0];
+    var nightModeOption = ('auto' || 'auto').toLowerCase();
+    var storage = nightModeOption === 'manual'
+        ? localStorage
+        : sessionStorage;
+    var themeData = loadThemeData();
+
+    function saveThemeData(data) {
+      storage.setItem('theme', JSON.stringify(data));
+    }
+
+    function loadThemeData() {
+      var data = storage.getItem('theme');
+      try {
+        data = JSON.parse(data ? data : '');
+      } catch(e) {
+        data = { nightShift: undefined, autoToggleAt: 0 };
+        saveThemeData(data);
+      }
+      return data;
+    }
+
+    function handleThemeToggle(nightShift) {
+      themeData.nightShift = nightShift;
+      saveThemeData(themeData);
+      html.dataset.theme = nightShift ? 'dark' : 'light';
+      setTimeout(function() {
+        sw.checked = nightShift ? true : false;
+      }, 50);
+    }
+
+    function autoThemeToggle() {
+      // Next time point of theme toggle
+      var now = new Date();
+      var toggleAt = new Date();
+      var hours = now.getHours();
+      var nightShift = hours >= 19 || hours <=7;
+
+      if (nightShift) {
+        if (hours > 7) {
+          toggleAt.setDate(toggleAt.getDate() + 1);
+        }
+        toggleAt.setHours(7);
+      } else {
+        toggleAt.setHours(19);
+      }
+
+      toggleAt.setMinutes(0);
+      toggleAt.setSeconds(0);
+      toggleAt.setMilliseconds(0)
+
+      var delay = toggleAt.getTime() - now.getTime();
+
+      // auto toggle theme mode
+      setTimeout(function() {
+        handleThemeToggle(!nightShift);
+      }, delay);
+
+      return {
+        nightShift: nightShift,
+        toggleAt: toggleAt.getTime()
+      };
+    }
+
+    // Listen the theme toggle event
+    sw.addEventListener('change', function(event) {
+      handleThemeToggle(event.target.checked);
+    });
+
+    if (nightModeOption == 'auto') {
+      var data = autoThemeToggle();
+
+      // Toggle theme by local setting
+      if (data.toggleAt > themeData.autoToggleAt) {
+        themeData.autoToggleAt = data.toggleAt;
+        handleThemeToggle(data.nightShift);
+      } else {
+        handleThemeToggle(themeData.nightShift);
+      }
+    } else if (nightModeOption == 'manual') {
+      handleThemeToggle(themeData.nightShift);
+    } else {
+      var nightShift = themeData.nightShift;
+      if (nightShift === undefined) {
+        nightShift = nightModeOption === 'on';
+      }
+      handleThemeToggle(nightShift);
+    }
+  })();
+</script>
+<main class="page-content" aria-label="Content">
+      <div class="wrapper">
+        <div class="framework">
+  <section class="main">
+
+     <div class="post post--with-image">
+  <section>
+
+
+
+
+
+
+
+
+
+<header class="post-header">
+  <h1 class="post-title p-name" itemprop="name headline">スマホで AI 開発を回す Issue/PR ベースワークフローの設計</h1>
+  <h2 class="post-subtitle"></h2>
+
+  <p class="post-meta">
+    <time class="dt-published" datetime="2026-06-11T00:00:00+00:00" itemprop="datePublished"><i class="fa fa-calendar"></i> Jun 11, 2026
+    </time>
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <span class="post-reading-time left-vsplit"><i class="fa fa-clock-o"></i> About 10 mins</span>
+  </p>
+<div class="post-tags">
+<a class="post-tag" href="/jekyll-theme-yat/tags.html#AI%E3%82%A8%E3%83%BC%E3%82%B8%E3%82%A7%E3%83%B3%E3%83%88">#AIエージェント</a><a class="post-tag" href="/jekyll-theme-yat/tags.html#%E3%82%B3%E3%83%BC%E3%83%87%E3%82%A3%E3%83%B3%E3%82%B0%E3%82%A8%E3%83%BC%E3%82%B8%E3%82%A7%E3%83%B3%E3%83%88">#コーディングエージェント</a><a class="post-tag" href="/jekyll-theme-yat/tags.html#Claude%20Code">#Claude Code</a><a class="post-tag" href="/jekyll-theme-yat/tags.html#Codex">#Codex</a><a class="post-tag" href="/jekyll-theme-yat/tags.html#GitHub%20Pages">#GitHub Pages</a><a class="post-tag" href="/jekyll-theme-yat/tags.html#GitHub%20Actions">#GitHub Actions</a><a class="post-tag" href="/jekyll-theme-yat/tags.html#%E8%87%AA%E5%8B%95%E5%8C%96">#自動化</a>
+</div></header>
+<figure class="post-eyecatch">
+  <img src="/jekyll-theme-yat/assets/images/posts/2026-06-11-mobile-first-ai-dev-issue-pr-workflow/eyecatch.png" alt="スマートフォンから依頼を送り生成物を承認してゲートを開く紙工作" decoding="async" fetchpriority="high">
+</figure><article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
+
+    <div class="post-content e-content" itemprop="articleBody">
+
+      <p>Claude Code や Codex を使い始めると、最初はローカル PC 上で作業させることが多い。スマホからリモートデスクトップで PC に接続し、ターミナルやエディタを遠隔操作してエージェントに指示する、という構成だ。動くことは動くが、遠回りだという感覚は残る。</p>
+
+<p>この記事では、その遠回りを解消するための設計の考え方を整理する。特に「チャットで議論した内容をテックブログ記事として GitHub Pages に公開する」というユースケースを中心に、Issue/PR ベースのワークフローへの移行を具体的に見ていく。</p>
+
+<hr>
+
+<h2 id="今の構成と課題">今の構成と課題</h2>
+
+<p>RDP ベースの構成を図にするとこうなる。</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>スマホ → RDP → ローカルPC → ターミナル/VSCode → エージェント
+</code></pre></div></div>
+
+<p>問題は、スマホが「操作端末」に近い役割を担っている点だ。RDP 越しの UI は細かい操作がしにくく、接続が切れると作業が止まる。エージェントが長時間作業していても、その結果をスマホで確認するだけでひと手間かかる。</p>
+
+<p>もう一つ、構造的な問題もある。エージェントへの指示が会話履歴の中に埋もれていき、「どこまでやったか」「何を頼んだか」を履歴をさかのぼらないと把握できなくなる。</p>
+
+<hr>
+
+<h2 id="設計の転換点スマホを承認端末として使う">設計の転換点：スマホを承認端末として使う</h2>
+
+<p>解決策は、スマホの役割を変えることだ。</p>
+
+<p>「開発端末」から「承認・指示端末」へ。</p>
+
+<p>スマホ側でやることは Issue を書くこと、PR の差分を確認すること、コメントで修正を指示すること、そして merge することだけにする。コードを書く作業、ファイルを編集する作業、コマンドを叩く作業は、エージェントが GitHub 上の指示を読んで実行する。</p>
+
+<p>移行後の構成はこうなる。</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>スマホ → GitHub Issue / PR / コメント
+              ↓
+         エージェント（Claude Code / Codex）
+              ↓
+         branch 作成・実装・PR 作成
+              ↓
+         スマホでレビュー → merge → デプロイ
+</code></pre></div></div>
+
+<p>ローカル PC は「手で操作する場所」ではなく、重い処理やローカル環境依存の確認が必要なときだけ使う検証環境に格下げできる。RDP をゼロにする必要はない。例外対応用に残しておく程度がちょうどいい。</p>
+
+<hr>
+
+<h2 id="issuepr-ベースの3層設計">Issue/PR ベースの3層設計</h2>
+
+<p>この構成を整理すると、3つの層に分けて考えると見通しがよくなる。</p>
+
+<p><strong>指示層（スマホ）</strong></p>
+
+<p>GitHub Mobile または GitHub Web から Issue を作成し、エージェントに作業を依頼する。PR 差分の確認、コメントでの修正指示、merge もここで完結する。</p>
+
+<p><strong>エージェント層</strong></p>
+
+<p>Claude Code が Issue / PR 上のメンションから作業を読み取り、branch を切って実装・記事生成・PR 作成まで行う。Codex は PR 差分のレビューに向いており、レビューコメントを自動で付ける用途で使える。</p>
+
+<p><strong>実行・デプロイ層</strong></p>
+
+<p>GitHub Actions が CI を実行し、merge 後の GitHub Pages デプロイも担う。ローカル PC は GitHub-hosted runner で賄えない処理が出たときの例外的な確認環境として残す。</p>
+
+<hr>
+
+<h2 id="ユースケースチャット議論からブログ記事を生成する">ユースケース：チャット議論からブログ記事を生成する</h2>
+
+<p>このワークフローが最も効果を発揮するのが、AI チャットで議論した内容を GitHub Pages のブログ記事に変換するユースケースだ。</p>
+
+<h3 id="共有リンクだけに依存しない">共有リンクだけに依存しない</h3>
+
+<p>ChatGPT・Claude・Gemini の会話には共有リンクを発行できる機能がある。しかし共有リンクだけを頼りにエージェントに渡すのは危うい。ログイン要件、動的レンダリング、アクセス制限などで、エージェントや GitHub Actions からのアクセスが安定しないケースがある。</p>
+
+<p>実用的な設計は「共有リンク + 本文貼り付けの両対応」にすることだ。Issue テンプレートに <code class="language-plaintext highlighter-rouge">Source link</code> と <code class="language-plaintext highlighter-rouge">Raw transcript</code> の両方の欄を用意し、リンクが取得できない場合のフォールバックとして会話本文を貼れるようにする。</p>
+
+<div class="language-markdown highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="gu">## Source</span>
+<span class="p">-</span> Chat link:
+<span class="p">-</span> Raw transcript / notes:
+
+<span class="gu">## Article Goal</span>
+What should this article help readers understand?
+
+<span class="gu">## Target Reader</span>
+
+<span class="gu">## Command</span>
+/quick-blog
+</code></pre></div></div>
+
+<h3 id="会話ログをそのまま転用しない">会話ログをそのまま転用しない</h3>
+
+<p>もう一つ重要な点がある。AI チャットの内容をそのまま記事に転用しないことだ。</p>
+
+<p>会話形式の Q&amp;A を記事に貼っても、読者にとって価値が出るとは限らない。エージェントへの指示は「会話の主要論点を抽出し、読者に価値ある構成へ再編集すること」まで含める。ユーザーの発言、AI の提案、未検証の推測は区別して扱い、断定できない情報には注意書きを入れる。</p>
+
+<h3 id="実際の流れ">実際の流れ</h3>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>スマホで AI と議論
+  ↓
+共有リンク、または会話本文を Issue に貼る
+  ↓
+Issue に /quick-blog とコメント
+  ↓
+エージェントが記事企画・本文作成・PR 化
+  ↓
+スマホで差分確認・コメントで修正
+  ↓
+merge → GitHub Pages 公開
+</code></pre></div></div>
+
+<p>GitHub Pages は GitHub Actions からデプロイできるため、merge から公開まで自動でつながる。</p>
+
+<h3 id="_drafts-か-pr-branch-に置く">_drafts か PR branch に置く</h3>
+
+<p>エージェントが生成した記事を最初から <code class="language-plaintext highlighter-rouge">_posts/</code> に入れないのも重要だ。<code class="language-plaintext highlighter-rouge">_posts/</code> に入れるとビルド次第では即公開になる可能性がある。エージェントには「draft branch で PR を作り、<code class="language-plaintext highlighter-rouge">_posts/</code> に追加した状態のコミットを作る」まで指示する。merge するかどうかの判断は人間が行う。</p>
+
+<hr>
+
+<h2 id="人間の承認を残すべき境界">人間の承認を残すべき境界</h2>
+
+<p>スマホ完結を目指すあまり、人間の確認ポイントまで自動化しないことが大切だ。</p>
+
+<p>以下は必ず人間の承認を挟む。</p>
+
+<ul>
+  <li>main へのマージ</li>
+  <li>secrets / token / 環境変数の変更</li>
+  <li>DB マイグレーション</li>
+  <li>デプロイ（特に本番）</li>
+  <li>課金が発生する処理</li>
+  <li>GitHub Actions の workflow ファイル自体の変更</li>
+</ul>
+
+<p>特に GitHub Actions 上でエージェントが動く構成では、Issue 本文・PR 本文・コメントなどの外部入力がエージェントのプロンプトに入るため、攻撃面が広い。ブログ記事生成のような比較的安全な用途でも、workflow の変更は自動化しないのが基本だ。</p>
+
+<hr>
+
+<h2 id="最小構成から始める">最小構成から始める</h2>
+
+<p>いきなり全部を整備しようとするとコストが高い。実用的には次の4つがあれば動き始められる。</p>
+
+<p><strong>AGENTS.md</strong></p>
+
+<p>エージェントに毎回説明しなくていいよう、リポジトリの運用方針を書いておく。「main に直接 push しない」「PR を作ってレビューを待つ」「secrets は変更しない」「外部設定が必要な場合は人間向けのチェックリストを書く」程度があれば十分だ。</p>
+
+<p><strong>Issue テンプレート（ブログ用）</strong></p>
+
+<p>Source（チャットリンク / 本文）、Article Goal、Target Reader、Output（draft か publish 可能か）を聞く最小のテンプレートを用意する。</p>
+
+<p><strong>PR テンプレート</strong></p>
+
+<p>変更内容・確認方法・リスク・人間が確認すべきポイントをチェックリスト形式で書く欄を用意する。</p>
+
+<p><strong>CI</strong></p>
+
+<p>GitHub Actions で <code class="language-plaintext highlighter-rouge">jekyll build</code> が通るかだけでも確認する。これがあることで、front matter 崩れやビルドエラーを merge 前に検知できる。</p>
+
+<p>この4つが揃うと、「Issue 作成 → エージェント実装 → PR 確認 → コメント修正 → merge」までスマホで完結できる状態に近づく。</p>
+
+<hr>
+
+<h2 id="参考">参考</h2>
+
+<ul>
+  <li>
+<a href="/jekyll-theme-yat/ai%E9%96%8B%E7%99%BA/2026/06/10/solo-dev-multi-agent-setup.html">1人開発でマルチエージェント体制を作る方法</a> ── エージェントを複数動かす役割設計の全体像</li>
+  <li>
+<a href="https://docs.anthropic.com/en/docs/claude-code/github-actions">Claude Code GitHub Actions</a> ── Issue/PR メンションからの実装・PR 作成の公式ドキュメント</li>
+  <li>
+<a href="https://github.com/mobile">GitHub Mobile</a> ── iOS/Android 向けクライアント。PR Files Changed での差分レビューに対応</li>
+</ul>
+
+
+    </div>
+
+</article>
+<div class="post-nav">
+<a class="previous" href="/jekyll-theme-yat/ai%E9%96%8B%E7%99%BA/2026/06/11/goose-agent-pyramid-hierarchy.html" title="GooseとAI開発が解体するピラミッド型組織">GooseとAI開発が解体するピラミッド型組織</a><a class="next" href="/jekyll-theme-yat/%E3%83%87%E3%83%BC%E3%82%BF%E3%82%A8%E3%83%B3%E3%82%B8%E3%83%8B%E3%82%A2%E3%83%AA%E3%83%B3%E3%82%B0/2026/06/12/2026-world-cup-soccer-data-revolution.html" title="2026ワールドカップで見るサッカーのデータ革命">2026ワールドカップで見るサッカーのデータ革命</a>
+</div>
+<div class="post-related">
+      <div>Related Articles</div>
+      <ul>
+        <li><a class="post-link" href="/jekyll-theme-yat/%E9%96%8B%E7%99%BA/2023/06/24/vscode-shortcut.html" title="2026ワールドカップで見るサッカーのデータ革命">【VSCode】よく使うショートカット10選</a></li>
+<li><a class="post-link" href="/jekyll-theme-yat/%E9%96%8B%E7%99%BA/2026/06/16/spacex-ipo-kardashev-scale.html" title="2026ワールドカップで見るサッカーのデータ革命">SpaceXのIPOとカルダシェフ・スケール</a></li>
+<li><a class="post-link" href="/jekyll-theme-yat/%E9%96%8B%E7%99%BA/2026/06/10/git-submodule-subtree.html" title="2026ワールドカップで見るサッカーのデータ革命">Git submodule と Git subtree の違いと使い分け</a></li>
+<li><a class="post-link" href="/jekyll-theme-yat/%E9%96%8B%E7%99%BA/2026/06/13/nodejs-basics-for-vibe-coding.html" title="2026ワールドカップで見るサッカーのデータ革命">バイブコーディングする人が知っておきたい Node.js 周辺の基礎知識</a></li>
+</ul>
+    </div>
+<div class="post-comments"></div></section>
+</div>
+
+
+  </section>
+  <section class="sidebar" style="margin-left: 15px;">
+    <!-- Get sidebar items --><style type="text/css" media="screen">
+.post-menu ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+</style>
+
+<div class="post-menu">
+  <div class="post-menu-title">TOC</div>
+  <div class="post-menu-content"></div>
+</div>
+
+<script>
+  function generateContent() {
+    var menu = document.querySelector(".post-menu");
+    var menuContent =  menu.querySelector(".post-menu-content");
+    var headings = document.querySelector(".post-content").querySelectorAll("h2, h3, h4, h5, h6");
+
+    // Hide menu when no headings
+    if (headings.length === 0) {
+      return menu.style.display = "none";
+    }
+
+    // Generate post menu
+    var menuHTML = '';
+    for (var i = 0; i < headings.length; i++) {
+      var h = headings[i];
+      menuHTML += (
+        '<li class="h-' + h.tagName.toLowerCase() + '">'
+        + '<a href="#h-' + h.getAttribute('id') + '">' + h.textContent + '</a></li>');
+    }
+
+    menuContent.innerHTML = '<ul>' + menuHTML + '</ul>';
+
+    // The header element
+    var header = document.querySelector('header.site-header');
+
+    function doMenuCollapse(index, over_items) {
+      var items = menuContent.firstChild.children;
+
+      if (over_items == undefined) {
+        over_items = 20;
+      }
+
+      if (items.length < over_items) {
+        return;
+      }
+
+      var activeItem = items[index];
+      var beginItem = activeItem
+      var endItem = activeItem
+      var beginIndex = index;
+      var endIndex = index + 1;
+      while (beginIndex >= 0
+        && !items[beginIndex].classList.contains('h-h2')) {
+        beginIndex -= 1;
+      }
+      while (endIndex < items.length
+        && !items[endIndex].classList.contains('h-h2')) {
+        endIndex += 1;
+      }
+      for (var i = 0; i < beginIndex; i++) {
+        item = items[i]
+        if (!item.classList.contains('h-h2')) {
+          item.style.display = 'none';
+        }
+      }
+      for (var i = beginIndex + 1; i < endIndex; i++) {
+        item = items[i]
+        // if (!item.classList.contains('h-h2')) {
+          item.style.display = '';
+        // }
+      }
+      for (var i = endIndex; i < items.length; i++) {
+        item = items[i]
+        if (!item.classList.contains('h-h2')) {
+          item.style.display = 'none';
+        }
+      }
+    }
+
+    // Init menu collapsed
+    doMenuCollapse(-1);
+
+    // Active the menu item
+    window.addEventListener('scroll', function (event) {
+      var lastActive = menuContent.querySelector('.active');
+      var changed = true;
+      var activeIndex = -1;
+      for (var i = headings.length - 1; i >= 0; i--) {
+        var h = headings[i];
+        var headingRect = h.getBoundingClientRect();
+        var headerRect = header.getBoundingClientRect();
+        var headerTop = Math.floor(headerRect.top);
+        var headerHeight = Math.floor(headerRect.height);
+        var headerHeight = headerTop + headerHeight + 20;
+        if (headingRect.top <= headerHeight) {
+          var id = 'h-' + h.getAttribute('id');
+          var a = menuContent.querySelector('a[href="#' + id  + '"]');
+          var curActive = a.parentNode;
+          if (curActive) {
+            curActive.classList.add('active');
+            activeIndex = i;
+          }
+          if (lastActive == curActive) {
+            changed = false;
+          }
+          break;
+        }
+      }
+      if (changed) {
+        if (lastActive) {
+          lastActive.classList.remove('active');
+        }
+        doMenuCollapse(activeIndex);
+      }
+      event.preventDefault();
+    });
+  }
+  generateContent();
+</script>
+</section>
+</div>
+
+      </div>
+    </main><footer class="site-footer h-card">
+  <data class="u-url" href="/jekyll-theme-yat/"></data>
+
+  <div class="wrapper">
+    <div class="site-footer-inner">
+<div>Waka-DS © 2021-2026</div>
+      <div>Powered by <a title="Jekyll is a simple, blog-aware, static site
+      generator." href="http://jekyllrb.com/">Jekyll</a> &amp; <a title="Yat, yet
+      another theme." href="https://github.com/jeffreytse/jekyll-theme-yat">Yat Theme</a>.</div>
+      <div class="footer-col rss-subscribe">Subscribe <a href="/jekyll-theme-yat/feed.xml">via RSS</a>
+</div>
+    </div>
+  </div>
+</footer>
+</body>
+</html>

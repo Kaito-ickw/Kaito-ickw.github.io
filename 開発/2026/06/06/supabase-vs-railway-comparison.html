@@ -1,0 +1,1455 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <script>
+  (function() {
+    try {
+      var p = localStorage.getItem('preferred_lang');
+      if (!p) return;
+      var path = window.location.pathname;
+      var ja = ['/', '/archives.html', '/categories.html', '/tags.html', '/about.html'];
+      var en = ['/en/', '/en/archives.html', '/en/categories.html', '/en/tags.html', '/en/about.html'];
+      if (p === 'en' && ja.indexOf(path) !== -1) {
+        window.location.replace('/en' + (path === '/' ? '/' : path));
+      } else if (p === 'ja' && en.indexOf(path) !== -1) {
+        window.location.replace(path.slice(3) || '/');
+      }
+    } catch(e) {}
+  })();
+  </script>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="google-translate-customization" content="108d9124921d80c3-80e20d618ff053c8-g4f02ec6f3dba68b7-c">
+<!-- Begin Jekyll SEO tag v2.9.0 -->
+<title>Supabase vs Railway vs Neon バックエンド選定 (2026年版) | Waka-DS.com</title>
+<meta name="generator" content="Jekyll v4.4.1">
+<meta property="og:title" content="Supabase vs Railway vs Neon バックエンド選定 (2026年版)">
+<meta name="author" content="Waka-DS">
+<meta property="og:locale" content="ja">
+<meta name="description" content="AIネイティブなログアプリを個人で開発している。 バックエンドの選定を進める中で Supabase と Railway のどちらにするか迷い、ついでに Neon や PlanetScale も候補に挙がってきた。">
+<meta name="twitter:description" property="og:description" content="AIネイティブなログアプリを個人で開発している。 バックエンドの選定を進める中で Supabase と Railway のどちらにするか迷い、ついでに Neon や PlanetScale も候補に挙がってきた。">
+<link rel="canonical" href="/jekyll-theme-yat/%E9%96%8B%E7%99%BA/2026/06/06/supabase-vs-railway-comparison.html">
+<meta property="og:url" content="/jekyll-theme-yat/%E9%96%8B%E7%99%BA/2026/06/06/supabase-vs-railway-comparison.html">
+<meta property="og:site_name" content="Waka-DS.com">
+<meta property="og:type" content="article">
+<meta property="article:published_time" content="2026-06-06T00:00:00+00:00">
+<meta property="article:modified_time" content="2026-07-03T00:00:00+00:00">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Supabase vs Railway vs Neon バックエンド選定 (2026年版)">
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":"Waka-DS"},"dateModified":"2026-07-03T00:00:00+00:00","datePublished":"2026-06-06T00:00:00+00:00","description":"AIネイティブなログアプリを個人で開発している。 バックエンドの選定を進める中で Supabase と Railway のどちらにするか迷い、ついでに Neon や PlanetScale も候補に挙がってきた。","headline":"Supabase vs Railway vs Neon バックエンド選定 (2026年版)","mainEntityOfPage":{"@type":"WebPage","@id":"/jekyll-theme-yat/%E9%96%8B%E7%99%BA/2026/06/06/supabase-vs-railway-comparison.html"},"url":"/jekyll-theme-yat/%E9%96%8B%E7%99%BA/2026/06/06/supabase-vs-railway-comparison.html"}</script>
+<!-- End Jekyll SEO tag -->
+<link rel="shortcut icon" href="">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=Noto+Sans+JP:wght@400;500;700&amp;display=swap">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+  <link rel="stylesheet" href="/jekyll-theme-yat/assets/css/main.css">
+  <script src="/jekyll-theme-yat/assets/js/main.js"></script><link type="application/atom+xml" rel="alternate" href="/jekyll-theme-yat/feed.xml" title="Waka-DS.com">
+<script>
+  function initGoogleAnalytics() {
+    var doNotTrack = (window.doNotTrack === "1" || navigator.doNotTrack === "1" ||
+      navigator.doNotTrack === "yes" || navigator.msDoNotTrack === "1");
+    var enableDNT = "true" == "true";
+
+    if (!enableDNT || !doNotTrack) {
+      var ga_id = 'G-XNP1RBTG9C';
+
+      var script = document.createElement('script');
+      script.async = true;
+      script.src = 'https://www.googletagmanager.com/gtag/js?id=' + ga_id;
+      document.head.appendChild(script);
+
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', ga_id);
+    }
+  }
+  window.addEventListener("load", initGoogleAnalytics);
+</script>
+<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/styles/default.min.css">
+<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/highlight.min.js"></script>
+<!-- and it's easy to individually load additional languages -->
+<script charset="UTF-8" src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/languages/go.min.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<script>
+// Init highlight js
+document.addEventListener('DOMContentLoaded', function(event) {
+  var els = document.querySelectorAll('pre code')
+
+  function addLangData(block) {
+    var outer = block.parentElement.parentElement.parentElement;
+    var lang = block.getAttribute('data-lang');
+    for (var i = 0; i < outer.classList.length; i++) {
+      var cls = outer.classList[i];
+      if (cls.startsWith('language-')) {
+        lang = cls;
+        break;
+      }
+    }
+    if (!lang) {
+      cls = block.getAttribute('class');
+      lang = cls ? cls.replace('hljs ', '') : '';
+    }
+    if (lang.startsWith('language-')) {
+      lang = lang.substr(9);
+    }
+    block.setAttribute('class', 'hljs ' + lang);
+    block.parentNode.setAttribute('data-lang', lang);
+  }
+
+  function addBadge(block) {
+    var enabled = ('true' || 'true').toLowerCase();
+    if (enabled == 'true') {
+      var pre = block.parentElement;
+      pre.classList.add('badge');
+    }
+  }
+
+  function handle(block) {
+    addLangData(block);
+    addBadge(block)
+    hljs.highlightBlock(block);
+  }
+
+  for (var i = 0; i < els.length; i++) {
+    var el = els[i];
+    handle(el);
+  }
+});
+</script>
+
+<style>
+  /* code language badge */
+  pre.badge::before {
+    content: attr(data-lang);
+    color: #fff;
+    background-color: #0d9488;
+    padding: 0 .5em;
+    border-radius: 0 2px;
+    text-transform: uppercase;
+    text-align: center;
+    min-width: 32px;
+    display: inline-block;
+    position: absolute;
+    right: 0;
+  }
+
+  /* fix wrong badge display for firefox browser */
+  code > table pre::before {
+    display: none;
+  }
+</style>
+<script>MathJax={"tex":{"inlineMath":[["$","$"],["\\(","\\)"]],"displayMath":[["$$","$$"],["\\[","\\]"]]},"svg":{"fontCache":"global"}}</script><script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script><script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+</head>
+<body>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<header class="site-header " role="banner">
+
+  <div class="wrapper">
+    <div class="site-header-inner">
+<span class="site-brand"><a class="site-brand-inner" rel="author" href="/jekyll-theme-yat/">
+  <img class="site-favicon" title="Waka-DS.com" src="" onerror="this.style.display='none'">
+  Waka-DS.com
+</a>
+</span><nav class="site-nav">
+          <input type="checkbox" id="nav-trigger" class="nav-trigger">
+          <label for="nav-trigger">
+            <span class="menu-icon">
+              <svg viewbox="0 0 18 15" width="18px" height="15px">
+                <path d="M18,1.484c0,0.82-0.665,1.484-1.484,1.484H1.484C0.665,2.969,0,2.304,0,1.484l0,0C0,0.665,0.665,0,1.484,0 h15.032C17.335,0,18,0.665,18,1.484L18,1.484z M18,7.516C18,8.335,17.335,9,16.516,9H1.484C0.665,9,0,8.335,0,7.516l0,0 c0-0.82,0.665-1.484,1.484-1.484h15.032C17.335,6.031,18,6.696,18,7.516L18,7.516z M18,13.516C18,14.335,17.335,15,16.516,15H1.484 C0.665,15,0,14.335,0,13.516l0,0c0-0.82,0.665-1.483,1.484-1.483h15.032C17.335,12.031,18,12.695,18,13.516L18,13.516z"></path>
+              </svg>
+            </span>
+          </label>
+
+          <div class="trigger">
+<a class="page-link" href="/jekyll-theme-yat/about.html">ABOUT</a><a class="page-link" href="/jekyll-theme-yat/archives.html">ARCHIVES</a><a class="page-link" href="/jekyll-theme-yat/categories.html">CATEGORIES</a><a class="page-link" href="/jekyll-theme-yat/">HOME</a><a class="page-link" href="/jekyll-theme-yat/tags.html">TAGS</a><span class="page-link">
+                <span class="lang-switcher lang-switcher--nav"><span class="lang-btn lang-btn--active">日本語</span><a class="lang-btn" href="/jekyll-theme-yat/development/2026/06/06/supabase-vs-railway-comparison-en.html">English</a></span>
+              </span>
+</div>
+        </nav>
+</div>
+  </div>
+</header>
+
+<script>
+  function initHeader() {
+    var lastScrollY = getScrollPos().y;
+    var documentElement = document.documentElement;
+
+    function storeScrollData() {
+      var y = getScrollPos().y;var scrollStatus = "";
+
+      if (y <= 0) {
+        scrollStatus = "top";
+      } else if ((window.innerHeight + y) >= document.body.offsetHeight) {
+        scrollStatus = "bottom";
+      } else {
+        var isScrollDown = (y - lastScrollY > 0) ? true : false;
+        scrollStatus = isScrollDown ? "down" : "up";
+      }
+
+      lastScrollY = y;
+      documentElement.setAttribute("data-scroll-status", scrollStatus);
+    }
+
+    window.addEventListener('scroll', function(e) {
+      storeScrollData();
+    });
+
+    storeScrollData();
+  }
+  document.addEventListener('DOMContentLoaded', initHeader);
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<script>
+  function hashLocate(hashValue) {
+    hashValue = hashValue.replace(/^.*#h-/, '');
+    hashValue = decodeURIComponent(hashValue);
+    var element = document.getElementById(hashValue);
+
+    if (!element) {
+      return;
+    }
+
+    var header = document.querySelector('header.site-header');
+    var headerRect = header.getBoundingClientRect();
+    var headerTop = Math.floor(headerRect.top);
+    var headerHeight = Math.floor(headerRect.height);
+    var scrollPos = getScrollPos();
+    var offsetY = element.offsetTop - (headerTop + headerHeight + 20);
+
+    if (offsetY == scrollPos.y) {
+      return;
+    }
+
+    if (headerTop == 0  && offsetY > scrollPos.y) {
+      offsetY += headerHeight + 2;
+    } else if (headerTop < 0  && offsetY < scrollPos.y) {
+      offsetY -= headerHeight - 2;
+    }
+
+    smoothScrollTo(offsetY);
+  }
+
+  // The first event occurred
+  window.addEventListener('load', function(event) {
+    if (window.location.hash) {
+      hashLocate(window.location.hash);
+    }
+  });
+
+  // The first event occurred
+  window.addEventListener('click', function(event) {
+    if (event.target.tagName.toLowerCase() == 'a') {
+      hashLocate(event.target.getAttribute('href'));
+    }
+  });
+</script>
+<div class="theme-toggle">
+  <input type="checkbox" id="theme-switch">
+  <label for="theme-switch">
+    <div class="toggle"></div>
+    <div class="names">
+      <p class="light">Light</p>
+      <p class="dark">Dark</p>
+    </div>
+  </label>
+</div>
+
+
+
+
+<script>
+  (function() {
+    var sw = document.getElementById('theme-switch');
+    var html = document.getElementsByTagName('html')[0];
+    var nightModeOption = ('auto' || 'auto').toLowerCase();
+    var storage = nightModeOption === 'manual'
+        ? localStorage
+        : sessionStorage;
+    var themeData = loadThemeData();
+
+    function saveThemeData(data) {
+      storage.setItem('theme', JSON.stringify(data));
+    }
+
+    function loadThemeData() {
+      var data = storage.getItem('theme');
+      try {
+        data = JSON.parse(data ? data : '');
+      } catch(e) {
+        data = { nightShift: undefined, autoToggleAt: 0 };
+        saveThemeData(data);
+      }
+      return data;
+    }
+
+    function handleThemeToggle(nightShift) {
+      themeData.nightShift = nightShift;
+      saveThemeData(themeData);
+      html.dataset.theme = nightShift ? 'dark' : 'light';
+      setTimeout(function() {
+        sw.checked = nightShift ? true : false;
+      }, 50);
+    }
+
+    function autoThemeToggle() {
+      // Next time point of theme toggle
+      var now = new Date();
+      var toggleAt = new Date();
+      var hours = now.getHours();
+      var nightShift = hours >= 19 || hours <=7;
+
+      if (nightShift) {
+        if (hours > 7) {
+          toggleAt.setDate(toggleAt.getDate() + 1);
+        }
+        toggleAt.setHours(7);
+      } else {
+        toggleAt.setHours(19);
+      }
+
+      toggleAt.setMinutes(0);
+      toggleAt.setSeconds(0);
+      toggleAt.setMilliseconds(0)
+
+      var delay = toggleAt.getTime() - now.getTime();
+
+      // auto toggle theme mode
+      setTimeout(function() {
+        handleThemeToggle(!nightShift);
+      }, delay);
+
+      return {
+        nightShift: nightShift,
+        toggleAt: toggleAt.getTime()
+      };
+    }
+
+    // Listen the theme toggle event
+    sw.addEventListener('change', function(event) {
+      handleThemeToggle(event.target.checked);
+    });
+
+    if (nightModeOption == 'auto') {
+      var data = autoThemeToggle();
+
+      // Toggle theme by local setting
+      if (data.toggleAt > themeData.autoToggleAt) {
+        themeData.autoToggleAt = data.toggleAt;
+        handleThemeToggle(data.nightShift);
+      } else {
+        handleThemeToggle(themeData.nightShift);
+      }
+    } else if (nightModeOption == 'manual') {
+      handleThemeToggle(themeData.nightShift);
+    } else {
+      var nightShift = themeData.nightShift;
+      if (nightShift === undefined) {
+        nightShift = nightModeOption === 'on';
+      }
+      handleThemeToggle(nightShift);
+    }
+  })();
+</script>
+<main class="page-content" aria-label="Content">
+      <div class="wrapper">
+        <div class="framework">
+  <section class="main">
+
+     <div class="post">
+  <section>
+
+
+
+
+
+
+
+
+
+<header class="post-header">
+  <h1 class="post-title p-name" itemprop="name headline">Supabase vs Railway vs Neon バックエンド選定 (2026年版)</h1>
+  <h2 class="post-subtitle">主要 BaaS/PaaS の最新料金・機能を徹底比較</h2>
+
+  <p class="post-meta">
+    <time class="dt-published" datetime="2026-06-06T00:00:00+00:00" itemprop="datePublished"><i class="fa fa-calendar"></i> Jun 06, 2026
+    </time><time class="dt-updated left-vsplit" datetime="2026-07-03T00:00:00+00:00" itemprop="dateModified">
+      <i class="fa fa-refresh"></i>
+      
+        更新日: Jul 03, 2026
+      
+    </time>
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <span class="post-reading-time left-vsplit"><i class="fa fa-clock-o"></i> About 24 mins</span>
+  </p>
+<div class="post-tags">
+<a class="post-tag" href="/jekyll-theme-yat/tags.html#Supabase">#Supabase</a><a class="post-tag" href="/jekyll-theme-yat/tags.html#Railway">#Railway</a><a class="post-tag" href="/jekyll-theme-yat/tags.html#Neon">#Neon</a><a class="post-tag" href="/jekyll-theme-yat/tags.html#BaaS">#BaaS</a><a class="post-tag" href="/jekyll-theme-yat/tags.html#PaaS">#PaaS</a><a class="post-tag" href="/jekyll-theme-yat/tags.html#%E3%83%90%E3%83%83%E3%82%AF%E3%82%A8%E3%83%B3%E3%83%89">#バックエンド</a>
+</div></header>
+<article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
+
+    <div class="post-content e-content" itemprop="articleBody">
+
+      <p>AIネイティブなログアプリを個人で開発している。
+バックエンドの選定を進める中で <strong>Supabase</strong> と <strong>Railway</strong> のどちらにするか迷い、ついでに <strong>Neon</strong> や <strong>PlanetScale</strong> も候補に挙がってきた。</p>
+
+<p>この記事では 2026年6月時点の最新情報をもとに、各サービスの特徴・料金・ユースケースを整理する。</p>
+
+<hr>
+
+<h2 id="まず何を選ぶかの軸を整理する">まず「何を選ぶか」の軸を整理する</h2>
+
+<p>ログアプリに求める要件はざっくりこんな感じ。</p>
+
+<ul>
+  <li>
+<strong>構造化ログの書き込み</strong>（AIエージェントのトレース、ユーザー操作履歴など）</li>
+  <li><strong>リアルタイムor準リアルタイムのクエリ</strong></li>
+  <li>
+<strong>pgvector によるベクトル検索</strong>（ログの意味検索、類似インシデント検索）</li>
+  <li><strong>個人 → チーム規模へのスケールアップ</strong></li>
+  <li><strong>月のランニングコストをできる限り抑えたい</strong></li>
+</ul>
+
+<p>この軸で各サービスを見ていく。</p>
+
+<hr>
+
+<h2 id="supabase--オールインワン-baas">Supabase ── オールインワン BaaS</h2>
+
+<h3 id="概要">概要</h3>
+
+<p>PostgreSQL をコアに据えた <strong>BaaS (Backend as a Service)</strong>。
+DB だけでなく Auth・Storage・Realtime・Edge Functions がワンパッケージで揃う。
+pgvector はすべてのプランで<strong>無料</strong>で利用可能なのが嬉しいポイント。</p>
+
+<h3 id="主な機能">主な機能</h3>
+
+<table>
+  <thead>
+    <tr>
+      <th style="text-align: left">機能</th>
+      <th style="text-align: left">内容</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td style="text-align: left">データベース</td>
+      <td style="text-align: left">PostgreSQL (フルマネージド)</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">認証</td>
+      <td style="text-align: left">メール・OAuth・Magic Link・電話</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">ストレージ</td>
+      <td style="text-align: left">S3 互換オブジェクトストレージ</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">リアルタイム</td>
+      <td style="text-align: left">WebSocket によるリアルタイムサブスクリプション</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">Edge Functions</td>
+      <td style="text-align: left">Deno ランタイム</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">ベクトル検索</td>
+      <td style="text-align: left">pgvector 組み込み (無料)</td>
+    </tr>
+  </tbody>
+</table>
+
+<h3 id="料金-2026年6月時点">料金 (2026年6月時点)</h3>
+
+<table>
+  <thead>
+    <tr>
+      <th style="text-align: left">プラン</th>
+      <th style="text-align: left">月額</th>
+      <th style="text-align: left">主な制限</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td style="text-align: left"><strong>Free</strong></td>
+      <td style="text-align: left">$0</td>
+      <td style="text-align: left">DB 500MB、プロジェクト2個、MAU 5万</td>
+    </tr>
+    <tr>
+      <td style="text-align: left"><strong>Pro</strong></td>
+      <td style="text-align: left">$25〜</td>
+      <td style="text-align: left">DB 8GB、MAU 10万、ストレージ 100GB</td>
+    </tr>
+    <tr>
+      <td style="text-align: left"><strong>Team</strong></td>
+      <td style="text-align: left">$599〜</td>
+      <td style="text-align: left">SOC2/ISO 27001、バックアップ14日</td>
+    </tr>
+    <tr>
+      <td style="text-align: left"><strong>Enterprise</strong></td>
+      <td style="text-align: left">要相談</td>
+      <td style="text-align: left">HIPAA対応、専用インフラ</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>Pro プランは<strong>デフォルトで使用上限あり</strong>なので、予期せぬ請求を防ぎやすい。
+コンピュートは別途 $12〜の追加課金。</p>
+
+<h3 id="ログアプリ視点での評価">ログアプリ視点での評価</h3>
+
+<ul>
+  <li>✅ pgvector が使えるのでベクトル検索をすぐ始められる</li>
+  <li>✅ Auth / Realtime が標準搭載 → 認証周りを自前実装しなくていい</li>
+  <li>✅ Row Level Security (RLS) でマルチテナント対応がしやすい</li>
+  <li>⚠️ コンピュートを上げると費用が一気に跳ね上がる</li>
+  <li>⚠️ Free プランはプロジェクト数・ストレージが少なめ</li>
+</ul>
+
+<hr>
+
+<h2 id="railway--柔軟な汎用-paas">Railway ── 柔軟な汎用 PaaS</h2>
+
+<h3 id="概要-1">概要</h3>
+
+<p>コンテナベースで何でもデプロイできる <strong>PaaS (Platform as a Service)</strong>。
+Supabase とは競合というより<strong>補完関係</strong>に近い。Next.js や FastAPI などのバックエンドサービス・ワーカーを動かすのが本領。</p>
+
+<p>ビルドシステムは <strong>Nixpacks</strong> を採用しており、Dockerfile を書かなくてもフレームワークを自動検出してくれる。</p>
+
+<h3 id="主な機能-1">主な機能</h3>
+
+<table>
+  <thead>
+    <tr>
+      <th style="text-align: left">機能</th>
+      <th style="text-align: left">内容</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td style="text-align: left">デプロイ</td>
+      <td style="text-align: left">コンテナ (Nixpacks / Dockerfile)</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">DB</td>
+      <td style="text-align: left">PostgreSQL・MySQL・MongoDB・Redis (マネージド)</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">スケーリング</td>
+      <td style="text-align: left">vCPU・RAM を秒単位課金</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">テンプレート</td>
+      <td style="text-align: left">OSS を one-click デプロイ</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">CI/CD</td>
+      <td style="text-align: left">GitHub 連携で自動デプロイ</td>
+    </tr>
+  </tbody>
+</table>
+
+<h3 id="料金-2026年6月時点-1">料金 (2026年6月時点)</h3>
+
+<table>
+  <thead>
+    <tr>
+      <th style="text-align: left">プラン</th>
+      <th style="text-align: left">月額</th>
+      <th style="text-align: left">付与クレジット</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td style="text-align: left"><strong>Trial</strong></td>
+      <td style="text-align: left">$0 (一時)</td>
+      <td style="text-align: left">$5 のワンタイムクレジット</td>
+    </tr>
+    <tr>
+      <td style="text-align: left"><strong>Hobby</strong></td>
+      <td style="text-align: left">$5</td>
+      <td style="text-align: left">$5 のリソースクレジット込み</td>
+    </tr>
+    <tr>
+      <td style="text-align: left"><strong>Pro</strong></td>
+      <td style="text-align: left">$20/シート</td>
+      <td style="text-align: left">$20 のリソースクレジット込み</td>
+    </tr>
+    <tr>
+      <td style="text-align: left"><strong>Enterprise</strong></td>
+      <td style="text-align: left">要相談</td>
+      <td style="text-align: left">SLA・コンプライアンス対応</td>
+    </tr>
+  </tbody>
+</table>
+
+<p><strong>使い切った分だけ払う</strong>モデル。$5 の Hobby プランなら $3 しか使わなくても $5 の請求、$8 使ったら $8 の請求になる。</p>
+
+<h3 id="ログアプリ視点での評価-1">ログアプリ視点での評価</h3>
+
+<ul>
+  <li>✅ FastAPI / Go などのログ収集サービスをそのままコンテナで動かせる</li>
+  <li>✅ キュー (Redis) やワーカーも同一プロジェクト内で管理できる</li>
+  <li>✅ 秒単位課金でアイドル時のコストを節約できる</li>
+  <li>⚠️ BaaS 機能 (Auth/Storage) は自前実装が必要</li>
+  <li>⚠️ pgvector を使うなら自分で拡張をインストールする必要がある</li>
+</ul>
+
+<hr>
+
+<h2 id="neon--サーバーレス-postgresql-の本命">Neon ── サーバーレス PostgreSQL の本命</h2>
+
+<h3 id="概要-2">概要</h3>
+
+<p><strong>サーバーレス PostgreSQL</strong> に特化したデータベースサービス。
+2025年に Databricks が約10億ドルで買収し、AIエージェント向けのデータ基盤として強化されている。</p>
+
+<p><strong>ブランチ機能</strong>が特徴で、git のように DB のスナップショットを作成して PR ごとにテスト環境を用意できる。</p>
+
+<h3 id="主な機能-2">主な機能</h3>
+
+<table>
+  <thead>
+    <tr>
+      <th style="text-align: left">機能</th>
+      <th style="text-align: left">内容</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td style="text-align: left">データベース</td>
+      <td style="text-align: left">PostgreSQL (サーバーレス)</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">スケール</td>
+      <td style="text-align: left">オートスケーリング + ゼロスケール</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">ブランチ</td>
+      <td style="text-align: left">DB の git ブランチ機能</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">エッジ対応</td>
+      <td style="text-align: left">HTTP ドライバーでエッジから直接クエリ</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">pgvector</td>
+      <td style="text-align: left">対応</td>
+    </tr>
+  </tbody>
+</table>
+
+<h3 id="料金-2026年7月時点">料金 (2026年7月時点)</h3>
+
+<p>Databricks 買収後に従量課金モデルへ移行し、Launch/Scale の月額固定プランは廃止された。</p>
+
+<table>
+  <thead>
+    <tr>
+      <th style="text-align: left">プラン</th>
+      <th style="text-align: left">月額</th>
+      <th style="text-align: left">主な内容</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td style="text-align: left"><strong>Free</strong></td>
+      <td style="text-align: left">$0</td>
+      <td style="text-align: left">0.5GB、コンピュート 100 CU時間/プロジェクト（旧10h から拡充）</td>
+    </tr>
+    <tr>
+      <td style="text-align: left"><strong>Launch相当</strong></td>
+      <td style="text-align: left">従量制（$0.106/CU時間 + $0.35/GB-月）</td>
+      <td style="text-align: left">コンピュート上限なし</td>
+    </tr>
+    <tr>
+      <td style="text-align: left"><strong>Scale相当</strong></td>
+      <td style="text-align: left">従量制（$0.222/CU時間 + $0.35/GB-月）</td>
+      <td style="text-align: left">コンプライアンス機能付き</td>
+    </tr>
+  </tbody>
+</table>
+
+<h3 id="ログアプリ視点での評価-2">ログアプリ視点での評価</h3>
+
+<ul>
+  <li>✅ ゼロスケールで個人開発フェーズのコストを最小化</li>
+  <li>✅ Databricks 傘下でAI連携が強化される方向</li>
+  <li>✅ ブランチ機能でスキーマ変更のテストが楽</li>
+  <li>⚠️ コールドスタートがある (ゼロスケール時に数秒の遅延)</li>
+  <li>⚠️ Supabase と違い Auth/Storage は別途用意が必要</li>
+</ul>
+
+<hr>
+
+<h2 id="planetscale--エンタープライズ向け-mysqlpostgres">PlanetScale ── エンタープライズ向け MySQL/Postgres</h2>
+
+<h3 id="概要-3">概要</h3>
+
+<p>Vitess ベースの<strong>高スケール DB サービス</strong>。Cursor・Intercom・Block など大規模サービスの実績がある。
+2024年に一度無料プランを廃止したが、2026年に Postgres 対応とあわせて無料枠を復活させた。</p>
+
+<h3 id="料金-2026年7月時点-1">料金 (2026年7月時点)</h3>
+
+<table>
+  <thead>
+    <tr>
+      <th style="text-align: left">プラン</th>
+      <th style="text-align: left">月額</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td style="text-align: left"><strong>Free</strong></td>
+      <td style="text-align: left">$0</td>
+    </tr>
+    <tr>
+      <td style="text-align: left"><strong>Postgres Single</strong></td>
+      <td style="text-align: left">$5〜</td>
+    </tr>
+    <tr>
+      <td style="text-align: left"><strong>PS-5</strong></td>
+      <td style="text-align: left">$15〜</td>
+    </tr>
+    <tr>
+      <td style="text-align: left"><strong>Metal HA</strong></td>
+      <td style="text-align: left">$50〜</td>
+    </tr>
+    <tr>
+      <td style="text-align: left"><strong>Enterprise</strong></td>
+      <td style="text-align: left">要相談</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>大規模・ミッションクリティカルなユースケース向けの強みは変わらないが、無料枠の復活で個人開発の入口としても使えるようになった。</p>
+
+<hr>
+
+<h2 id="render--railway-に近い汎用-paas">Render ── Railway に近い汎用 PaaS</h2>
+
+<p>Railway の対抗馬として言及されることが多い。
+Web サービス・ワーカー・DB・Static Site をまとめて管理できる。</p>
+
+<ul>
+  <li>Free プランあり (750h/月のコンピュート)</li>
+  <li>PostgreSQL マネージド対応</li>
+  <li>Auto-deploy from GitHub</li>
+</ul>
+
+<p>Railway に比べると設定の自由度はやや低いが、UI がシンプルで初心者には取っつきやすい。</p>
+
+<hr>
+
+<h2 id="比較まとめ">比較まとめ</h2>
+
+<table>
+  <thead>
+    <tr>
+      <th style="text-align: left"> </th>
+      <th style="text-align: center">Supabase</th>
+      <th style="text-align: center">Railway</th>
+      <th style="text-align: center">Neon</th>
+      <th style="text-align: center">PlanetScale</th>
+      <th style="text-align: center">Render</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td style="text-align: left"><strong>カテゴリ</strong></td>
+      <td style="text-align: center">BaaS</td>
+      <td style="text-align: center">PaaS</td>
+      <td style="text-align: center">DBaaS</td>
+      <td style="text-align: center">DBaaS</td>
+      <td style="text-align: center">PaaS</td>
+    </tr>
+    <tr>
+      <td style="text-align: left"><strong>DB</strong></td>
+      <td style="text-align: center">PostgreSQL</td>
+      <td style="text-align: center">PostgreSQL 等</td>
+      <td style="text-align: center">PostgreSQL</td>
+      <td style="text-align: center">MySQL/PG</td>
+      <td style="text-align: center">PostgreSQL 等</td>
+    </tr>
+    <tr>
+      <td style="text-align: left"><strong>Auth</strong></td>
+      <td style="text-align: center">✅ 標準搭載</td>
+      <td style="text-align: center">❌ 自前</td>
+      <td style="text-align: center">❌ 自前</td>
+      <td style="text-align: center">❌ 自前</td>
+      <td style="text-align: center">❌ 自前</td>
+    </tr>
+    <tr>
+      <td style="text-align: left"><strong>pgvector</strong></td>
+      <td style="text-align: center">✅ 無料</td>
+      <td style="text-align: center">⚠️ 手動</td>
+      <td style="text-align: center">✅ 対応</td>
+      <td style="text-align: center">❌ MySQL主体</td>
+      <td style="text-align: center">⚠️ 手動</td>
+    </tr>
+    <tr>
+      <td style="text-align: left"><strong>ゼロスケール</strong></td>
+      <td style="text-align: center">❌</td>
+      <td style="text-align: center">✅</td>
+      <td style="text-align: center">✅</td>
+      <td style="text-align: center">✅</td>
+      <td style="text-align: center">✅ (Free のみ)</td>
+    </tr>
+    <tr>
+      <td style="text-align: left"><strong>無料枠</strong></td>
+      <td style="text-align: center">✅ 500MB</td>
+      <td style="text-align: center">✅ $5</td>
+      <td style="text-align: center">✅ 0.5GB</td>
+      <td style="text-align: center">✅ あり</td>
+      <td style="text-align: center">✅ 750h</td>
+    </tr>
+    <tr>
+      <td style="text-align: left"><strong>月額最低 (有料)</strong></td>
+      <td style="text-align: center">$25</td>
+      <td style="text-align: center">$5</td>
+      <td style="text-align: center">従量制</td>
+      <td style="text-align: center">$5</td>
+      <td style="text-align: center">$7〜</td>
+    </tr>
+    <tr>
+      <td style="text-align: left"><strong>個人開発向け</strong></td>
+      <td style="text-align: center">◎</td>
+      <td style="text-align: center">◎</td>
+      <td style="text-align: center">○</td>
+      <td style="text-align: center">△</td>
+      <td style="text-align: center">○</td>
+    </tr>
+    <tr>
+      <td style="text-align: left"><strong>チーム・本番向け</strong></td>
+      <td style="text-align: center">○</td>
+      <td style="text-align: center">○</td>
+      <td style="text-align: center">○</td>
+      <td style="text-align: center">◎</td>
+      <td style="text-align: center">○</td>
+    </tr>
+  </tbody>
+</table>
+
+<hr>
+
+<h2 id="今回カバーしなかったが候補になりうるサービス">今回カバーしなかったが候補になりうるサービス</h2>
+
+<p>今回比較した 5 サービスは「PostgreSQL・クラウドホスト型・個人〜チーム規模」という軸では現状デファクトに近いが、要件次第では以下も検討に値する。</p>
+
+<table>
+  <thead>
+    <tr>
+      <th style="text-align: left">サービス</th>
+      <th style="text-align: left">カテゴリ</th>
+      <th style="text-align: left">外した理由 / 検討すべきケース</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td style="text-align: left"><strong>Firebase</strong></td>
+      <td style="text-align: left">BaaS (NoSQL)</td>
+      <td style="text-align: left">NoSQL・モバイルファーストなら第一候補。ログを Firestore に入れるとクエリ柔軟性が低く今回は外した</td>
+    </tr>
+    <tr>
+      <td style="text-align: left"><strong>Fly.io</strong></td>
+      <td style="text-align: left">PaaS</td>
+      <td style="text-align: left">Railway より細かいリージョン制御が可能。グローバル展開・レイテンシ重視になったら移行候補</td>
+    </tr>
+    <tr>
+      <td style="text-align: left"><strong>Convex</strong></td>
+      <td style="text-align: left">BaaS (TypeScript ネイティブ)</td>
+      <td style="text-align: left">TypeScript でサーバーロジックを書くとリアルタイムクエリが自動更新される独自モデル。2025〜2026年で急速に注目を集めている</td>
+    </tr>
+    <tr>
+      <td style="text-align: left"><strong>Appwrite</strong></td>
+      <td style="text-align: left">BaaS (セルフホスト)</td>
+      <td style="text-align: left">OSS でベンダーロックインを避けたいチーム向け。クラウド版もあるが Supabase に比べるとエコシステムが小さい</td>
+    </tr>
+    <tr>
+      <td style="text-align: left"><strong>Cloudflare Workers + D1</strong></td>
+      <td style="text-align: left">エッジ PaaS + DBaaS</td>
+      <td style="text-align: left">圧倒的に安い (帯域無制限 $5/月〜)。ただし SQL 機能が限定的でログの複雑なクエリには今は厳しい</td>
+    </tr>
+    <tr>
+      <td style="text-align: left"><strong>Turso</strong></td>
+      <td style="text-align: left">DBaaS (エッジ SQLite)</td>
+      <td style="text-align: left">libSQL をグローバルに分散。読み取り重視のグローバルキャッシュ層として面白いが、書き込み集中なログ用途とは相性がやや悪い</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>まとめると：<strong>PostgreSQL + クラウドホスト + pgvector + 個人〜スタートアップ規模</strong> という前提なら今回の 5 サービスの比較で選定できる。モバイルファースト・セルフホスト・エッジ特化など別の軸が加わると Firebase / Fly.io / Cloudflare が浮上する。</p>
+
+<hr>
+
+<h2 id="スケールに合わせた判断軸">スケールに合わせた判断軸</h2>
+
+<p>サービスを選んだあとも、規模が変わるたびに見直しのタイミングが来る。おおよその目安として残しておく。</p>
+
+<h3 id="phase-1個人開発検証フェーズ-30月">Phase 1｜個人開発・検証フェーズ (〜$30/月)</h3>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>ログ収集 API     → Railway (Hobby / $5)
+DB + Auth        → Supabase (Free)
+</code></pre></div></div>
+
+<p>無料枠の範囲で動かし切ることを優先。Supabase Free の 500MB と Railway の $5 クレジットで十分走れる。</p>
+
+<p><strong>見直しトリガー:</strong> Supabase の DB が 500MB に近づく or MAU が 5万を超えそうになった時点で Pro へ。</p>
+
+<hr>
+
+<h3 id="phase-2有料ユーザーが来たチーム-25人-50120月">Phase 2｜有料ユーザーが来た・チーム 2〜5人 ($50〜$120/月)</h3>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>ログ収集 API     → Railway (Pro / $20/シート)
+DB + Auth        → Supabase (Pro / $25〜)
+</code></pre></div></div>
+
+<p>Supabase Pro でバックアップ・接続数・MAU 上限が緩和される。コンピュートは最小 (Micro $12/月) で様子を見る。</p>
+
+<p><strong>見直しトリガー:</strong> API のレスポンスが遅くなってきた or DB のコンピュートがボトルネックと分かった時。</p>
+
+<hr>
+
+<h3 id="phase-3本格グロースチーム-10-人前後-200500月">Phase 3｜本格グロース・チーム 10 人前後 ($200〜$500/月)</h3>
+
+<p>この段階で「Auth だけ Clerk に外出し」「DB のみ Neon に移行」などレイヤー分割が有効になってくる。</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>ログ収集 API     → Railway (Pro) or Fly.io (リージョン最適化)
+DB               → Supabase Pro (大容量) or Neon Scale (ブランチ・分析活用)
+Auth             → Supabase Auth のまま or Clerk に移行
+ベクトル検索      → pgvector のまま or 専用ベクトル DB (Qdrant 等) を検討
+</code></pre></div></div>
+
+<p>Neon のブランチ機能で「本番 DB のクローンをステージングに使う」運用が効いてくるのもこのフェーズ。</p>
+
+<p><strong>見直しトリガー:</strong> チームが DB マイグレーションの管理で詰まり始めたら Neon のブランチ機能が本領を発揮するタイミング。</p>
+
+<hr>
+
+<h3 id="phase-4エンタープライズコンプライアンス対応-500月">Phase 4｜エンタープライズ・コンプライアンス対応 ($500+/月)</h3>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>DB               → Supabase Team ($599〜 / SOC2・ISO27001) or PlanetScale Enterprise
+Auth             → Supabase Auth + SAML or Auth0 / Okta
+ログ収集 API     → Railway Enterprise or 自社 Kubernetes
+</code></pre></div></div>
+
+<p>PlanetScale の真価は Cursor・Intercom レベルの書き込みスループットが必要になった時。初期から選ぶ理由はない。</p>
+
+<p><strong>見直しトリガー:</strong> 顧客からコンプライアンス証明書 (SOC2 レポート等) を要求されたタイミング。</p>
+
+<hr>
+
+<h2 id="私の結論supabase--railway-の組み合わせが本命">私の結論：Supabase + Railway の組み合わせが本命</h2>
+
+<p>今回開発している AI ネイティブなログアプリの要件を踏まえると、こんな構成が現実的だと思っている。</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>フロントエンド (Next.js)    → Vercel
+ログ収集 API (FastAPI)      → Railway
+DB + Auth + ベクトル検索     → Supabase (pgvector)
+</code></pre></div></div>
+
+<p>フロントエンドに Vercel を選んだ理由は<a href="/jekyll-theme-yat/%E9%96%8B%E7%99%BA/2026/06/06/vercel-frontend-selection.html">別記事</a>で詳しく解説している。</p>
+
+<p><strong>Supabase 単体</strong>でもある程度の API は Edge Functions で動かせるが、ログ収集のような<strong>常時稼働・高スループット</strong>なワークロードはコンテナで動かす Railway の方が向いている。</p>
+
+<p><strong>Neon</strong> は Databricks 傘下になりAIとの親和性が高まっており、将来的にログ分析パイプラインと統合する可能性を考えると注目しておきたいサービス。ただし Auth や Storage を自前で用意する必要があるため、初期フェーズは Supabase に軍配が上がる。</p>
+
+<hr>
+
+<h2 id="参考情報">参考情報</h2>
+
+<ul>
+  <li><a href="https://supabase.com/pricing">Supabase Pricing</a></li>
+  <li><a href="https://docs.railway.com/pricing/plans">Railway Pricing Docs</a></li>
+  <li><a href="https://www.bytebase.com/blog/neon-vs-supabase/">Neon vs Supabase — Bytebase</a></li>
+  <li><a href="https://www.mindstudio.ai/blog/best-backend-platforms-indie-hackers">Best Backend Platforms for Indie Hackers 2026 — MindStudio</a></li>
+  <li><a href="https://www.devtoolreviews.com/reviews/supabase-vs-planetscale-vs-neon">Supabase vs PlanetScale vs Neon 2026 — DevToolReviews</a></li>
+  <li><a href="https://uibakery.io/blog/railway-vs-supabase">Railway vs Supabase — UI Bakery</a></li>
+</ul>
+
+
+    </div>
+
+</article>
+<div class="post-nav">
+<span></span><span></span>
+</div>
+<div class="post-related">
+      <div>Related Articles</div>
+      <ul>
+        <li><a class="post-link" href="/jekyll-theme-yat/ai%E9%96%8B%E7%99%BA/2026/06/08/harness-engineering-guide.html" title="Why Choose Vercel for the Frontend? — Comparing Netlify and Cloudflare Pages (2026)">ハーネスエンジニアリングとは何か</a></li>
+<li><a class="post-link" href="/jekyll-theme-yat/ai%E9%96%8B%E7%99%BA/2026/06/09/claude-code-android-patterns.html" title="Why Choose Vercel for the Frontend? — Comparing Netlify and Cloudflare Pages (2026)">Android から Claude Code を使うパターンと選び方</a></li>
+<li><a class="post-link" href="/jekyll-theme-yat/ai%E9%96%8B%E7%99%BA/2026/06/16/graphai-agent-workflow-engine.html" title="Why Choose Vercel for the Frontend? — Comparing Netlify and Cloudflare Pages (2026)">GraphAIでAIエージェントのワークフローをYAML/JSONとして宣言的に書く</a></li>
+<li><a class="post-link" href="/jekyll-theme-yat/%E9%96%8B%E7%99%BA/2026/06/16/spacex-ipo-kardashev-scale.html" title="Why Choose Vercel for the Frontend? — Comparing Netlify and Cloudflare Pages (2026)">SpaceXのIPOとカルダシェフ・スケール</a></li>
+</ul>
+    </div>
+<div class="post-comments"></div></section>
+</div>
+
+
+  </section>
+  <section class="sidebar" style="margin-left: 15px;">
+    <!-- Get sidebar items --><style type="text/css" media="screen">
+.post-menu ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+</style>
+
+<div class="post-menu">
+  <div class="post-menu-title">TOC</div>
+  <div class="post-menu-content"></div>
+</div>
+
+<script>
+  function generateContent() {
+    var menu = document.querySelector(".post-menu");
+    var menuContent =  menu.querySelector(".post-menu-content");
+    var headings = document.querySelector(".post-content").querySelectorAll("h2, h3, h4, h5, h6");
+
+    // Hide menu when no headings
+    if (headings.length === 0) {
+      return menu.style.display = "none";
+    }
+
+    // Generate post menu
+    var menuHTML = '';
+    for (var i = 0; i < headings.length; i++) {
+      var h = headings[i];
+      menuHTML += (
+        '<li class="h-' + h.tagName.toLowerCase() + '">'
+        + '<a href="#h-' + h.getAttribute('id') + '">' + h.textContent + '</a></li>');
+    }
+
+    menuContent.innerHTML = '<ul>' + menuHTML + '</ul>';
+
+    // The header element
+    var header = document.querySelector('header.site-header');
+
+    function doMenuCollapse(index, over_items) {
+      var items = menuContent.firstChild.children;
+
+      if (over_items == undefined) {
+        over_items = 20;
+      }
+
+      if (items.length < over_items) {
+        return;
+      }
+
+      var activeItem = items[index];
+      var beginItem = activeItem
+      var endItem = activeItem
+      var beginIndex = index;
+      var endIndex = index + 1;
+      while (beginIndex >= 0
+        && !items[beginIndex].classList.contains('h-h2')) {
+        beginIndex -= 1;
+      }
+      while (endIndex < items.length
+        && !items[endIndex].classList.contains('h-h2')) {
+        endIndex += 1;
+      }
+      for (var i = 0; i < beginIndex; i++) {
+        item = items[i]
+        if (!item.classList.contains('h-h2')) {
+          item.style.display = 'none';
+        }
+      }
+      for (var i = beginIndex + 1; i < endIndex; i++) {
+        item = items[i]
+        // if (!item.classList.contains('h-h2')) {
+          item.style.display = '';
+        // }
+      }
+      for (var i = endIndex; i < items.length; i++) {
+        item = items[i]
+        if (!item.classList.contains('h-h2')) {
+          item.style.display = 'none';
+        }
+      }
+    }
+
+    // Init menu collapsed
+    doMenuCollapse(-1);
+
+    // Active the menu item
+    window.addEventListener('scroll', function (event) {
+      var lastActive = menuContent.querySelector('.active');
+      var changed = true;
+      var activeIndex = -1;
+      for (var i = headings.length - 1; i >= 0; i--) {
+        var h = headings[i];
+        var headingRect = h.getBoundingClientRect();
+        var headerRect = header.getBoundingClientRect();
+        var headerTop = Math.floor(headerRect.top);
+        var headerHeight = Math.floor(headerRect.height);
+        var headerHeight = headerTop + headerHeight + 20;
+        if (headingRect.top <= headerHeight) {
+          var id = 'h-' + h.getAttribute('id');
+          var a = menuContent.querySelector('a[href="#' + id  + '"]');
+          var curActive = a.parentNode;
+          if (curActive) {
+            curActive.classList.add('active');
+            activeIndex = i;
+          }
+          if (lastActive == curActive) {
+            changed = false;
+          }
+          break;
+        }
+      }
+      if (changed) {
+        if (lastActive) {
+          lastActive.classList.remove('active');
+        }
+        doMenuCollapse(activeIndex);
+      }
+      event.preventDefault();
+    });
+  }
+  generateContent();
+</script>
+</section>
+</div>
+
+      </div>
+    </main><footer class="site-footer h-card">
+  <data class="u-url" href="/jekyll-theme-yat/"></data>
+
+  <div class="wrapper">
+    <div class="site-footer-inner">
+<div>Waka-DS © 2021-2026</div>
+      <div>Powered by <a title="Jekyll is a simple, blog-aware, static site
+      generator." href="http://jekyllrb.com/">Jekyll</a> &amp; <a title="Yat, yet
+      another theme." href="https://github.com/jeffreytse/jekyll-theme-yat">Yat Theme</a>.</div>
+      <div class="footer-col rss-subscribe">Subscribe <a href="/jekyll-theme-yat/feed.xml">via RSS</a>
+</div>
+    </div>
+  </div>
+</footer>
+</body>
+</html>

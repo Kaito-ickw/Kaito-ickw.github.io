@@ -1,0 +1,1218 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <script>
+  (function() {
+    try {
+      var p = localStorage.getItem('preferred_lang');
+      if (!p) return;
+      var path = window.location.pathname;
+      var ja = ['/', '/archives.html', '/categories.html', '/tags.html', '/about.html'];
+      var en = ['/en/', '/en/archives.html', '/en/categories.html', '/en/tags.html', '/en/about.html'];
+      if (p === 'en' && ja.indexOf(path) !== -1) {
+        window.location.replace('/en' + (path === '/' ? '/' : path));
+      } else if (p === 'ja' && en.indexOf(path) !== -1) {
+        window.location.replace(path.slice(3) || '/');
+      }
+    } catch(e) {}
+  })();
+  </script>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="google-translate-customization" content="108d9124921d80c3-80e20d618ff053c8-g4f02ec6f3dba68b7-c">
+<!-- Begin Jekyll SEO tag v2.9.0 -->
+<title>LLM を選べる OSS コーディングエージェント opencode | Waka-DS.com</title>
+<meta name="generator" content="Jekyll v4.4.1">
+<meta property="og:title" content="LLM を選べる OSS コーディングエージェント opencode">
+<meta name="author" content="Waka-DS">
+<meta property="og:locale" content="ja">
+<meta name="description" content="ターミナルで AI にコードを書かせるツールが増えている。 GitHub Copilot、Cursor、Claude Code、Aider……どれも「ターミナル or エディタから LLM を呼んでコードを編集する」という思想は同じだが、細部の設計がまったく異なる。">
+<meta name="twitter:description" property="og:description" content="ターミナルで AI にコードを書かせるツールが増えている。 GitHub Copilot、Cursor、Claude Code、Aider……どれも「ターミナル or エディタから LLM を呼んでコードを編集する」という思想は同じだが、細部の設計がまったく異なる。">
+<link rel="canonical" href="/jekyll-theme-yat/ai%E9%96%8B%E7%99%BA/2026/06/08/opencode-guide.html">
+<meta property="og:url" content="/jekyll-theme-yat/ai%E9%96%8B%E7%99%BA/2026/06/08/opencode-guide.html">
+<meta property="og:site_name" content="Waka-DS.com">
+<meta property="og:type" content="article">
+<meta property="article:published_time" content="2026-06-08T00:00:00+00:00">
+<meta property="article:modified_time" content="2026-07-03T00:00:00+00:00">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="LLM を選べる OSS コーディングエージェント opencode">
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":"Waka-DS"},"dateModified":"2026-07-03T00:00:00+00:00","datePublished":"2026-06-08T00:00:00+00:00","description":"ターミナルで AI にコードを書かせるツールが増えている。 GitHub Copilot、Cursor、Claude Code、Aider……どれも「ターミナル or エディタから LLM を呼んでコードを編集する」という思想は同じだが、細部の設計がまったく異なる。","headline":"LLM を選べる OSS コーディングエージェント opencode","mainEntityOfPage":{"@type":"WebPage","@id":"/jekyll-theme-yat/ai%E9%96%8B%E7%99%BA/2026/06/08/opencode-guide.html"},"url":"/jekyll-theme-yat/ai%E9%96%8B%E7%99%BA/2026/06/08/opencode-guide.html"}</script>
+<!-- End Jekyll SEO tag -->
+<link rel="shortcut icon" href="">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=Noto+Sans+JP:wght@400;500;700&amp;display=swap">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+  <link rel="stylesheet" href="/jekyll-theme-yat/assets/css/main.css">
+  <script src="/jekyll-theme-yat/assets/js/main.js"></script><link type="application/atom+xml" rel="alternate" href="/jekyll-theme-yat/feed.xml" title="Waka-DS.com">
+<script>
+  function initGoogleAnalytics() {
+    var doNotTrack = (window.doNotTrack === "1" || navigator.doNotTrack === "1" ||
+      navigator.doNotTrack === "yes" || navigator.msDoNotTrack === "1");
+    var enableDNT = "true" == "true";
+
+    if (!enableDNT || !doNotTrack) {
+      var ga_id = 'G-XNP1RBTG9C';
+
+      var script = document.createElement('script');
+      script.async = true;
+      script.src = 'https://www.googletagmanager.com/gtag/js?id=' + ga_id;
+      document.head.appendChild(script);
+
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', ga_id);
+    }
+  }
+  window.addEventListener("load", initGoogleAnalytics);
+</script>
+<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/styles/default.min.css">
+<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/highlight.min.js"></script>
+<!-- and it's easy to individually load additional languages -->
+<script charset="UTF-8" src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/languages/go.min.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<script>
+// Init highlight js
+document.addEventListener('DOMContentLoaded', function(event) {
+  var els = document.querySelectorAll('pre code')
+
+  function addLangData(block) {
+    var outer = block.parentElement.parentElement.parentElement;
+    var lang = block.getAttribute('data-lang');
+    for (var i = 0; i < outer.classList.length; i++) {
+      var cls = outer.classList[i];
+      if (cls.startsWith('language-')) {
+        lang = cls;
+        break;
+      }
+    }
+    if (!lang) {
+      cls = block.getAttribute('class');
+      lang = cls ? cls.replace('hljs ', '') : '';
+    }
+    if (lang.startsWith('language-')) {
+      lang = lang.substr(9);
+    }
+    block.setAttribute('class', 'hljs ' + lang);
+    block.parentNode.setAttribute('data-lang', lang);
+  }
+
+  function addBadge(block) {
+    var enabled = ('true' || 'true').toLowerCase();
+    if (enabled == 'true') {
+      var pre = block.parentElement;
+      pre.classList.add('badge');
+    }
+  }
+
+  function handle(block) {
+    addLangData(block);
+    addBadge(block)
+    hljs.highlightBlock(block);
+  }
+
+  for (var i = 0; i < els.length; i++) {
+    var el = els[i];
+    handle(el);
+  }
+});
+</script>
+
+<style>
+  /* code language badge */
+  pre.badge::before {
+    content: attr(data-lang);
+    color: #fff;
+    background-color: #0d9488;
+    padding: 0 .5em;
+    border-radius: 0 2px;
+    text-transform: uppercase;
+    text-align: center;
+    min-width: 32px;
+    display: inline-block;
+    position: absolute;
+    right: 0;
+  }
+
+  /* fix wrong badge display for firefox browser */
+  code > table pre::before {
+    display: none;
+  }
+</style>
+</head>
+<body>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<header class="site-header " role="banner">
+
+  <div class="wrapper">
+    <div class="site-header-inner">
+<span class="site-brand"><a class="site-brand-inner" rel="author" href="/jekyll-theme-yat/">
+  <img class="site-favicon" title="Waka-DS.com" src="" onerror="this.style.display='none'">
+  Waka-DS.com
+</a>
+</span><nav class="site-nav">
+          <input type="checkbox" id="nav-trigger" class="nav-trigger">
+          <label for="nav-trigger">
+            <span class="menu-icon">
+              <svg viewbox="0 0 18 15" width="18px" height="15px">
+                <path d="M18,1.484c0,0.82-0.665,1.484-1.484,1.484H1.484C0.665,2.969,0,2.304,0,1.484l0,0C0,0.665,0.665,0,1.484,0 h15.032C17.335,0,18,0.665,18,1.484L18,1.484z M18,7.516C18,8.335,17.335,9,16.516,9H1.484C0.665,9,0,8.335,0,7.516l0,0 c0-0.82,0.665-1.484,1.484-1.484h15.032C17.335,6.031,18,6.696,18,7.516L18,7.516z M18,13.516C18,14.335,17.335,15,16.516,15H1.484 C0.665,15,0,14.335,0,13.516l0,0c0-0.82,0.665-1.483,1.484-1.483h15.032C17.335,12.031,18,12.695,18,13.516L18,13.516z"></path>
+              </svg>
+            </span>
+          </label>
+
+          <div class="trigger">
+<a class="page-link" href="/jekyll-theme-yat/about.html">ABOUT</a><a class="page-link" href="/jekyll-theme-yat/archives.html">ARCHIVES</a><a class="page-link" href="/jekyll-theme-yat/categories.html">CATEGORIES</a><a class="page-link" href="/jekyll-theme-yat/">HOME</a><a class="page-link" href="/jekyll-theme-yat/tags.html">TAGS</a><span class="page-link">
+                <span class="lang-switcher lang-switcher--nav"><span class="lang-btn lang-btn--active">日本語</span><a class="lang-btn" href="/jekyll-theme-yat/development/2026/06/08/opencode-guide-en.html">English</a></span>
+              </span>
+</div>
+        </nav>
+</div>
+  </div>
+</header>
+
+<script>
+  function initHeader() {
+    var lastScrollY = getScrollPos().y;
+    var documentElement = document.documentElement;
+
+    function storeScrollData() {
+      var y = getScrollPos().y;var scrollStatus = "";
+
+      if (y <= 0) {
+        scrollStatus = "top";
+      } else if ((window.innerHeight + y) >= document.body.offsetHeight) {
+        scrollStatus = "bottom";
+      } else {
+        var isScrollDown = (y - lastScrollY > 0) ? true : false;
+        scrollStatus = isScrollDown ? "down" : "up";
+      }
+
+      lastScrollY = y;
+      documentElement.setAttribute("data-scroll-status", scrollStatus);
+    }
+
+    window.addEventListener('scroll', function(e) {
+      storeScrollData();
+    });
+
+    storeScrollData();
+  }
+  document.addEventListener('DOMContentLoaded', initHeader);
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<script>
+  function hashLocate(hashValue) {
+    hashValue = hashValue.replace(/^.*#h-/, '');
+    hashValue = decodeURIComponent(hashValue);
+    var element = document.getElementById(hashValue);
+
+    if (!element) {
+      return;
+    }
+
+    var header = document.querySelector('header.site-header');
+    var headerRect = header.getBoundingClientRect();
+    var headerTop = Math.floor(headerRect.top);
+    var headerHeight = Math.floor(headerRect.height);
+    var scrollPos = getScrollPos();
+    var offsetY = element.offsetTop - (headerTop + headerHeight + 20);
+
+    if (offsetY == scrollPos.y) {
+      return;
+    }
+
+    if (headerTop == 0  && offsetY > scrollPos.y) {
+      offsetY += headerHeight + 2;
+    } else if (headerTop < 0  && offsetY < scrollPos.y) {
+      offsetY -= headerHeight - 2;
+    }
+
+    smoothScrollTo(offsetY);
+  }
+
+  // The first event occurred
+  window.addEventListener('load', function(event) {
+    if (window.location.hash) {
+      hashLocate(window.location.hash);
+    }
+  });
+
+  // The first event occurred
+  window.addEventListener('click', function(event) {
+    if (event.target.tagName.toLowerCase() == 'a') {
+      hashLocate(event.target.getAttribute('href'));
+    }
+  });
+</script>
+<div class="theme-toggle">
+  <input type="checkbox" id="theme-switch">
+  <label for="theme-switch">
+    <div class="toggle"></div>
+    <div class="names">
+      <p class="light">Light</p>
+      <p class="dark">Dark</p>
+    </div>
+  </label>
+</div>
+
+
+
+
+<script>
+  (function() {
+    var sw = document.getElementById('theme-switch');
+    var html = document.getElementsByTagName('html')[0];
+    var nightModeOption = ('auto' || 'auto').toLowerCase();
+    var storage = nightModeOption === 'manual'
+        ? localStorage
+        : sessionStorage;
+    var themeData = loadThemeData();
+
+    function saveThemeData(data) {
+      storage.setItem('theme', JSON.stringify(data));
+    }
+
+    function loadThemeData() {
+      var data = storage.getItem('theme');
+      try {
+        data = JSON.parse(data ? data : '');
+      } catch(e) {
+        data = { nightShift: undefined, autoToggleAt: 0 };
+        saveThemeData(data);
+      }
+      return data;
+    }
+
+    function handleThemeToggle(nightShift) {
+      themeData.nightShift = nightShift;
+      saveThemeData(themeData);
+      html.dataset.theme = nightShift ? 'dark' : 'light';
+      setTimeout(function() {
+        sw.checked = nightShift ? true : false;
+      }, 50);
+    }
+
+    function autoThemeToggle() {
+      // Next time point of theme toggle
+      var now = new Date();
+      var toggleAt = new Date();
+      var hours = now.getHours();
+      var nightShift = hours >= 19 || hours <=7;
+
+      if (nightShift) {
+        if (hours > 7) {
+          toggleAt.setDate(toggleAt.getDate() + 1);
+        }
+        toggleAt.setHours(7);
+      } else {
+        toggleAt.setHours(19);
+      }
+
+      toggleAt.setMinutes(0);
+      toggleAt.setSeconds(0);
+      toggleAt.setMilliseconds(0)
+
+      var delay = toggleAt.getTime() - now.getTime();
+
+      // auto toggle theme mode
+      setTimeout(function() {
+        handleThemeToggle(!nightShift);
+      }, delay);
+
+      return {
+        nightShift: nightShift,
+        toggleAt: toggleAt.getTime()
+      };
+    }
+
+    // Listen the theme toggle event
+    sw.addEventListener('change', function(event) {
+      handleThemeToggle(event.target.checked);
+    });
+
+    if (nightModeOption == 'auto') {
+      var data = autoThemeToggle();
+
+      // Toggle theme by local setting
+      if (data.toggleAt > themeData.autoToggleAt) {
+        themeData.autoToggleAt = data.toggleAt;
+        handleThemeToggle(data.nightShift);
+      } else {
+        handleThemeToggle(themeData.nightShift);
+      }
+    } else if (nightModeOption == 'manual') {
+      handleThemeToggle(themeData.nightShift);
+    } else {
+      var nightShift = themeData.nightShift;
+      if (nightShift === undefined) {
+        nightShift = nightModeOption === 'on';
+      }
+      handleThemeToggle(nightShift);
+    }
+  })();
+</script>
+<main class="page-content" aria-label="Content">
+      <div class="wrapper">
+        <div class="framework">
+  <section class="main">
+
+     <div class="post">
+  <section>
+
+
+
+
+
+
+
+
+
+<header class="post-header">
+  <h1 class="post-title p-name" itemprop="name headline">LLM を選べる OSS コーディングエージェント opencode</h1>
+  <h2 class="post-subtitle">Anomaly チームが作った OSS コーディング AI の仕組み・使い方・Claude Code との違いを整理する</h2>
+
+  <p class="post-meta">
+    <time class="dt-published" datetime="2026-06-08T00:00:00+00:00" itemprop="datePublished"><i class="fa fa-calendar"></i> Jun 08, 2026
+    </time><time class="dt-updated left-vsplit" datetime="2026-07-03T00:00:00+00:00" itemprop="dateModified">
+      <i class="fa fa-refresh"></i>
+      
+        更新日: Jul 03, 2026
+      
+    </time>
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <span class="post-reading-time left-vsplit"><i class="fa fa-clock-o"></i> About 14 mins</span>
+  </p>
+<div class="post-tags">
+<a class="post-tag" href="/jekyll-theme-yat/tags.html#opencode">#opencode</a><a class="post-tag" href="/jekyll-theme-yat/tags.html#AI">#AI</a><a class="post-tag" href="/jekyll-theme-yat/tags.html#%E3%82%B3%E3%83%BC%E3%83%87%E3%82%A3%E3%83%B3%E3%82%B0%E3%82%A8%E3%83%BC%E3%82%B8%E3%82%A7%E3%83%B3%E3%83%88">#コーディングエージェント</a><a class="post-tag" href="/jekyll-theme-yat/tags.html#CLI">#CLI</a><a class="post-tag" href="/jekyll-theme-yat/tags.html#OSS">#OSS</a><a class="post-tag" href="/jekyll-theme-yat/tags.html#Claude">#Claude</a><a class="post-tag" href="/jekyll-theme-yat/tags.html#LLM">#LLM</a>
+</div></header>
+<article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
+
+    <div class="post-content e-content" itemprop="articleBody">
+
+      <p>ターミナルで AI にコードを書かせるツールが増えている。
+GitHub Copilot、Cursor、Claude Code、Aider……どれも「ターミナル or エディタから LLM を呼んでコードを編集する」という思想は同じだが、細部の設計がまったく異なる。</p>
+
+<p><strong>opencode</strong> は、Anomaly チームが 2025 年に公開したオープンソースの AI コーディングエージェントだ。</p>
+
+<ul>
+  <li>ターミナルで動く TUI（テキストユーザーインターフェース）</li>
+  <li>Claude・GPT・Gemini など主要 LLM を切り替えて使える</li>
+  <li>MIT ライセンスで完全 OSS</li>
+  <li>エージェントがファイルを読み書き・コマンドを実行する「エージェントループ」を持つ</li>
+</ul>
+
+<p>この記事では opencode の概要・インストール・使い方・Claude Code との違いを整理する。</p>
+
+<hr>
+
+<h2 id="結論を先に">結論を先に</h2>
+
+<p>opencode は「Claude Code の OSS 版に近い位置付け」のツールだ。</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>特定プロバイダへの依存なし → Claude でも GPT-4o でも Gemini でも使える
+ターミナル完結          → VS Code や Cursor 不要、SSH 先でもそのまま動く
+ファイル操作が得意       → コード編集・新規作成・コマンド実行をエージェントが自律的に行う
+OSS                   → ソースを読んで動作を理解できる・自分でフォークして改造できる
+</code></pre></div></div>
+
+<hr>
+
+<h2 id="opencode-が解決する問題">opencode が解決する問題</h2>
+
+<p>AI コーディングツールには「特定プロバイダへのロックイン」という問題がある。</p>
+
+<ul>
+  <li>Cursor は OpenAI / Anthropic に依存した UI</li>
+  <li>Claude Code は Anthropic の API キーが必須</li>
+  <li>GitHub Copilot は GitHub のエコシステムに統合された形でしか使えない</li>
+</ul>
+
+<p><strong>プロバイダを自由に選びたい・切り替えたい</strong>というニーズに応えるのが opencode の立ち位置だ。</p>
+
+<p>会社のセキュリティポリシー上 OpenAI は使えないが Anthropic は使える、あるいは逆のケース、コストを下げるために Gemini Flash を使いたいケースなど、現場で起きる「LLM 選択問題」を抽象化して解決する。</p>
+
+<hr>
+
+<h2 id="アーキテクチャの概要">アーキテクチャの概要</h2>
+
+<p>opencode の動作は大きく 3 層に分かれる。</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>┌─────────────────────────────────────────┐
+│  TUI レイヤー（Bubble Tea / Go）         │  ← ユーザーが操作する画面
+└────────────────┬────────────────────────┘
+                 │
+┌────────────────▼────────────────────────┐
+│  エージェントループ                       │  ← LLM の呼び出しとツール実行を繰り返す
+│  ・ファイル読み書き                       │
+│  ・シェルコマンド実行                     │
+│  ・検索・grep                            │
+└────────────────┬────────────────────────┘
+                 │
+┌────────────────▼────────────────────────┐
+│  プロバイダ抽象層                         │  ← Claude / GPT / Gemini etc.
+└─────────────────────────────────────────┘
+</code></pre></div></div>
+
+<h3 id="tui-レイヤー">TUI レイヤー</h3>
+
+<p>Go の TUI フレームワーク <strong>Bubble Tea</strong> を使って実装されている。
+ターミナル上でチャット画面・差分プレビュー・ファイルツリーが表示され、キーボードだけで操作できる。</p>
+
+<h3 id="エージェントループ">エージェントループ</h3>
+
+<p>LLM からのレスポンスを受け取り、ツール呼び出し（<code class="language-plaintext highlighter-rouge">read_file</code>、<code class="language-plaintext highlighter-rouge">write_file</code>、<code class="language-plaintext highlighter-rouge">bash</code> など）があれば実行して結果を返す。これを繰り返す構造は Claude Code や Aider と同じ設計思想だ。</p>
+
+<h3 id="プロバイダ抽象層">プロバイダ抽象層</h3>
+
+<p>各 LLM を統一インターフェースで呼び出す。設定ファイルにプロバイダ名と API キーを書くだけで切り替えられる。</p>
+
+<div class="language-json highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="err">//</span><span class="w"> </span><span class="err">~/.config/opencode/config.json</span><span class="w">
+</span><span class="p">{</span><span class="w">
+  </span><span class="nl">"provider"</span><span class="p">:</span><span class="w"> </span><span class="s2">"anthropic"</span><span class="p">,</span><span class="w">
+  </span><span class="nl">"model"</span><span class="p">:</span><span class="w"> </span><span class="s2">"claude-sonnet-4-5"</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></code></pre></div></div>
+
+<hr>
+
+<h2 id="インストール">インストール</h2>
+
+<h3 id="macos--linux推奨">macOS / Linux（推奨）</h3>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>curl <span class="nt">-fsSL</span> https://opencode.ai/install | bash
+</code></pre></div></div>
+
+<h3 id="npm-経由">npm 経由</h3>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>npm <span class="nb">install</span> <span class="nt">-g</span> opencode-ai
+</code></pre></div></div>
+
+<h3 id="go-ソースからビルド">Go ソースからビルド</h3>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>git clone https://github.com/anomalyco/opencode
+<span class="nb">cd </span>opencode
+go build ./...
+</code></pre></div></div>
+
+<hr>
+
+<h2 id="基本的な使い方">基本的な使い方</h2>
+
+<h3 id="起動">起動</h3>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># カレントディレクトリをプロジェクトとして開く</span>
+opencode
+
+<span class="c"># 特定ディレクトリを指定して開く</span>
+opencode /path/to/project
+</code></pre></div></div>
+
+<p>起動すると TUI が立ち上がり、チャット画面が表示される。</p>
+
+<h3 id="基本操作">基本操作</h3>
+
+<table>
+  <thead>
+    <tr>
+      <th>キー</th>
+      <th>動作</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">Enter</code></td>
+      <td>メッセージを送信</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">Ctrl+C</code></td>
+      <td>実行中のエージェントを中断</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">Ctrl+N</code></td>
+      <td>新しいセッションを開始</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">Ctrl+L</code></td>
+      <td>画面をクリア</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">Tab</code></td>
+      <td>ファイル補完</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">?</code></td>
+      <td>ヘルプを表示</td>
+    </tr>
+  </tbody>
+</table>
+
+<h3 id="プロバイダとモデルの切り替え">プロバイダとモデルの切り替え</h3>
+
+<p>チャット中にスラッシュコマンドで切り替えられる。</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>/model claude-opus-4-5
+/model gpt-4o
+/model gemini-2.0-flash
+</code></pre></div></div>
+
+<h3 id="ファイルディレクトリの参照">ファイル・ディレクトリの参照</h3>
+
+<p><code class="language-plaintext highlighter-rouge">@</code> を使ってファイルを会話に含められる。</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>@src/api/users.py のバグを修正して
+@README.md を読んでこのプロジェクトの概要を教えて
+</code></pre></div></div>
+
+<hr>
+
+<h2 id="claude-code-との違い">Claude Code との違い</h2>
+
+<p>同じ「ターミナルで動く AI コーディングエージェント」として比較されることが多い。</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>観点</th>
+      <th>opencode</th>
+      <th>Claude Code</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>プロバイダ</td>
+      <td>複数対応（Claude・GPT・Gemini 等）</td>
+      <td>Anthropic のみ</td>
+    </tr>
+    <tr>
+      <td>ライセンス</td>
+      <td>MIT（OSS）</td>
+      <td>プロプライエタリ</td>
+    </tr>
+    <tr>
+      <td>実装言語</td>
+      <td>Go</td>
+      <td>TypeScript / Node.js</td>
+    </tr>
+    <tr>
+      <td>TUI フレームワーク</td>
+      <td>Bubble Tea（Go）</td>
+      <td>ink（React/Node.js）</td>
+    </tr>
+    <tr>
+      <td>MCP サポート</td>
+      <td>あり（実験的）</td>
+      <td>あり（本番品質）</td>
+    </tr>
+    <tr>
+      <td>カスタムツール追加</td>
+      <td>フォークして改造</td>
+      <td>hooks / MCP で拡張</td>
+    </tr>
+    <tr>
+      <td>料金</td>
+      <td>無料（API 料金は別途）</td>
+      <td>Pro プランで利用可</td>
+    </tr>
+    <tr>
+      <td>更新頻度</td>
+      <td>コミュニティドリブン</td>
+      <td>Anthropic が管理</td>
+    </tr>
+  </tbody>
+</table>
+
+<p><strong>opencode を選ぶ理由</strong></p>
+
+<ul>
+  <li>使う LLM を自分で決めたい</li>
+  <li>OSS なのでコードを読んで動作を把握したい</li>
+  <li>社内ポリシーで特定プロバイダしか使えない</li>
+  <li>Anthropic のサブスク契約が不要</li>
+</ul>
+
+<p><strong>Claude Code を選ぶ理由</strong></p>
+
+<ul>
+  <li>Anthropic の最新モデルを最速で使いたい</li>
+  <li>MCP の安定した統合が必要</li>
+  <li>Anthropic のサポートと更新を受けたい</li>
+</ul>
+
+<hr>
+
+<h2 id="実際の使用例">実際の使用例</h2>
+
+<h3 id="例1-新機能の実装">例1: 新機能の実装</h3>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>ユーザー認証に JWT を追加してください。
+現在の実装は @src/auth/ にあります。
+</code></pre></div></div>
+
+<p>opencode がファイルを読み込み、必要なパッケージのインストールから実装・テストの記述まで自律的に進める。</p>
+
+<h3 id="例2-バグ修正">例2: バグ修正</h3>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>@src/api/users.py の 42行目で KeyError が発生しています。
+スタックトレースは以下です：
+KeyError: 'email'
+</code></pre></div></div>
+
+<p>エージェントがファイルを読み込み、原因を特定して修正案を提示する。修正を適用するかは最終的にユーザーが承認する。</p>
+
+<h3 id="例3-コードレビュー">例3: コードレビュー</h3>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>@src/ 以下の変更差分をレビューして、
+セキュリティ上の問題があれば指摘してください
+</code></pre></div></div>
+
+<hr>
+
+<h2 id="claudemd-に相当する設定ファイル">CLAUDE.md に相当する設定ファイル</h2>
+
+<p>Claude Code の <code class="language-plaintext highlighter-rouge">CLAUDE.md</code>（プロジェクト固有の指示ファイル）に相当するのが、opencode では <strong><code class="language-plaintext highlighter-rouge">AGENTS.md</code></strong> または <strong><code class="language-plaintext highlighter-rouge">opencode.md</code></strong> だ。</p>
+
+<p>プロジェクトルートに置くと、エージェントが参照する。</p>
+
+<div class="language-markdown highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c">&lt;!-- opencode.md --&gt;</span>
+<span class="gu">## プロジェクト概要</span>
+FastAPI + PostgreSQL のバックエンド API。
+
+<span class="gu">## コーディング規約</span>
+<span class="p">-</span> Python 3.11+ の型ヒントを必ず使う
+<span class="p">-</span> Ruff でフォーマット
+<span class="p">-</span> テストは pytest
+
+<span class="gu">## 注意事項</span>
+<span class="p">-</span> DB マイグレーションは Alembic で管理している
+<span class="p">-</span> 本番環境の設定は .env.production（コミット禁止）
+</code></pre></div></div>
+
+<hr>
+
+<h2 id="現状の制約と注意点">現状の制約と注意点</h2>
+
+<p>opencode は活発に開発が続いているが、まだ発展途上な部分もある。</p>
+
+<p><strong>安定性</strong></p>
+<ul>
+  <li>大規模なファイル編集でコンテキストが溢れることがある</li>
+  <li>Claude Code に比べてツール実行の信頼性がやや低い報告がある</li>
+</ul>
+
+<p><strong>MCP サポート</strong></p>
+<ul>
+  <li>対応は進んでいるが、Claude Code ほど成熟していない</li>
+  <li>複雑な MCP ワークフローには Claude Code の方が向いている</li>
+</ul>
+
+<p><strong>エコシステム</strong></p>
+<ul>
+  <li>コミュニティ系ツールやプラグインはまだ少ない</li>
+  <li>日本語ドキュメントもほぼ存在しない</li>
+</ul>
+
+<hr>
+
+<h2 id="まとめ">まとめ</h2>
+
+<p>opencode は「LLM に依存しない OSS のターミナル AI エージェント」として、特定プロバイダへのロックインを避けたいユーザーにとって有力な選択肢だ。</p>
+
+<ul>
+  <li>
+<strong>Claude を使いつつも Anthropic のツールに縛られたくない</strong>場合</li>
+  <li>
+<strong>コストに応じてモデルを柔軟に切り替えたい</strong>場合</li>
+  <li>
+<strong>ソースコードを読んでカスタマイズしたい</strong>場合</li>
+</ul>
+
+<p>は opencode が向いている。</p>
+
+<p>一方、Anthropic のエコシステム（MCP・hooks・Pro プラン）を最大限活用したい場合は Claude Code の方が現状では完成度が高い。</p>
+
+<p>どちらも「ターミナルでエージェントにコードを書かせる」という同じビジョンを持つツールだ。用途や制約に応じて使い分けるのが現実的な答えになる。</p>
+
+
+    </div>
+
+</article>
+<div class="post-nav">
+<span></span><a class="next" href="/jekyll-theme-yat/ai%E9%96%8B%E7%99%BA/2026/06/09/beast-mode-ai-tools.html" title="「Beast モード」でAIはどこまで変わるか">「Beast モード」でAIはどこまで変わるか</a>
+</div>
+<div class="post-related">
+      <div>Related Articles</div>
+      <ul>
+        <li><a class="post-link" href="/jekyll-theme-yat/ai%E9%96%8B%E7%99%BA/2026/06/22/mcp-local-remote-transports.html" title="「Beast モード」でAIはどこまで変わるか">ローカルMCPとリモートMCPの違い</a></li>
+<li><a class="post-link" href="/jekyll-theme-yat/%E9%96%8B%E7%99%BA/2026/06/07/python-black-guide.html" title="「Beast モード」でAIはどこまで変わるか">AI コーディング向けの Python フォーマッター Black</a></li>
+<li><a class="post-link" href="/jekyll-theme-yat/%E9%96%8B%E7%99%BA/2026/06/16/notion-database-personal-backend.html" title="「Beast モード」でAIはどこまで変わるか">なぜ個人開発のバックエンドに Notion データベースを選ぶのか</a></li>
+<li><a class="post-link" href="/jekyll-theme-yat/ai%E9%96%8B%E7%99%BA/2026/06/07/agent-context-management-2026.html" title="「Beast モード」でAIはどこまで変わるか">エージェントを長く自律動作させるためのコンテキスト設計</a></li>
+</ul>
+    </div>
+<div class="post-comments"></div></section>
+</div>
+
+
+  </section>
+  <section class="sidebar" style="margin-left: 15px;">
+    <!-- Get sidebar items --><style type="text/css" media="screen">
+.post-menu ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+</style>
+
+<div class="post-menu">
+  <div class="post-menu-title">TOC</div>
+  <div class="post-menu-content"></div>
+</div>
+
+<script>
+  function generateContent() {
+    var menu = document.querySelector(".post-menu");
+    var menuContent =  menu.querySelector(".post-menu-content");
+    var headings = document.querySelector(".post-content").querySelectorAll("h2, h3, h4, h5, h6");
+
+    // Hide menu when no headings
+    if (headings.length === 0) {
+      return menu.style.display = "none";
+    }
+
+    // Generate post menu
+    var menuHTML = '';
+    for (var i = 0; i < headings.length; i++) {
+      var h = headings[i];
+      menuHTML += (
+        '<li class="h-' + h.tagName.toLowerCase() + '">'
+        + '<a href="#h-' + h.getAttribute('id') + '">' + h.textContent + '</a></li>');
+    }
+
+    menuContent.innerHTML = '<ul>' + menuHTML + '</ul>';
+
+    // The header element
+    var header = document.querySelector('header.site-header');
+
+    function doMenuCollapse(index, over_items) {
+      var items = menuContent.firstChild.children;
+
+      if (over_items == undefined) {
+        over_items = 20;
+      }
+
+      if (items.length < over_items) {
+        return;
+      }
+
+      var activeItem = items[index];
+      var beginItem = activeItem
+      var endItem = activeItem
+      var beginIndex = index;
+      var endIndex = index + 1;
+      while (beginIndex >= 0
+        && !items[beginIndex].classList.contains('h-h2')) {
+        beginIndex -= 1;
+      }
+      while (endIndex < items.length
+        && !items[endIndex].classList.contains('h-h2')) {
+        endIndex += 1;
+      }
+      for (var i = 0; i < beginIndex; i++) {
+        item = items[i]
+        if (!item.classList.contains('h-h2')) {
+          item.style.display = 'none';
+        }
+      }
+      for (var i = beginIndex + 1; i < endIndex; i++) {
+        item = items[i]
+        // if (!item.classList.contains('h-h2')) {
+          item.style.display = '';
+        // }
+      }
+      for (var i = endIndex; i < items.length; i++) {
+        item = items[i]
+        if (!item.classList.contains('h-h2')) {
+          item.style.display = 'none';
+        }
+      }
+    }
+
+    // Init menu collapsed
+    doMenuCollapse(-1);
+
+    // Active the menu item
+    window.addEventListener('scroll', function (event) {
+      var lastActive = menuContent.querySelector('.active');
+      var changed = true;
+      var activeIndex = -1;
+      for (var i = headings.length - 1; i >= 0; i--) {
+        var h = headings[i];
+        var headingRect = h.getBoundingClientRect();
+        var headerRect = header.getBoundingClientRect();
+        var headerTop = Math.floor(headerRect.top);
+        var headerHeight = Math.floor(headerRect.height);
+        var headerHeight = headerTop + headerHeight + 20;
+        if (headingRect.top <= headerHeight) {
+          var id = 'h-' + h.getAttribute('id');
+          var a = menuContent.querySelector('a[href="#' + id  + '"]');
+          var curActive = a.parentNode;
+          if (curActive) {
+            curActive.classList.add('active');
+            activeIndex = i;
+          }
+          if (lastActive == curActive) {
+            changed = false;
+          }
+          break;
+        }
+      }
+      if (changed) {
+        if (lastActive) {
+          lastActive.classList.remove('active');
+        }
+        doMenuCollapse(activeIndex);
+      }
+      event.preventDefault();
+    });
+  }
+  generateContent();
+</script>
+</section>
+</div>
+
+      </div>
+    </main><footer class="site-footer h-card">
+  <data class="u-url" href="/jekyll-theme-yat/"></data>
+
+  <div class="wrapper">
+    <div class="site-footer-inner">
+<div>Waka-DS © 2021-2026</div>
+      <div>Powered by <a title="Jekyll is a simple, blog-aware, static site
+      generator." href="http://jekyllrb.com/">Jekyll</a> &amp; <a title="Yat, yet
+      another theme." href="https://github.com/jeffreytse/jekyll-theme-yat">Yat Theme</a>.</div>
+      <div class="footer-col rss-subscribe">Subscribe <a href="/jekyll-theme-yat/feed.xml">via RSS</a>
+</div>
+    </div>
+  </div>
+</footer>
+</body>
+</html>

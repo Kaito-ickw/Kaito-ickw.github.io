@@ -1,0 +1,1131 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <script>
+  (function() {
+    try {
+      var p = localStorage.getItem('preferred_lang');
+      if (!p) return;
+      var path = window.location.pathname;
+      var ja = ['/', '/archives.html', '/categories.html', '/tags.html', '/about.html'];
+      var en = ['/en/', '/en/archives.html', '/en/categories.html', '/en/tags.html', '/en/about.html'];
+      if (p === 'en' && ja.indexOf(path) !== -1) {
+        window.location.replace('/en' + (path === '/' ? '/' : path));
+      } else if (p === 'ja' && en.indexOf(path) !== -1) {
+        window.location.replace(path.slice(3) || '/');
+      }
+    } catch(e) {}
+  })();
+  </script>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="google-translate-customization" content="108d9124921d80c3-80e20d618ff053c8-g4f02ec6f3dba68b7-c">
+<!-- Begin Jekyll SEO tag v2.9.0 -->
+<title>1人開発でマルチエージェント体制を作る方法 | Waka-DS.com</title>
+<meta name="generator" content="Jekyll v4.4.1">
+<meta property="og:title" content="1人開発でマルチエージェント体制を作る方法">
+<meta name="author" content="Waka-DS">
+<meta property="og:locale" content="ja">
+<meta name="description" content="「マルチエージェント」という言葉を聞くと、大人数のチームが巨大なシステムを動かしているイメージが先行する。しかし1人開発でも、エージェントを複数動かす設計は成立する。むしろ1人だからこそ、役割分担を明確にして自分の判断コストを下げる意義がある。">
+<meta name="twitter:description" property="og:description" content="「マルチエージェント」という言葉を聞くと、大人数のチームが巨大なシステムを動かしているイメージが先行する。しかし1人開発でも、エージェントを複数動かす設計は成立する。むしろ1人だからこそ、役割分担を明確にして自分の判断コストを下げる意義がある。">
+<link rel="canonical" href="/jekyll-theme-yat/ai%E9%96%8B%E7%99%BA/2026/06/10/solo-dev-multi-agent-setup.html">
+<meta property="og:url" content="/jekyll-theme-yat/ai%E9%96%8B%E7%99%BA/2026/06/10/solo-dev-multi-agent-setup.html">
+<meta property="og:site_name" content="Waka-DS.com">
+<meta property="og:type" content="article">
+<meta property="article:published_time" content="2026-06-10T00:00:00+00:00">
+<meta property="article:modified_time" content="2026-06-10T00:00:00+00:00">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="1人開発でマルチエージェント体制を作る方法">
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":"Waka-DS"},"dateModified":"2026-06-10T00:00:00+00:00","datePublished":"2026-06-10T00:00:00+00:00","description":"「マルチエージェント」という言葉を聞くと、大人数のチームが巨大なシステムを動かしているイメージが先行する。しかし1人開発でも、エージェントを複数動かす設計は成立する。むしろ1人だからこそ、役割分担を明確にして自分の判断コストを下げる意義がある。","headline":"1人開発でマルチエージェント体制を作る方法","mainEntityOfPage":{"@type":"WebPage","@id":"/jekyll-theme-yat/ai%E9%96%8B%E7%99%BA/2026/06/10/solo-dev-multi-agent-setup.html"},"url":"/jekyll-theme-yat/ai%E9%96%8B%E7%99%BA/2026/06/10/solo-dev-multi-agent-setup.html"}</script>
+<!-- End Jekyll SEO tag -->
+<link rel="shortcut icon" href="">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=Noto+Sans+JP:wght@400;500;700&amp;display=swap">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+  <link rel="stylesheet" href="/jekyll-theme-yat/assets/css/main.css">
+  <script src="/jekyll-theme-yat/assets/js/main.js"></script><link type="application/atom+xml" rel="alternate" href="/jekyll-theme-yat/feed.xml" title="Waka-DS.com">
+<script>
+  function initGoogleAnalytics() {
+    var doNotTrack = (window.doNotTrack === "1" || navigator.doNotTrack === "1" ||
+      navigator.doNotTrack === "yes" || navigator.msDoNotTrack === "1");
+    var enableDNT = "true" == "true";
+
+    if (!enableDNT || !doNotTrack) {
+      var ga_id = 'G-XNP1RBTG9C';
+
+      var script = document.createElement('script');
+      script.async = true;
+      script.src = 'https://www.googletagmanager.com/gtag/js?id=' + ga_id;
+      document.head.appendChild(script);
+
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', ga_id);
+    }
+  }
+  window.addEventListener("load", initGoogleAnalytics);
+</script>
+<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/styles/default.min.css">
+<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/highlight.min.js"></script>
+<!-- and it's easy to individually load additional languages -->
+<script charset="UTF-8" src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/languages/go.min.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<script>
+// Init highlight js
+document.addEventListener('DOMContentLoaded', function(event) {
+  var els = document.querySelectorAll('pre code')
+
+  function addLangData(block) {
+    var outer = block.parentElement.parentElement.parentElement;
+    var lang = block.getAttribute('data-lang');
+    for (var i = 0; i < outer.classList.length; i++) {
+      var cls = outer.classList[i];
+      if (cls.startsWith('language-')) {
+        lang = cls;
+        break;
+      }
+    }
+    if (!lang) {
+      cls = block.getAttribute('class');
+      lang = cls ? cls.replace('hljs ', '') : '';
+    }
+    if (lang.startsWith('language-')) {
+      lang = lang.substr(9);
+    }
+    block.setAttribute('class', 'hljs ' + lang);
+    block.parentNode.setAttribute('data-lang', lang);
+  }
+
+  function addBadge(block) {
+    var enabled = ('true' || 'true').toLowerCase();
+    if (enabled == 'true') {
+      var pre = block.parentElement;
+      pre.classList.add('badge');
+    }
+  }
+
+  function handle(block) {
+    addLangData(block);
+    addBadge(block)
+    hljs.highlightBlock(block);
+  }
+
+  for (var i = 0; i < els.length; i++) {
+    var el = els[i];
+    handle(el);
+  }
+});
+</script>
+
+<style>
+  /* code language badge */
+  pre.badge::before {
+    content: attr(data-lang);
+    color: #fff;
+    background-color: #0d9488;
+    padding: 0 .5em;
+    border-radius: 0 2px;
+    text-transform: uppercase;
+    text-align: center;
+    min-width: 32px;
+    display: inline-block;
+    position: absolute;
+    right: 0;
+  }
+
+  /* fix wrong badge display for firefox browser */
+  code > table pre::before {
+    display: none;
+  }
+</style>
+</head>
+<body>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<header class="site-header " role="banner">
+
+  <div class="wrapper">
+    <div class="site-header-inner">
+<span class="site-brand"><a class="site-brand-inner" rel="author" href="/jekyll-theme-yat/">
+  <img class="site-favicon" title="Waka-DS.com" src="" onerror="this.style.display='none'">
+  Waka-DS.com
+</a>
+</span><nav class="site-nav">
+          <input type="checkbox" id="nav-trigger" class="nav-trigger">
+          <label for="nav-trigger">
+            <span class="menu-icon">
+              <svg viewbox="0 0 18 15" width="18px" height="15px">
+                <path d="M18,1.484c0,0.82-0.665,1.484-1.484,1.484H1.484C0.665,2.969,0,2.304,0,1.484l0,0C0,0.665,0.665,0,1.484,0 h15.032C17.335,0,18,0.665,18,1.484L18,1.484z M18,7.516C18,8.335,17.335,9,16.516,9H1.484C0.665,9,0,8.335,0,7.516l0,0 c0-0.82,0.665-1.484,1.484-1.484h15.032C17.335,6.031,18,6.696,18,7.516L18,7.516z M18,13.516C18,14.335,17.335,15,16.516,15H1.484 C0.665,15,0,14.335,0,13.516l0,0c0-0.82,0.665-1.483,1.484-1.483h15.032C17.335,12.031,18,12.695,18,13.516L18,13.516z"></path>
+              </svg>
+            </span>
+          </label>
+
+          <div class="trigger">
+<a class="page-link" href="/jekyll-theme-yat/about.html">ABOUT</a><a class="page-link" href="/jekyll-theme-yat/archives.html">ARCHIVES</a><a class="page-link" href="/jekyll-theme-yat/categories.html">CATEGORIES</a><a class="page-link" href="/jekyll-theme-yat/">HOME</a><a class="page-link" href="/jekyll-theme-yat/tags.html">TAGS</a>
+</div>
+        </nav>
+</div>
+  </div>
+</header>
+
+<script>
+  function initHeader() {
+    var lastScrollY = getScrollPos().y;
+    var documentElement = document.documentElement;
+
+    function storeScrollData() {
+      var y = getScrollPos().y;var scrollStatus = "";
+
+      if (y <= 0) {
+        scrollStatus = "top";
+      } else if ((window.innerHeight + y) >= document.body.offsetHeight) {
+        scrollStatus = "bottom";
+      } else {
+        var isScrollDown = (y - lastScrollY > 0) ? true : false;
+        scrollStatus = isScrollDown ? "down" : "up";
+      }
+
+      lastScrollY = y;
+      documentElement.setAttribute("data-scroll-status", scrollStatus);
+    }
+
+    window.addEventListener('scroll', function(e) {
+      storeScrollData();
+    });
+
+    storeScrollData();
+  }
+  document.addEventListener('DOMContentLoaded', initHeader);
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<script>
+  function hashLocate(hashValue) {
+    hashValue = hashValue.replace(/^.*#h-/, '');
+    hashValue = decodeURIComponent(hashValue);
+    var element = document.getElementById(hashValue);
+
+    if (!element) {
+      return;
+    }
+
+    var header = document.querySelector('header.site-header');
+    var headerRect = header.getBoundingClientRect();
+    var headerTop = Math.floor(headerRect.top);
+    var headerHeight = Math.floor(headerRect.height);
+    var scrollPos = getScrollPos();
+    var offsetY = element.offsetTop - (headerTop + headerHeight + 20);
+
+    if (offsetY == scrollPos.y) {
+      return;
+    }
+
+    if (headerTop == 0  && offsetY > scrollPos.y) {
+      offsetY += headerHeight + 2;
+    } else if (headerTop < 0  && offsetY < scrollPos.y) {
+      offsetY -= headerHeight - 2;
+    }
+
+    smoothScrollTo(offsetY);
+  }
+
+  // The first event occurred
+  window.addEventListener('load', function(event) {
+    if (window.location.hash) {
+      hashLocate(window.location.hash);
+    }
+  });
+
+  // The first event occurred
+  window.addEventListener('click', function(event) {
+    if (event.target.tagName.toLowerCase() == 'a') {
+      hashLocate(event.target.getAttribute('href'));
+    }
+  });
+</script>
+<div class="theme-toggle">
+  <input type="checkbox" id="theme-switch">
+  <label for="theme-switch">
+    <div class="toggle"></div>
+    <div class="names">
+      <p class="light">Light</p>
+      <p class="dark">Dark</p>
+    </div>
+  </label>
+</div>
+
+
+
+
+<script>
+  (function() {
+    var sw = document.getElementById('theme-switch');
+    var html = document.getElementsByTagName('html')[0];
+    var nightModeOption = ('auto' || 'auto').toLowerCase();
+    var storage = nightModeOption === 'manual'
+        ? localStorage
+        : sessionStorage;
+    var themeData = loadThemeData();
+
+    function saveThemeData(data) {
+      storage.setItem('theme', JSON.stringify(data));
+    }
+
+    function loadThemeData() {
+      var data = storage.getItem('theme');
+      try {
+        data = JSON.parse(data ? data : '');
+      } catch(e) {
+        data = { nightShift: undefined, autoToggleAt: 0 };
+        saveThemeData(data);
+      }
+      return data;
+    }
+
+    function handleThemeToggle(nightShift) {
+      themeData.nightShift = nightShift;
+      saveThemeData(themeData);
+      html.dataset.theme = nightShift ? 'dark' : 'light';
+      setTimeout(function() {
+        sw.checked = nightShift ? true : false;
+      }, 50);
+    }
+
+    function autoThemeToggle() {
+      // Next time point of theme toggle
+      var now = new Date();
+      var toggleAt = new Date();
+      var hours = now.getHours();
+      var nightShift = hours >= 19 || hours <=7;
+
+      if (nightShift) {
+        if (hours > 7) {
+          toggleAt.setDate(toggleAt.getDate() + 1);
+        }
+        toggleAt.setHours(7);
+      } else {
+        toggleAt.setHours(19);
+      }
+
+      toggleAt.setMinutes(0);
+      toggleAt.setSeconds(0);
+      toggleAt.setMilliseconds(0)
+
+      var delay = toggleAt.getTime() - now.getTime();
+
+      // auto toggle theme mode
+      setTimeout(function() {
+        handleThemeToggle(!nightShift);
+      }, delay);
+
+      return {
+        nightShift: nightShift,
+        toggleAt: toggleAt.getTime()
+      };
+    }
+
+    // Listen the theme toggle event
+    sw.addEventListener('change', function(event) {
+      handleThemeToggle(event.target.checked);
+    });
+
+    if (nightModeOption == 'auto') {
+      var data = autoThemeToggle();
+
+      // Toggle theme by local setting
+      if (data.toggleAt > themeData.autoToggleAt) {
+        themeData.autoToggleAt = data.toggleAt;
+        handleThemeToggle(data.nightShift);
+      } else {
+        handleThemeToggle(themeData.nightShift);
+      }
+    } else if (nightModeOption == 'manual') {
+      handleThemeToggle(themeData.nightShift);
+    } else {
+      var nightShift = themeData.nightShift;
+      if (nightShift === undefined) {
+        nightShift = nightModeOption === 'on';
+      }
+      handleThemeToggle(nightShift);
+    }
+  })();
+</script>
+<main class="page-content" aria-label="Content">
+      <div class="wrapper">
+        <div class="framework">
+  <section class="main">
+
+     <div class="post">
+  <section>
+
+
+
+
+
+
+
+
+
+<header class="post-header">
+  <h1 class="post-title p-name" itemprop="name headline">1人開発でマルチエージェント体制を作る方法</h1>
+  <h2 class="post-subtitle">役割分担・通信設計・Git worktreeで構成する実践パターン</h2>
+
+  <p class="post-meta">
+    <time class="dt-published" datetime="2026-06-10T00:00:00+00:00" itemprop="datePublished"><i class="fa fa-calendar"></i> Jun 10, 2026
+    </time>
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <span class="post-reading-time left-vsplit"><i class="fa fa-clock-o"></i> About 13 mins</span>
+  </p>
+<div class="post-tags">
+<a class="post-tag" href="/jekyll-theme-yat/tags.html#%E3%83%9E%E3%83%AB%E3%83%81%E3%82%A8%E3%83%BC%E3%82%B8%E3%82%A7%E3%83%B3%E3%83%88">#マルチエージェント</a><a class="post-tag" href="/jekyll-theme-yat/tags.html#Claude%20Code">#Claude Code</a><a class="post-tag" href="/jekyll-theme-yat/tags.html#Codex">#Codex</a><a class="post-tag" href="/jekyll-theme-yat/tags.html#agmsg">#agmsg</a><a class="post-tag" href="/jekyll-theme-yat/tags.html#AI%E3%83%8D%E3%82%A4%E3%83%86%E3%82%A3%E3%83%96%E9%96%8B%E7%99%BA">#AIネイティブ開発</a><a class="post-tag" href="/jekyll-theme-yat/tags.html#%E3%82%B3%E3%83%BC%E3%83%87%E3%82%A3%E3%83%B3%E3%82%B0%E3%82%A8%E3%83%BC%E3%82%B8%E3%82%A7%E3%83%B3%E3%83%88">#コーディングエージェント</a><a class="post-tag" href="/jekyll-theme-yat/tags.html#%E8%87%AA%E5%8B%95%E5%8C%96">#自動化</a>
+</div></header>
+<article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
+
+    <div class="post-content e-content" itemprop="articleBody">
+
+      <p>「マルチエージェント」という言葉を聞くと、大人数のチームが巨大なシステムを動かしているイメージが先行する。しかし1人開発でも、エージェントを複数動かす設計は成立する。むしろ1人だからこそ、役割分担を明確にして自分の判断コストを下げる意義がある。</p>
+
+<p>この記事では、1人開発でマルチエージェント体制を組む際の設計の考え方と、実際の構成パターンを整理する。</p>
+
+<hr>
+
+<h2 id="結論を先に">結論を先に</h2>
+
+<p>1人開発でのマルチエージェント体制は、次の3要素で成り立つ。</p>
+
+<ol>
+  <li>
+<strong>役割の分離</strong> ── オーケストレーター（設計・レビュー・統合）と実装担当を分ける</li>
+  <li>
+<strong>通信の設計</strong> ── エージェント間のメッセージパスを定義する</li>
+  <li>
+<strong>自分の立ち位置</strong> ── 人間はPMとして動く。コードを書かず、承認と判断をする</li>
+</ol>
+
+<p>完全な自動化は最終形ではあるが、最初から目指す必要はない。まずは「Claude + Codex + 自分」の3者分業から始めるのが現実的だ。</p>
+
+<hr>
+
+<h2 id="なぜ1人開発でマルチエージェントが有効か">なぜ1人開発でマルチエージェントが有効か</h2>
+
+<p>1人でAIエージェントを使うとき、最初は「Claude Codeに全部任せる」スタイルになりやすい。これは悪くない。しかしある規模を超えると限界が出る。</p>
+
+<ul>
+  <li>コンテキストが長くなり、エージェントの出力品質が落ち始める</li>
+  <li>設計とコーディングが同じエージェントで混在し、役割が曖昧になる</li>
+  <li>自分が「何が進んでいるか」を把握しにくくなる</li>
+</ul>
+
+<p>マルチエージェントにする最大の理由はコンテキストの分離だ。オーケストレーターは「何が済んで・何が残っているか」を把握し続ける。実装担当はタスクが終わったらセッションを終了し、次のタスクは白紙で始める。この構造だけで、長時間開発のコンテキスト劣化（context rot）を大幅に減らせる。</p>
+
+<p>詳細は<a href="/jekyll-theme-yat/ai%E9%96%8B%E7%99%BA/2026/06/07/agent-context-management-2026.html">エージェントを長く自律動作させるためのコンテキスト設計</a>で扱っている。</p>
+
+<hr>
+
+<h2 id="役割設計">役割設計</h2>
+
+<p>最小構成で始めるなら、役割は2つで十分だ。</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>orchestrator (Claude Code)
+  役割: タスク定義・設計レビュー・mainへの統合判断
+  コンテキスト: 長く維持する
+
+implementer (Codex)
+  役割: API・DB・テストの実装
+  コンテキスト: タスクごとにリセットする
+</code></pre></div></div>
+
+<p>orchestratorは「何をやるか」を決め、implementerは「どうやるか」を実行する。この分離が機能していれば、orchestratorが長い会話履歴を持っていても、implementerのコンテキストは常に軽い状態を保てる。</p>
+
+<p>1人開発に加えて機械レビューが欲しい場合は、ワンショットのreviewerを追加する選択肢もある。常駐させる必要はなく、diff を渡して1回だけ実行する用途で十分だ。</p>
+
+<hr>
+
+<h2 id="通信の設計">通信の設計</h2>
+
+<p>エージェントを複数動かす場合、「何をやって・何が終わったか」の情報をどこで共有するかを決めておく必要がある。</p>
+
+<p>最もシンプルな方法はファイルベースだ。<code class="language-plaintext highlighter-rouge">tasks.md</code> にタスク一覧を置き、各エージェントが読み書きする。追加インフラが不要で、git で履歴も残る。</p>
+
+<div class="language-markdown highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="gh"># tasks.md</span>
+
+<span class="gu">## 進行中</span>
+<span class="p">-</span> [ ] task-001: /auth/login エンドポイントの実装 [backend]
+
+<span class="gu">## 完了</span>
+<span class="p">-</span> [x] task-000: DB スキーマ設計 [architect]
+</code></pre></div></div>
+
+<p>専用のメッセージングが必要になったら <strong>agmsg</strong> を使う選択肢がある。SQLiteを使ったエージェント間メッセージング基盤で、ネットワーク不要でdevcontainer内で完結する。メッセージは次の形式で送受信する。</p>
+
+<div class="language-text highlighter-rouge"><div class="highlight"><pre class="highlight"><code>DONE    task-001 -&gt; architect 実装完了、テスト通過
+CHANGES task-001 -&gt; backend  エラーハンドリングを追加してください
+BLOCKED task-001 by         DB接続の設定値が不明
+</code></pre></div></div>
+
+<p>ただし、agmsgを使い始めると「ClaudeからのCHANGESをCodexがどう受け取るか」という非対称な引き継ぎ問題が出る。この問題と解消パターンは<a href="/jekyll-theme-yat/ai%E9%96%8B%E7%99%BA/2026/06/07/multi-agent-asymmetric-handoff.html">Claude と Codex のマルチエージェント引き継ぎ問題と解消パターン</a>で詳しく整理した。</p>
+
+<p>最初はファイルベースで始め、ボトルネックが出てきたらagmsgへ移行するのが無駄が少ない。</p>
+
+<hr>
+
+<h2 id="git-worktreeの設計">Git worktreeの設計</h2>
+
+<p>複数のエージェントが同じリポジトリで並行作業するとき、同一ブランチで作業させると競合が発生する。これを防ぐにはworktreeを使う。</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># 各エージェント専用のworktreeを作る</span>
+git worktree add .worktrees/backend feat/auth-api
+git worktree add .worktrees/review  review/auth-api
+</code></pre></div></div>
+
+<p>構造のイメージはこうなる。</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>.
+├── （メインworktree: main / orchestratorの作業場）
+└── .worktrees/
+    ├── backend/   ← Codexが実装する場所
+    └── review/    ← レビュー用（必要なら）
+</code></pre></div></div>
+
+<p>タスクが完了したら、orchestratorがdiffを確認してmainにマージする。worktreeはタスクごとに作り直してもいいし、役割に固定して使い続けてもいい。</p>
+
+<p>worktreeのメリットはもう一つある。エージェントの作業範囲を物理的に分離できるため、「Codexがmainのファイルを誤って上書きする」という事故が起きにくい。ハーネス設計の観点では、ファイルシステムレベルでの分離は強力な安全装置だ。</p>
+
+<hr>
+
+<h2 id="人間の役割-pmとして動く">人間の役割: PMとして動く</h2>
+
+<p>この体制で1人開発者が担う役割は、コードを書くことではなくなる。</p>
+
+<ul>
+  <li>タスクを定義してorchestrator（Claude）に渡す</li>
+  <li>orchestratorが出したCHANGESやBLOCKEDに判断を下す</li>
+  <li>実装が完了したらdiffを確認してmergeする</li>
+  <li>agmsgのinboxを定期的に確認する</li>
+</ul>
+
+<p>実際の1日の流れはこうなる。</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>朝:
+  tasks.md を確認
+  → orchestratorに「今日やること」を伝える
+  → orchestratorがタスクを分割してCodexに割り当てる
+
+作業中:
+  orchestratorのCHANGES/BLOCKEDが来たら判断する
+  Codexがタスクを完了したらdiffを確認
+
+夜:
+  orchestratorにセッションを終了させる前にsummaryを書かせる
+  → 翌朝のコンテキスト再構築に使う
+</code></pre></div></div>
+
+<p>この運用で最も重要なのは、BLOCKEDを軽く扱うことだ。Codexが「わからない」と報告するのは失敗ではない。設計判断が必要な場面で人間に委ねる動作は正しい。「Codexが迷ったまま実装し続ける」状態の方がずっと問題だ。</p>
+
+<hr>
+
+<h2 id="ハーネスで安全を担保する">ハーネスで安全を担保する</h2>
+
+<p>エージェントを自律的に動かす設計には、安全機構が欠かせない。最低限、次の設定は入れておく。</p>
+
+<p><code class="language-plaintext highlighter-rouge">PreToolUse</code> フックで危険なコマンドをブロックする。</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c">#!/bin/bash</span>
+<span class="c"># pre_tool_use.sh</span>
+<span class="nv">TOOL_INPUT</span><span class="o">=</span><span class="s2">"</span><span class="nv">$2</span><span class="s2">"</span>
+<span class="k">if </span><span class="nb">echo</span> <span class="s2">"</span><span class="nv">$TOOL_INPUT</span><span class="s2">"</span> | <span class="nb">grep</span> <span class="nt">-qE</span> <span class="s1">'git\s+push\s+.*--force'</span><span class="p">;</span> <span class="k">then
+  </span><span class="nb">echo</span> <span class="s2">"BLOCKED: git push --force は禁止"</span> <span class="o">&gt;</span>&amp;2
+  <span class="nb">exit </span>2
+<span class="k">fi
+if </span><span class="nb">echo</span> <span class="s2">"</span><span class="nv">$TOOL_INPUT</span><span class="s2">"</span> | <span class="nb">grep</span> <span class="nt">-qE</span> <span class="s1">'DROP\s+(TABLE|DATABASE)'</span><span class="p">;</span> <span class="k">then
+  </span><span class="nb">echo</span> <span class="s2">"BLOCKED: DROP は禁止"</span> <span class="o">&gt;</span>&amp;2
+  <span class="nb">exit </span>2
+<span class="k">fi
+</span><span class="nb">exit </span>0
+</code></pre></div></div>
+
+<p>Claude Code の権限設定でread-only操作を自動許可し、副作用のある操作は確認を求める。</p>
+
+<div class="language-json highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">{</span><span class="w">
+  </span><span class="nl">"permissions"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+    </span><span class="nl">"allow"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">"Read(*)"</span><span class="p">,</span><span class="w"> </span><span class="s2">"Bash(git status)"</span><span class="p">,</span><span class="w"> </span><span class="s2">"Bash(git diff*)"</span><span class="p">],</span><span class="w">
+    </span><span class="nl">"deny"</span><span class="p">:</span><span class="w">  </span><span class="p">[</span><span class="s2">"Bash(git push --force*)"</span><span class="p">]</span><span class="w">
+  </span><span class="p">}</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></code></pre></div></div>
+
+<p>ハーネス設計の全体像は<a href="/jekyll-theme-yat/ai%E9%96%8B%E7%99%BA/2026/06/08/harness-engineering-guide.html">ハーネスエンジニアリングとは何か</a>に整理している。</p>
+
+<hr>
+
+<h2 id="段階的に始める">段階的に始める</h2>
+
+<p>いきなり全体を組もうとすると、設計コストが高くなる。実際には段階的に組み上げるのがいい。</p>
+
+<p><strong>Step 1: 2エージェント + ファイル通信</strong></p>
+
+<p>Claude Code を orchestrator、Codex を implementer とし、<code class="language-plaintext highlighter-rouge">tasks.md</code> でタスクを共有する。agmsgなし、worktreeなしで始める。自分が手動でCodexを起動する。</p>
+
+<p><strong>Step 2: worktreeで分離する</strong></p>
+
+<p>Codexの作業場をworktreeに分離する。これだけでmainブランチへの誤書き込みが防げる。</p>
+
+<p><strong>Step 3: 軽量watcherで通知を受け取る</strong></p>
+
+<p>agmsgを導入し、DONE/BLOCKEDを検知する軽量watcherを走らせる。Codexの起動は手動のままでいい。</p>
+
+<p><strong>Step 4: 承認付き起動</strong></p>
+
+<p>watcherが通知してきたら確認ダイアログで承認するだけでCodexが起動する構成にする。</p>
+
+<p>Step 2か3まで動けば、1人開発の生産性として十分なケースが多い。Step 4以降は、実際に詰まりが出てから考えればいい。</p>
+
+<hr>
+
+<h2 id="まとめ">まとめ</h2>
+
+<table>
+  <thead>
+    <tr>
+      <th style="text-align: left">要素</th>
+      <th style="text-align: left">最小構成</th>
+      <th style="text-align: left">発展構成</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td style="text-align: left"><strong>役割</strong></td>
+      <td style="text-align: left">orchestrator + implementer</td>
+      <td style="text-align: left">
+<ul>
+  <li>reviewer（ワンショット）</li>
+</ul>
+</td>
+    </tr>
+    <tr>
+      <td style="text-align: left"><strong>通信</strong></td>
+      <td style="text-align: left">tasks.md（ファイル）</td>
+      <td style="text-align: left">agmsg（SQLite）</td>
+    </tr>
+    <tr>
+      <td style="text-align: left"><strong>並行作業</strong></td>
+      <td style="text-align: left">逐次実行</td>
+      <td style="text-align: left">worktreeで並行</td>
+    </tr>
+    <tr>
+      <td style="text-align: left"><strong>Codex起動</strong></td>
+      <td style="text-align: left">手動</td>
+      <td style="text-align: left">watcher + 承認付き</td>
+    </tr>
+    <tr>
+      <td style="text-align: left"><strong>人間の役割</strong></td>
+      <td style="text-align: left">PM + 手動起動</td>
+      <td style="text-align: left">PM + 承認のみ</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>1人開発でマルチエージェントを組む核心は「自分が判断する範囲を絞り込むこと」だ。コードを書く時間をエージェントに渡し、自分は設計判断・承認・統合に集中する。</p>
+
+<p>この分担が機能しはじめると、開発の体感速度が変わる。</p>
+
+<hr>
+
+<h2 id="参考">参考</h2>
+
+<ul>
+  <li>
+<a href="/jekyll-theme-yat/ai%E9%96%8B%E7%99%BA/2026/06/07/multi-agent-asymmetric-handoff.html">Claude と Codex のマルチエージェント引き継ぎ問題と解消パターン</a> ── agmsg + 非対称引き継ぎの設計</li>
+  <li>
+<a href="/jekyll-theme-yat/ai%E9%96%8B%E7%99%BA/2026/06/07/agent-context-management-2026.html">エージェントを長く自律動作させるためのコンテキスト設計</a> ── context rot とオーケストレーター設計</li>
+  <li>
+<a href="/jekyll-theme-yat/ai%E9%96%8B%E7%99%BA/2026/06/08/harness-engineering-guide.html">ハーネスエンジニアリングとは何か</a> ── Hooks・権限・ループ設計の全体像</li>
+  <li>
+<a href="https://agmsg.cc/">agmsg — Cross-agent messaging for CLI AI agents</a> ── agmsg 公式サイト</li>
+  <li>
+<a href="https://docs.anthropic.com/en/docs/claude-code/sub-agents">Claude Code Subagents</a> ── Claude Code の公式サブエージェント機能</li>
+</ul>
+
+
+    </div>
+
+</article>
+<div class="post-nav">
+<a class="previous" href="/jekyll-theme-yat/%E9%96%8B%E7%99%BA/2026/06/10/git-submodule-subtree.html" title="Git submodule と Git subtree の違いと使い分け">Git submodule と Git subtree の違いと使い分け...</a><a class="next" href="/jekyll-theme-yat/%E3%82%A4%E3%83%B3%E3%83%95%E3%83%A9/2026/06/10/tailscale-guide.html" title="Tailscaleの仕組みと使いどころ">Tailscaleの仕組みと使いどころ</a>
+</div>
+<div class="post-related">
+      <div>Related Articles</div>
+      <ul>
+        <li><a class="post-link" href="/jekyll-theme-yat/%E3%83%87%E3%83%BC%E3%82%BF%E3%82%A8%E3%83%B3%E3%82%B8%E3%83%8B%E3%82%A2%E3%83%AA%E3%83%B3%E3%82%B0/2026/06/12/2026-world-cup-soccer-data-revolution.html" title="Tailscaleの仕組みと使いどころ">2026ワールドカップで見るサッカーのデータ革命</a></li>
+<li><a class="post-link" href="/jekyll-theme-yat/ai%E9%96%8B%E7%99%BA/2026/06/18/claude-code-grill-me.html" title="Tailscaleの仕組みと使いどころ">Claude Code の /grill-me: 実装前に設計を問い詰める</a></li>
+<li><a class="post-link" href="/jekyll-theme-yat/%E9%96%8B%E7%99%BA/2026/06/10/git-submodule-subtree.html" title="Tailscaleの仕組みと使いどころ">Git submodule と Git subtree の違いと使い分け</a></li>
+<li><a class="post-link" href="/jekyll-theme-yat/ai%E9%96%8B%E7%99%BA/2026/06/13/openclaw-personal-ai-agent.html" title="Tailscaleの仕組みと使いどころ">OpenClawで自分専用のAIエージェントを動かす</a></li>
+</ul>
+    </div>
+<div class="post-comments"></div></section>
+</div>
+
+
+  </section>
+  <section class="sidebar" style="margin-left: 15px;">
+    <!-- Get sidebar items --><style type="text/css" media="screen">
+.post-menu ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+</style>
+
+<div class="post-menu">
+  <div class="post-menu-title">TOC</div>
+  <div class="post-menu-content"></div>
+</div>
+
+<script>
+  function generateContent() {
+    var menu = document.querySelector(".post-menu");
+    var menuContent =  menu.querySelector(".post-menu-content");
+    var headings = document.querySelector(".post-content").querySelectorAll("h2, h3, h4, h5, h6");
+
+    // Hide menu when no headings
+    if (headings.length === 0) {
+      return menu.style.display = "none";
+    }
+
+    // Generate post menu
+    var menuHTML = '';
+    for (var i = 0; i < headings.length; i++) {
+      var h = headings[i];
+      menuHTML += (
+        '<li class="h-' + h.tagName.toLowerCase() + '">'
+        + '<a href="#h-' + h.getAttribute('id') + '">' + h.textContent + '</a></li>');
+    }
+
+    menuContent.innerHTML = '<ul>' + menuHTML + '</ul>';
+
+    // The header element
+    var header = document.querySelector('header.site-header');
+
+    function doMenuCollapse(index, over_items) {
+      var items = menuContent.firstChild.children;
+
+      if (over_items == undefined) {
+        over_items = 20;
+      }
+
+      if (items.length < over_items) {
+        return;
+      }
+
+      var activeItem = items[index];
+      var beginItem = activeItem
+      var endItem = activeItem
+      var beginIndex = index;
+      var endIndex = index + 1;
+      while (beginIndex >= 0
+        && !items[beginIndex].classList.contains('h-h2')) {
+        beginIndex -= 1;
+      }
+      while (endIndex < items.length
+        && !items[endIndex].classList.contains('h-h2')) {
+        endIndex += 1;
+      }
+      for (var i = 0; i < beginIndex; i++) {
+        item = items[i]
+        if (!item.classList.contains('h-h2')) {
+          item.style.display = 'none';
+        }
+      }
+      for (var i = beginIndex + 1; i < endIndex; i++) {
+        item = items[i]
+        // if (!item.classList.contains('h-h2')) {
+          item.style.display = '';
+        // }
+      }
+      for (var i = endIndex; i < items.length; i++) {
+        item = items[i]
+        if (!item.classList.contains('h-h2')) {
+          item.style.display = 'none';
+        }
+      }
+    }
+
+    // Init menu collapsed
+    doMenuCollapse(-1);
+
+    // Active the menu item
+    window.addEventListener('scroll', function (event) {
+      var lastActive = menuContent.querySelector('.active');
+      var changed = true;
+      var activeIndex = -1;
+      for (var i = headings.length - 1; i >= 0; i--) {
+        var h = headings[i];
+        var headingRect = h.getBoundingClientRect();
+        var headerRect = header.getBoundingClientRect();
+        var headerTop = Math.floor(headerRect.top);
+        var headerHeight = Math.floor(headerRect.height);
+        var headerHeight = headerTop + headerHeight + 20;
+        if (headingRect.top <= headerHeight) {
+          var id = 'h-' + h.getAttribute('id');
+          var a = menuContent.querySelector('a[href="#' + id  + '"]');
+          var curActive = a.parentNode;
+          if (curActive) {
+            curActive.classList.add('active');
+            activeIndex = i;
+          }
+          if (lastActive == curActive) {
+            changed = false;
+          }
+          break;
+        }
+      }
+      if (changed) {
+        if (lastActive) {
+          lastActive.classList.remove('active');
+        }
+        doMenuCollapse(activeIndex);
+      }
+      event.preventDefault();
+    });
+  }
+  generateContent();
+</script>
+</section>
+</div>
+
+      </div>
+    </main><footer class="site-footer h-card">
+  <data class="u-url" href="/jekyll-theme-yat/"></data>
+
+  <div class="wrapper">
+    <div class="site-footer-inner">
+<div>Waka-DS © 2021-2026</div>
+      <div>Powered by <a title="Jekyll is a simple, blog-aware, static site
+      generator." href="http://jekyllrb.com/">Jekyll</a> &amp; <a title="Yat, yet
+      another theme." href="https://github.com/jeffreytse/jekyll-theme-yat">Yat Theme</a>.</div>
+      <div class="footer-col rss-subscribe">Subscribe <a href="/jekyll-theme-yat/feed.xml">via RSS</a>
+</div>
+    </div>
+  </div>
+</footer>
+</body>
+</html>

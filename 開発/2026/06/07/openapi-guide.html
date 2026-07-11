@@ -1,0 +1,1226 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <script>
+  (function() {
+    try {
+      var p = localStorage.getItem('preferred_lang');
+      if (!p) return;
+      var path = window.location.pathname;
+      var ja = ['/', '/archives.html', '/categories.html', '/tags.html', '/about.html'];
+      var en = ['/en/', '/en/archives.html', '/en/categories.html', '/en/tags.html', '/en/about.html'];
+      if (p === 'en' && ja.indexOf(path) !== -1) {
+        window.location.replace('/en' + (path === '/' ? '/' : path));
+      } else if (p === 'ja' && en.indexOf(path) !== -1) {
+        window.location.replace(path.slice(3) || '/');
+      }
+    } catch(e) {}
+  })();
+  </script>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="google-translate-customization" content="108d9124921d80c3-80e20d618ff053c8-g4f02ec6f3dba68b7-c">
+<!-- Begin Jekyll SEO tag v2.9.0 -->
+<title>OpenAPI で API の仕様とドキュメントを同期させる | Waka-DS.com</title>
+<meta name="generator" content="Jekyll v4.4.1">
+<meta property="og:title" content="OpenAPI で API の仕様とドキュメントを同期させる">
+<meta name="author" content="Waka-DS">
+<meta property="og:locale" content="ja">
+<meta name="description" content="API を開発していると、こんな場面に必ず出くわす。">
+<meta name="twitter:description" property="og:description" content="API を開発していると、こんな場面に必ず出くわす。">
+<link rel="canonical" href="/jekyll-theme-yat/%E9%96%8B%E7%99%BA/2026/06/07/openapi-guide.html">
+<meta property="og:url" content="/jekyll-theme-yat/%E9%96%8B%E7%99%BA/2026/06/07/openapi-guide.html">
+<meta property="og:site_name" content="Waka-DS.com">
+<meta property="og:type" content="article">
+<meta property="article:published_time" content="2026-06-07T00:00:00+00:00">
+<meta property="article:modified_time" content="2026-06-07T00:00:00+00:00">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="OpenAPI で API の仕様とドキュメントを同期させる">
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":"Waka-DS"},"dateModified":"2026-06-07T00:00:00+00:00","datePublished":"2026-06-07T00:00:00+00:00","description":"API を開発していると、こんな場面に必ず出くわす。","headline":"OpenAPI で API の仕様とドキュメントを同期させる","mainEntityOfPage":{"@type":"WebPage","@id":"/jekyll-theme-yat/%E9%96%8B%E7%99%BA/2026/06/07/openapi-guide.html"},"url":"/jekyll-theme-yat/%E9%96%8B%E7%99%BA/2026/06/07/openapi-guide.html"}</script>
+<!-- End Jekyll SEO tag -->
+<link rel="shortcut icon" href="">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=Noto+Sans+JP:wght@400;500;700&amp;display=swap">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+  <link rel="stylesheet" href="/jekyll-theme-yat/assets/css/main.css">
+  <script src="/jekyll-theme-yat/assets/js/main.js"></script><link type="application/atom+xml" rel="alternate" href="/jekyll-theme-yat/feed.xml" title="Waka-DS.com">
+<script>
+  function initGoogleAnalytics() {
+    var doNotTrack = (window.doNotTrack === "1" || navigator.doNotTrack === "1" ||
+      navigator.doNotTrack === "yes" || navigator.msDoNotTrack === "1");
+    var enableDNT = "true" == "true";
+
+    if (!enableDNT || !doNotTrack) {
+      var ga_id = 'G-XNP1RBTG9C';
+
+      var script = document.createElement('script');
+      script.async = true;
+      script.src = 'https://www.googletagmanager.com/gtag/js?id=' + ga_id;
+      document.head.appendChild(script);
+
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', ga_id);
+    }
+  }
+  window.addEventListener("load", initGoogleAnalytics);
+</script>
+<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/styles/default.min.css">
+<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/highlight.min.js"></script>
+<!-- and it's easy to individually load additional languages -->
+<script charset="UTF-8" src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/languages/go.min.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<script>
+// Init highlight js
+document.addEventListener('DOMContentLoaded', function(event) {
+  var els = document.querySelectorAll('pre code')
+
+  function addLangData(block) {
+    var outer = block.parentElement.parentElement.parentElement;
+    var lang = block.getAttribute('data-lang');
+    for (var i = 0; i < outer.classList.length; i++) {
+      var cls = outer.classList[i];
+      if (cls.startsWith('language-')) {
+        lang = cls;
+        break;
+      }
+    }
+    if (!lang) {
+      cls = block.getAttribute('class');
+      lang = cls ? cls.replace('hljs ', '') : '';
+    }
+    if (lang.startsWith('language-')) {
+      lang = lang.substr(9);
+    }
+    block.setAttribute('class', 'hljs ' + lang);
+    block.parentNode.setAttribute('data-lang', lang);
+  }
+
+  function addBadge(block) {
+    var enabled = ('true' || 'true').toLowerCase();
+    if (enabled == 'true') {
+      var pre = block.parentElement;
+      pre.classList.add('badge');
+    }
+  }
+
+  function handle(block) {
+    addLangData(block);
+    addBadge(block)
+    hljs.highlightBlock(block);
+  }
+
+  for (var i = 0; i < els.length; i++) {
+    var el = els[i];
+    handle(el);
+  }
+});
+</script>
+
+<style>
+  /* code language badge */
+  pre.badge::before {
+    content: attr(data-lang);
+    color: #fff;
+    background-color: #0d9488;
+    padding: 0 .5em;
+    border-radius: 0 2px;
+    text-transform: uppercase;
+    text-align: center;
+    min-width: 32px;
+    display: inline-block;
+    position: absolute;
+    right: 0;
+  }
+
+  /* fix wrong badge display for firefox browser */
+  code > table pre::before {
+    display: none;
+  }
+</style>
+</head>
+<body>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<header class="site-header " role="banner">
+
+  <div class="wrapper">
+    <div class="site-header-inner">
+<span class="site-brand"><a class="site-brand-inner" rel="author" href="/jekyll-theme-yat/">
+  <img class="site-favicon" title="Waka-DS.com" src="" onerror="this.style.display='none'">
+  Waka-DS.com
+</a>
+</span><nav class="site-nav">
+          <input type="checkbox" id="nav-trigger" class="nav-trigger">
+          <label for="nav-trigger">
+            <span class="menu-icon">
+              <svg viewbox="0 0 18 15" width="18px" height="15px">
+                <path d="M18,1.484c0,0.82-0.665,1.484-1.484,1.484H1.484C0.665,2.969,0,2.304,0,1.484l0,0C0,0.665,0.665,0,1.484,0 h15.032C17.335,0,18,0.665,18,1.484L18,1.484z M18,7.516C18,8.335,17.335,9,16.516,9H1.484C0.665,9,0,8.335,0,7.516l0,0 c0-0.82,0.665-1.484,1.484-1.484h15.032C17.335,6.031,18,6.696,18,7.516L18,7.516z M18,13.516C18,14.335,17.335,15,16.516,15H1.484 C0.665,15,0,14.335,0,13.516l0,0c0-0.82,0.665-1.483,1.484-1.483h15.032C17.335,12.031,18,12.695,18,13.516L18,13.516z"></path>
+              </svg>
+            </span>
+          </label>
+
+          <div class="trigger">
+<a class="page-link" href="/jekyll-theme-yat/about.html">ABOUT</a><a class="page-link" href="/jekyll-theme-yat/archives.html">ARCHIVES</a><a class="page-link" href="/jekyll-theme-yat/categories.html">CATEGORIES</a><a class="page-link" href="/jekyll-theme-yat/">HOME</a><a class="page-link" href="/jekyll-theme-yat/tags.html">TAGS</a><span class="page-link">
+                <span class="lang-switcher lang-switcher--nav"><span class="lang-btn lang-btn--active">日本語</span><a class="lang-btn" href="/jekyll-theme-yat/development/2026/06/07/openapi-guide-en.html">English</a></span>
+              </span>
+</div>
+        </nav>
+</div>
+  </div>
+</header>
+
+<script>
+  function initHeader() {
+    var lastScrollY = getScrollPos().y;
+    var documentElement = document.documentElement;
+
+    function storeScrollData() {
+      var y = getScrollPos().y;var scrollStatus = "";
+
+      if (y <= 0) {
+        scrollStatus = "top";
+      } else if ((window.innerHeight + y) >= document.body.offsetHeight) {
+        scrollStatus = "bottom";
+      } else {
+        var isScrollDown = (y - lastScrollY > 0) ? true : false;
+        scrollStatus = isScrollDown ? "down" : "up";
+      }
+
+      lastScrollY = y;
+      documentElement.setAttribute("data-scroll-status", scrollStatus);
+    }
+
+    window.addEventListener('scroll', function(e) {
+      storeScrollData();
+    });
+
+    storeScrollData();
+  }
+  document.addEventListener('DOMContentLoaded', initHeader);
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<script>
+  function hashLocate(hashValue) {
+    hashValue = hashValue.replace(/^.*#h-/, '');
+    hashValue = decodeURIComponent(hashValue);
+    var element = document.getElementById(hashValue);
+
+    if (!element) {
+      return;
+    }
+
+    var header = document.querySelector('header.site-header');
+    var headerRect = header.getBoundingClientRect();
+    var headerTop = Math.floor(headerRect.top);
+    var headerHeight = Math.floor(headerRect.height);
+    var scrollPos = getScrollPos();
+    var offsetY = element.offsetTop - (headerTop + headerHeight + 20);
+
+    if (offsetY == scrollPos.y) {
+      return;
+    }
+
+    if (headerTop == 0  && offsetY > scrollPos.y) {
+      offsetY += headerHeight + 2;
+    } else if (headerTop < 0  && offsetY < scrollPos.y) {
+      offsetY -= headerHeight - 2;
+    }
+
+    smoothScrollTo(offsetY);
+  }
+
+  // The first event occurred
+  window.addEventListener('load', function(event) {
+    if (window.location.hash) {
+      hashLocate(window.location.hash);
+    }
+  });
+
+  // The first event occurred
+  window.addEventListener('click', function(event) {
+    if (event.target.tagName.toLowerCase() == 'a') {
+      hashLocate(event.target.getAttribute('href'));
+    }
+  });
+</script>
+<div class="theme-toggle">
+  <input type="checkbox" id="theme-switch">
+  <label for="theme-switch">
+    <div class="toggle"></div>
+    <div class="names">
+      <p class="light">Light</p>
+      <p class="dark">Dark</p>
+    </div>
+  </label>
+</div>
+
+
+
+
+<script>
+  (function() {
+    var sw = document.getElementById('theme-switch');
+    var html = document.getElementsByTagName('html')[0];
+    var nightModeOption = ('auto' || 'auto').toLowerCase();
+    var storage = nightModeOption === 'manual'
+        ? localStorage
+        : sessionStorage;
+    var themeData = loadThemeData();
+
+    function saveThemeData(data) {
+      storage.setItem('theme', JSON.stringify(data));
+    }
+
+    function loadThemeData() {
+      var data = storage.getItem('theme');
+      try {
+        data = JSON.parse(data ? data : '');
+      } catch(e) {
+        data = { nightShift: undefined, autoToggleAt: 0 };
+        saveThemeData(data);
+      }
+      return data;
+    }
+
+    function handleThemeToggle(nightShift) {
+      themeData.nightShift = nightShift;
+      saveThemeData(themeData);
+      html.dataset.theme = nightShift ? 'dark' : 'light';
+      setTimeout(function() {
+        sw.checked = nightShift ? true : false;
+      }, 50);
+    }
+
+    function autoThemeToggle() {
+      // Next time point of theme toggle
+      var now = new Date();
+      var toggleAt = new Date();
+      var hours = now.getHours();
+      var nightShift = hours >= 19 || hours <=7;
+
+      if (nightShift) {
+        if (hours > 7) {
+          toggleAt.setDate(toggleAt.getDate() + 1);
+        }
+        toggleAt.setHours(7);
+      } else {
+        toggleAt.setHours(19);
+      }
+
+      toggleAt.setMinutes(0);
+      toggleAt.setSeconds(0);
+      toggleAt.setMilliseconds(0)
+
+      var delay = toggleAt.getTime() - now.getTime();
+
+      // auto toggle theme mode
+      setTimeout(function() {
+        handleThemeToggle(!nightShift);
+      }, delay);
+
+      return {
+        nightShift: nightShift,
+        toggleAt: toggleAt.getTime()
+      };
+    }
+
+    // Listen the theme toggle event
+    sw.addEventListener('change', function(event) {
+      handleThemeToggle(event.target.checked);
+    });
+
+    if (nightModeOption == 'auto') {
+      var data = autoThemeToggle();
+
+      // Toggle theme by local setting
+      if (data.toggleAt > themeData.autoToggleAt) {
+        themeData.autoToggleAt = data.toggleAt;
+        handleThemeToggle(data.nightShift);
+      } else {
+        handleThemeToggle(themeData.nightShift);
+      }
+    } else if (nightModeOption == 'manual') {
+      handleThemeToggle(themeData.nightShift);
+    } else {
+      var nightShift = themeData.nightShift;
+      if (nightShift === undefined) {
+        nightShift = nightModeOption === 'on';
+      }
+      handleThemeToggle(nightShift);
+    }
+  })();
+</script>
+<main class="page-content" aria-label="Content">
+      <div class="wrapper">
+        <div class="framework">
+  <section class="main">
+
+     <div class="post">
+  <section>
+
+
+
+
+
+
+
+
+
+<header class="post-header">
+  <h1 class="post-title p-name" itemprop="name headline">OpenAPI で API の仕様とドキュメントを同期させる</h1>
+  <h2 class="post-subtitle">Swagger との関係から YAML の書き方、コード生成・Postman 連携まで一気に理解する</h2>
+
+  <p class="post-meta">
+    <time class="dt-published" datetime="2026-06-07T00:00:00+00:00" itemprop="datePublished"><i class="fa fa-calendar"></i> Jun 07, 2026
+    </time>
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <span class="post-reading-time left-vsplit"><i class="fa fa-clock-o"></i> About 18 mins</span>
+  </p>
+<div class="post-tags">
+<a class="post-tag" href="/jekyll-theme-yat/tags.html#OpenAPI">#OpenAPI</a><a class="post-tag" href="/jekyll-theme-yat/tags.html#Swagger">#Swagger</a><a class="post-tag" href="/jekyll-theme-yat/tags.html#API">#API</a><a class="post-tag" href="/jekyll-theme-yat/tags.html#REST">#REST</a><a class="post-tag" href="/jekyll-theme-yat/tags.html#%E3%83%90%E3%83%83%E3%82%AF%E3%82%A8%E3%83%B3%E3%83%89">#バックエンド</a><a class="post-tag" href="/jekyll-theme-yat/tags.html#%E3%83%89%E3%82%AD%E3%83%A5%E3%83%A1%E3%83%B3%E3%83%88">#ドキュメント</a>
+</div></header>
+<article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
+
+    <div class="post-content e-content" itemprop="articleBody">
+
+      <p>API を開発していると、こんな場面に必ず出くわす。</p>
+
+<ul>
+  <li>フロントエンドとバックエンドで「パラメータ名が違う」「レスポンスの形が変わった」が頻発する</li>
+  <li>Postman のコレクションを手で更新し続けるのが辛い</li>
+  <li>API の仕様をドキュメントに書いたが、コードと乖離してきた</li>
+  <li>他チームや外部パートナーに API を公開したい</li>
+</ul>
+
+<p>これらは根本的に同じ問題だ。<strong>API の仕様がどこか一か所にまとまっていない</strong>。</p>
+
+<p>OpenAPI は、その「一か所」をつくるための仕様である。</p>
+
+<hr>
+
+<h2 id="結論を先に">結論を先に</h2>
+
+<p>OpenAPI とは、<strong>REST API の仕様を YAML または JSON で記述するためのフォーマット標準</strong>である。</p>
+
+<div class="language-yaml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># openapi.yaml の最小例</span>
+<span class="na">openapi</span><span class="pi">:</span> <span class="s2">"</span><span class="s">3.1.0"</span>
+<span class="na">info</span><span class="pi">:</span>
+  <span class="na">title</span><span class="pi">:</span> <span class="s">My API</span>
+  <span class="na">version</span><span class="pi">:</span> <span class="s2">"</span><span class="s">1.0.0"</span>
+<span class="na">paths</span><span class="pi">:</span>
+  <span class="s">/users/{id}</span><span class="err">:</span>
+    <span class="na">get</span><span class="pi">:</span>
+      <span class="na">summary</span><span class="pi">:</span> <span class="s">ユーザーを1件取得する</span>
+      <span class="na">parameters</span><span class="pi">:</span>
+        <span class="pi">-</span> <span class="na">name</span><span class="pi">:</span> <span class="s">id</span>
+          <span class="na">in</span><span class="pi">:</span> <span class="s">path</span>
+          <span class="na">required</span><span class="pi">:</span> <span class="kc">true</span>
+          <span class="na">schema</span><span class="pi">:</span>
+            <span class="na">type</span><span class="pi">:</span> <span class="s">integer</span>
+      <span class="na">responses</span><span class="pi">:</span>
+        <span class="s2">"</span><span class="s">200"</span><span class="err">:</span>
+          <span class="na">description</span><span class="pi">:</span> <span class="s">成功</span>
+          <span class="na">content</span><span class="pi">:</span>
+            <span class="na">application/json</span><span class="pi">:</span>
+              <span class="na">schema</span><span class="pi">:</span>
+                <span class="na">$ref</span><span class="pi">:</span> <span class="s2">"</span><span class="s">#/components/schemas/User"</span>
+<span class="na">components</span><span class="pi">:</span>
+  <span class="na">schemas</span><span class="pi">:</span>
+    <span class="na">User</span><span class="pi">:</span>
+      <span class="na">type</span><span class="pi">:</span> <span class="s">object</span>
+      <span class="na">properties</span><span class="pi">:</span>
+        <span class="na">id</span><span class="pi">:</span>
+          <span class="na">type</span><span class="pi">:</span> <span class="s">integer</span>
+        <span class="na">name</span><span class="pi">:</span>
+          <span class="na">type</span><span class="pi">:</span> <span class="s">string</span>
+        <span class="na">email</span><span class="pi">:</span>
+          <span class="na">type</span><span class="pi">:</span> <span class="s">string</span>
+</code></pre></div></div>
+
+<p>この YAML ファイルひとつあれば、次のことが自動でできる。</p>
+
+<ul>
+  <li>
+<strong>Swagger UI</strong> でブラウザから API を試せるドキュメントを生成</li>
+  <li>
+<strong>TypeScript / Python / Go</strong> など各言語のクライアントコードを生成</li>
+  <li>
+<strong>Postman</strong> や <strong>Insomnia</strong> に読み込んでそのまま動作確認</li>
+  <li>
+<strong>バリデーション</strong> でリクエスト・レスポンスがスキーマ通りか自動チェック</li>
+</ul>
+
+<hr>
+
+<h2 id="openapi-と-swagger-の関係">OpenAPI と Swagger の関係</h2>
+
+<p>よく混同される。整理すると次のとおりだ。</p>
+
+<table>
+  <thead>
+    <tr>
+      <th style="text-align: left">名前</th>
+      <th style="text-align: left">正体</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td style="text-align: left"><strong>Swagger</strong></td>
+      <td style="text-align: left">SmartBear 社が開発した、API 仕様記述フォーマット（旧称）</td>
+    </tr>
+    <tr>
+      <td style="text-align: left"><strong>OpenAPI</strong></td>
+      <td style="text-align: left">Swagger 2.0 を Linux Foundation に寄贈して改名した標準仕様（現在の正式名）</td>
+    </tr>
+    <tr>
+      <td style="text-align: left"><strong>Swagger UI / Editor</strong></td>
+      <td style="text-align: left">OpenAPI ファイルを可視化・編集するツール群（現在も Swagger の名前を使用）</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>つまり「Swagger 仕様」と「OpenAPI 仕様」はほぼ同義だが、正式名は <strong>OpenAPI</strong>。ツールとしての “Swagger” は今も存在する。</p>
+
+<p>現行のバージョンは <strong>OpenAPI 3.1</strong>（2021年リリース）。古いコードベースには 2.0 が残っていることもある。</p>
+
+<hr>
+
+<h2 id="なぜ-openapi-が必要なのか">なぜ OpenAPI が必要なのか</h2>
+
+<h3 id="問題-ドキュメントとコードが別々に生きている">問題: ドキュメントとコードが別々に生きている</h3>
+
+<p>「API ドキュメントは Confluence に書いてあるが、半年前から更新されていない」
+「フロントエンドが叩いてみたらレスポンスのキー名が違った」</p>
+
+<p>これは珍しくない。コードを変えるたびにドキュメントも手で直さないといけない構造になっているからだ。</p>
+
+<h3 id="解決-仕様ファイルをコードと同じリポジトリで管理する">解決: 仕様ファイルをコードと同じリポジトリで管理する</h3>
+
+<p>OpenAPI ファイルをリポジトリに入れてバージョン管理することで、次のことが変わる。</p>
+
+<ul>
+  <li>コードの変更と仕様の変更が同じ PR に入る</li>
+  <li>CI で仕様とコードが一致しているか自動チェックできる</li>
+  <li>仕様ファイルから直接クライアントコードを生成するため、手書きの型定義が不要になる</li>
+</ul>
+
+<hr>
+
+<h2 id="openapi-ファイルの構造を理解する">OpenAPI ファイルの構造を理解する</h2>
+
+<p>OpenAPI ファイルは大きく 4 つのセクションで構成される。</p>
+
+<h3 id="1-メタ情報info">1. メタ情報（<code class="language-plaintext highlighter-rouge">info</code>）</h3>
+
+<div class="language-yaml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="na">openapi</span><span class="pi">:</span> <span class="s2">"</span><span class="s">3.1.0"</span>
+<span class="na">info</span><span class="pi">:</span>
+  <span class="na">title</span><span class="pi">:</span> <span class="s">Logging API</span>
+  <span class="na">description</span><span class="pi">:</span> <span class="s">AIネイティブなログ管理サービスの API</span>
+  <span class="na">version</span><span class="pi">:</span> <span class="s2">"</span><span class="s">2.0.0"</span>
+  <span class="na">contact</span><span class="pi">:</span>
+    <span class="na">email</span><span class="pi">:</span> <span class="s">support@example.com</span>
+</code></pre></div></div>
+
+<h3 id="2-エンドポイント定義paths">2. エンドポイント定義（<code class="language-plaintext highlighter-rouge">paths</code>）</h3>
+
+<div class="language-yaml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="na">paths</span><span class="pi">:</span>
+  <span class="na">/logs</span><span class="pi">:</span>
+    <span class="na">get</span><span class="pi">:</span>
+      <span class="na">operationId</span><span class="pi">:</span> <span class="s">listLogs</span>
+      <span class="na">summary</span><span class="pi">:</span> <span class="s">ログ一覧を取得</span>
+      <span class="na">tags</span><span class="pi">:</span> <span class="pi">[</span><span class="nv">logs</span><span class="pi">]</span>
+      <span class="na">parameters</span><span class="pi">:</span>
+        <span class="pi">-</span> <span class="na">name</span><span class="pi">:</span> <span class="s">limit</span>
+          <span class="na">in</span><span class="pi">:</span> <span class="s">query</span>
+          <span class="na">schema</span><span class="pi">:</span>
+            <span class="na">type</span><span class="pi">:</span> <span class="s">integer</span>
+            <span class="na">default</span><span class="pi">:</span> <span class="m">20</span>
+            <span class="na">maximum</span><span class="pi">:</span> <span class="m">100</span>
+      <span class="na">responses</span><span class="pi">:</span>
+        <span class="s2">"</span><span class="s">200"</span><span class="err">:</span>
+          <span class="na">description</span><span class="pi">:</span> <span class="s">成功</span>
+          <span class="na">content</span><span class="pi">:</span>
+            <span class="na">application/json</span><span class="pi">:</span>
+              <span class="na">schema</span><span class="pi">:</span>
+                <span class="na">type</span><span class="pi">:</span> <span class="s">array</span>
+                <span class="na">items</span><span class="pi">:</span>
+                  <span class="na">$ref</span><span class="pi">:</span> <span class="s2">"</span><span class="s">#/components/schemas/Log"</span>
+    <span class="na">post</span><span class="pi">:</span>
+      <span class="na">operationId</span><span class="pi">:</span> <span class="s">createLog</span>
+      <span class="na">summary</span><span class="pi">:</span> <span class="s">ログを記録</span>
+      <span class="na">requestBody</span><span class="pi">:</span>
+        <span class="na">required</span><span class="pi">:</span> <span class="kc">true</span>
+        <span class="na">content</span><span class="pi">:</span>
+          <span class="na">application/json</span><span class="pi">:</span>
+            <span class="na">schema</span><span class="pi">:</span>
+              <span class="na">$ref</span><span class="pi">:</span> <span class="s2">"</span><span class="s">#/components/schemas/CreateLogInput"</span>
+      <span class="na">responses</span><span class="pi">:</span>
+        <span class="s2">"</span><span class="s">201"</span><span class="err">:</span>
+          <span class="na">description</span><span class="pi">:</span> <span class="s">作成完了</span>
+</code></pre></div></div>
+
+<h3 id="3-スキーマ定義componentsschemas">3. スキーマ定義（<code class="language-plaintext highlighter-rouge">components/schemas</code>）</h3>
+
+<p>型の定義はここに集約し、<code class="language-plaintext highlighter-rouge">$ref</code> で参照する。重複を避けるためのしくみだ。</p>
+
+<div class="language-yaml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="na">components</span><span class="pi">:</span>
+  <span class="na">schemas</span><span class="pi">:</span>
+    <span class="na">Log</span><span class="pi">:</span>
+      <span class="na">type</span><span class="pi">:</span> <span class="s">object</span>
+      <span class="na">required</span><span class="pi">:</span> <span class="pi">[</span><span class="nv">id</span><span class="pi">,</span> <span class="nv">message</span><span class="pi">,</span> <span class="nv">level</span><span class="pi">,</span> <span class="nv">createdAt</span><span class="pi">]</span>
+      <span class="na">properties</span><span class="pi">:</span>
+        <span class="na">id</span><span class="pi">:</span>
+          <span class="na">type</span><span class="pi">:</span> <span class="s">string</span>
+          <span class="na">format</span><span class="pi">:</span> <span class="s">uuid</span>
+        <span class="na">message</span><span class="pi">:</span>
+          <span class="na">type</span><span class="pi">:</span> <span class="s">string</span>
+        <span class="na">level</span><span class="pi">:</span>
+          <span class="na">type</span><span class="pi">:</span> <span class="s">string</span>
+          <span class="na">enum</span><span class="pi">:</span> <span class="pi">[</span><span class="nv">debug</span><span class="pi">,</span> <span class="nv">info</span><span class="pi">,</span> <span class="nv">warn</span><span class="pi">,</span> <span class="nv">error</span><span class="pi">]</span>
+        <span class="na">createdAt</span><span class="pi">:</span>
+          <span class="na">type</span><span class="pi">:</span> <span class="s">string</span>
+          <span class="na">format</span><span class="pi">:</span> <span class="s">date-time</span>
+
+    <span class="na">CreateLogInput</span><span class="pi">:</span>
+      <span class="na">type</span><span class="pi">:</span> <span class="s">object</span>
+      <span class="na">required</span><span class="pi">:</span> <span class="pi">[</span><span class="nv">message</span><span class="pi">,</span> <span class="nv">level</span><span class="pi">]</span>
+      <span class="na">properties</span><span class="pi">:</span>
+        <span class="na">message</span><span class="pi">:</span>
+          <span class="na">type</span><span class="pi">:</span> <span class="s">string</span>
+        <span class="na">level</span><span class="pi">:</span>
+          <span class="na">type</span><span class="pi">:</span> <span class="s">string</span>
+          <span class="na">enum</span><span class="pi">:</span> <span class="pi">[</span><span class="nv">debug</span><span class="pi">,</span> <span class="nv">info</span><span class="pi">,</span> <span class="nv">warn</span><span class="pi">,</span> <span class="nv">error</span><span class="pi">]</span>
+</code></pre></div></div>
+
+<h3 id="4-認証定義componentssecurityschemes">4. 認証定義（<code class="language-plaintext highlighter-rouge">components/securitySchemes</code>）</h3>
+
+<div class="language-yaml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="na">components</span><span class="pi">:</span>
+  <span class="na">securitySchemes</span><span class="pi">:</span>
+    <span class="na">BearerAuth</span><span class="pi">:</span>
+      <span class="na">type</span><span class="pi">:</span> <span class="s">http</span>
+      <span class="na">scheme</span><span class="pi">:</span> <span class="s">bearer</span>
+      <span class="na">bearerFormat</span><span class="pi">:</span> <span class="s">JWT</span>
+
+<span class="na">security</span><span class="pi">:</span>
+  <span class="pi">-</span> <span class="na">BearerAuth</span><span class="pi">:</span> <span class="pi">[]</span>
+</code></pre></div></div>
+
+<hr>
+
+<h2 id="実際にどう使うか">実際にどう使うか</h2>
+
+<h3 id="パターン1-design-first仕様を先に書く">パターン1: Design-First（仕様を先に書く）</h3>
+
+<ol>
+  <li>
+<code class="language-plaintext highlighter-rouge">openapi.yaml</code> を先に書く</li>
+  <li>そこからクライアント SDK・サーバースタブを生成する</li>
+  <li>サーバー実装を進める</li>
+</ol>
+
+<p>チーム開発で「フロントとバックが同時に動く」ときに有効。バックエンドが完成する前にフロントのコードを書き始められる。</p>
+
+<h3 id="パターン2-code-firstコードから生成する">パターン2: Code-First（コードから生成する）</h3>
+
+<ol>
+  <li>バックエンドのコードに OpenAPI のアノテーションを書く</li>
+  <li>ビルド時に <code class="language-plaintext highlighter-rouge">openapi.yaml</code> を自動生成する</li>
+</ol>
+
+<p>FastAPI（Python）は最初からこれができる。</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">from</span> <span class="n">fastapi</span> <span class="kn">import</span> <span class="n">FastAPI</span>
+<span class="kn">from</span> <span class="n">pydantic</span> <span class="kn">import</span> <span class="n">BaseModel</span>
+
+<span class="n">app</span> <span class="o">=</span> <span class="nc">FastAPI</span><span class="p">()</span>
+
+<span class="k">class</span> <span class="nc">User</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
+    <span class="nb">id</span><span class="p">:</span> <span class="nb">int</span>
+    <span class="n">name</span><span class="p">:</span> <span class="nb">str</span>
+    <span class="n">email</span><span class="p">:</span> <span class="nb">str</span>
+
+<span class="nd">@app.get</span><span class="p">(</span><span class="sh">"</span><span class="s">/users/{id}</span><span class="sh">"</span><span class="p">,</span> <span class="n">response_model</span><span class="o">=</span><span class="n">User</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">get_user</span><span class="p">(</span><span class="nb">id</span><span class="p">:</span> <span class="nb">int</span><span class="p">):</span>
+    <span class="k">return</span> <span class="p">{</span><span class="sh">"</span><span class="s">id</span><span class="sh">"</span><span class="p">:</span> <span class="nb">id</span><span class="p">,</span> <span class="sh">"</span><span class="s">name</span><span class="sh">"</span><span class="p">:</span> <span class="sh">"</span><span class="s">Kaito</span><span class="sh">"</span><span class="p">,</span> <span class="sh">"</span><span class="s">email</span><span class="sh">"</span><span class="p">:</span> <span class="sh">"</span><span class="s">kaito@example.com</span><span class="sh">"</span><span class="p">}</span>
+</code></pre></div></div>
+
+<p>FastAPI でサーバーを起動すると <code class="language-plaintext highlighter-rouge">/docs</code> に Swagger UI が自動で生成される。<code class="language-plaintext highlighter-rouge">openapi.json</code> も <code class="language-plaintext highlighter-rouge">/openapi.json</code> で取得できる。</p>
+
+<hr>
+
+<h2 id="よく使うツール">よく使うツール</h2>
+
+<table>
+  <thead>
+    <tr>
+      <th style="text-align: left">ツール</th>
+      <th style="text-align: left">用途</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td style="text-align: left"><strong>Swagger Editor</strong></td>
+      <td style="text-align: left">ブラウザ上で YAML を編集しながらプレビュー</td>
+    </tr>
+    <tr>
+      <td style="text-align: left"><strong>Swagger UI</strong></td>
+      <td style="text-align: left">OpenAPI ファイルから HTML ドキュメントを生成</td>
+    </tr>
+    <tr>
+      <td style="text-align: left"><strong>Redoc</strong></td>
+      <td style="text-align: left">Swagger UI より見やすいドキュメント生成ツール</td>
+    </tr>
+    <tr>
+      <td style="text-align: left"><strong>openapi-generator</strong></td>
+      <td style="text-align: left">50 以上の言語向けにクライアント・サーバーコードを生成</td>
+    </tr>
+    <tr>
+      <td style="text-align: left"><strong>Prism</strong></td>
+      <td style="text-align: left">OpenAPI ファイルからモックサーバーを即座に立ち上げる</td>
+    </tr>
+    <tr>
+      <td style="text-align: left"><strong>Stoplight Studio</strong></td>
+      <td style="text-align: left">GUI で OpenAPI を設計できるエディタ</td>
+    </tr>
+  </tbody>
+</table>
+
+<h3 id="openapi-generator-でクライアント生成">openapi-generator でクライアント生成</h3>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># TypeScript の axios クライアントを生成</span>
+npx @openapitools/openapi-generator-cli generate <span class="se">\</span>
+  <span class="nt">-i</span> openapi.yaml <span class="se">\</span>
+  <span class="nt">-g</span> typescript-axios <span class="se">\</span>
+  <span class="nt">-o</span> src/generated/api
+</code></pre></div></div>
+
+<p>生成されたコードには型情報も含まれるため、フロントエンドで型エラーが起きにくくなる。</p>
+
+<hr>
+
+<h2 id="ci-での活用">CI での活用</h2>
+
+<p>OpenAPI の仕様が正しく書かれているか、GitHub Actions で自動チェックできる。</p>
+
+<div class="language-yaml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># .github/workflows/openapi-lint.yml</span>
+<span class="na">name</span><span class="pi">:</span> <span class="s">OpenAPI Lint</span>
+<span class="na">on</span><span class="pi">:</span> <span class="pi">[</span><span class="nv">push</span><span class="pi">,</span> <span class="nv">pull_request</span><span class="pi">]</span>
+<span class="na">jobs</span><span class="pi">:</span>
+  <span class="na">lint</span><span class="pi">:</span>
+    <span class="na">runs-on</span><span class="pi">:</span> <span class="s">ubuntu-latest</span>
+    <span class="na">steps</span><span class="pi">:</span>
+      <span class="pi">-</span> <span class="na">uses</span><span class="pi">:</span> <span class="s">actions/checkout@v4</span>
+      <span class="pi">-</span> <span class="na">name</span><span class="pi">:</span> <span class="s">Validate OpenAPI spec</span>
+        <span class="na">uses</span><span class="pi">:</span> <span class="s">openapi-generators/openapitools-generator-action@v1</span>
+        <span class="na">with</span><span class="pi">:</span>
+          <span class="na">generator</span><span class="pi">:</span> <span class="s">openapi</span>
+          <span class="na">openapi-file</span><span class="pi">:</span> <span class="s">openapi.yaml</span>
+          <span class="na">command-args</span><span class="pi">:</span> <span class="s">validate</span>
+</code></pre></div></div>
+
+<p>また <strong>Spectral</strong>（Stoplight 製）を使えば、チーム独自のルール（命名規則・必須フィールドなど）を lint できる。</p>
+
+<hr>
+
+<h2 id="まとめ">まとめ</h2>
+
+<p>OpenAPI は、API の仕様を YAML で一元管理するための標準フォーマットだ。</p>
+
+<ul>
+  <li>
+<strong>ドキュメントが自動生成される</strong> → Confluence に手書きしなくていい</li>
+  <li>
+<strong>クライアントコードが自動生成される</strong> → 型の不一致がなくなる</li>
+  <li>
+<strong>モックサーバーが立てられる</strong> → バックエンド完成前にフロントを開発できる</li>
+  <li>
+<strong>CI でバリデーションできる</strong> → 仕様の崩れを早期に検知できる</li>
+</ul>
+
+<p>特に <strong>FastAPI</strong> を使うなら、コードを書くだけで OpenAPI ドキュメントが自動生成されるため、導入コストがほぼゼロだ。まず FastAPI でサーバーを立ち上げて <code class="language-plaintext highlighter-rouge">/docs</code> を確認してみるのが、OpenAPI を体感する最短ルートだと思う。</p>
+
+
+    </div>
+
+</article>
+<div class="post-nav">
+<span></span><span></span>
+</div>
+<div class="post-related">
+      <div>Related Articles</div>
+      <ul>
+        <li><a class="post-link" href="/jekyll-theme-yat/ai%E9%96%8B%E7%99%BA/2026/06/20/mcp-json-rpc-lifecycle.html" title="What Is Black for Python? — Automating Code Formatting in AI-Native Development">MCPの接続と通信をJSON-RPCから理解する</a></li>
+<li><a class="post-link" href="/jekyll-theme-yat/%E9%96%8B%E7%99%BA/2026/06/06/vercel-frontend-selection.html" title="What Is Black for Python? — Automating Code Formatting in AI-Native Development">なぜフロントエンドに Vercel を選ぶのか</a></li>
+<li><a class="post-link" href="/jekyll-theme-yat/ai%E9%96%8B%E7%99%BA/2026/06/23/mcp-security-operations.html" title="What Is Black for Python? — Automating Code Formatting in AI-Native Development">MCPサーバーを安全に運用する</a></li>
+<li><a class="post-link" href="/jekyll-theme-yat/ai%E9%96%8B%E7%99%BA/2026/06/09/rlhf-model-training.html" title="What Is Black for Python? — Automating Code Formatting in AI-Native Development">RLHFがモデルの返答をどう変えるか</a></li>
+</ul>
+    </div>
+<div class="post-comments"></div></section>
+</div>
+
+
+  </section>
+  <section class="sidebar" style="margin-left: 15px;">
+    <!-- Get sidebar items --><style type="text/css" media="screen">
+.post-menu ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+</style>
+
+<div class="post-menu">
+  <div class="post-menu-title">TOC</div>
+  <div class="post-menu-content"></div>
+</div>
+
+<script>
+  function generateContent() {
+    var menu = document.querySelector(".post-menu");
+    var menuContent =  menu.querySelector(".post-menu-content");
+    var headings = document.querySelector(".post-content").querySelectorAll("h2, h3, h4, h5, h6");
+
+    // Hide menu when no headings
+    if (headings.length === 0) {
+      return menu.style.display = "none";
+    }
+
+    // Generate post menu
+    var menuHTML = '';
+    for (var i = 0; i < headings.length; i++) {
+      var h = headings[i];
+      menuHTML += (
+        '<li class="h-' + h.tagName.toLowerCase() + '">'
+        + '<a href="#h-' + h.getAttribute('id') + '">' + h.textContent + '</a></li>');
+    }
+
+    menuContent.innerHTML = '<ul>' + menuHTML + '</ul>';
+
+    // The header element
+    var header = document.querySelector('header.site-header');
+
+    function doMenuCollapse(index, over_items) {
+      var items = menuContent.firstChild.children;
+
+      if (over_items == undefined) {
+        over_items = 20;
+      }
+
+      if (items.length < over_items) {
+        return;
+      }
+
+      var activeItem = items[index];
+      var beginItem = activeItem
+      var endItem = activeItem
+      var beginIndex = index;
+      var endIndex = index + 1;
+      while (beginIndex >= 0
+        && !items[beginIndex].classList.contains('h-h2')) {
+        beginIndex -= 1;
+      }
+      while (endIndex < items.length
+        && !items[endIndex].classList.contains('h-h2')) {
+        endIndex += 1;
+      }
+      for (var i = 0; i < beginIndex; i++) {
+        item = items[i]
+        if (!item.classList.contains('h-h2')) {
+          item.style.display = 'none';
+        }
+      }
+      for (var i = beginIndex + 1; i < endIndex; i++) {
+        item = items[i]
+        // if (!item.classList.contains('h-h2')) {
+          item.style.display = '';
+        // }
+      }
+      for (var i = endIndex; i < items.length; i++) {
+        item = items[i]
+        if (!item.classList.contains('h-h2')) {
+          item.style.display = 'none';
+        }
+      }
+    }
+
+    // Init menu collapsed
+    doMenuCollapse(-1);
+
+    // Active the menu item
+    window.addEventListener('scroll', function (event) {
+      var lastActive = menuContent.querySelector('.active');
+      var changed = true;
+      var activeIndex = -1;
+      for (var i = headings.length - 1; i >= 0; i--) {
+        var h = headings[i];
+        var headingRect = h.getBoundingClientRect();
+        var headerRect = header.getBoundingClientRect();
+        var headerTop = Math.floor(headerRect.top);
+        var headerHeight = Math.floor(headerRect.height);
+        var headerHeight = headerTop + headerHeight + 20;
+        if (headingRect.top <= headerHeight) {
+          var id = 'h-' + h.getAttribute('id');
+          var a = menuContent.querySelector('a[href="#' + id  + '"]');
+          var curActive = a.parentNode;
+          if (curActive) {
+            curActive.classList.add('active');
+            activeIndex = i;
+          }
+          if (lastActive == curActive) {
+            changed = false;
+          }
+          break;
+        }
+      }
+      if (changed) {
+        if (lastActive) {
+          lastActive.classList.remove('active');
+        }
+        doMenuCollapse(activeIndex);
+      }
+      event.preventDefault();
+    });
+  }
+  generateContent();
+</script>
+</section>
+</div>
+
+      </div>
+    </main><footer class="site-footer h-card">
+  <data class="u-url" href="/jekyll-theme-yat/"></data>
+
+  <div class="wrapper">
+    <div class="site-footer-inner">
+<div>Waka-DS © 2021-2026</div>
+      <div>Powered by <a title="Jekyll is a simple, blog-aware, static site
+      generator." href="http://jekyllrb.com/">Jekyll</a> &amp; <a title="Yat, yet
+      another theme." href="https://github.com/jeffreytse/jekyll-theme-yat">Yat Theme</a>.</div>
+      <div class="footer-col rss-subscribe">Subscribe <a href="/jekyll-theme-yat/feed.xml">via RSS</a>
+</div>
+    </div>
+  </div>
+</footer>
+</body>
+</html>

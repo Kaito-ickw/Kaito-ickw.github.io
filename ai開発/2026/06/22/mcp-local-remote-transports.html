@@ -1,0 +1,1307 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <script>
+  (function() {
+    try {
+      var p = localStorage.getItem('preferred_lang');
+      if (!p) return;
+      var path = window.location.pathname;
+      var ja = ['/', '/archives.html', '/categories.html', '/tags.html', '/about.html'];
+      var en = ['/en/', '/en/archives.html', '/en/categories.html', '/en/tags.html', '/en/about.html'];
+      if (p === 'en' && ja.indexOf(path) !== -1) {
+        window.location.replace('/en' + (path === '/' ? '/' : path));
+      } else if (p === 'ja' && en.indexOf(path) !== -1) {
+        window.location.replace(path.slice(3) || '/');
+      }
+    } catch(e) {}
+  })();
+  </script>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="google-translate-customization" content="108d9124921d80c3-80e20d618ff053c8-g4f02ec6f3dba68b7-c">
+<!-- Begin Jekyll SEO tag v2.9.0 -->
+<title>ローカルMCPとリモートMCPの違い | Waka-DS.com</title>
+<meta name="generator" content="Jekyll v4.4.1">
+<meta property="og:title" content="ローカルMCPとリモートMCPの違い">
+<meta name="author" content="Waka-DS">
+<meta property="og:locale" content="ja">
+<meta name="description" content="MCP Serverを導入するとき、「ローカルMCPかリモートMCPか」という言い方をよくする。実際の設計では、Serverをどこで動かすかと、Clientがどう接続するかを分けて考えた方がよい。">
+<meta name="twitter:description" property="og:description" content="MCP Serverを導入するとき、「ローカルMCPかリモートMCPか」という言い方をよくする。実際の設計では、Serverをどこで動かすかと、Clientがどう接続するかを分けて考えた方がよい。">
+<link rel="canonical" href="/jekyll-theme-yat/ai%E9%96%8B%E7%99%BA/2026/06/22/mcp-local-remote-transports.html">
+<meta property="og:url" content="/jekyll-theme-yat/ai%E9%96%8B%E7%99%BA/2026/06/22/mcp-local-remote-transports.html">
+<meta property="og:site_name" content="Waka-DS.com">
+<meta property="og:image" content="/jekyll-theme-yat/assets/images/posts/2026-06-22-mcp-local-remote-transports/eyecatch.png">
+<meta property="og:image:alt" content="操作卓から机下の専用機と橋の先の共有施設へ二つの経路が分かれる紙コラージュ風イラスト">
+<meta property="og:type" content="article">
+<meta property="article:published_time" content="2026-06-22T00:00:00+00:00">
+<meta property="article:modified_time" content="2026-06-22T00:00:00+00:00">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="/jekyll-theme-yat/assets/images/posts/2026-06-22-mcp-local-remote-transports/eyecatch.png">
+<meta name="twitter:image:alt" content="操作卓から机下の専用機と橋の先の共有施設へ二つの経路が分かれる紙コラージュ風イラスト">
+<meta name="twitter:title" content="ローカルMCPとリモートMCPの違い">
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":"Waka-DS"},"dateModified":"2026-06-22T00:00:00+00:00","datePublished":"2026-06-22T00:00:00+00:00","description":"MCP Serverを導入するとき、「ローカルMCPかリモートMCPか」という言い方をよくする。実際の設計では、Serverをどこで動かすかと、Clientがどう接続するかを分けて考えた方がよい。","headline":"ローカルMCPとリモートMCPの違い","image":{"alt":"操作卓から机下の専用機と橋の先の共有施設へ二つの経路が分かれる紙コラージュ風イラスト","url":"/jekyll-theme-yat/assets/images/posts/2026-06-22-mcp-local-remote-transports/eyecatch.png","@type":"imageObject"},"mainEntityOfPage":{"@type":"WebPage","@id":"/jekyll-theme-yat/ai%E9%96%8B%E7%99%BA/2026/06/22/mcp-local-remote-transports.html"},"url":"/jekyll-theme-yat/ai%E9%96%8B%E7%99%BA/2026/06/22/mcp-local-remote-transports.html"}</script>
+<!-- End Jekyll SEO tag -->
+<link rel="shortcut icon" href="">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=Noto+Sans+JP:wght@400;500;700&amp;display=swap">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+  <link rel="stylesheet" href="/jekyll-theme-yat/assets/css/main.css">
+  <script src="/jekyll-theme-yat/assets/js/main.js"></script><link type="application/atom+xml" rel="alternate" href="/jekyll-theme-yat/feed.xml" title="Waka-DS.com">
+<script>
+  function initGoogleAnalytics() {
+    var doNotTrack = (window.doNotTrack === "1" || navigator.doNotTrack === "1" ||
+      navigator.doNotTrack === "yes" || navigator.msDoNotTrack === "1");
+    var enableDNT = "true" == "true";
+
+    if (!enableDNT || !doNotTrack) {
+      var ga_id = 'G-XNP1RBTG9C';
+
+      var script = document.createElement('script');
+      script.async = true;
+      script.src = 'https://www.googletagmanager.com/gtag/js?id=' + ga_id;
+      document.head.appendChild(script);
+
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', ga_id);
+    }
+  }
+  window.addEventListener("load", initGoogleAnalytics);
+</script>
+<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/styles/default.min.css">
+<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/highlight.min.js"></script>
+<!-- and it's easy to individually load additional languages -->
+<script charset="UTF-8" src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/languages/go.min.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<script>
+// Init highlight js
+document.addEventListener('DOMContentLoaded', function(event) {
+  var els = document.querySelectorAll('pre code')
+
+  function addLangData(block) {
+    var outer = block.parentElement.parentElement.parentElement;
+    var lang = block.getAttribute('data-lang');
+    for (var i = 0; i < outer.classList.length; i++) {
+      var cls = outer.classList[i];
+      if (cls.startsWith('language-')) {
+        lang = cls;
+        break;
+      }
+    }
+    if (!lang) {
+      cls = block.getAttribute('class');
+      lang = cls ? cls.replace('hljs ', '') : '';
+    }
+    if (lang.startsWith('language-')) {
+      lang = lang.substr(9);
+    }
+    block.setAttribute('class', 'hljs ' + lang);
+    block.parentNode.setAttribute('data-lang', lang);
+  }
+
+  function addBadge(block) {
+    var enabled = ('true' || 'true').toLowerCase();
+    if (enabled == 'true') {
+      var pre = block.parentElement;
+      pre.classList.add('badge');
+    }
+  }
+
+  function handle(block) {
+    addLangData(block);
+    addBadge(block)
+    hljs.highlightBlock(block);
+  }
+
+  for (var i = 0; i < els.length; i++) {
+    var el = els[i];
+    handle(el);
+  }
+});
+</script>
+
+<style>
+  /* code language badge */
+  pre.badge::before {
+    content: attr(data-lang);
+    color: #fff;
+    background-color: #0d9488;
+    padding: 0 .5em;
+    border-radius: 0 2px;
+    text-transform: uppercase;
+    text-align: center;
+    min-width: 32px;
+    display: inline-block;
+    position: absolute;
+    right: 0;
+  }
+
+  /* fix wrong badge display for firefox browser */
+  code > table pre::before {
+    display: none;
+  }
+</style>
+</head>
+<body>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<header class="site-header " role="banner">
+
+  <div class="wrapper">
+    <div class="site-header-inner">
+<span class="site-brand"><a class="site-brand-inner" rel="author" href="/jekyll-theme-yat/">
+  <img class="site-favicon" title="Waka-DS.com" src="" onerror="this.style.display='none'">
+  Waka-DS.com
+</a>
+</span><nav class="site-nav">
+          <input type="checkbox" id="nav-trigger" class="nav-trigger">
+          <label for="nav-trigger">
+            <span class="menu-icon">
+              <svg viewbox="0 0 18 15" width="18px" height="15px">
+                <path d="M18,1.484c0,0.82-0.665,1.484-1.484,1.484H1.484C0.665,2.969,0,2.304,0,1.484l0,0C0,0.665,0.665,0,1.484,0 h15.032C17.335,0,18,0.665,18,1.484L18,1.484z M18,7.516C18,8.335,17.335,9,16.516,9H1.484C0.665,9,0,8.335,0,7.516l0,0 c0-0.82,0.665-1.484,1.484-1.484h15.032C17.335,6.031,18,6.696,18,7.516L18,7.516z M18,13.516C18,14.335,17.335,15,16.516,15H1.484 C0.665,15,0,14.335,0,13.516l0,0c0-0.82,0.665-1.483,1.484-1.483h15.032C17.335,12.031,18,12.695,18,13.516L18,13.516z"></path>
+              </svg>
+            </span>
+          </label>
+
+          <div class="trigger">
+<a class="page-link" href="/jekyll-theme-yat/about.html">ABOUT</a><a class="page-link" href="/jekyll-theme-yat/archives.html">ARCHIVES</a><a class="page-link" href="/jekyll-theme-yat/categories.html">CATEGORIES</a><a class="page-link" href="/jekyll-theme-yat/">HOME</a><a class="page-link" href="/jekyll-theme-yat/tags.html">TAGS</a>
+</div>
+        </nav>
+</div>
+  </div>
+</header>
+
+<script>
+  function initHeader() {
+    var lastScrollY = getScrollPos().y;
+    var documentElement = document.documentElement;
+
+    function storeScrollData() {
+      var y = getScrollPos().y;var scrollStatus = "";
+
+      if (y <= 0) {
+        scrollStatus = "top";
+      } else if ((window.innerHeight + y) >= document.body.offsetHeight) {
+        scrollStatus = "bottom";
+      } else {
+        var isScrollDown = (y - lastScrollY > 0) ? true : false;
+        scrollStatus = isScrollDown ? "down" : "up";
+      }
+
+      lastScrollY = y;
+      documentElement.setAttribute("data-scroll-status", scrollStatus);
+    }
+
+    window.addEventListener('scroll', function(e) {
+      storeScrollData();
+    });
+
+    storeScrollData();
+  }
+  document.addEventListener('DOMContentLoaded', initHeader);
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<script>
+  function hashLocate(hashValue) {
+    hashValue = hashValue.replace(/^.*#h-/, '');
+    hashValue = decodeURIComponent(hashValue);
+    var element = document.getElementById(hashValue);
+
+    if (!element) {
+      return;
+    }
+
+    var header = document.querySelector('header.site-header');
+    var headerRect = header.getBoundingClientRect();
+    var headerTop = Math.floor(headerRect.top);
+    var headerHeight = Math.floor(headerRect.height);
+    var scrollPos = getScrollPos();
+    var offsetY = element.offsetTop - (headerTop + headerHeight + 20);
+
+    if (offsetY == scrollPos.y) {
+      return;
+    }
+
+    if (headerTop == 0  && offsetY > scrollPos.y) {
+      offsetY += headerHeight + 2;
+    } else if (headerTop < 0  && offsetY < scrollPos.y) {
+      offsetY -= headerHeight - 2;
+    }
+
+    smoothScrollTo(offsetY);
+  }
+
+  // The first event occurred
+  window.addEventListener('load', function(event) {
+    if (window.location.hash) {
+      hashLocate(window.location.hash);
+    }
+  });
+
+  // The first event occurred
+  window.addEventListener('click', function(event) {
+    if (event.target.tagName.toLowerCase() == 'a') {
+      hashLocate(event.target.getAttribute('href'));
+    }
+  });
+</script>
+<div class="theme-toggle">
+  <input type="checkbox" id="theme-switch">
+  <label for="theme-switch">
+    <div class="toggle"></div>
+    <div class="names">
+      <p class="light">Light</p>
+      <p class="dark">Dark</p>
+    </div>
+  </label>
+</div>
+
+
+
+
+<script>
+  (function() {
+    var sw = document.getElementById('theme-switch');
+    var html = document.getElementsByTagName('html')[0];
+    var nightModeOption = ('auto' || 'auto').toLowerCase();
+    var storage = nightModeOption === 'manual'
+        ? localStorage
+        : sessionStorage;
+    var themeData = loadThemeData();
+
+    function saveThemeData(data) {
+      storage.setItem('theme', JSON.stringify(data));
+    }
+
+    function loadThemeData() {
+      var data = storage.getItem('theme');
+      try {
+        data = JSON.parse(data ? data : '');
+      } catch(e) {
+        data = { nightShift: undefined, autoToggleAt: 0 };
+        saveThemeData(data);
+      }
+      return data;
+    }
+
+    function handleThemeToggle(nightShift) {
+      themeData.nightShift = nightShift;
+      saveThemeData(themeData);
+      html.dataset.theme = nightShift ? 'dark' : 'light';
+      setTimeout(function() {
+        sw.checked = nightShift ? true : false;
+      }, 50);
+    }
+
+    function autoThemeToggle() {
+      // Next time point of theme toggle
+      var now = new Date();
+      var toggleAt = new Date();
+      var hours = now.getHours();
+      var nightShift = hours >= 19 || hours <=7;
+
+      if (nightShift) {
+        if (hours > 7) {
+          toggleAt.setDate(toggleAt.getDate() + 1);
+        }
+        toggleAt.setHours(7);
+      } else {
+        toggleAt.setHours(19);
+      }
+
+      toggleAt.setMinutes(0);
+      toggleAt.setSeconds(0);
+      toggleAt.setMilliseconds(0)
+
+      var delay = toggleAt.getTime() - now.getTime();
+
+      // auto toggle theme mode
+      setTimeout(function() {
+        handleThemeToggle(!nightShift);
+      }, delay);
+
+      return {
+        nightShift: nightShift,
+        toggleAt: toggleAt.getTime()
+      };
+    }
+
+    // Listen the theme toggle event
+    sw.addEventListener('change', function(event) {
+      handleThemeToggle(event.target.checked);
+    });
+
+    if (nightModeOption == 'auto') {
+      var data = autoThemeToggle();
+
+      // Toggle theme by local setting
+      if (data.toggleAt > themeData.autoToggleAt) {
+        themeData.autoToggleAt = data.toggleAt;
+        handleThemeToggle(data.nightShift);
+      } else {
+        handleThemeToggle(themeData.nightShift);
+      }
+    } else if (nightModeOption == 'manual') {
+      handleThemeToggle(themeData.nightShift);
+    } else {
+      var nightShift = themeData.nightShift;
+      if (nightShift === undefined) {
+        nightShift = nightModeOption === 'on';
+      }
+      handleThemeToggle(nightShift);
+    }
+  })();
+</script>
+<main class="page-content" aria-label="Content">
+      <div class="wrapper">
+        <div class="framework">
+  <section class="main">
+
+     <div class="post post--with-image">
+  <section>
+
+
+
+
+
+
+
+
+
+<header class="post-header">
+  <h1 class="post-title p-name" itemprop="name headline">ローカルMCPとリモートMCPの違い</h1>
+  <h2 class="post-subtitle">stdioとStreamable HTTPを実行・通信・運用から比較する</h2>
+
+  <p class="post-meta">
+    <time class="dt-published" datetime="2026-06-22T00:00:00+00:00" itemprop="datePublished"><i class="fa fa-calendar"></i> Jun 22, 2026
+    </time>
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <span class="post-reading-time left-vsplit"><i class="fa fa-clock-o"></i> About 25 mins</span>
+  </p>
+<div class="post-tags">
+<a class="post-tag" href="/jekyll-theme-yat/tags.html#MCP">#MCP</a><a class="post-tag" href="/jekyll-theme-yat/tags.html#AI%E3%82%A8%E3%83%BC%E3%82%B8%E3%82%A7%E3%83%B3%E3%83%88">#AIエージェント</a><a class="post-tag" href="/jekyll-theme-yat/tags.html#API">#API</a><a class="post-tag" href="/jekyll-theme-yat/tags.html#REST">#REST</a><a class="post-tag" href="/jekyll-theme-yat/tags.html#%E8%A8%AD%E8%A8%88">#設計</a>
+</div></header>
+<figure class="post-eyecatch">
+  <img src="/jekyll-theme-yat/assets/images/posts/2026-06-22-mcp-local-remote-transports/eyecatch.png" alt="操作卓から机下の専用機と橋の先の共有施設へ二つの経路が分かれる紙コラージュ風イラスト" decoding="async" fetchpriority="high">
+</figure><article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
+
+    <div class="post-content e-content" itemprop="articleBody">
+
+      <p>MCP Serverを導入するとき、「ローカルMCPかリモートMCPか」という言い方をよくする。実際の設計では、Serverをどこで動かすかと、Clientがどう接続するかを分けて考えた方がよい。</p>
+
+<p>MCP仕様が標準transportとして定めるのは<code class="language-plaintext highlighter-rouge">stdio</code>と<code class="language-plaintext highlighter-rouge">Streamable HTTP</code>である。stdioではClientがServerを子プロセスとして起動し、標準入出力で通信する。Streamable HTTPでは独立したServerへHTTPで接続する。この実行モデルの差が、プロセス寿命、状態管理、認証、障害、デプロイ方法の違いにつながる。</p>
+
+<p>連載第5回の<a href="/jekyll-theme-yat/ai%E9%96%8B%E7%99%BA/2026/06/21/build-mcp-server-python.html">「Pythonで小さなMCPサーバーを作る」</a>では、ローカルノートを読むstdio Serverを作った。今回は同じServerを共有サービスへ広げる場面を想定し、transport選定で何が変わるかを整理する。</p>
+
+<p>本稿はMCP仕様2025-11-25版を基準にする。特定SDKの設定値ではなく仕様上の動作を中心に扱い、SDK固有の例はその旨を分けて記載する。</p>
+
+<nav class="mcp-series-index" aria-label="MCPサーバー連載">
+  <p><strong>MCPサーバー連載（全7回）</strong></p>
+  <ol>
+    <li>
+      
+        <a href="/jekyll-theme-yat/ai%E9%96%8B%E7%99%BA/2026/06/17/mcp-protocol-overview.html">MCPは何を標準化するプロトコルなのか</a>
+      
+    </li>
+    <li>
+      
+        <a href="/jekyll-theme-yat/ai%E9%96%8B%E7%99%BA/2026/06/18/mcp-host-client-server.html">MCPのHost・Client・Serverを整理する</a>
+      
+    </li>
+    <li>
+      
+        <a href="/jekyll-theme-yat/ai%E9%96%8B%E7%99%BA/2026/06/19/mcp-tools-resources-prompts.html">MCPのTools・Resources・Promptsを使い分ける</a>
+      
+    </li>
+    <li>
+      
+        <a href="/jekyll-theme-yat/ai%E9%96%8B%E7%99%BA/2026/06/20/mcp-json-rpc-lifecycle.html">MCPの接続と通信をJSON-RPCから理解する</a>
+      
+    </li>
+    <li>
+      
+        <a href="/jekyll-theme-yat/ai%E9%96%8B%E7%99%BA/2026/06/21/build-mcp-server-python.html">Pythonで小さなMCPサーバーを作る</a>
+      
+    </li>
+    <li>
+      
+        <strong aria-current="page">ローカルMCPとリモートMCPの違い（この記事）</strong>
+      
+    </li>
+    <li>
+      
+        <a href="/jekyll-theme-yat/ai%E9%96%8B%E7%99%BA/2026/06/23/mcp-security-operations.html">MCPサーバーを安全に運用する</a>
+      
+    </li>
+  </ol>
+</nav>
+
+<hr>
+
+<h2 id="結論を先に">結論を先に</h2>
+
+<p>個人の端末にあるファイルや開発ツールへ、その端末のHostからアクセスするなら、まずstdioが候補になる。組織で一つのサービスを共有する、Serverを集中管理する、複数端末から同じ機能を使うならStreamable HTTPが候補になる。</p>
+
+<table>
+  <thead>
+    <tr>
+      <th style="text-align: left">観点</th>
+      <th style="text-align: left">stdio</th>
+      <th style="text-align: left">Streamable HTTP</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td style="text-align: left">典型的な配置</td>
+      <td style="text-align: left">Hostと同じ端末</td>
+      <td style="text-align: left">独立したローカルプロセスまたはリモート環境</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">起動</td>
+      <td style="text-align: left">Clientが子プロセスとして起動</td>
+      <td style="text-align: left">Serverを別途起動・運用</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">通信</td>
+      <td style="text-align: left">
+<code class="language-plaintext highlighter-rouge">stdin</code> / <code class="language-plaintext highlighter-rouge">stdout</code>
+</td>
+      <td style="text-align: left">HTTP POST / GET、必要に応じてSSE</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">利用者</td>
+      <td style="text-align: left">起動したClientが中心</td>
+      <td style="text-align: left">複数Clientを扱える</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">認証</td>
+      <td style="text-align: left">通常は環境やOSの境界</td>
+      <td style="text-align: left">HTTP向けMCP認可仕様を適用可能</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">状態</td>
+      <td style="text-align: left">子プロセス内に持ちやすい</td>
+      <td style="text-align: left">statelessとstatefulを選ぶ</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">障害範囲</td>
+      <td style="text-align: left">一つのHost接続に閉じやすい</td>
+      <td style="text-align: left">共有利用者へ波及し得る</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">主な運用対象</td>
+      <td style="text-align: left">コマンド、パス、環境変数</td>
+      <td style="text-align: left">TLS、認証、Origin、負荷分散、監視</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>ただし、stdioなら安全、HTTPなら危険という単純な分類ではない。stdio Serverはユーザー権限でローカルファイルを読めることがある。Streamable HTTPは認証とネットワーク境界を適切に設計すれば、Server側へ権限を集約できる。選ぶ基準は「近いか遠いか」より、誰がプロセスと資格情報と状態を管理するかである。</p>
+
+<h2 id="ローカルリモートとtransportは同じ軸ではない">「ローカル・リモート」と「transport」は同じ軸ではない</h2>
+
+<p>stdioは通常、同じ端末上の子プロセスとの通信に使う。Streamable HTTPは通常、ネットワーク越しの共有Serverに使う。そのため便宜上、stdioをローカルMCP、Streamable HTTPをリモートMCPと呼ぶことが多い。</p>
+
+<p>しかし、仕様上の概念は次のように分かれている。</p>
+
+<p><img class="mermaid" src="https://mermaid.ink/svg/eyJjb2RlIjoiZmxvd2NoYXJ0IFRCXG5QbGFjZW1lbnRbXCJTZXJ2ZXLjgpLjganjgZPjgafli5XjgYvjgZnjgYtcIl1cblRyYW5zcG9ydFtcIkNsaWVudOOBqOOBqeOBhumAmuS_oeOBmeOCi-OBi1wiXVxuTGlmZWN5Y2xlW1wi6Kqw44GM6LW35YuV44O75YGc5q2i44GZ44KL44GLXCJdXG5BdXRob3JpdHlbXCLoqrDjga7mqKnpmZDjgaflrp_ooYzjgZnjgovjgYtcIl1cbiUlLVxuUGxhY2VtZW50IC0tPiBMb2NhbFtcIuWQjOOBmOerr-acq1wiXVxuUGxhY2VtZW50IC0tPiBSZW1vdGVbXCLliKXjg5vjgrnjg4ggLyDjgq_jg6njgqbjg4lcIl1cblRyYW5zcG9ydCAtLT4gU3RkaW9bXCJzdGRpb1wiXVxuVHJhbnNwb3J0IC0tPiBIVFRQW1wiU3RyZWFtYWJsZSBIVFRQXCJdXG5MaWZlY3ljbGUgLS0-IFNwYXduW1wiQ2xpZW5044GM5a2Q44OX44Ot44K744K56LW35YuVXCJdXG5MaWZlY3ljbGUgLS0-IFNlcnZpY2VbXCLni6znq4vjgrXjg7zjg5PjgrnjgajjgZfjgabpgYvnlKhcIl1cbkF1dGhvcml0eSAtLT4gVXNlcltcIuerr-acq-ODpuODvOOCtuODvOOBruaoqemZkFwiXVxuQXV0aG9yaXR5IC0tPiBTZXJ2aWNlQWNjb3VudFtcIuOCteODvOODk-OCueeUqOaoqemZkFwiXSIsIm1lcm1haWQiOm51bGx9"></p>
+
+<p>たとえば、同じ端末の<code class="language-plaintext highlighter-rouge">127.0.0.1</code>でStreamable HTTP Serverを動かす構成もある。この場合は配置がローカルでも、ServerはHostの子プロセスとは限らず、独立したサービスになる。</p>
+
+<p>反対に、SSHなど独自のラッパーで遠隔プロセスの標準入出力へつなぐことも技術的には可能だが、MCPの標準的なリモート構成として認証・再接続・共有運用を解決してくれるわけではない。</p>
+
+<h2 id="stdioはclientがserverプロセスを所有する">stdioはClientがServerプロセスを所有する</h2>
+
+<p>stdio transportでは、ClientがMCP Serverをサブプロセスとして起動する。Serverは改行で区切られたUTF-8のJSON-RPCメッセージを<code class="language-plaintext highlighter-rouge">stdin</code>から読み、<code class="language-plaintext highlighter-rouge">stdout</code>へ返す。</p>
+
+<p><img class="mermaid" src="https://mermaid.ink/svg/eyJjb2RlIjoiZmxvd2NoYXJ0IFRCXG5Ib3N0W1wiTUNQIEhvc3RcIl1cbkNsaWVudFtcIk1DUCBDbGllbnRcIl1cblByb2Nlc3NbXCJTZXJ2ZXLlrZDjg5fjg63jgrvjgrlcIl1cblRvb2xbXCLjg63jg7zjgqvjg6tUb29sIC8gRGF0YVwiXVxuJSUtXG5Ib3N0IC0tPiBDbGllbnRcbkNsaWVudCAtLT58XCLotbfli5Xjg7vlgZzmraJcInwgUHJvY2Vzc1xuQ2xpZW50IC0tPnxcInN0ZGluXCJ8IFByb2Nlc3NcblByb2Nlc3MgLS0-fFwic3Rkb3V0XCJ8IENsaWVudFxuUHJvY2VzcyAtLT4gVG9vbCIsIm1lcm1haWQiOm51bGx9"></p>
+
+<p>この構成では接続とプロセス寿命が近い。Hostを終了した、設定を無効にした、Clientが子プロセスを停止した、といった操作でServerも終了する設計にしやすい。Server内のメモリ状態も、そのプロセスとともに消える。</p>
+
+<p>設定で渡す主な情報は、実行コマンド、引数、作業ディレクトリ、環境変数である。Serverを配布する側は、利用者のOS、ランタイム、依存関係、実行ファイルのパスを考慮する必要がある。</p>
+
+<h3 id="stdioが扱いやすい場面">stdioが扱いやすい場面</h3>
+
+<p>ローカルのリポジトリ、ファイル、開発用DB、CLIを、その端末の利用者だけが扱う場合に向いている。第5回のノートServerもこの例である。</p>
+
+<p>ネットワークの待受ポートを開けず、別途TLSやHTTP Serverを用意しなくてよい。HostごとにServerプロセスが分かれるので、利用者ごとの状態も自然に分離しやすい。</p>
+
+<h3 id="stdioで残る運用課題">stdioで残る運用課題</h3>
+
+<p>ネットワーク公開しないことは、権限が小さいことを意味しない。ServerはHostを動かしているOSユーザーの権限や、設定から渡された資格情報を使える場合がある。</p>
+
+<p>また、利用端末ごとにランタイムとServerを配布・更新する必要がある。100人が同じToolを使うなら、100台の依存関係と設定を揃える運用になる。Serverの修正を一カ所へデプロイすれば終わるリモートサービスとは更新モデルが異なる。</p>
+
+<p>標準出力が通信路なので、ログを<code class="language-plaintext highlighter-rouge">stdout</code>へ混ぜられない点もstdio固有の注意事項である。ログは<code class="language-plaintext highlighter-rouge">stderr</code>へ出す。</p>
+
+<h2 id="streamable-httpは独立したserverへ接続する">Streamable HTTPは独立したServerへ接続する</h2>
+
+<p>Streamable HTTPでは、ServerはClientから独立したプロセスとして動き、複数のClient接続を扱える。Serverは一つのMCP endpointを提供し、ClientはJSON-RPCメッセージごとにHTTP POSTを送る。</p>
+
+<p>Serverはリクエストに<code class="language-plaintext highlighter-rouge">application/json</code>で一つの応答を返すことも、<code class="language-plaintext highlighter-rouge">text/event-stream</code>でSSEストリームを開いて複数のメッセージを返すこともできる。Clientからの先行リクエストなしにServer側の通知やリクエストを送る必要があれば、Clientは同じendpointへHTTP GETを行い、SSEストリームを開ける。</p>
+
+<p><img class="mermaid" src="https://mermaid.ink/svg/eyJjb2RlIjoic2VxdWVuY2VEaWFncmFtXG5wYXJ0aWNpcGFudCBDIGFzIE1DUCBDbGllbnRcbnBhcnRpY2lwYW50IFMgYXMgTUNQIFNlcnZlclxuJSUtXG5DLT4-UzogUE9TVCAvbWNwIEluaXRpYWxpemVSZXF1ZXN0XG5TLS0-PkM6IEpTT07jgb7jgZ_jga9TU0XjgadJbml0aWFsaXplUmVzdWx0XG5DLT4-UzogUE9TVCAvbWNwIEluaXRpYWxpemVkTm90aWZpY2F0aW9uXG5TLS0-PkM6IDIwMiBBY2NlcHRlZFxuQy0-PlM6IFBPU1QgL21jcCB0b29scy9jYWxsXG5TLS0-PkM6IEpTT07jgb7jgZ_jga9TU0XjgafntZDmnpxcbkMtPj5TOiBHRVQgL21jcO-8iOS7u-aEj--8iVxuUy0tPj5DOiBTU0XjgafpgJrnn6Xjg7tTZXJ2ZXLjgYvjgonjga5yZXF1ZXN0IiwibWVybWFpZCI6bnVsbH0"></p>
+
+<p>SSEはStreamable HTTPとは別の第三の標準transportではない。Streamable HTTPが応答やServer発のメッセージをストリーミングするときに利用できる仕組みである。単純なServerはJSON応答だけを使い、GETに<code class="language-plaintext highlighter-rouge">405 Method Not Allowed</code>を返すことも仕様上可能だ。</p>
+
+<h3 id="独立サービスになることで増えるもの">独立サービスになることで増えるもの</h3>
+
+<p>Serverを一カ所で更新し、複数のHostから同じ機能を利用できる。データや外部APIの資格情報をServer側へ置き、利用端末へ直接配布しない構成も取れる。</p>
+
+<p>その代わり、一般のWebサービスと同様の運用が必要になる。</p>
+
+<ul>
+  <li>HTTPSと証明書</li>
+  <li>認証・認可とトークン管理</li>
+  <li>DNS、ロードバランサー、タイムアウト</li>
+  <li>複数Clientの同時実行制御</li>
+  <li>メトリクス、ログ、トレース</li>
+  <li>Server更新時の互換性と段階的リリース</li>
+  <li>障害時の再接続、重複実行、部分失敗への対応</li>
+</ul>
+
+<p>MCPがHTTPメッセージ形式を標準化しても、これらの運用を自動で肩代わりするわけではない。</p>
+
+<h2 id="セッションとプロセスを混同しない">セッションとプロセスを混同しない</h2>
+
+<p>stdioでは、一つのClient接続と一つの子プロセスを対応させやすい。Streamable HTTPでは、複数のHTTPリクエストが一つの論理的なMCP sessionを構成する場合がある。</p>
+
+<p>Serverがstateful sessionを使う場合、初期化応答の<code class="language-plaintext highlighter-rouge">MCP-Session-Id</code>ヘッダーでsession IDを発行できる。Clientは以降のHTTPリクエストに同じヘッダーを付ける。Serverがsessionを終了し、そのIDに対して<code class="language-plaintext highlighter-rouge">404 Not Found</code>を返した場合、Clientはsession IDなしで再度初期化する。</p>
+
+<p><img class="mermaid" src="https://mermaid.ink/svg/eyJjb2RlIjoiZmxvd2NoYXJ0IFRCXG5Jbml0W1wiaW5pdGlhbGl6ZVwiXVxuU2Vzc2lvbklkW1wiTUNQLVNlc3Npb24tSWTjgpLlj5fpoJhcIl1cblJlcXVlc3RzW1wi5b6M57aa44GuUE9TVCAvIEdFVFwiXVxuRW5kW1wiREVMRVRF44G-44Gf44GvU2VydmVy5YG044Gn57WC5LqGXCJdXG5NaXNzaW5nW1wiNDA0IE5vdCBGb3VuZFwiXVxuUmVpbml0W1wi5paw44GX44GEaW5pdGlhbGl6ZVwiXVxuJSUtXG5Jbml0IC0tPiBTZXNzaW9uSWRcblNlc3Npb25JZCAtLT4gUmVxdWVzdHNcblJlcXVlc3RzIC0tPiBFbmRcblJlcXVlc3RzIC0tPiBNaXNzaW5nXG5NaXNzaW5nIC0tPiBSZWluaXQiLCJtZXJtYWlkIjpudWxsfQ"></p>
+
+<p>ここでいうsessionはTCP接続そのものではない。POSTごとにHTTP接続が変わっても、session IDによって論理的な状態を関連付けられる。</p>
+
+<h3 id="stateless-serverも選べる">stateless Serverも選べる</h3>
+
+<p>すべてのStreamable HTTP Serverがsession IDを発行する必要はない。各リクエストを独立して処理できるなら、Serverをstatelessにすると水平スケールしやすくなる。</p>
+
+<p>一方、ServerがClientごとの購読状態、長時間処理、Serverからの通知などを扱うなら、stateful sessionが必要になることがある。その場合は、session状態を一つのプロセスのメモリだけに置くのか、共有ストアへ置くのか、ロードバランサーで同じinstanceへ固定するのかを決める。</p>
+
+<p>Python SDKなどがstateful・statelessの実装支援を提供していても、どの状態を保持し、いつ破棄するかはアプリケーション設計である。</p>
+
+<h2 id="再開はtoolを安全に再実行する仕組みではない">再開は「Toolを安全に再実行する仕組み」ではない</h2>
+
+<p>Streamable HTTPは、SSE eventにIDを付け、切断後のGETに<code class="language-plaintext highlighter-rouge">Last-Event-ID</code>を付けることで、Serverが未達メッセージを再送する仕組みを定義している。これはストリームの再開とメッセージ欠落の軽減に使える。</p>
+
+<p>ただし、ClientがTool呼び出しの結果を受け取る前に切断した場合、Toolの副作用が実行済みかどうかは別問題である。再接続したからといって、同じ<code class="language-plaintext highlighter-rouge">tools/call</code>を無条件に送り直してよいとは限らない。</p>
+
+<p>たとえば「Issueを作成する」Toolを再実行すれば、Issueが二重に作られる可能性がある。書き込みToolでは、冪等性キー、操作ID、実行状態の照会、重複排除などをServer側のAPI設計として用意する必要がある。</p>
+
+<table>
+  <thead>
+    <tr>
+      <th style="text-align: left">問題</th>
+      <th style="text-align: left">Streamable HTTPの再開で扱えるか</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td style="text-align: left">SSE切断後の未達メッセージ再送</td>
+      <td style="text-align: left">event IDと<code class="language-plaintext highlighter-rouge">Last-Event-ID</code>で支援できる</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">MCP sessionの識別</td>
+      <td style="text-align: left">
+<code class="language-plaintext highlighter-rouge">MCP-Session-Id</code>で支援できる</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">Toolの副作用が実行済みかの判定</td>
+      <td style="text-align: left">Tool・業務API側で設計が必要</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">同じ書き込みの重複防止</td>
+      <td style="text-align: left">冪等性設計が必要</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>transportの信頼性と、業務操作のexactly-once実行を同一視しない方がよい。</p>
+
+<h2 id="旧httpsseとstreamable-httpの違い">旧HTTP+SSEとStreamable HTTPの違い</h2>
+
+<p>検索すると、MCP Serverに<code class="language-plaintext highlighter-rouge">/sse</code> endpointと別のPOST endpointを用意する記事やコードが見つかる。これはプロトコル2024-11-05版のHTTP+SSE transportである。</p>
+
+<p>Streamable HTTPはこの旧方式を置き換えた。大きな違いは、ClientからServerへのPOSTと、ServerからClientへのストリームを一つのMCP endpointへまとめた点にある。</p>
+
+<table>
+  <thead>
+    <tr>
+      <th style="text-align: left">観点</th>
+      <th style="text-align: left">旧HTTP+SSE</th>
+      <th style="text-align: left">Streamable HTTP</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td style="text-align: left">仕様上の位置づけ</td>
+      <td style="text-align: left">旧transport</td>
+      <td style="text-align: left">現行の標準transport</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">endpoint</td>
+      <td style="text-align: left">SSE接続とPOST送信が分かれる</td>
+      <td style="text-align: left">一つのMCP endpointがGET/POSTを扱う</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">応答</td>
+      <td style="text-align: left">SSE中心</td>
+      <td style="text-align: left">JSON応答またはSSEを選べる</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">後方互換</td>
+      <td style="text-align: left">古いClient・Server向け</td>
+      <td style="text-align: left">まずPOST initializeを試す</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>現行仕様は、後方互換が必要なServerに旧endpointを新endpointと並べて提供する方法を示している。Client側はまず指定URLへPOSTで初期化を試し、特定の4xx応答なら旧SSE接続へフォールバックできる。</p>
+
+<p>ここで「SSEは廃止された」と表現すると誤解を招く。廃止方向なのは二つのendpointを使う旧HTTP+SSE transportであり、SSE自体はStreamable HTTPのストリーミングにも使われている。</p>
+
+<h2 id="認証の違い">認証の違い</h2>
+
+<p>MCPの認可仕様はHTTP-based transportを対象にしている。認可を実装する場合、保護されたMCP ServerはOAuthのresource serverとしてaccess tokenを検証し、Clientはresource ownerに代わってtokenを取得・送信する。</p>
+
+<p>一方、仕様はstdio transportにこのHTTP向け認可フローを適用せず、資格情報を環境から取得するよう示している。stdioだから資格情報が不要なのではなく、渡し方と信頼境界が異なる。</p>
+
+<p><img class="mermaid" src="https://mermaid.ink/svg/eyJjb2RlIjoiZmxvd2NoYXJ0IFRCXG5zdWJncmFwaCBMb2NhbFtcInN0ZGlvXCJdXG5Ib3N0W1wiSG9zdCAvIENsaWVudFwiXVxuRW52W1wi55Kw5aKD44O7T1Pjga7os4fmoLzmg4XloLFcIl1cbkxvY2FsU2VydmVyW1wiU2VydmVy5a2Q44OX44Ot44K744K5XCJdXG5Ib3N0IC0tPiBMb2NhbFNlcnZlclxuRW52IC0tPiBMb2NhbFNlcnZlclxuZW5kXG4lJS1cbnN1YmdyYXBoIFJlbW90ZVtcIlN0cmVhbWFibGUgSFRUUFwiXVxuUmVtb3RlQ2xpZW50W1wiTUNQIENsaWVudFwiXVxuQXV0aFtcIkF1dGhvcml6YXRpb24gU2VydmVyXCJdXG5SZW1vdGVTZXJ2ZXJbXCJNQ1AgUmVzb3VyY2UgU2VydmVyXCJdXG5SZW1vdGVDbGllbnQgLS0-IEF1dGhcbkF1dGggLS0-IFJlbW90ZUNsaWVudFxuUmVtb3RlQ2xpZW50IC0tPnxcIkJlYXJlciB0b2tlblwifCBSZW1vdGVTZXJ2ZXJcbmVuZCIsIm1lcm1haWQiOm51bGx9"></p>
+
+<p>リモートServerでは、session IDを認証情報の代わりにしてはいけない。<code class="language-plaintext highlighter-rouge">MCP-Session-Id</code>は論理sessionを関連付ける識別子であり、HTTPリクエストごとのBearer token検証を省略する根拠にはならない。現行の認可仕様も、同じsessionに属する場合を含め、すべてのHTTPリクエストに認可情報を含めるよう定めている。</p>
+
+<p>認証・認可の詳細は次回のセキュリティ回で扱う。</p>
+
+<h2 id="streamable-httpで必要なネットワーク防御">Streamable HTTPで必要なネットワーク防御</h2>
+
+<p>HTTP endpointを公開すると、MCPを理解していない一般のWebクライアントからも到達可能になる。現行のtransport仕様は、Serverに<code class="language-plaintext highlighter-rouge">Origin</code>ヘッダーの検証を求めている。ローカルでHTTP Serverを動かす場合も、<code class="language-plaintext highlighter-rouge">0.0.0.0</code>ではなく<code class="language-plaintext highlighter-rouge">127.0.0.1</code>へbindすることを推奨している。</p>
+
+<p>これはDNS rebindingによって、悪意あるWebページからローカルMCP Serverへ到達される可能性があるためだ。CORSの設定だけを追加して完了とはならず、Origin検証、認証、bind先を組み合わせる。</p>
+
+<p>外部公開ではHTTPSを前提にし、reverse proxyで認証を済ませたつもりでも、MCP Serverが信頼するヘッダーとproxyからの到達経路を確認する。Serverへ直接到達できれば、proxyの制御を迂回される。</p>
+
+<h2 id="デプロイとスケールで変わる判断">デプロイとスケールで変わる判断</h2>
+
+<p>stdio Serverは、Hostの設定が実質的なデプロイ先になる。利用者の端末で起動でき、必要なローカルデータへ到達できることが重要である。</p>
+
+<p>Streamable HTTP ServerはWebサービスとしてデプロイする。複数instanceへ増やす場合、statelessならリクエストを分散しやすい。statefulならsession stateとSSEの再開方法が制約になる。</p>
+
+<table>
+  <thead>
+    <tr>
+      <th style="text-align: left">設計項目</th>
+      <th style="text-align: left">stateless HTTP</th>
+      <th style="text-align: left">stateful HTTP</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td style="text-align: left">Client固有状態</td>
+      <td style="text-align: left">原則保持しない</td>
+      <td style="text-align: left">sessionに関連付けて保持</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">水平スケール</td>
+      <td style="text-align: left">比較的容易</td>
+      <td style="text-align: left">共有stateまたはsession affinityが必要</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">再起動の影響</td>
+      <td style="text-align: left">小さくしやすい</td>
+      <td style="text-align: left">session消失・復元を設計する</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">Server発通知</td>
+      <td style="text-align: left">単純構成では限定的</td>
+      <td style="text-align: left">SSEとsession管理を使いやすい</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">適する例</td>
+      <td style="text-align: left">独立した検索・変換Tool</td>
+      <td style="text-align: left">購読、長時間処理、進捗通知</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>どちらでも、Toolが接続する下流APIやDBの負荷は残る。MCP Serverだけを水平スケールしても、同じDBへ過剰な同時実行を流せば全体は安定しない。</p>
+
+<h2 id="transport選定の判断手順">transport選定の判断手順</h2>
+
+<p>最初に「新しいからStreamable HTTP」と決めるのではなく、利用者と権限の置き場所から判断する。</p>
+
+<h3 id="1-データはどこにあるか">1. データはどこにあるか</h3>
+
+<p>利用者の端末にしかないファイルやGit worktreeを読むならstdioが自然である。社内DBやSaaS APIを一元管理するなら、リモートServerへ集約する価値がある。</p>
+
+<h3 id="2-誰がserverを使うか">2. 誰がServerを使うか</h3>
+
+<p>一人・一端末なら、共有サービスの認証・監視を持ち込む必要は薄い。複数ユーザー・複数端末で使うなら、端末ごとの配布よりリモートServerの方が更新しやすい場合がある。</p>
+
+<h3 id="3-資格情報をどこへ置くか">3. 資格情報をどこへ置くか</h3>
+
+<p>利用者自身の資格情報でローカル操作するのか、組織のサービスアカウントをServer側で使うのかを決める。後者では、利用者ごとの認可と監査が必要になる。</p>
+
+<h3 id="4-状態と通知が必要か">4. 状態と通知が必要か</h3>
+
+<p>一回のTool呼び出しで完結するならstatelessに寄せられる。長時間処理、購読、Serverからの通知が必要なら、sessionと再開を設計する。</p>
+
+<h3 id="5-どの障害を引き受けられるか">5. どの障害を引き受けられるか</h3>
+
+<p>stdioは端末ごとの環境差と更新を引き受ける。Streamable HTTPはネットワーク、認証、共有障害、サービス運用を引き受ける。問題が消えるのではなく、管理場所が変わる。</p>
+
+<h2 id="典型的な選択例">典型的な選択例</h2>
+
+<table>
+  <thead>
+    <tr>
+      <th style="text-align: left">ユースケース</th>
+      <th style="text-align: left">第一候補</th>
+      <th style="text-align: left">理由</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td style="text-align: left">開いているリポジトリの検索</td>
+      <td style="text-align: left">stdio</td>
+      <td style="text-align: left">ローカルの作業treeへ直接アクセスする</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">個人ノートの読み取り</td>
+      <td style="text-align: left">stdio</td>
+      <td style="text-align: left">一人の端末内で完結しやすい</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">社内ナレッジ検索</td>
+      <td style="text-align: left">Streamable HTTP</td>
+      <td style="text-align: left">データ・認可・更新を集中管理しやすい</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">SaaS操作を組織で共有</td>
+      <td style="text-align: left">Streamable HTTP</td>
+      <td style="text-align: left">token、scope、監査をServer側で統制しやすい</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">ローカルHTTPで重いモデルを常駐</td>
+      <td style="text-align: left">Streamable HTTP</td>
+      <td style="text-align: left">複数Hostから独立プロセスを再利用できる</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">オフライン環境のCLI連携</td>
+      <td style="text-align: left">stdio</td>
+      <td style="text-align: left">ネットワークサービスを前提にしない</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>複合構成もあり得る。たとえばローカルstdio Serverが端末内のGit情報を読み、組織のリモートMCP Serverがチケットシステムへ接続する。Hostは複数のServerへClient接続を持てるため、すべてを一つの万能Serverへまとめる必要はない。</p>
+
+<h2 id="まとめ">まとめ</h2>
+
+<p>stdioとStreamable HTTPの差は、単なる接続文字列の違いではない。</p>
+
+<ul>
+  <li>stdioではClientがServerを子プロセスとして起動し、接続とプロセス寿命が近い</li>
+  <li>Streamable HTTPではServerが独立し、複数Client、ネットワーク、認証、サービス運用を扱う</li>
+  <li>HTTP sessionは接続そのものではなく、複数リクエストを関連付ける論理状態である</li>
+  <li>SSEによる再開はメッセージ配送を助けるが、Toolの副作用を自動的に冪等にはしない</li>
+  <li>旧HTTP+SSE transportと、Streamable HTTP内で使われるSSEは区別する</li>
+  <li>transportは、データ・資格情報・状態・運用責任をどこに置くかで選ぶ</li>
+</ul>
+
+<p>リモート化は、ローカルServerをネットワークへ露出するだけの作業ではない。利用者の識別、最小権限、token、session、監査、障害時の扱いまで含めて初めて共有サービスになる。</p>
+
+<p>次回の<a href="/jekyll-theme-yat/ai%E9%96%8B%E7%99%BA/2026/06/23/mcp-security-operations.html">「MCPサーバーを安全に運用する」</a>では、MCPの権限境界、OAuth、prompt injection、情報流出、承認、監査をまとめる。</p>
+
+<h2 id="参考">参考</h2>
+
+<ul>
+  <li><a href="https://modelcontextprotocol.io/specification/2025-11-25/basic/transports">Transports（MCP仕様 2025-11-25）</a></li>
+  <li><a href="https://modelcontextprotocol.io/specification/2025-11-25/basic/authorization">Authorization（MCP仕様 2025-11-25）</a></li>
+  <li><a href="https://github.com/modelcontextprotocol/python-sdk">MCP Python SDK（公式GitHub）</a></li>
+</ul>
+
+
+    </div>
+
+</article>
+<div class="post-nav">
+<a class="previous" href="/jekyll-theme-yat/ai%E9%96%8B%E7%99%BA/2026/06/21/build-mcp-server-python.html" title="Pythonで小さなMCPサーバーを作る">Pythonで小さなMCPサーバーを作る</a><a class="next" href="/jekyll-theme-yat/ai%E9%96%8B%E7%99%BA/2026/06/23/mcp-security-operations.html" title="MCPサーバーを安全に運用する">MCPサーバーを安全に運用する</a>
+</div>
+<div class="post-related">
+      <div>Related Articles</div>
+      <ul>
+        <li><a class="post-link" href="/jekyll-theme-yat/ai%E9%96%8B%E7%99%BA/2026/06/09/beast-mode-ai-tools.html" title="MCPサーバーを安全に運用する">「Beast モード」でAIはどこまで変わるか</a></li>
+<li><a class="post-link" href="/jekyll-theme-yat/ai%E9%96%8B%E7%99%BA/2026/06/09/rlhf-model-training.html" title="MCPサーバーを安全に運用する">RLHFがモデルの返答をどう変えるか</a></li>
+<li><a class="post-link" href="/jekyll-theme-yat/%E9%96%8B%E7%99%BA/2026/06/16/notion-database-personal-backend.html" title="MCPサーバーを安全に運用する">なぜ個人開発のバックエンドに Notion データベースを選ぶのか</a></li>
+<li><a class="post-link" href="/jekyll-theme-yat/%E9%96%8B%E7%99%BA/2024/05/14/python-dev02.html" title="MCPサーバーを安全に運用する">Python Web開発のためのGitセットアップ</a></li>
+</ul>
+    </div>
+<div class="post-comments"></div></section>
+</div>
+
+
+  </section>
+  <section class="sidebar" style="margin-left: 15px;">
+    <!-- Get sidebar items --><style type="text/css" media="screen">
+.post-menu ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+</style>
+
+<div class="post-menu">
+  <div class="post-menu-title">TOC</div>
+  <div class="post-menu-content"></div>
+</div>
+
+<script>
+  function generateContent() {
+    var menu = document.querySelector(".post-menu");
+    var menuContent =  menu.querySelector(".post-menu-content");
+    var headings = document.querySelector(".post-content").querySelectorAll("h2, h3, h4, h5, h6");
+
+    // Hide menu when no headings
+    if (headings.length === 0) {
+      return menu.style.display = "none";
+    }
+
+    // Generate post menu
+    var menuHTML = '';
+    for (var i = 0; i < headings.length; i++) {
+      var h = headings[i];
+      menuHTML += (
+        '<li class="h-' + h.tagName.toLowerCase() + '">'
+        + '<a href="#h-' + h.getAttribute('id') + '">' + h.textContent + '</a></li>');
+    }
+
+    menuContent.innerHTML = '<ul>' + menuHTML + '</ul>';
+
+    // The header element
+    var header = document.querySelector('header.site-header');
+
+    function doMenuCollapse(index, over_items) {
+      var items = menuContent.firstChild.children;
+
+      if (over_items == undefined) {
+        over_items = 20;
+      }
+
+      if (items.length < over_items) {
+        return;
+      }
+
+      var activeItem = items[index];
+      var beginItem = activeItem
+      var endItem = activeItem
+      var beginIndex = index;
+      var endIndex = index + 1;
+      while (beginIndex >= 0
+        && !items[beginIndex].classList.contains('h-h2')) {
+        beginIndex -= 1;
+      }
+      while (endIndex < items.length
+        && !items[endIndex].classList.contains('h-h2')) {
+        endIndex += 1;
+      }
+      for (var i = 0; i < beginIndex; i++) {
+        item = items[i]
+        if (!item.classList.contains('h-h2')) {
+          item.style.display = 'none';
+        }
+      }
+      for (var i = beginIndex + 1; i < endIndex; i++) {
+        item = items[i]
+        // if (!item.classList.contains('h-h2')) {
+          item.style.display = '';
+        // }
+      }
+      for (var i = endIndex; i < items.length; i++) {
+        item = items[i]
+        if (!item.classList.contains('h-h2')) {
+          item.style.display = 'none';
+        }
+      }
+    }
+
+    // Init menu collapsed
+    doMenuCollapse(-1);
+
+    // Active the menu item
+    window.addEventListener('scroll', function (event) {
+      var lastActive = menuContent.querySelector('.active');
+      var changed = true;
+      var activeIndex = -1;
+      for (var i = headings.length - 1; i >= 0; i--) {
+        var h = headings[i];
+        var headingRect = h.getBoundingClientRect();
+        var headerRect = header.getBoundingClientRect();
+        var headerTop = Math.floor(headerRect.top);
+        var headerHeight = Math.floor(headerRect.height);
+        var headerHeight = headerTop + headerHeight + 20;
+        if (headingRect.top <= headerHeight) {
+          var id = 'h-' + h.getAttribute('id');
+          var a = menuContent.querySelector('a[href="#' + id  + '"]');
+          var curActive = a.parentNode;
+          if (curActive) {
+            curActive.classList.add('active');
+            activeIndex = i;
+          }
+          if (lastActive == curActive) {
+            changed = false;
+          }
+          break;
+        }
+      }
+      if (changed) {
+        if (lastActive) {
+          lastActive.classList.remove('active');
+        }
+        doMenuCollapse(activeIndex);
+      }
+      event.preventDefault();
+    });
+  }
+  generateContent();
+</script>
+</section>
+</div>
+
+      </div>
+    </main><footer class="site-footer h-card">
+  <data class="u-url" href="/jekyll-theme-yat/"></data>
+
+  <div class="wrapper">
+    <div class="site-footer-inner">
+<div>Waka-DS © 2021-2026</div>
+      <div>Powered by <a title="Jekyll is a simple, blog-aware, static site
+      generator." href="http://jekyllrb.com/">Jekyll</a> &amp; <a title="Yat, yet
+      another theme." href="https://github.com/jeffreytse/jekyll-theme-yat">Yat Theme</a>.</div>
+      <div class="footer-col rss-subscribe">Subscribe <a href="/jekyll-theme-yat/feed.xml">via RSS</a>
+</div>
+    </div>
+  </div>
+</footer>
+</body>
+</html>

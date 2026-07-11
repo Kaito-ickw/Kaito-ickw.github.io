@@ -1,0 +1,1013 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <script>
+  (function() {
+    try {
+      var p = localStorage.getItem('preferred_lang');
+      if (!p) return;
+      var path = window.location.pathname;
+      var ja = ['/', '/archives.html', '/categories.html', '/tags.html', '/about.html'];
+      var en = ['/en/', '/en/archives.html', '/en/categories.html', '/en/tags.html', '/en/about.html'];
+      if (p === 'en' && ja.indexOf(path) !== -1) {
+        window.location.replace('/en' + (path === '/' ? '/' : path));
+      } else if (p === 'ja' && en.indexOf(path) !== -1) {
+        window.location.replace(path.slice(3) || '/');
+      }
+    } catch(e) {}
+  })();
+  </script>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="google-translate-customization" content="108d9124921d80c3-80e20d618ff053c8-g4f02ec6f3dba68b7-c">
+<!-- Begin Jekyll SEO tag v2.9.0 -->
+<title>AIエージェント前提のターミナル Herdr と cmux | Waka-DS.com</title>
+<meta name="generator" content="Jekyll v4.4.1">
+<meta property="og:title" content="AIエージェント前提のターミナル Herdr と cmux">
+<meta name="author" content="Waka-DS">
+<meta property="og:locale" content="ja">
+<meta name="description" content="Claude CodeやCodex CLIを1つのターミナルで動かすだけなら、これまでのtmuxやiTerm2で十分だった。ただ、複数のエージェントを同時に走らせて、片方が入力や承認待ちで止まっている間にもう片方の作業を見る、という運用が当たり前になると事情が変わってくる。tmuxのペインはエージェントの状態を知らないので、どのペインが人の入力を待っているかは自分の目で探すしかない。">
+<meta name="twitter:description" property="og:description" content="Claude CodeやCodex CLIを1つのターミナルで動かすだけなら、これまでのtmuxやiTerm2で十分だった。ただ、複数のエージェントを同時に走らせて、片方が入力や承認待ちで止まっている間にもう片方の作業を見る、という運用が当たり前になると事情が変わってくる。tmuxのペインはエージェントの状態を知らないので、どのペインが人の入力を待っているかは自分の目で探すしかない。">
+<link rel="canonical" href="/jekyll-theme-yat/ai%E9%96%8B%E7%99%BA/2026/07/11/ai-agent-terminal-herdr-cmux.html">
+<meta property="og:url" content="/jekyll-theme-yat/ai%E9%96%8B%E7%99%BA/2026/07/11/ai-agent-terminal-herdr-cmux.html">
+<meta property="og:site_name" content="Waka-DS.com">
+<meta property="og:image" content="/jekyll-theme-yat/assets/images/posts/2026-07-11-ai-agent-terminal-herdr-cmux/eyecatch.png">
+<meta property="og:image:alt" content="並んだ複数の作業ブースのうち一つだけ静止し、そのブースだけに橙色の光る枠が灯って目立っているリソグラフ風のイラスト">
+<meta property="og:type" content="article">
+<meta property="article:published_time" content="2026-07-11T00:00:00+00:00">
+<meta property="article:modified_time" content="2026-07-11T00:00:00+00:00">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="/jekyll-theme-yat/assets/images/posts/2026-07-11-ai-agent-terminal-herdr-cmux/eyecatch.png">
+<meta name="twitter:image:alt" content="並んだ複数の作業ブースのうち一つだけ静止し、そのブースだけに橙色の光る枠が灯って目立っているリソグラフ風のイラスト">
+<meta name="twitter:title" content="AIエージェント前提のターミナル Herdr と cmux">
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":"Waka-DS"},"dateModified":"2026-07-11T00:00:00+00:00","datePublished":"2026-07-11T00:00:00+00:00","description":"Claude CodeやCodex CLIを1つのターミナルで動かすだけなら、これまでのtmuxやiTerm2で十分だった。ただ、複数のエージェントを同時に走らせて、片方が入力や承認待ちで止まっている間にもう片方の作業を見る、という運用が当たり前になると事情が変わってくる。tmuxのペインはエージェントの状態を知らないので、どのペインが人の入力を待っているかは自分の目で探すしかない。","headline":"AIエージェント前提のターミナル Herdr と cmux","image":{"alt":"並んだ複数の作業ブースのうち一つだけ静止し、そのブースだけに橙色の光る枠が灯って目立っているリソグラフ風のイラスト","url":"/jekyll-theme-yat/assets/images/posts/2026-07-11-ai-agent-terminal-herdr-cmux/eyecatch.png","@type":"imageObject"},"mainEntityOfPage":{"@type":"WebPage","@id":"/jekyll-theme-yat/ai%E9%96%8B%E7%99%BA/2026/07/11/ai-agent-terminal-herdr-cmux.html"},"url":"/jekyll-theme-yat/ai%E9%96%8B%E7%99%BA/2026/07/11/ai-agent-terminal-herdr-cmux.html"}</script>
+<!-- End Jekyll SEO tag -->
+<link rel="shortcut icon" href="">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=Noto+Sans+JP:wght@400;500;700&amp;display=swap">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+  <link rel="stylesheet" href="/jekyll-theme-yat/assets/css/main.css">
+  <script src="/jekyll-theme-yat/assets/js/main.js"></script><link type="application/atom+xml" rel="alternate" href="/jekyll-theme-yat/feed.xml" title="Waka-DS.com">
+<script>
+  function initGoogleAnalytics() {
+    var doNotTrack = (window.doNotTrack === "1" || navigator.doNotTrack === "1" ||
+      navigator.doNotTrack === "yes" || navigator.msDoNotTrack === "1");
+    var enableDNT = "true" == "true";
+
+    if (!enableDNT || !doNotTrack) {
+      var ga_id = 'G-XNP1RBTG9C';
+
+      var script = document.createElement('script');
+      script.async = true;
+      script.src = 'https://www.googletagmanager.com/gtag/js?id=' + ga_id;
+      document.head.appendChild(script);
+
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', ga_id);
+    }
+  }
+  window.addEventListener("load", initGoogleAnalytics);
+</script>
+<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/styles/default.min.css">
+<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/highlight.min.js"></script>
+<!-- and it's easy to individually load additional languages -->
+<script charset="UTF-8" src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/languages/go.min.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<script>
+// Init highlight js
+document.addEventListener('DOMContentLoaded', function(event) {
+  var els = document.querySelectorAll('pre code')
+
+  function addLangData(block) {
+    var outer = block.parentElement.parentElement.parentElement;
+    var lang = block.getAttribute('data-lang');
+    for (var i = 0; i < outer.classList.length; i++) {
+      var cls = outer.classList[i];
+      if (cls.startsWith('language-')) {
+        lang = cls;
+        break;
+      }
+    }
+    if (!lang) {
+      cls = block.getAttribute('class');
+      lang = cls ? cls.replace('hljs ', '') : '';
+    }
+    if (lang.startsWith('language-')) {
+      lang = lang.substr(9);
+    }
+    block.setAttribute('class', 'hljs ' + lang);
+    block.parentNode.setAttribute('data-lang', lang);
+  }
+
+  function addBadge(block) {
+    var enabled = ('true' || 'true').toLowerCase();
+    if (enabled == 'true') {
+      var pre = block.parentElement;
+      pre.classList.add('badge');
+    }
+  }
+
+  function handle(block) {
+    addLangData(block);
+    addBadge(block)
+    hljs.highlightBlock(block);
+  }
+
+  for (var i = 0; i < els.length; i++) {
+    var el = els[i];
+    handle(el);
+  }
+});
+</script>
+
+<style>
+  /* code language badge */
+  pre.badge::before {
+    content: attr(data-lang);
+    color: #fff;
+    background-color: #0d9488;
+    padding: 0 .5em;
+    border-radius: 0 2px;
+    text-transform: uppercase;
+    text-align: center;
+    min-width: 32px;
+    display: inline-block;
+    position: absolute;
+    right: 0;
+  }
+
+  /* fix wrong badge display for firefox browser */
+  code > table pre::before {
+    display: none;
+  }
+</style>
+</head>
+<body>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<header class="site-header " role="banner">
+
+  <div class="wrapper">
+    <div class="site-header-inner">
+<span class="site-brand"><a class="site-brand-inner" rel="author" href="/jekyll-theme-yat/">
+  <img class="site-favicon" title="Waka-DS.com" src="" onerror="this.style.display='none'">
+  Waka-DS.com
+</a>
+</span><nav class="site-nav">
+          <input type="checkbox" id="nav-trigger" class="nav-trigger">
+          <label for="nav-trigger">
+            <span class="menu-icon">
+              <svg viewbox="0 0 18 15" width="18px" height="15px">
+                <path d="M18,1.484c0,0.82-0.665,1.484-1.484,1.484H1.484C0.665,2.969,0,2.304,0,1.484l0,0C0,0.665,0.665,0,1.484,0 h15.032C17.335,0,18,0.665,18,1.484L18,1.484z M18,7.516C18,8.335,17.335,9,16.516,9H1.484C0.665,9,0,8.335,0,7.516l0,0 c0-0.82,0.665-1.484,1.484-1.484h15.032C17.335,6.031,18,6.696,18,7.516L18,7.516z M18,13.516C18,14.335,17.335,15,16.516,15H1.484 C0.665,15,0,14.335,0,13.516l0,0c0-0.82,0.665-1.483,1.484-1.483h15.032C17.335,12.031,18,12.695,18,13.516L18,13.516z"></path>
+              </svg>
+            </span>
+          </label>
+
+          <div class="trigger">
+<a class="page-link" href="/jekyll-theme-yat/about.html">ABOUT</a><a class="page-link" href="/jekyll-theme-yat/archives.html">ARCHIVES</a><a class="page-link" href="/jekyll-theme-yat/categories.html">CATEGORIES</a><a class="page-link" href="/jekyll-theme-yat/">HOME</a><a class="page-link" href="/jekyll-theme-yat/tags.html">TAGS</a>
+</div>
+        </nav>
+</div>
+  </div>
+</header>
+
+<script>
+  function initHeader() {
+    var lastScrollY = getScrollPos().y;
+    var documentElement = document.documentElement;
+
+    function storeScrollData() {
+      var y = getScrollPos().y;var scrollStatus = "";
+
+      if (y <= 0) {
+        scrollStatus = "top";
+      } else if ((window.innerHeight + y) >= document.body.offsetHeight) {
+        scrollStatus = "bottom";
+      } else {
+        var isScrollDown = (y - lastScrollY > 0) ? true : false;
+        scrollStatus = isScrollDown ? "down" : "up";
+      }
+
+      lastScrollY = y;
+      documentElement.setAttribute("data-scroll-status", scrollStatus);
+    }
+
+    window.addEventListener('scroll', function(e) {
+      storeScrollData();
+    });
+
+    storeScrollData();
+  }
+  document.addEventListener('DOMContentLoaded', initHeader);
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<script>
+  function hashLocate(hashValue) {
+    hashValue = hashValue.replace(/^.*#h-/, '');
+    hashValue = decodeURIComponent(hashValue);
+    var element = document.getElementById(hashValue);
+
+    if (!element) {
+      return;
+    }
+
+    var header = document.querySelector('header.site-header');
+    var headerRect = header.getBoundingClientRect();
+    var headerTop = Math.floor(headerRect.top);
+    var headerHeight = Math.floor(headerRect.height);
+    var scrollPos = getScrollPos();
+    var offsetY = element.offsetTop - (headerTop + headerHeight + 20);
+
+    if (offsetY == scrollPos.y) {
+      return;
+    }
+
+    if (headerTop == 0  && offsetY > scrollPos.y) {
+      offsetY += headerHeight + 2;
+    } else if (headerTop < 0  && offsetY < scrollPos.y) {
+      offsetY -= headerHeight - 2;
+    }
+
+    smoothScrollTo(offsetY);
+  }
+
+  // The first event occurred
+  window.addEventListener('load', function(event) {
+    if (window.location.hash) {
+      hashLocate(window.location.hash);
+    }
+  });
+
+  // The first event occurred
+  window.addEventListener('click', function(event) {
+    if (event.target.tagName.toLowerCase() == 'a') {
+      hashLocate(event.target.getAttribute('href'));
+    }
+  });
+</script>
+<div class="theme-toggle">
+  <input type="checkbox" id="theme-switch">
+  <label for="theme-switch">
+    <div class="toggle"></div>
+    <div class="names">
+      <p class="light">Light</p>
+      <p class="dark">Dark</p>
+    </div>
+  </label>
+</div>
+
+
+
+
+<script>
+  (function() {
+    var sw = document.getElementById('theme-switch');
+    var html = document.getElementsByTagName('html')[0];
+    var nightModeOption = ('auto' || 'auto').toLowerCase();
+    var storage = nightModeOption === 'manual'
+        ? localStorage
+        : sessionStorage;
+    var themeData = loadThemeData();
+
+    function saveThemeData(data) {
+      storage.setItem('theme', JSON.stringify(data));
+    }
+
+    function loadThemeData() {
+      var data = storage.getItem('theme');
+      try {
+        data = JSON.parse(data ? data : '');
+      } catch(e) {
+        data = { nightShift: undefined, autoToggleAt: 0 };
+        saveThemeData(data);
+      }
+      return data;
+    }
+
+    function handleThemeToggle(nightShift) {
+      themeData.nightShift = nightShift;
+      saveThemeData(themeData);
+      html.dataset.theme = nightShift ? 'dark' : 'light';
+      setTimeout(function() {
+        sw.checked = nightShift ? true : false;
+      }, 50);
+    }
+
+    function autoThemeToggle() {
+      // Next time point of theme toggle
+      var now = new Date();
+      var toggleAt = new Date();
+      var hours = now.getHours();
+      var nightShift = hours >= 19 || hours <=7;
+
+      if (nightShift) {
+        if (hours > 7) {
+          toggleAt.setDate(toggleAt.getDate() + 1);
+        }
+        toggleAt.setHours(7);
+      } else {
+        toggleAt.setHours(19);
+      }
+
+      toggleAt.setMinutes(0);
+      toggleAt.setSeconds(0);
+      toggleAt.setMilliseconds(0)
+
+      var delay = toggleAt.getTime() - now.getTime();
+
+      // auto toggle theme mode
+      setTimeout(function() {
+        handleThemeToggle(!nightShift);
+      }, delay);
+
+      return {
+        nightShift: nightShift,
+        toggleAt: toggleAt.getTime()
+      };
+    }
+
+    // Listen the theme toggle event
+    sw.addEventListener('change', function(event) {
+      handleThemeToggle(event.target.checked);
+    });
+
+    if (nightModeOption == 'auto') {
+      var data = autoThemeToggle();
+
+      // Toggle theme by local setting
+      if (data.toggleAt > themeData.autoToggleAt) {
+        themeData.autoToggleAt = data.toggleAt;
+        handleThemeToggle(data.nightShift);
+      } else {
+        handleThemeToggle(themeData.nightShift);
+      }
+    } else if (nightModeOption == 'manual') {
+      handleThemeToggle(themeData.nightShift);
+    } else {
+      var nightShift = themeData.nightShift;
+      if (nightShift === undefined) {
+        nightShift = nightModeOption === 'on';
+      }
+      handleThemeToggle(nightShift);
+    }
+  })();
+</script>
+<main class="page-content" aria-label="Content">
+      <div class="wrapper">
+        <div class="framework">
+  <section class="main">
+
+     <div class="post post--with-image">
+  <section>
+
+
+
+
+
+
+
+
+
+<header class="post-header">
+  <h1 class="post-title p-name" itemprop="name headline">AIエージェント前提のターミナル Herdr と cmux</h1>
+  <h2 class="post-subtitle">Herdr と cmux が解決するマルチエージェント運用の課題</h2>
+
+  <p class="post-meta">
+    <time class="dt-published" datetime="2026-07-11T00:00:00+00:00" itemprop="datePublished"><i class="fa fa-calendar"></i> Jul 11, 2026
+    </time>
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <span class="post-reading-time left-vsplit"><i class="fa fa-clock-o"></i> About 12 mins</span>
+  </p>
+<div class="post-tags">
+<a class="post-tag" href="/jekyll-theme-yat/tags.html#AI%E3%82%A8%E3%83%BC%E3%82%B8%E3%82%A7%E3%83%B3%E3%83%88">#AIエージェント</a><a class="post-tag" href="/jekyll-theme-yat/tags.html#%E3%83%9E%E3%83%AB%E3%83%81%E3%82%A8%E3%83%BC%E3%82%B8%E3%82%A7%E3%83%B3%E3%83%88">#マルチエージェント</a><a class="post-tag" href="/jekyll-theme-yat/tags.html#%E3%82%B3%E3%83%BC%E3%83%87%E3%82%A3%E3%83%B3%E3%82%B0%E3%82%A8%E3%83%BC%E3%82%B8%E3%82%A7%E3%83%B3%E3%83%88">#コーディングエージェント</a><a class="post-tag" href="/jekyll-theme-yat/tags.html#Claude%20Code">#Claude Code</a><a class="post-tag" href="/jekyll-theme-yat/tags.html#Codex">#Codex</a><a class="post-tag" href="/jekyll-theme-yat/tags.html#%E8%87%AA%E5%8B%95%E5%8C%96">#自動化</a><a class="post-tag" href="/jekyll-theme-yat/tags.html#CLI">#CLI</a><a class="post-tag" href="/jekyll-theme-yat/tags.html#OSS">#OSS</a><a class="post-tag" href="/jekyll-theme-yat/tags.html#Herdr">#Herdr</a><a class="post-tag" href="/jekyll-theme-yat/tags.html#cmux">#cmux</a>
+</div></header>
+<figure class="post-eyecatch">
+  <img src="/jekyll-theme-yat/assets/images/posts/2026-07-11-ai-agent-terminal-herdr-cmux/eyecatch.png" alt="並んだ複数の作業ブースのうち一つだけ静止し、そのブースだけに橙色の光る枠が灯って目立っているリソグラフ風のイラスト" decoding="async" fetchpriority="high">
+</figure><article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
+
+    <div class="post-content e-content" itemprop="articleBody">
+
+      <p>Claude CodeやCodex CLIを1つのターミナルで動かすだけなら、これまでのtmuxやiTerm2で十分だった。ただ、複数のエージェントを同時に走らせて、片方が入力や承認待ちで止まっている間にもう片方の作業を見る、という運用が当たり前になると事情が変わってくる。tmuxのペインはエージェントの状態を知らないので、どのペインが人の入力を待っているかは自分の目で探すしかない。</p>
+
+<p>この隙間を埋めるツールとして、2026年に入ってHerdrとcmuxという2つのターミナルが登場した。どちらも「AIエージェントが端末を使うこと」を前提に設計されている点が共通する。本記事ではこの2つを軸に、AIエージェント前提のターミナルというカテゴリが何を解決しようとしているのかを整理する。</p>
+
+<blockquote>
+  <p>本記事のバージョン・スター数・ライセンス情報は2026年7月11日に各公式サイト・GitHubリポジトリで確認した内容である。両ツールとも開発が速く、数週間で仕様が変わる可能性がある。</p>
+</blockquote>
+
+<hr>
+
+<h2 id="何がaiエージェント前提を定義するか">何が「AIエージェント前提」を定義するか</h2>
+
+<p>既存のターミナルマルチプレクサ（tmux、Zellijなど）は、プロセスが人間のシェルであることを前提に設計されている。ペインは単なる画面の分割で、中で動いているプロセスが「作業中」なのか「入力待ち」なのかをターミナル側は関知しない。</p>
+
+<p>HerdrとcmuxはいずれもClaude Code、Codex、OpenCode、Gemini CLIなど、ターミナルで動くエージェントを前提に、複数エージェントをタブやペインで並行管理し、入力待ちのペインを通知やハイライトで知らせるという問題意識を共有している。ただし状態を知る仕組みは同じではない。Herdrはプロセスそのものを監視して状態を自動識別するのに対し、cmuxは通知シーケンスやフックを介してエージェント側から状態を伝える方式を取る。以下、それぞれの実装を見ていく。</p>
+
+<hr>
+
+<h2 id="herdr-tmuxを置き換えるエージェント検知付きの多重化ツール">Herdr: tmuxを置き換える、エージェント検知付きの多重化ツール</h2>
+
+<p><a href="https://herdr.dev/">Herdr</a>は「one terminal for the whole herd」を謳う、Rust製のエージェント用ターミナルマルチプレクサである。tmuxのペイン・タブ・セッション永続化のモデルを踏襲しつつ、動いているプロセスをエージェントとして自動識別し、working・idle・blockedといった状態をサイドバーに表示する。</p>
+
+<p>見た目や操作感はtmuxに近く、既存のWezTerm、iTerm2、Kittyなど手元のターミナルの中でHerdrというプロセスを起動する形になる。cmuxのような専用GUIアプリではなく、あくまでターミナル内で完結するTUIというのが立ち位置だ。</p>
+
+<p>主な特徴は次のとおり。</p>
+
+<ul>
+  <li>セッションが端末を閉じても生き続け、SSH経由で同じ永続セッションへどこからでも再接続できる</li>
+  <li>15種類以上のエージェントを追加設定なしで検知する（Claude Code、GitHub Copilot CLI、Codexなどが対象）</li>
+  <li>CLIとJSONソケットAPIを備え、通知フックなど外部の自動化と連携できる</li>
+</ul>
+
+<p>開発はRustで、AGPL-3.0-or-laterのオープンソース版と、組織向けの商用ライセンスを併用するデュアルライセンス方式を取っている。2026年7月11日時点でGitHubスター数は15.3k、最新リリースはv0.7.3（2026年7月7日）。インストールは<code class="language-plaintext highlighter-rouge">curl -fsSL https://herdr.dev/install.sh | sh</code>で行う（Windows版はベータ扱い）。</p>
+
+<p>すでにtmuxやSSH経由のリモート開発に慣れているなら、操作感を変えずにエージェント検知だけ足す選択として合っている。</p>
+
+<hr>
+
+<h2 id="cmux-ghosttyベースのaiエージェント運用を前提にしたmacosネイティブターミナル">cmux: Ghosttyベースの、AIエージェント運用を前提にしたmacOSネイティブターミナル</h2>
+
+<p><a href="https://cmux.com/">cmux</a>（<a href="https://github.com/manaflow-ai/cmux">GitHubリポジトリ</a>）は、Ghosttyのレンダリングエンジンであるlibghosttyを使い、Manaflow AIがSwift + AppKitで組み上げたmacOS専用のネイティブアプリである。Ghosttyのフォークではなく、レンダリング部分を利用した別アプリという位置づけになる。tmuxのようにターミナルの中で動くツールではなく、cmux自体がターミナルアプリそのものという点がHerdrと異なる。</p>
+
+<p>サイドバーには縦型タブが並び、各ワークスペースのgitブランチ、紐づくPRのステータス、待ち受けポート、直近の通知内容が表示される。エージェントが入力を待っている間はペインの枠に青いリングが表示され、該当タブも点灯する。</p>
+
+<p>cmux独自の機能として次の2つが目立つ。</p>
+
+<ul>
+  <li>
+<strong>Embedded Browser</strong>: ターミナルの隣にブラウザペインを分割表示できる。ナビゲーション、DOM取得、クリック、入力、JavaScript実行をプログラムから操作でき、エージェントが自分の変更したWebページをその場で確認できる</li>
+  <li>
+<strong>Claude Code Teamsのペイン可視化</strong>: <code class="language-plaintext highlighter-rouge">cmux claude-teams</code>により、Claude Codeのteammateモードでサブエージェントが生成された際、それらを隠れたバックグラウンドプロセスではなく、可視化されたネイティブのペイン・分割として扱う</li>
+</ul>
+
+<p>対応エージェントはClaude Code、Codex、OpenCode、Gemini CLIなど、ターミナルから起動できるものであれば基本的に動く。ライセンスはGPL-3.0-or-later、開発元はManaflow AI。2026年7月11日時点でGitHubスター数は24.2k、最新リリースはv0.64.17（2026年6月23日）。インストールはDMG配布のほか、<code class="language-plaintext highlighter-rouge">brew tap manaflow-ai/cmux &amp;&amp; brew install --cask cmux</code>で行える。無料・オープンソースで、Herdrと同様に組織向けの商用ライセンスも別途用意されている。加えて、開発を支援し早期アクセスを受けたい個人向けに「cmux Founders Edition」という支援プランがある（これはライセンス形態ではなく有償プラン）。</p>
+
+<p>macOSを使っていて、リッチなGUIとブラウザ連携込みでエージェント運用を可視化したいなら、cmuxの方が体験として作り込まれている。ただし現状はmacOS専用で、Linux・Windows・Android対応はウェイトリスト段階にとどまる。</p>
+
+<hr>
+
+<h2 id="herdrとcmuxの比較">Herdrとcmuxの比較</h2>
+
+<table>
+  <thead>
+    <tr>
+      <th style="text-align: left">観点</th>
+      <th style="text-align: left">Herdr</th>
+      <th style="text-align: left">cmux</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td style="text-align: left">形態</td>
+      <td style="text-align: left">既存ターミナル内で動くTUI（tmux型）</td>
+      <td style="text-align: left">Ghostty基盤のネイティブGUIアプリ</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">対応OS</td>
+      <td style="text-align: left">macOS・Linux（安定）、Windows（ベータ）</td>
+      <td style="text-align: left">macOSのみ（他OSはウェイトリスト）</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">実装言語</td>
+      <td style="text-align: left">Rust</td>
+      <td style="text-align: left">Swift</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">リモート利用</td>
+      <td style="text-align: left">SSH経由で永続セッションへ再接続</td>
+      <td style="text-align: left">SSHリモートワークスペースへ接続</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">特徴的な機能</td>
+      <td style="text-align: left">JSONソケットAPI、15種以上のエージェント自動検知</td>
+      <td style="text-align: left">Embedded Browser、Claude Code Teamsのペイン可視化</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">ライセンス</td>
+      <td style="text-align: left">AGPL-3.0-or-later（無料）+ 組織向け商用ライセンス</td>
+      <td style="text-align: left">GPL-3.0-or-later（無料）+ 組織向け商用ライセンス</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">スター数（2026-07-11時点）</td>
+      <td style="text-align: left">15.3k</td>
+      <td style="text-align: left">24.2k</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>どちらもtmux的な「複数の作業を同時に見る」発想を、人間ではなくエージェントの状態に合わせて再設計した点は共通している。違いは、既存のターミナル資産を活かすか（Herdr）、ターミナルごと置き換えてネイティブアプリの体験を取るか（cmux）という設計判断にある。</p>
+
+<hr>
+
+<h2 id="周辺で広がるエージェント多重化ツール群">周辺で広がるエージェント多重化ツール群</h2>
+
+<p>HerdrとcmuxはAIエージェント前提ターミナルという新しいカテゴリの中でも代表格だが、同時期に類似のツールもいくつか登場している。<a href="https://github.com/mixpeek/amux">amux</a>はクラッシュしたエージェントを自動検知して復旧させるウォッチドッグ機能とWebダッシュボード・モバイル通知を備え、tmuxの上にエージェント制御プレーンを重ねるツールとして紹介されている。<a href="https://github.com/standardagents/dmux">dmux</a>はGit worktreeによる作業分離に特化し、1コマンドで複数エージェントへタスクを振り分けるtmuxペインマネージャーである。cmuxのWindows移植を掲げる<a href="https://github.com/amirlehmam/wmux">wmux</a>のようなプロジェクトも出てきている。</p>
+
+<p>なお「amux」という名称は本記事で参照したmixpeek/amux以外にも同名の別プロジェクトが複数存在する。このカテゴリ自体が命名も含めてまだ流動的であることの表れでもあるので、導入時はリポジトリのオーナーとURLを取り違えないよう確認したい。上記の比較記事はamux.io自身によるものであり、他ツールとの比較は一次情報というより参考情報として扱うのがよい。</p>
+
+<hr>
+
+<h2 id="まとめ">まとめ</h2>
+
+<p>tmuxやiTerm2でも複数のAIエージェントを並行して動かすこと自体はできる。HerdrとcmuxはそこにAIエージェント特有の状態管理を組み込み、「どのエージェントが今止まっているか」を探す手間を減らすことに重点を置いたツールだ。既存のターミナル運用を変えたくないならHerdr、macOSでネイティブアプリの体験ごと刷新したいならcmuxが候補になる。</p>
+
+<h2 id="参考">参考</h2>
+
+<ul>
+  <li><a href="https://herdr.dev/">Herdr公式サイト</a></li>
+  <li><a href="https://herdr.dev/docs/">Herdr ドキュメント</a></li>
+  <li><a href="https://github.com/ogulcancelik/herdr">ogulcancelik/herdr - GitHub</a></li>
+  <li><a href="https://cmux.com/">cmux公式サイト</a></li>
+  <li><a href="https://github.com/manaflow-ai/cmux">manaflow-ai/cmux - GitHub</a></li>
+  <li><a href="https://dev.to/arshtechpro/cmux-the-native-macos-terminal-built-for-running-ai-coding-agents-in-parallel-52il">cmux: The Native macOS Terminal Built for Running AI Coding Agents in Parallel - DEV Community</a></li>
+  <li><a href="https://amux.io/guides/best-ai-agent-multiplexers-2026/">Best AI Agent Multiplexers Compared (2026): 12 Tools Ranked — amux</a></li>
+  <li><a href="https://github.com/mixpeek/amux">mixpeek/amux - GitHub</a></li>
+  <li><a href="https://github.com/standardagents/dmux">standardagents/dmux - GitHub</a></li>
+  <li><a href="https://github.com/amirlehmam/wmux">amirlehmam/wmux - GitHub</a></li>
+</ul>
+
+
+    </div>
+
+</article>
+<div class="post-nav">
+<a class="previous" href="/jekyll-theme-yat/ai%E9%96%8B%E7%99%BA/2026/06/24/gsd-core-ai-coding-workflow.html" title="GSD CoreでAIコーディングを仕様駆動の工程に変える">GSD CoreでAIコーディングを仕様駆動の工程に変える</a><span></span>
+</div>
+<div class="post-related">
+      <div>Related Articles</div>
+      <ul>
+        <li><a class="post-link" href="/jekyll-theme-yat/ai%E9%96%8B%E7%99%BA/2026/06/13/openclaw-personal-ai-agent.html" title="">OpenClawで自分専用のAIエージェントを動かす</a></li>
+<li><a class="post-link" href="/jekyll-theme-yat/ai%E9%96%8B%E7%99%BA/2026/06/23/mcp-security-operations.html" title="">MCPサーバーを安全に運用する</a></li>
+<li><a class="post-link" href="/jekyll-theme-yat/ai%E9%96%8B%E7%99%BA/2026/06/24/ai-subscription-telehodai.html" title="">AIサブスクのレートリミットは令和のテレホーダイか</a></li>
+<li><a class="post-link" href="/jekyll-theme-yat/%E9%96%8B%E7%99%BA/2026/06/10/git-submodule-subtree.html" title="">Git submodule と Git subtree の違いと使い分け</a></li>
+</ul>
+    </div>
+<div class="post-comments"></div></section>
+</div>
+
+
+  </section>
+  <section class="sidebar" style="margin-left: 15px;">
+    <!-- Get sidebar items --><style type="text/css" media="screen">
+.post-menu ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+</style>
+
+<div class="post-menu">
+  <div class="post-menu-title">TOC</div>
+  <div class="post-menu-content"></div>
+</div>
+
+<script>
+  function generateContent() {
+    var menu = document.querySelector(".post-menu");
+    var menuContent =  menu.querySelector(".post-menu-content");
+    var headings = document.querySelector(".post-content").querySelectorAll("h2, h3, h4, h5, h6");
+
+    // Hide menu when no headings
+    if (headings.length === 0) {
+      return menu.style.display = "none";
+    }
+
+    // Generate post menu
+    var menuHTML = '';
+    for (var i = 0; i < headings.length; i++) {
+      var h = headings[i];
+      menuHTML += (
+        '<li class="h-' + h.tagName.toLowerCase() + '">'
+        + '<a href="#h-' + h.getAttribute('id') + '">' + h.textContent + '</a></li>');
+    }
+
+    menuContent.innerHTML = '<ul>' + menuHTML + '</ul>';
+
+    // The header element
+    var header = document.querySelector('header.site-header');
+
+    function doMenuCollapse(index, over_items) {
+      var items = menuContent.firstChild.children;
+
+      if (over_items == undefined) {
+        over_items = 20;
+      }
+
+      if (items.length < over_items) {
+        return;
+      }
+
+      var activeItem = items[index];
+      var beginItem = activeItem
+      var endItem = activeItem
+      var beginIndex = index;
+      var endIndex = index + 1;
+      while (beginIndex >= 0
+        && !items[beginIndex].classList.contains('h-h2')) {
+        beginIndex -= 1;
+      }
+      while (endIndex < items.length
+        && !items[endIndex].classList.contains('h-h2')) {
+        endIndex += 1;
+      }
+      for (var i = 0; i < beginIndex; i++) {
+        item = items[i]
+        if (!item.classList.contains('h-h2')) {
+          item.style.display = 'none';
+        }
+      }
+      for (var i = beginIndex + 1; i < endIndex; i++) {
+        item = items[i]
+        // if (!item.classList.contains('h-h2')) {
+          item.style.display = '';
+        // }
+      }
+      for (var i = endIndex; i < items.length; i++) {
+        item = items[i]
+        if (!item.classList.contains('h-h2')) {
+          item.style.display = 'none';
+        }
+      }
+    }
+
+    // Init menu collapsed
+    doMenuCollapse(-1);
+
+    // Active the menu item
+    window.addEventListener('scroll', function (event) {
+      var lastActive = menuContent.querySelector('.active');
+      var changed = true;
+      var activeIndex = -1;
+      for (var i = headings.length - 1; i >= 0; i--) {
+        var h = headings[i];
+        var headingRect = h.getBoundingClientRect();
+        var headerRect = header.getBoundingClientRect();
+        var headerTop = Math.floor(headerRect.top);
+        var headerHeight = Math.floor(headerRect.height);
+        var headerHeight = headerTop + headerHeight + 20;
+        if (headingRect.top <= headerHeight) {
+          var id = 'h-' + h.getAttribute('id');
+          var a = menuContent.querySelector('a[href="#' + id  + '"]');
+          var curActive = a.parentNode;
+          if (curActive) {
+            curActive.classList.add('active');
+            activeIndex = i;
+          }
+          if (lastActive == curActive) {
+            changed = false;
+          }
+          break;
+        }
+      }
+      if (changed) {
+        if (lastActive) {
+          lastActive.classList.remove('active');
+        }
+        doMenuCollapse(activeIndex);
+      }
+      event.preventDefault();
+    });
+  }
+  generateContent();
+</script>
+</section>
+</div>
+
+      </div>
+    </main><footer class="site-footer h-card">
+  <data class="u-url" href="/jekyll-theme-yat/"></data>
+
+  <div class="wrapper">
+    <div class="site-footer-inner">
+<div>Waka-DS © 2021-2026</div>
+      <div>Powered by <a title="Jekyll is a simple, blog-aware, static site
+      generator." href="http://jekyllrb.com/">Jekyll</a> &amp; <a title="Yat, yet
+      another theme." href="https://github.com/jeffreytse/jekyll-theme-yat">Yat Theme</a>.</div>
+      <div class="footer-col rss-subscribe">Subscribe <a href="/jekyll-theme-yat/feed.xml">via RSS</a>
+</div>
+    </div>
+  </div>
+</footer>
+</body>
+</html>
