@@ -58,6 +58,11 @@ articles:
     reason: Google Workspace Studio の機能仕様・対応コネクタ数・利用可能プラン（リリース初期のため頻繁に変わる）
     last_verified: 2026-07-03
 
+  - slug: 2026-07-11-ai-agent-terminal-herdr-cmux
+    stale_risk: high
+    reason: Herdr・cmuxのバージョン番号・GitHubスター数・対応OS・ライセンス形態（リリース初期のツールで変化が速い）
+    last_verified: 2026-07-11
+
   # ── medium: 6ヶ月ごとに確認 ──────────────────────────────
 
   - slug: 2026-06-17-mcp-protocol-overview
