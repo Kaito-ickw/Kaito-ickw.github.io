@@ -13,6 +13,11 @@ articles:
 
   # ── high: 3ヶ月ごとに確認 ────────────────────────────────
 
+  - slug: 2026-07-12-gpt-5-6-prompt-design
+    stale_risk: high
+    reason: GPT-5.6のモデル名・プロンプト設計指針・reasoningおよびtext.verbosityの仕様
+    last_verified: 2026-07-12
+
   - slug: 2026-06-24-ai-subscription-telehodai
     stale_risk: high
     reason: Claude Code・Codexのサブスクリプション利用上限とリセット仕様
