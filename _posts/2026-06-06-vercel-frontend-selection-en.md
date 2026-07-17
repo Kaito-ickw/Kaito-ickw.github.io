@@ -6,6 +6,9 @@ categories: Development
 tags: ["Vercel", "Netlify", "Cloudflare", "Next.js", "Frontend", "Hosting"]
 lang: en
 ref: vercel-frontend-selection
+image:
+  path: /assets/images/posts/2026-06-06-vercel-frontend-selection/eyecatch.png
+  alt: Risograph of a complex web app fitting its dedicated launch platform with a future high-capacity route nearby
 ---
 
 In the [backend selection article]({% post_url 2026-06-06-supabase-vs-railway-comparison-en %}), I summarized the frontend choice as simply `Frontend → Vercel`, but there are specific reasons behind that decision.
