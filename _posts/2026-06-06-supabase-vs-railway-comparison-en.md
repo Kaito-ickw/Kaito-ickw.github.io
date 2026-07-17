@@ -6,6 +6,9 @@ categories: Development
 tags: ["Supabase", "Railway", "Neon", "BaaS", "PaaS", "Backend"]
 lang: en
 ref: supabase-vs-railway-comparison
+image:
+  path: /assets/images/posts/2026-06-06-supabase-vs-railway-comparison/eyecatch.png
+  alt: Paper collage of a log box branching toward a database and identity vault and an API execution platform
 ---
 
 I'm building an AI-native logging app as a personal project.

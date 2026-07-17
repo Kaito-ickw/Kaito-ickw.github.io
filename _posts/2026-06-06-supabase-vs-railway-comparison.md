@@ -7,6 +7,9 @@ tags: ["Supabase", "Railway", "Neon", "BaaS", "PaaS", "バックエンド"]
 lang: ja
 ref: supabase-vs-railway-comparison
 last_modified_at: 2026-07-03
+image:
+  path: /assets/images/posts/2026-06-06-supabase-vs-railway-comparison/eyecatch.png
+  alt: ログの箱からDB・認証の保管庫とAPI実行基盤へ紙の道が分岐するコラージュ
 ---
 
 AIネイティブなログアプリを個人で開発している。
