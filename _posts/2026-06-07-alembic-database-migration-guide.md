@@ -6,6 +6,9 @@ categories: 開発
 tags: ["Alembic", "SQLAlchemy", "PostgreSQL", "データベース", "マイグレーション", "AIネイティブ開発"]
 lang: ja
 ref: alembic-database-migration-guide
+image:
+  path: /assets/images/posts/2026-06-07-alembic-database-migration-guide/eyecatch.png
+  alt: 三つのデータ保管庫を一列の改修台車が同じ順序で変更していくミニチュア工房
 ---
 
 AI ネイティブなログアプリの Phase 2 では、テーブル追加やカラム変更が増えてくる。
