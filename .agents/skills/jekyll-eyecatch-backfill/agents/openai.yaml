@@ -1,0 +1,4 @@
+interface:
+  display_name: "Jekyll Eyecatch Backfill"
+  short_description: "Backfill Jekyll eyecatches safely, one post at a time"
+  default_prompt: "Use $jekyll-eyecatch-backfill to process the next unillustrated post safely."
