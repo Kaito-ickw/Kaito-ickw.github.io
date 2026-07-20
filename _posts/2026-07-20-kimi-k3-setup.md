@@ -2,6 +2,7 @@
 layout: post
 title: "Claude Code環境にKimi K3を導入する"
 subtitle: Anthropic互換APIとKimi CLIの選択肢
+date: 2026-07-20 10:00:00 +0900
 categories: AI開発
 tags: ["Kimi", "Claude Code", "CLI", "AI"]
 lang: ja

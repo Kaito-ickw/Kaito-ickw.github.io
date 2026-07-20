@@ -2,6 +2,7 @@
 layout: post
 title: "Kimi K3 vs Claude Fable 5 vs GPT-5.6 Sol フロンティア比較 (2026年7月版)"
 subtitle: オープンウェイト最大級モデルの実力と位置づけ
+date: 2026-07-20 09:00:00 +0900
 categories: AI開発
 tags: ["AI", "LLM", "Kimi", "OSS"]
 lang: ja
