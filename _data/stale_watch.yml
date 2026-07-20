@@ -13,6 +13,16 @@ articles:
 
   # ── high: 3ヶ月ごとに確認 ────────────────────────────────
 
+  - slug: 2026-07-20-kimi-k3-vs-fable-gpt
+    stale_risk: high
+    reason: Kimi K3・Claude Fable 5・GPT-5.6 Solのベンチマーク数値・価格・ウェイト公開予定日
+    last_verified: 2026-07-20
+
+  - slug: 2026-07-20-kimi-k3-setup
+    stale_risk: high
+    reason: Kimi Coding APIのエンドポイント・モデル名（k3[1m]）・環境変数仕様・Kimi CLIの提供形態
+    last_verified: 2026-07-20
+
   - slug: 2026-07-12-gpt-5-6-prompt-design
     stale_risk: high
     reason: GPT-5.6のモデル名・プロンプト設計指針・reasoningおよびtext.verbosityの仕様
@@ -181,3 +191,13 @@ articles:
     stale_risk: medium
     reason: GSD Core の開発リポジトリ・インストール方法・コマンド名・対応ランタイム・phase loop仕様
     last_verified: 2026-07-03
+
+  - slug: 2026-07-18-japanese-tech-writing-skill
+    stale_risk: medium
+    reason: japanese-tech-writing SKILL.mdの章構成・条項内容（Gistが継続的に更新される）
+    last_verified: 2026-07-20
+
+  - slug: 2026-07-19-cognitive-rhythm-writing-skill
+    stale_risk: medium
+    reason: cognitive-rhythm-writing SKILL.mdの条項・点検手順の内容（Gistが継続的に更新される）
+    last_verified: 2026-07-20

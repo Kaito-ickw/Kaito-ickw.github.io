@@ -6,6 +6,9 @@ categories: AI開発
 tags: ["AIエージェント", "自動化", "AI", "Gemini"]
 lang: ja
 last_modified_at: 2026-07-03
+image:
+  path: /assets/images/posts/2026-06-18-google-workspace-studio-guide/eyecatch.png
+  alt: メールやメモが中央の仕分けを通って通知や表の行へ変わる流れを描いたフラットなポスター調イラスト
 ---
 
 会社でGoogle Workspace Studio の利用が解禁されたはいいが、「何ができるのかよくわからない」という状態になりやすいツールだと思う。Google Docs や Gmail のような既存ツールとどう違うのか、どこから手を付ければいいか、最初は見当がつきにくい。

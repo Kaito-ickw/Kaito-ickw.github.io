@@ -4,6 +4,9 @@ title: "Claude Code の /grill-me: 実装前に設計を問い詰める"
 categories: AI開発
 tags: ["Claude Code", "AIエージェント", "コーディングエージェント", "AIネイティブ開発", "CLI"]
 lang: ja
+image:
+  path: /assets/images/posts/2026-06-18-claude-code-grill-me/eyecatch.png
+  alt: 分岐点で止まった道の先を確かめてから進む様子を表したミニチュアジオラマ写真
 ---
 
 「grill-me」という Claude Code スキルが話題になっている。Matt Pocock が自分の `.claude` ディレクトリをオープンソース化したリポジトリ（mattpocock/skills）に含まれており、GitHub で 5 万以上のスターを集めた。
