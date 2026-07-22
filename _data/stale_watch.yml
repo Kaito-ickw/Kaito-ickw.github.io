@@ -201,3 +201,8 @@ articles:
     stale_risk: medium
     reason: cognitive-rhythm-writing SKILL.mdの条項・点検手順の内容（Gistが継続的に更新される）
     last_verified: 2026-07-20
+
+  - slug: 2026-07-22-loop-engineering-roadmap
+    stale_risk: medium
+    reason: Codex Automations・Skills・worktree・MCPなどエージェント実行環境の仕様
+    last_verified: 2026-07-22
