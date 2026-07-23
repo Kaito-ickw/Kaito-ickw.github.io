@@ -78,6 +78,11 @@ articles:
     reason: Herdr・cmuxのバージョン番号・GitHubスター数・対応OS・ライセンス形態（リリース初期のツールで変化が速い）
     last_verified: 2026-07-11
 
+  - slug: 2026-07-23-physical-ai-data-flywheel-agi
+    stale_risk: high
+    reason: ロボット基盤モデルのバージョン名（π0.7・GR00T N1等）とベンチマーク数値（V-JEPA 2の成功率比較など）
+    last_verified: 2026-07-23
+
   # ── medium: 6ヶ月ごとに確認 ──────────────────────────────
 
   - slug: 2026-06-17-mcp-protocol-overview
