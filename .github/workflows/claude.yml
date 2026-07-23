@@ -11,12 +11,60 @@ on:
     types: [submitted]
 
 jobs:
-  claude:
+  # Issue作成・アサイン時専用。Issue本文を prompt に明示的に渡し、
+  # 確認待ちで停止せず実作業（調査・作成・commit・push・PR作成）まで進める。
+  claude-on-issue-open:
+    if: |
+      github.event_name == 'issues' &&
+      (contains(github.event.issue.body, '@claude') || contains(github.event.issue.title, '@claude'))
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
+      issues: write
+      id-token: write
+      actions: read # Required for Claude to read CI results on PRs
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+
+      - name: Run Claude Code for new issue
+        id: claude
+        uses: anthropics/claude-code-action@v1
+        with:
+          claude_code_oauth_token: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
+
+          additional_permissions: |
+            actions: read
+
+          prompt: |
+            Repository: ${{ github.repository }}
+            Issue number: ${{ github.event.issue.number }}
+            Issue title: ${{ github.event.issue.title }}
+
+            以下のIssue本文に記載された依頼を、確認待ちで停止せず実行してください。
+            Issue本文中の @claude は起動用の記述であり、指示本文の一部として扱ってください。
+
+            --- Issue body ---
+            ${{ github.event.issue.body }}
+            --- End issue body ---
+
+            リポジトリの AGENTS.md / CLAUDE.md に従って作業してください。
+            明示的にユーザーへの質問が必要と書かれていない限り、調査・ファイル作成・commit・push・PR作成まで進めてください。
+            「調査して後で返答する」「I'll analyze this and get back to you」のような応答だけで終了しないでください。
+
+          claude_args: |
+            --allowedTools "Read,Write,Edit,MultiEdit,Glob,Grep,LS,WebFetch,WebSearch,Bash(git:*),Bash(gh:*)"
+
+  # Issue・PRコメント時の対話モード。従来どおり @claude メンションで起動し、
+  # コメント内容をそのまま指示として扱う（追加指示・修正依頼用）。
+  claude-on-comment:
     if: |
       (github.event_name == 'issue_comment' && contains(github.event.comment.body, '@claude')) ||
       (github.event_name == 'pull_request_review_comment' && contains(github.event.comment.body, '@claude')) ||
-      (github.event_name == 'pull_request_review' && contains(github.event.review.body, '@claude')) ||
-      (github.event_name == 'issues' && (contains(github.event.issue.body, '@claude') || contains(github.event.issue.title, '@claude')))
+      (github.event_name == 'pull_request_review' && contains(github.event.review.body, '@claude'))
     runs-on: ubuntu-latest
     permissions:
       contents: write
