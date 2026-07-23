@@ -6,6 +6,9 @@ categories: Development
 tags: ["OpenAPI", "Swagger", "API", "REST", "Backend", "Documentation"]
 lang: en
 ref: openapi-guide
+image:
+  path: /assets/images/posts/2026-06-07-openapi-guide/eyecatch.png
+  alt: Risograph-style illustration of one blueprint distributing shared connectors to three machines
 ---
 
 Anyone who has worked on API development has run into these situations:

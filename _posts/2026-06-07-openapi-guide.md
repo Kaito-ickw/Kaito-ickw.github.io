@@ -6,6 +6,9 @@ categories: 開発
 tags: ["OpenAPI", "Swagger", "API", "REST", "バックエンド", "ドキュメント"]
 lang: ja
 ref: openapi-guide
+image:
+  path: /assets/images/posts/2026-06-07-openapi-guide/eyecatch.png
+  alt: 一枚の設計図から共通の接続部品が三つの機械へ配られるリソグラフ風のイラスト
 ---
 
 API を開発していると、こんな場面に必ず出くわす。
