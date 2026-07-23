@@ -13,6 +13,11 @@ articles:
 
   # ── high: 3ヶ月ごとに確認 ────────────────────────────────
 
+  - slug: 2026-07-23-tinker-training-api
+    stale_risk: high
+    reason: Tinkerの対応モデル一覧・課金メーターごとの単価・Inklingとの関係・OpenAI互換APIの提供状況
+    last_verified: 2026-07-23
+
   - slug: 2026-07-20-kimi-k3-vs-fable-gpt
     stale_risk: high
     reason: Kimi K3・Claude Fable 5・GPT-5.6 Solのベンチマーク数値・価格・ウェイト公開予定日
