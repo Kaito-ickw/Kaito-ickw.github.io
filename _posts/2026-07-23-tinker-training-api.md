@@ -5,6 +5,9 @@ subtitle: エージェントの自己改善ループへどう組み込むか
 categories: AI開発
 tags: ["Tinker", "Thinking Machines Lab", "強化学習", "ファインチューニング", "AIエージェント", "LLM", "自動化"]
 lang: ja
+image:
+  path: /assets/images/posts/2026-07-23-tinker-training-api/eyecatch.png
+  alt: 分解して開かれた機械仕掛けの頭脳を、工具を持つ手が内部のダイヤルを回して調整している青焼き設計図風の線画。既存モデルを開けて鍛え直すTinkerの比喩
 ---
 
 Thinking Machines Lab（元OpenAI CTOのMira Muratiが立ち上げたAI開発企業）が提供する「Tinker」は、完成済みのチャットAIでも独立した基盤モデルでもない。既存の大規模言語モデルをSFT・DPO・強化学習などで追加学習するための、マネージドなTraining APIである。
