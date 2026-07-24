@@ -88,6 +88,11 @@ articles:
     reason: ロボット基盤モデルのバージョン名（π0.7・GR00T N1等）とベンチマーク数値（V-JEPA 2の成功率比較など）
     last_verified: 2026-07-23
 
+  - slug: 2026-07-23-ai-scheduled-task-context-pollution
+    stale_risk: high
+    reason: ChatGPT Tasks・Gemini Scheduled Actions・Claude Cowork/Claude Code Scheduled Tasksのセッション仕様（各社の機能変更で頻繁に変わる）
+    last_verified: 2026-07-23
+
   # ── medium: 6ヶ月ごとに確認 ──────────────────────────────
 
   - slug: 2026-06-17-mcp-protocol-overview
