@@ -5,6 +5,7 @@ subtitle: thinking メッセージの語彙一覧とカテゴリ分類
 categories: AI開発
 tags: ["Claude Code", "Claude", "コーディングエージェント", "CLI"]
 lang: ja
+ref: claude-code-thinking-words
 ---
 
 Claude Code を使っていると、処理中に `Cogitating...` や `Noodling...` といった言葉がくるくると表示される。英語ネイティブでも見慣れない語彙が混じっていて、初見では意味がつかみにくい。

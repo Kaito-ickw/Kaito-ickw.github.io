@@ -5,6 +5,7 @@ subtitle: Loop Engineeringの14段階ロードマップを実務向けに整理�
 categories: AI開発
 tags: ["AIエージェント", "コーディングエージェント", "ハーネスエンジニアリング", "コンテキスト管理", "自動化", "MCP", "設計"]
 lang: ja
+ref: loop-engineering-roadmap
 image:
   path: /assets/images/posts/2026-07-22-loop-engineering-roadmap/eyecatch.png
   alt: "設計者の両手が検査ゲートと停止レバーを備えた円形の作業ループを組み立てるリソグラフ"

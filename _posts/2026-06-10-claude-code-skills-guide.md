@@ -5,6 +5,7 @@ subtitle: スラッシュコマンドで呼び出す専用エージェントの�
 categories: AI開発
 tags: ["Claude Code", "AIエージェント", "コーディングエージェント", "AIネイティブ開発", "自動化", "CLI"]
 lang: ja
+ref: claude-code-skills-guide
 ---
 
 Claude Code にはスキル（Skills）という機能がある。スラッシュコマンドで呼び出すと、その用途に特化したサブエージェントが起動して作業を代行する仕組みだ。

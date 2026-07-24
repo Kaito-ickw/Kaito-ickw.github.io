@@ -6,6 +6,7 @@ categories: AI開発
 last_modified_at: 2026-07-03
 tags: ["MCP", "AIエージェント", "LLM", "API", "設計"]
 lang: ja
+ref: mcp-protocol-overview
 image:
   path: /assets/images/posts/2026-06-17-mcp-protocol-overview/eyecatch.png
   alt: 形の異なる外部装置が共通の接続窓口を通じてAI作業台へつながる紙コラージュ風イラスト

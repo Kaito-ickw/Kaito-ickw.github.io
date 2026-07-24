@@ -5,6 +5,7 @@ subtitle: 履歴汚染の仕組みとChatGPT・Gemini・Claudeの比較
 categories: AI開発
 tags: ["AIエージェント", "コンテキスト管理", "自動化", "Claude", "Claude Code", "LLM"]
 lang: ja
+ref: ai-scheduled-task-context-pollution
 image:
   path: /assets/images/posts/2026-07-23-ai-scheduled-task-context-pollution/eyecatch.png
   alt: 自分の出力を入力へ再投入する紙の閉じたループと、下に積もる古紙の沈殿。新しい一枚の紙だけが輪の外で締め出されている、切り貼りのペーパーコラージュ
