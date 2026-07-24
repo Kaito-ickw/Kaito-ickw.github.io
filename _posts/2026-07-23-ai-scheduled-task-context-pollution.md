@@ -5,6 +5,9 @@ subtitle: 履歴汚染の仕組みとChatGPT・Gemini・Claudeの比較
 categories: AI開発
 tags: ["AIエージェント", "コンテキスト管理", "自動化", "Claude", "Claude Code", "LLM"]
 lang: ja
+image:
+  path: /assets/images/posts/2026-07-23-ai-scheduled-task-context-pollution/eyecatch.png
+  alt: 自分の出力を入力へ再投入する紙の閉じたループと、下に積もる古紙の沈殿。新しい一枚の紙だけが輪の外で締め出されている、切り貼りのペーパーコラージュ
 ---
 
 ChatGPTやClaudeのスケジュール機能で、毎朝ニュースをまとめさせたり、市場の動きをチェックさせたりしている人は多いはずだ。最初の数回はそれらしい分析が返ってくる。ところが1週間、1ヶ月と回し続けると、内容が妙に同じ結論の言い換えになったり、とっくに変わったはずの前提を引きずったりすることに気づく。同じ指示を出しているつもりなのに、回答の質だけがじわじわ落ちていく。
