@@ -5,6 +5,9 @@ subtitle: Loop Engineering・Workflow・Knowledge Graphとの混同を整理す�
 categories: AI開発
 tags: ["AIエージェント", "マルチエージェント", "ハーネスエンジニアリング", "LangGraph", "コンテキスト管理", "自動化", "設計"]
 lang: ja
+image:
+  path: /assets/images/posts/2026-07-27-graph-engineering-agent-systems/eyecatch.png
+  alt: リネンに刺繍された糸が結節点でつながる網を作り、その一角で一本の糸が小さな閉じた輪を巻いているマクロ写真
 ---
 
 2026年7月18日、Peter Steinberger（@steipete）が「まだloopの話をしているのか、それとももうgraphに移ったのか」という趣旨の投稿をXに出した。数日で数百万回表示され、AIエージェント開発者の間で「Graph Engineering」という語が急速に広まった。
