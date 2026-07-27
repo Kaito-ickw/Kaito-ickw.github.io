@@ -13,6 +13,11 @@ articles:
 
   # ── high: 3ヶ月ごとに確認 ────────────────────────────────
 
+  - slug: 2026-07-27-graph-engineering-agent-systems
+    stale_risk: high
+    reason: Graph Engineeringという語の定義・主要プレイヤーの整理（2026年7月中旬に急速に広まったばかりで用語自体が流動的）。LangGraph・Temporal・OpenAI Agents SDKの仕様変更も対象
+    last_verified: 2026-07-27
+
   - slug: 2026-07-23-tinker-training-api
     stale_risk: high
     reason: Tinkerの対応モデル一覧・課金メーターごとの単価・Inklingとの関係・OpenAI互換APIの提供状況
