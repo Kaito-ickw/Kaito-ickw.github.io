@@ -1,0 +1,35 @@
+<svg viewBox="0 0 400 436" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="hn-title hn-desc">
+<title id="hn-title">Diagram of a harness structure, using Claude Code as an example</title>
+<desc id="hn-desc">An outer box labelled Harness contains four stacked layers: CLAUDE.md / AGENTS.md (instructions and context for the agent), Hooks (PreToolUse / PostToolUse / Stop), Permissions (tool execution policy), and Tool Surface (range of exposed tools). Below them, connected by a two-way arrow, sits Model / LLM, and below that Evaluation (tests / traces / human-in-the-loop).</desc>
+<style>text{font-family:system-ui,-apple-system,"Segoe UI",sans-serif;}</style>
+<rect x="0" y="0" width="400" height="436" rx="8" fill="#fcfcfb"/>
+<text x="12" y="24" font-size="17" font-weight="700" fill="#0b0b0b">The structure of a harness</text>
+<text x="12" y="44" font-size="12" fill="#52514e">The model runs inside an environment bounded by</text>
+<text x="12" y="60" font-size="12" fill="#52514e">instructions, hooks, permissions and tool surface.</text>
+<rect x="8" y="82" width="384" height="344" rx="10" fill="#f0efec" stroke="#c3c2b7" stroke-width="1.5"/>
+<text x="22" y="104" font-size="13" font-weight="700" fill="#52514e">Harness</text>
+<rect x="20" y="116" width="360" height="176" rx="8" fill="#fcfcfb" stroke="#e1e0d9" stroke-width="1.5"/>
+<rect x="20" y="125" width="4" height="26" rx="2" fill="#2a78d6"/>
+<text x="36" y="136" font-size="12" font-weight="600" fill="#0b0b0b">CLAUDE.md / AGENTS.md</text>
+<text x="36" y="151" font-size="10" fill="#52514e">Instructions and context for the agent</text>
+<line x1="20" y1="160" x2="380" y2="160" stroke="#e1e0d9" stroke-width="1.5"/>
+<rect x="20" y="169" width="4" height="26" rx="2" fill="#2a78d6"/>
+<text x="36" y="180" font-size="12" font-weight="600" fill="#0b0b0b">Hooks</text>
+<text x="36" y="195" font-size="10" fill="#52514e">PreToolUse / PostToolUse / Stop</text>
+<line x1="20" y1="204" x2="380" y2="204" stroke="#e1e0d9" stroke-width="1.5"/>
+<rect x="20" y="213" width="4" height="26" rx="2" fill="#2a78d6"/>
+<text x="36" y="224" font-size="12" font-weight="600" fill="#0b0b0b">Permissions</text>
+<text x="36" y="239" font-size="10" fill="#52514e">Tool execution policy</text>
+<line x1="20" y1="248" x2="380" y2="248" stroke="#e1e0d9" stroke-width="1.5"/>
+<rect x="20" y="257" width="4" height="26" rx="2" fill="#2a78d6"/>
+<text x="36" y="268" font-size="12" font-weight="600" fill="#0b0b0b">Tool Surface</text>
+<text x="36" y="283" font-size="10" fill="#52514e">Range of exposed tools</text>
+<line x1="200" y1="298" x2="200" y2="308" stroke="#52514e" stroke-width="1.5"/><path d="M195,299 L200,292 L205,299 Z" fill="#52514e"/><path d="M195,307 L200,314 L205,307 Z" fill="#52514e"/>
+<rect x="120" y="314" width="160" height="32" rx="16" fill="#2a78d6"/>
+<text x="200" y="335" font-size="12" font-weight="600" text-anchor="middle" fill="#ffffff">Model / LLM</text>
+<line x1="200" y1="352" x2="200" y2="362" stroke="#52514e" stroke-width="1.5"/><path d="M195,353 L200,346 L205,353 Z" fill="#52514e"/><path d="M195,361 L200,368 L205,361 Z" fill="#52514e"/>
+<rect x="20" y="368" width="360" height="44" rx="8" fill="#fcfcfb" stroke="#e1e0d9" stroke-width="1.5"/>
+<rect x="20" y="377" width="4" height="26" rx="2" fill="#2a78d6"/>
+<text x="36" y="388" font-size="12" font-weight="600" fill="#0b0b0b">Evaluation</text>
+<text x="36" y="403" font-size="10" fill="#52514e">Tests / traces / human-in-the-loop</text>
+</svg>

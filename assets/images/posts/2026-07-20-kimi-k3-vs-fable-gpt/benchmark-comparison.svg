@@ -1,0 +1,68 @@
+<svg viewBox="0 0 400 614" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="bc-title bc-desc">
+<title id="bc-title">Kimi K3・GPT-5.6 Sol・Claude Fable 5 のベンチマーク比較</title>
+<desc id="bc-desc">AA Intelligence Index は Kimi K3 が57.1%、GPT-5.6 Sol が58.9%、Claude Fable 5 が59.9%。FrontierSWE は Kimi K3 が77.8で首位、GPT-5.6 Sol が77.6、Claude Fable 5 が76.8。GDPval v2 は Kimi K3 が1,668、Claude Fable 5 が1,760で、GPT-5.6 Sol の公表値はない。いずれの指標でも3モデルの差は数%以内に収まっている。出典はArtificial Analysisおよび各社公表値（2026年7月時点）。</desc>
+<style>text{font-family:system-ui,-apple-system,"Segoe UI",sans-serif;}</style>
+<rect x="0" y="0" width="400" height="614" rx="8" fill="#fcfcfb"/>
+<text x="12" y="24" font-size="17" font-weight="700" fill="#0b0b0b">ベンチマークで見る位置づけ</text>
+<text x="12" y="44" font-size="12" fill="#52514e">3モデルはどの指標でも数%以内に収まる。</text>
+<text x="12" y="60" font-size="12" fill="#52514e">領域ごとに首位が入れ替わる。</text>
+<rect x="12" y="75" width="10" height="10" rx="2" fill="#2a78d6"/>
+<text x="28" y="84" font-size="12" fill="#0b0b0b">Kimi K3</text>
+<rect x="12" y="92" width="10" height="10" rx="2" fill="#eb6834"/>
+<text x="28" y="101" font-size="12" fill="#0b0b0b">GPT-5.6 Sol</text>
+<rect x="12" y="109" width="10" height="10" rx="2" fill="#1baf7a"/>
+<text x="28" y="118" font-size="12" fill="#0b0b0b">Claude Fable 5</text>
+<text x="12" y="153" font-size="13" font-weight="600" fill="#52514e">AA Intelligence Index（総合・%）</text>
+<line x1="64.0" y1="161" x2="64.0" y2="249" stroke="#e1e0d9" stroke-width="1"/>
+<line x1="204.0" y1="161" x2="204.0" y2="249" stroke="#e1e0d9" stroke-width="1"/>
+<line x1="344.0" y1="161" x2="344.0" y2="249" stroke="#e1e0d9" stroke-width="1"/>
+<text x="56" y="180.0" font-size="11" text-anchor="end" fill="#52514e">K3</text>
+<path d="M64,166.0 L327.5,166.0 Q330.5,166.0 330.5,169.0 L330.5,181.0 Q330.5,184.0 327.5,184.0 L64,184.0 Z" fill="#2a78d6"/>
+<text x="336.46666666666664" y="181.0" font-size="12" font-weight="600" fill="#0b0b0b">57.1%</text>
+<text x="56" y="208.0" font-size="11" text-anchor="end" fill="#52514e">Sol</text>
+<path d="M64,194.0 L335.9,194.0 Q338.9,194.0 338.9,197.0 L338.9,209.0 Q338.9,212.0 335.9,212.0 L64,212.0 Z" fill="#eb6834"/>
+<text x="344.8666666666667" y="209.0" font-size="12" font-weight="600" fill="#0b0b0b">58.9%</text>
+<text x="56" y="236.0" font-size="11" text-anchor="end" fill="#52514e">Fable 5</text>
+<path d="M64,222.0 L340.5,222.0 Q343.5,222.0 343.5,225.0 L343.5,237.0 Q343.5,240.0 340.5,240.0 L64,240.0 Z" fill="#1baf7a"/>
+<text x="349.53333333333336" y="237.0" font-size="12" font-weight="600" fill="#0b0b0b">59.9%</text>
+<line x1="64" y1="249" x2="344" y2="249" stroke="#c3c2b7" stroke-width="1"/>
+<text x="64.0" y="263" font-size="11" text-anchor="middle" fill="#898781">0%</text>
+<text x="204.0" y="263" font-size="11" text-anchor="middle" fill="#898781">30%</text>
+<text x="344.0" y="263" font-size="11" text-anchor="middle" fill="#898781">60%</text>
+<text x="12" y="295" font-size="13" font-weight="600" fill="#52514e">FrontierSWE（コーディング）</text>
+<line x1="64.0" y1="303" x2="64.0" y2="391" stroke="#e1e0d9" stroke-width="1"/>
+<line x1="204.0" y1="303" x2="204.0" y2="391" stroke="#e1e0d9" stroke-width="1"/>
+<line x1="344.0" y1="303" x2="344.0" y2="391" stroke="#e1e0d9" stroke-width="1"/>
+<text x="56" y="322.0" font-size="11" text-anchor="end" fill="#52514e">K3</text>
+<path d="M64,308.0 L333.3,308.0 Q336.3,308.0 336.3,311.0 L336.3,323.0 Q336.3,326.0 333.3,326.0 L64,326.0 Z" fill="#2a78d6"/>
+<text x="342.3" y="323.0" font-size="12" font-weight="600" fill="#0b0b0b">77.8</text>
+<text x="56" y="350.0" font-size="11" text-anchor="end" fill="#52514e">Sol</text>
+<path d="M64,336.0 L332.6,336.0 Q335.6,336.0 335.6,339.0 L335.6,351.0 Q335.6,354.0 332.6,354.0 L64,354.0 Z" fill="#eb6834"/>
+<text x="341.6" y="351.0" font-size="12" font-weight="600" fill="#0b0b0b">77.6</text>
+<text x="56" y="378.0" font-size="11" text-anchor="end" fill="#52514e">Fable 5</text>
+<path d="M64,364.0 L329.8,364.0 Q332.8,364.0 332.8,367.0 L332.8,379.0 Q332.8,382.0 329.8,382.0 L64,382.0 Z" fill="#1baf7a"/>
+<text x="338.8" y="379.0" font-size="12" font-weight="600" fill="#0b0b0b">76.8</text>
+<line x1="64" y1="391" x2="344" y2="391" stroke="#c3c2b7" stroke-width="1"/>
+<text x="64.0" y="405" font-size="11" text-anchor="middle" fill="#898781">0</text>
+<text x="204.0" y="405" font-size="11" text-anchor="middle" fill="#898781">40</text>
+<text x="344.0" y="405" font-size="11" text-anchor="middle" fill="#898781">80</text>
+<text x="12" y="437" font-size="13" font-weight="600" fill="#52514e">GDPval v2（実務作業）</text>
+<line x1="64.0" y1="445" x2="64.0" y2="533" stroke="#e1e0d9" stroke-width="1"/>
+<line x1="204.0" y1="445" x2="204.0" y2="533" stroke="#e1e0d9" stroke-width="1"/>
+<line x1="344.0" y1="445" x2="344.0" y2="533" stroke="#e1e0d9" stroke-width="1"/>
+<text x="56" y="464.0" font-size="11" text-anchor="end" fill="#52514e">K3</text>
+<path d="M64,450.0 L320.5,450.0 Q323.5,450.0 323.5,453.0 L323.5,465.0 Q323.5,468.0 320.5,468.0 L64,468.0 Z" fill="#2a78d6"/>
+<text x="329.46666666666664" y="465.0" font-size="12" font-weight="600" fill="#0b0b0b">1668</text>
+<text x="56" y="492.0" font-size="11" text-anchor="end" fill="#52514e">Sol</text>
+<text x="68" y="492.0" font-size="11" fill="#898781">公表値なし</text>
+<text x="56" y="520.0" font-size="11" text-anchor="end" fill="#52514e">Fable 5</text>
+<path d="M64,506.0 L334.8,506.0 Q337.8,506.0 337.8,509.0 L337.8,521.0 Q337.8,524.0 334.8,524.0 L64,524.0 Z" fill="#1baf7a"/>
+<text x="343.77777777777777" y="521.0" font-size="12" font-weight="600" fill="#0b0b0b">1760</text>
+<line x1="64" y1="533" x2="344" y2="533" stroke="#c3c2b7" stroke-width="1"/>
+<text x="64.0" y="547" font-size="11" text-anchor="middle" fill="#898781">0</text>
+<text x="204.0" y="547" font-size="11" text-anchor="middle" fill="#898781">900</text>
+<text x="344.0" y="547" font-size="11" text-anchor="middle" fill="#898781">1800</text>
+<text x="12" y="573" font-size="10" fill="#898781">出典: Artificial Analysis および各社公表値</text>
+<text x="12" y="586" font-size="10" fill="#898781">（2026年7月時点）。指標ごとに横軸のスケールが</text>
+<text x="12" y="599" font-size="10" fill="#898781">異なる。軸はいずれも0から始めている。</text>
+</svg>

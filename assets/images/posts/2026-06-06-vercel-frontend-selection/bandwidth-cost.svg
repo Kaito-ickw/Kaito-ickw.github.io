@@ -1,0 +1,47 @@
+<svg viewBox="0 0 400 426" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="hc-title hc-desc">
+<title id="hc-title">Vercel・Cloudflare Pages・Netlify の帯域別月額コスト比較</title>
+<desc id="hc-desc">帯域1TB/月ではVercel Pro $20、Cloudflare Pages $5、Netlify Pro 約$133。帯域5TB/月ではVercel Pro 約$620、Cloudflare Pages $5、Netlify Pro 約$667。Cloudflare Pagesだけ帯域が増えても$5のまま変わらない。2026年7月時点の各社公式料金による。</desc>
+<style>text{font-family:system-ui,-apple-system,"Segoe UI",sans-serif;}</style>
+<rect x="0" y="0" width="400" height="426" rx="8" fill="#fcfcfb"/>
+<text x="12" y="24" font-size="17" font-weight="700" fill="#0b0b0b">ホスティング3社の月額コスト</text>
+<text x="12" y="44" font-size="12" fill="#52514e">1TB/月までは差がつかない。差が開くのは</text>
+<text x="12" y="60" font-size="12" fill="#52514e">Vercel の込み枠を超えてから。</text>
+<text x="12" y="94" font-size="13" font-weight="600" fill="#52514e">帯域 1TB/月</text>
+<line x1="78.0" y1="102" x2="78.0" y2="190" stroke="#e1e0d9" stroke-width="1"/>
+<line x1="213.0" y1="102" x2="213.0" y2="190" stroke="#e1e0d9" stroke-width="1"/>
+<line x1="348.0" y1="102" x2="348.0" y2="190" stroke="#e1e0d9" stroke-width="1"/>
+<text x="70" y="121.0" font-size="11" text-anchor="end" fill="#52514e">Vercel Pro</text>
+<path d="M78,107.0 L82.7,107.0 Q85.7,107.0 85.7,110.0 L85.7,122.0 Q85.7,125.0 82.7,125.0 L78,125.0 Z" fill="#2a78d6"/>
+<text x="91.71428571428571" y="122.0" font-size="12" font-weight="600" fill="#0b0b0b">$20</text>
+<text x="70" y="149.0" font-size="11" text-anchor="end" fill="#52514e">Cloudflare</text>
+<path d="M78,135.0 L78.0,135.0 Q79.9,135.0 79.9,136.92857142857144 L79.9,151.07142857142856 Q79.9,153.0 78.0,153.0 L78,153.0 Z" fill="#eb6834"/>
+<text x="85.92857142857143" y="150.0" font-size="12" font-weight="600" fill="#0b0b0b">$5</text>
+<text x="70" y="177.0" font-size="11" text-anchor="end" fill="#52514e">Netlify Pro</text>
+<path d="M78,163.0 L126.3,163.0 Q129.3,163.0 129.3,166.0 L129.3,178.0 Q129.3,181.0 126.3,181.0 L78,181.0 Z" fill="#1baf7a"/>
+<text x="135.3" y="178.0" font-size="12" font-weight="600" fill="#0b0b0b">$133</text>
+<line x1="78" y1="190" x2="348" y2="190" stroke="#c3c2b7" stroke-width="1"/>
+<text x="78.0" y="204" font-size="11" text-anchor="middle" fill="#898781">$0</text>
+<text x="213.0" y="204" font-size="11" text-anchor="middle" fill="#898781">$350</text>
+<text x="348.0" y="204" font-size="11" text-anchor="middle" fill="#898781">$700</text>
+<text x="12" y="236" font-size="13" font-weight="600" fill="#52514e">帯域 5TB/月</text>
+<line x1="78.0" y1="244" x2="78.0" y2="332" stroke="#e1e0d9" stroke-width="1"/>
+<line x1="213.0" y1="244" x2="213.0" y2="332" stroke="#e1e0d9" stroke-width="1"/>
+<line x1="348.0" y1="244" x2="348.0" y2="332" stroke="#e1e0d9" stroke-width="1"/>
+<text x="70" y="263.0" font-size="11" text-anchor="end" fill="#52514e">Vercel Pro</text>
+<path d="M78,249.0 L314.1,249.0 Q317.1,249.0 317.1,252.0 L317.1,264.0 Q317.1,267.0 314.1,267.0 L78,267.0 Z" fill="#2a78d6"/>
+<text x="323.1428571428571" y="264.0" font-size="12" font-weight="600" fill="#0b0b0b">$620</text>
+<text x="70" y="291.0" font-size="11" text-anchor="end" fill="#52514e">Cloudflare</text>
+<path d="M78,277.0 L78.0,277.0 Q79.9,277.0 79.9,278.92857142857144 L79.9,293.07142857142856 Q79.9,295.0 78.0,295.0 L78,295.0 Z" fill="#eb6834"/>
+<text x="85.92857142857143" y="292.0" font-size="12" font-weight="600" fill="#0b0b0b">$5</text>
+<text x="70" y="319.0" font-size="11" text-anchor="end" fill="#52514e">Netlify Pro</text>
+<path d="M78,305.0 L332.3,305.0 Q335.3,305.0 335.3,308.0 L335.3,320.0 Q335.3,323.0 332.3,323.0 L78,323.0 Z" fill="#1baf7a"/>
+<text x="341.27142857142854" y="320.0" font-size="12" font-weight="600" fill="#0b0b0b">$667</text>
+<line x1="78" y1="332" x2="348" y2="332" stroke="#c3c2b7" stroke-width="1"/>
+<text x="78.0" y="346" font-size="11" text-anchor="middle" fill="#898781">$0</text>
+<text x="213.0" y="346" font-size="11" text-anchor="middle" fill="#898781">$350</text>
+<text x="348.0" y="346" font-size="11" text-anchor="middle" fill="#898781">$700</text>
+<text x="12" y="372" font-size="10" fill="#898781">出典: 各社公式料金ページ（2026年7月時点）。</text>
+<text x="12" y="385" font-size="10" fill="#898781">Vercel Pro は1シート$20/月・帯域1TB込み、</text>
+<text x="12" y="398" font-size="10" fill="#898781">超過は$0.15/GB。Netlify Pro は$20/月・</text>
+<text x="12" y="411" font-size="10" fill="#898781">3,000クレジット込み、帯域20クレジット/GB。</text>
+</svg>
