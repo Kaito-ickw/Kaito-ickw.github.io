@@ -1,0 +1,84 @@
+<svg viewBox="0 0 1400 880" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="bc-title bc-desc">
+<title id="bc-title">Kimi K3・GPT-5.6 Sol・Claude Fable 5 のベンチマーク比較</title>
+<desc id="bc-desc">AA Intelligence Index、FrontierSWE、GDPval v2の3指標で3モデルを比較した横棒グラフ。AA Intelligence IndexはClaude Fable 5が最高、FrontierSWEはKimi K3が僅差で最高、GDPval v2はKimi K3とClaude Fable 5の差が92ポイントで最大。GDPval v2はGPT-5.6 Solのデータなし。出典: Artificial Analysis、各社公表値（2026年7月時点）。</desc>
+<style>text{font-family:system-ui,-apple-system,"Segoe UI",sans-serif;}</style>
+<rect x="0" y="0" width="1400" height="880" rx="12" fill="#fcfcfb"/>
+
+<text x="40" y="55" font-size="26" font-weight="700" fill="#0b0b0b">ベンチマークで見る位置づけ</text>
+
+<!-- legend -->
+<rect x="40" y="90" width="14" height="14" rx="3" fill="#2a78d6"/>
+<text x="62" y="101" font-size="14" font-weight="500" fill="#0b0b0b">Kimi K3</text>
+<rect x="230" y="90" width="14" height="14" rx="3" fill="#eb6834"/>
+<text x="252" y="101" font-size="14" font-weight="500" fill="#0b0b0b">GPT-5.6 Sol</text>
+<rect x="460" y="90" width="14" height="14" rx="3" fill="#1baf7a"/>
+<text x="482" y="101" font-size="14" font-weight="500" fill="#0b0b0b">Claude Fable 5</text>
+
+<!-- Panel 1: AA Intelligence Index -->
+<text x="40" y="158" font-size="17" font-weight="600" fill="#52514e">AA Intelligence Index（総合知能・%）</text>
+<line x1="150" y1="170" x2="150" y2="306" stroke="#e1e0d9" stroke-width="1"/>
+<line x1="411.5" y1="170" x2="411.5" y2="306" stroke="#e1e0d9" stroke-width="1"/>
+<line x1="673.1" y1="170" x2="673.1" y2="306" stroke="#e1e0d9" stroke-width="1"/>
+<line x1="934.6" y1="170" x2="934.6" y2="306" stroke="#e1e0d9" stroke-width="1"/>
+<text x="140" y="196" font-size="13" text-anchor="end" fill="#52514e">K3</text>
+<path d="M150,180 L892.6,180 Q896.6,180 896.6,184 L896.6,200 Q896.6,204 892.6,204 L150,204 Z" fill="#2a78d6"/>
+<text x="906.6" y="196" font-size="14" font-weight="600" fill="#0b0b0b">57.1%</text>
+<text x="140" y="240" font-size="13" text-anchor="end" fill="#52514e">Sol</text>
+<path d="M150,224 L916.2,224 Q920.2,224 920.2,228 L920.2,244 Q920.2,248 916.2,248 L150,248 Z" fill="#eb6834"/>
+<text x="930.2" y="240" font-size="14" font-weight="600" fill="#0b0b0b">58.9%</text>
+<text x="140" y="284" font-size="13" text-anchor="end" fill="#52514e">Fable 5</text>
+<path d="M150,268 L929.3,268 Q933.3,268 933.3,272 L933.3,288 Q933.3,292 929.3,292 L150,292 Z" fill="#1baf7a"/>
+<text x="943.3" y="284" font-size="14" font-weight="600" fill="#0b0b0b">59.9%</text>
+<line x1="150" y1="306" x2="1000" y2="306" stroke="#c3c2b7" stroke-width="1"/>
+<text x="150" y="322" font-size="12" text-anchor="middle" fill="#898781">0</text>
+<text x="411.5" y="322" font-size="12" text-anchor="middle" fill="#898781">20</text>
+<text x="673.1" y="322" font-size="12" text-anchor="middle" fill="#898781">40</text>
+<text x="934.6" y="322" font-size="12" text-anchor="middle" fill="#898781">60</text>
+
+<!-- Panel 2: FrontierSWE -->
+<text x="40" y="390" font-size="17" font-weight="600" fill="#52514e">FrontierSWE（コーディング・pt）</text>
+<line x1="150" y1="402" x2="150" y2="538" stroke="#e1e0d9" stroke-width="1"/>
+<line x1="350" y1="402" x2="350" y2="538" stroke="#e1e0d9" stroke-width="1"/>
+<line x1="550" y1="402" x2="550" y2="538" stroke="#e1e0d9" stroke-width="1"/>
+<line x1="750" y1="402" x2="750" y2="538" stroke="#e1e0d9" stroke-width="1"/>
+<line x1="950" y1="402" x2="950" y2="538" stroke="#e1e0d9" stroke-width="1"/>
+<text x="140" y="428" font-size="13" text-anchor="end" fill="#52514e">K3</text>
+<path d="M150,412 L924,412 Q928,412 928,416 L928,432 Q928,436 924,436 L150,436 Z" fill="#2a78d6"/>
+<text x="938" y="428" font-size="14" font-weight="600" fill="#0b0b0b">77.8</text>
+<text x="140" y="472" font-size="13" text-anchor="end" fill="#52514e">Sol</text>
+<path d="M150,456 L922,456 Q926,456 926,460 L926,476 Q926,480 922,480 L150,480 Z" fill="#eb6834"/>
+<text x="936" y="472" font-size="14" font-weight="600" fill="#0b0b0b">77.6</text>
+<text x="140" y="516" font-size="13" text-anchor="end" fill="#52514e">Fable 5</text>
+<path d="M150,500 L914,500 Q918,500 918,504 L918,520 Q918,524 914,524 L150,524 Z" fill="#1baf7a"/>
+<text x="928" y="516" font-size="14" font-weight="600" fill="#0b0b0b">76.8</text>
+<line x1="150" y1="538" x2="1000" y2="538" stroke="#c3c2b7" stroke-width="1"/>
+<text x="150" y="554" font-size="12" text-anchor="middle" fill="#898781">0</text>
+<text x="350" y="554" font-size="12" text-anchor="middle" fill="#898781">20</text>
+<text x="550" y="554" font-size="12" text-anchor="middle" fill="#898781">40</text>
+<text x="750" y="554" font-size="12" text-anchor="middle" fill="#898781">60</text>
+<text x="950" y="554" font-size="12" text-anchor="middle" fill="#898781">80</text>
+
+<!-- Panel 3: GDPval v2 -->
+<text x="40" y="622" font-size="17" font-weight="600" fill="#52514e">GDPval v2（実務品質・pt）</text>
+<line x1="150" y1="634" x2="150" y2="770" stroke="#e1e0d9" stroke-width="1"/>
+<line x1="352.4" y1="634" x2="352.4" y2="770" stroke="#e1e0d9" stroke-width="1"/>
+<line x1="554.8" y1="634" x2="554.8" y2="770" stroke="#e1e0d9" stroke-width="1"/>
+<line x1="757.1" y1="634" x2="757.1" y2="770" stroke="#e1e0d9" stroke-width="1"/>
+<line x1="959.5" y1="634" x2="959.5" y2="770" stroke="#e1e0d9" stroke-width="1"/>
+<text x="140" y="660" font-size="13" text-anchor="end" fill="#52514e">K3</text>
+<path d="M150,644 L821.1,644 Q825.1,644 825.1,648 L825.1,664 Q825.1,668 821.1,668 L150,668 Z" fill="#2a78d6"/>
+<text x="835.1" y="660" font-size="14" font-weight="600" fill="#0b0b0b">1,668</text>
+<text x="140" y="704" font-size="13" text-anchor="end" fill="#52514e">Sol</text>
+<text x="160" y="704" font-size="13" font-style="italic" fill="#898781">データなし</text>
+<text x="140" y="748" font-size="13" text-anchor="end" fill="#52514e">Fable 5</text>
+<path d="M150,732 L858.4,732 Q862.4,732 862.4,736 L862.4,752 Q862.4,756 858.4,756 L150,756 Z" fill="#1baf7a"/>
+<text x="872.4" y="748" font-size="14" font-weight="600" fill="#0b0b0b">1,760</text>
+<line x1="150" y1="770" x2="1000" y2="770" stroke="#c3c2b7" stroke-width="1"/>
+<text x="150" y="786" font-size="12" text-anchor="middle" fill="#898781">0</text>
+<text x="352.4" y="786" font-size="12" text-anchor="middle" fill="#898781">500</text>
+<text x="554.8" y="786" font-size="12" text-anchor="middle" fill="#898781">1,000</text>
+<text x="757.1" y="786" font-size="12" text-anchor="middle" fill="#898781">1,500</text>
+<text x="959.5" y="786" font-size="12" text-anchor="middle" fill="#898781">2,000</text>
+
+<text x="40" y="826" font-size="12" fill="#898781">出典: Artificial Analysis Intelligence Index Leaderboard、Moonshot AI/OpenAI/Anthropic公表値（2026年7月時点）</text>
+</svg>
