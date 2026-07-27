@@ -6,6 +6,7 @@ categories: AI Development
 tags: ["Harness Engineering", "AI Agent", "Claude Code", "Ralph Loop", "Automation", "AI-Native Development"]
 lang: en
 ref: harness-engineering-guide
+last_modified_at: 2026-07-27
 ---
 
 Use AI agents in real development long enough and you hit a turning point.
@@ -61,31 +62,7 @@ When applied to AI agents, the meaning broadens.
 
 Take Claude Code as an example. What the user touches directly is the "model," but around it sits a structure like this.
 
-```
-┌──────────────────────────────────────────────┐
-│  Harness                                        │
-│  ┌─────────────────────────────────────────┐  │
-│  │  CLAUDE.md / AGENTS.md                   │  │
-│  │  (instructions / context for the agent)  │  │
-│  ├─────────────────────────────────────────┤  │
-│  │  Hooks                                   │  │
-│  │  (PreToolUse / PostToolUse / Stop etc.)  │  │
-│  ├─────────────────────────────────────────┤  │
-│  │  Permissions                             │  │
-│  │  (tool execution policy)                 │  │
-│  ├─────────────────────────────────────────┤  │
-│  │  Tool Surface                            │  │
-│  │  (range of exposed tools)                │  │
-│  └─────────────────────────────────────────┘  │
-│                    ↕                            │
-│           [ Model / LLM ]                       │
-│                    ↕                            │
-│  ┌─────────────────────────────────────────┐  │
-│  │  Evaluation                              │  │
-│  │  (tests / traces / human-in-the-loop)    │  │
-│  └─────────────────────────────────────────┘  │
-└──────────────────────────────────────────────┘
-```
+![Diagram of a harness structure. An outer box labelled Harness contains four stacked layers — CLAUDE.md / AGENTS.md, Hooks, Permissions, and Tool Surface — with Model / LLM below them connected by a two-way arrow, and Evaluation below that](/assets/images/posts/2026-06-08-harness-engineering-guide/harness-structure-en.svg){: .chart}
 
 The model runs inside this harness. Without one, the model operates in a state where it can see anything and do anything.
 

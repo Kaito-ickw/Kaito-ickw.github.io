@@ -6,6 +6,7 @@ categories: Development
 tags: ["Vercel", "Netlify", "Cloudflare", "Next.js", "Frontend", "Hosting"]
 lang: en
 ref: vercel-frontend-selection
+last_modified_at: 2026-07-27
 image:
   path: /assets/images/posts/2026-06-06-vercel-frontend-selection/eyecatch.png
   alt: Risograph of a complex web app fitting its dedicated launch platform with a future high-capacity route nearby
@@ -41,7 +42,7 @@ Major updates in 2025–2026 include:
 - **AI Gateway integration:** Routing to providers such as OpenAI and Anthropic, along with cost tracking, can be managed from the dashboard.
 - **Lower latency outside the US:** p99 latency improved by approximately 25% compared with 2025.
 
-#### Pricing (as of June 2026)
+#### Pricing (as of July 2026)
 
 | Plan | Monthly | Key Features |
 | :--- | :--- | :--- |
@@ -75,7 +76,9 @@ Its biggest differentiator is **effectively unlimited bandwidth**, included with
 | **Pages Free** | $0 (unlimited bandwidth and requests) |
 | **Workers Pro** | $5 (full Pages + Workers features) |
 
-At 1 TB of bandwidth per month, Vercel Pro can cost around $150 while Cloudflare Pages remains $5. **The difference can reach tens of times the cost.**
+At 1 TB of bandwidth per month, Vercel Pro stays inside its included allowance, so there is barely any cost difference at that point. The gap opens once you go past it. At 5 TB/month, overage alone pushes Vercel Pro past $600, while Cloudflare Pages does not move from $5. **The larger the scale, the more the difference grows — tens of times over and beyond.**
+
+![Horizontal bar chart comparing the monthly cost of Vercel Pro, Cloudflare Pages and Netlify Pro at 1TB and 5TB of bandwidth per month. At 1TB: Vercel $20, Cloudflare $5, Netlify about $133. At 5TB: Vercel about $620, Cloudflare $5, Netlify about $667, with Cloudflare alone staying at $5 as bandwidth grows](/assets/images/posts/2026-06-06-vercel-frontend-selection/bandwidth-cost-en.svg){: .chart}
 
 ---
 
@@ -91,9 +94,11 @@ Netlify led the static site generator era, but as of 2026 it trails Vercel and C
 
 | Plan | Monthly |
 | :--- | :--- |
-| **Free** | $0 (100 GB bandwidth) |
-| **Pro** | $19/user |
+| **Free** | $0 (300 credits) |
+| **Pro** | $20/month (unlimited seats, 3,000 credits included) |
 | **Enterprise** | Contact |
+
+Netlify has moved every resource, bandwidth included, onto a single credit currency. Bandwidth costs 20 credits per GB, so the 3,000 credits on Pro cover only about 150 GB if spent on bandwidth alone. Extra credits are $10 per 1,500, which works out to roughly $0.13/GB.
 
 ---
 
@@ -103,7 +108,7 @@ Netlify led the static site generator era, but as of 2026 it trails Vercel and C
 | :--- | :---: | :---: | :---: |
 | **Full Next.js support** | ✅ | ⚠️ (mostly supported) | ⚠️ (mostly supported) |
 | **Edge performance** | ◎ (improving) | ◎ (among the fastest) | △ |
-| **Bandwidth cost** | ⚠️ (expensive) | ✅ (unlimited) | ⚠️ |
+| **Bandwidth cost** | ⚠️ (1TB included, pricey beyond) | ✅ (unlimited) | ⚠️ (credits burn fast) |
 | **Cold starts** | ◎ (Fluid Compute) | ✅ (V8 Isolates) | △ |
 | **AI integration** | ✅ (AI Gateway) | ❌ | ❌ |
 | **Preview URLs** | ✅ Automatic for every PR | ✅ | ✅ |
@@ -160,6 +165,7 @@ Unless a project specifically needs built-in features such as Forms or Identity,
 ## References
 
 - [Vercel Pricing](https://vercel.com/pricing)
+- [Netlify Pricing](https://www.netlify.com/pricing/)
 - [Vercel vs Netlify vs Cloudflare Pages 2026 — DevToolReviews](https://www.devtoolreviews.com/reviews/vercel-vs-netlify-vs-cloudflare-pages-2026)
 - [Vercel vs Netlify vs Cloudflare Pages — Vibe Coder Blog](https://blog.vibecoder.me/vercel-vs-netlify-vs-cloudflare-pages)
 - [Cloudflare Pages vs Netlify vs Vercel 2026 — DanubeData](https://danubedata.ro/blog/cloudflare-pages-vs-netlify-vs-vercel-static-hosting-2026)

@@ -5,7 +5,7 @@ subtitle: Anthropic が2026年6月9日に公開した新最上位モデルの仕
 categories: AI開発
 tags: ["Claude", "LLM", "AIセーフティ"]
 lang: ja
-last_modified_at: 2026-07-03
+last_modified_at: 2026-07-27
 ---
 
 2026年6月9日、Anthropic は Claude Fable 5 を一般公開した。同時に、安全対策を一部解除した Claude Mythos 5 も招待制で提供を開始している。「Mythos」というモデルの名前を初めて聞いた人も多いだろう。この記事では、Mythos と Fable の関係、性能、安全機構、利用条件を整理する。
@@ -52,6 +52,8 @@ Fable 5 には独立した AI 分類器が組み込まれており、以下の3�
 - Cognition FrontierCode では Diamond レベル **29.3%** で1位（Opus 4.8 は13.4%）
 - 創薬プロセスの一部で最大 **10倍** の速度向上を示したケースがある
 - 研究者が生成した科学的仮説のうち **80%** を人間の研究者が支持する結果が得られたと報告されている
+
+![Claude Fable 5 と Claude Opus 4.8 のベンチマーク比較の横棒グラフ。Cognition FrontierCode の Diamond レベルは Fable 5 が29.3%、Opus 4.8 が13.4%。Hex の主要分析ベンチマークは Fable 5 が90%で、Opus 4.8 の該当スコアは公表されていない](/assets/images/posts/2026-06-10-claude-mythos-fable/benchmark-comparison.svg){: .chart}
 
 これらは Anthropic の発表ベースの数値であり、独立した再現検証はまだ十分ではない。数字は参考程度に扱うのが妥当だ。
 

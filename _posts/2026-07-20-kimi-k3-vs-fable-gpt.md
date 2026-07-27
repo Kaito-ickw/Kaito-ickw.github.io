@@ -6,6 +6,7 @@ date: 2026-07-20 09:00:00 +0900
 categories: AI開発
 tags: ["AI", "LLM", "Kimi", "OSS"]
 lang: ja
+last_modified_at: 2026-07-27
 image:
   path: /assets/images/posts/2026-07-20-kimi-k3-vs-fable-gpt/eyecatch.png
   alt: 密閉された2艇のボートに、骨組みがむき出しの大きな1艇が並びかけるリソグラフ調のレースイラスト
@@ -38,6 +39,8 @@ Moonshot自身の公表は「Claude Opus 4.8やGPT-5.5には勝つが、Claude F
 | GDPval v2（実務作業） | 1,668 | ─ | **1,760** |
 | GPQA Diamond | 93.5%（オープンウェイト最高） | ─ | ─ |
 
+![Kimi K3・GPT-5.6 Sol・Claude Fable 5のAA Intelligence Index・FrontierSWE・GDPval v2を比較した横棒グラフ。どの指標でも3モデルの差は数%以内で、総合ではFable 5、コーディングではK3が首位。GDPval v2はGPT-5.6 Solの公表値がない](/assets/images/posts/2026-07-20-kimi-k3-vs-fable-gpt/benchmark-comparison.svg){: .chart}
+
 両ベンダーが共通で報告している14ベンチマークの勝敗は、Fable 5が8勝、K3が6勝。総合ではFable 5がリードするが、一方的な差ではない。
 
 領域別に見ると傾向がはっきりする。
@@ -53,6 +56,8 @@ Moonshot自身の公表は「Claude Opus 4.8やGPT-5.5には勝つが、Claude F
 | Kimi K3 | 3 | 15 |
 | GPT-5.6 Sol | 5 | 30 |
 | Claude Fable 5 | 10 | 50 |
+
+![Kimi K3・GPT-5.6 Sol・Claude Fable 5の入力・出力価格（$/1Mトークン）を比較した横棒グラフ。入力は$3・$5・$10、出力は$15・$30・$50で、K3はFable 5の約1/3の価格](/assets/images/posts/2026-07-20-kimi-k3-vs-fable-gpt/pricing-comparison.svg){: .chart}
 
 K3はFable 5の約1/3の価格だが、前世代K2.6（$0.95 / $4）からは大幅な値上げで、Claude Sonnet 5と同水準になった。「中国AI＝激安」という前提が崩れ始めたシグナルとして受け止められている。1タスクあたりの実測コストは約$0.94で、GPT-5.6 Solと同程度という評価もある。
 

@@ -55,8 +55,8 @@ articles:
 
   - slug: 2026-06-06-vercel-frontend-selection
     stale_risk: high
-    reason: Vercel 料金表（月額・帯域課金）
-    last_verified: 2026-07-03
+    reason: Vercel / Netlify / Cloudflare の料金表（月額・帯域課金・Netlify のクレジット単価）
+    last_verified: 2026-07-27
 
   - slug: 2026-06-10-claude-mythos-fable
     stale_risk: high

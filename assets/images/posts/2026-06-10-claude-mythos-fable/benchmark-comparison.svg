@@ -1,0 +1,38 @@
+<svg viewBox="0 0 400 349" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="bm-title bm-desc">
+<title id="bm-title">Claude Fable 5 と Claude Opus 4.8 のベンチマーク比較</title>
+<desc id="bm-desc">Cognition FrontierCode の Diamond レベルで Fable 5 が29.3%、Opus 4.8 が13.4%。Hex の主要分析ベンチマークでは Fable 5 が90%で、Opus 4.8 の該当スコアは公表されていない。出典はAnthropicの公表値（2026年6月時点）。</desc>
+<style>text{font-family:system-ui,-apple-system,"Segoe UI",sans-serif;}</style>
+<rect x="0" y="0" width="400" height="349" rx="8" fill="#fcfcfb"/>
+<text x="12" y="24" font-size="17" font-weight="700" fill="#0b0b0b">Fable 5 と Opus 4.8 のベンチマーク</text>
+<text x="12" y="44" font-size="12" fill="#52514e">FrontierCode Diamond では Opus 4.8 の約2.2倍。</text>
+<text x="12" y="78" font-size="13" font-weight="600" fill="#52514e">Cognition FrontierCode / Diamond</text>
+<line x1="74.0" y1="86" x2="74.0" y2="150" stroke="#e1e0d9" stroke-width="1"/>
+<line x1="214.0" y1="86" x2="214.0" y2="150" stroke="#e1e0d9" stroke-width="1"/>
+<line x1="354.0" y1="86" x2="354.0" y2="150" stroke="#e1e0d9" stroke-width="1"/>
+<text x="66" y="106.0" font-size="11" text-anchor="end" fill="#52514e">Fable 5</text>
+<path d="M74,92.0 L276.1,92.0 Q279.1,92.0 279.1,95.0 L279.1,107.0 Q279.1,110.0 276.1,110.0 L74,110.0 Z" fill="#2a78d6"/>
+<text x="285.1" y="107.0" font-size="12" font-weight="600" fill="#0b0b0b">29.3%</text>
+<text x="66" y="136.0" font-size="11" text-anchor="end" fill="#52514e">Opus 4.8</text>
+<path d="M74,122.0 L164.8,122.0 Q167.8,122.0 167.8,125.0 L167.8,137.0 Q167.8,140.0 164.8,140.0 L74,140.0 Z" fill="#eb6834"/>
+<text x="173.8" y="137.0" font-size="12" font-weight="600" fill="#0b0b0b">13.4%</text>
+<line x1="74" y1="150" x2="354" y2="150" stroke="#c3c2b7" stroke-width="1"/>
+<text x="74.0" y="164" font-size="11" text-anchor="middle" fill="#898781">0%</text>
+<text x="214.0" y="164" font-size="11" text-anchor="middle" fill="#898781">20%</text>
+<text x="354.0" y="164" font-size="11" text-anchor="middle" fill="#898781">40%</text>
+<text x="12" y="196" font-size="13" font-weight="600" fill="#52514e">Hex 主要分析ベンチマーク</text>
+<line x1="74.0" y1="204" x2="74.0" y2="268" stroke="#e1e0d9" stroke-width="1"/>
+<line x1="214.0" y1="204" x2="214.0" y2="268" stroke="#e1e0d9" stroke-width="1"/>
+<line x1="354.0" y1="204" x2="354.0" y2="268" stroke="#e1e0d9" stroke-width="1"/>
+<text x="66" y="224.0" font-size="11" text-anchor="end" fill="#52514e">Fable 5</text>
+<path d="M74,210.0 L323.0,210.0 Q326.0,210.0 326.0,213.0 L326.0,225.0 Q326.0,228.0 323.0,228.0 L74,228.0 Z" fill="#2a78d6"/>
+<text x="332.0" y="225.0" font-size="12" font-weight="600" fill="#0b0b0b">90.0%</text>
+<text x="66" y="254.0" font-size="11" text-anchor="end" fill="#52514e">Opus 4.8</text>
+<text x="78" y="254.0" font-size="11" fill="#898781">公表値なし</text>
+<line x1="74" y1="268" x2="354" y2="268" stroke="#c3c2b7" stroke-width="1"/>
+<text x="74.0" y="282" font-size="11" text-anchor="middle" fill="#898781">0%</text>
+<text x="214.0" y="282" font-size="11" text-anchor="middle" fill="#898781">50%</text>
+<text x="354.0" y="282" font-size="11" text-anchor="middle" fill="#898781">100%</text>
+<text x="12" y="308" font-size="10" fill="#898781">出典: Anthropic の公表値（2026年6月時点）。</text>
+<text x="12" y="321" font-size="10" fill="#898781">独立した再現検証は十分ではない。</text>
+<text x="12" y="334" font-size="10" fill="#898781">指標ごとに横軸のスケールが異なる。</text>
+</svg>

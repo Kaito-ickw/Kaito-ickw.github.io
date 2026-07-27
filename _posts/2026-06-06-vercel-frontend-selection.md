@@ -6,7 +6,7 @@ categories: 開発
 tags: ["Vercel", "Netlify", "Cloudflare", "Next.js", "フロントエンド", "ホスティング"]
 lang: ja
 ref: vercel-frontend-selection
-last_modified_at: 2026-07-03
+last_modified_at: 2026-07-27
 image:
   path: /assets/images/posts/2026-06-06-vercel-frontend-selection/eyecatch.png
   alt: 複雑なWebアプリが専用発射台に収まり将来の大容量経路も残されているリソグラフ
@@ -42,7 +42,7 @@ Next.js を作った Vercel 社のホスティングサービス。
 - **AI Gateway** 統合：OpenAI / Anthropic 等へのルーティング・コスト追跡がダッシュボードから可能。
 - **非 US リージョンのレイテンシ改善**：2025年比で p99 レイテンシが約 25% 向上。
 
-#### 料金 (2026年6月時点)
+#### 料金 (2026年7月時点)
 
 | プラン | 月額 | 主な内容 |
 | :--- | :--- | :--- |
@@ -76,7 +76,9 @@ Cloudflare の 300+ エッジロケーションを活かした静的ホスティ
 | **Pages Free** | $0 (帯域・リクエスト数は無制限) |
 | **Workers Paid** | $5 (Pages + Workers の全機能) |
 
-帯域 1TB/月 の場合、Vercel Pro が $150 程度になるのに対し Cloudflare Pages は $5 固定。**コスト差は数十倍になりうる。**
+帯域 1TB/月 までは Vercel Pro の込み枠に収まるので、この時点ではコスト差はほとんどない。差が開くのはそこを超えてからだ。5TB/月 まで伸びると Vercel Pro は超過分の課金だけで $600 を超えるが、Cloudflare Pages は $5 のまま動かない。**規模が上がるほどコスト差は数十倍以上に開く。**
+
+![Vercel Pro・Cloudflare Pages・Netlify Proの月額コストを帯域1TB/月と5TB/月で比較した横棒グラフ。1TB/月ではVercel $20、Cloudflare $5、Netlify 約$133。5TB/月ではVercel 約$620、Cloudflare $5、Netlify 約$667で、Cloudflareだけ帯域が増えても$5のまま変わらない](/assets/images/posts/2026-06-06-vercel-frontend-selection/bandwidth-cost.svg){: .chart}
 
 ---
 
@@ -92,9 +94,11 @@ Cloudflare の 300+ エッジロケーションを活かした静的ホスティ
 
 | プラン | 月額 |
 | :--- | :--- |
-| **Free** | $0 (100GB 帯域) |
-| **Pro** | $20/月（席数無制限、クレジット制） |
+| **Free** | $0 (300 クレジット) |
+| **Pro** | $20/月（席数無制限、3,000 クレジット込み） |
 | **Enterprise** | 要相談 |
+
+Netlify は帯域も含めて全リソースをクレジットで消費する方式に変わっている。帯域は 20 クレジット/GB なので、Pro の 3,000 クレジットは帯域だけに使うと約 150GB 分にしかならない。追加クレジットは 1,500 クレジットあたり $10 で、実質 $0.13/GB 程度になる。
 
 ---
 
@@ -104,7 +108,7 @@ Cloudflare の 300+ エッジロケーションを活かした静的ホスティ
 | :--- | :---: | :---: | :---: |
 | **Next.js 完全対応** | ✅ | ⚠️ (ほぼ対応) | ⚠️ (ほぼ対応) |
 | **エッジパフォーマンス** | ◎ (改善中) | ◎ (最速クラス) | △ |
-| **帯域コスト** | ⚠️ (高め) | ✅ (無制限) | ⚠️ |
+| **帯域コスト** | ⚠️ (1TB まで込み、超過は高め) | ✅ (無制限) | ⚠️ (クレジット消費が速い) |
 | **コールドスタート** | ◎ (Fluid Compute) | ✅ (V8 Isolates) | △ |
 | **AI 機能統合** | ✅ (AI Gateway) | ❌ | ❌ |
 | **Preview URL** | ✅ PR ごと自動 | ✅ | ✅ |
@@ -161,6 +165,7 @@ Netlify は特定の組み込み機能 (Forms / Identity 等) が必要なケー
 ## 参考情報
 
 - [Vercel Pricing](https://vercel.com/pricing)
+- [Netlify Pricing](https://www.netlify.com/pricing/)
 - [Vercel vs Netlify vs Cloudflare Pages 2026 — DevToolReviews](https://www.devtoolreviews.com/reviews/vercel-vs-netlify-vs-cloudflare-pages-2026)
 - [Vercel vs Netlify vs Cloudflare Pages — Vibe Coder Blog](https://blog.vibecoder.me/vercel-vs-netlify-vs-cloudflare-pages)
 - [Cloudflare Pages vs Netlify vs Vercel 2026 — DanubeData](https://danubedata.ro/blog/cloudflare-pages-vs-netlify-vs-vercel-static-hosting-2026)

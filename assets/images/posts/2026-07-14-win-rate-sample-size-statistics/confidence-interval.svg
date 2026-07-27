@@ -1,0 +1,36 @@
+<svg viewBox="0 0 400 321" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="ci-title ci-desc">
+<title id="ci-title">5回中4勝と100回中60勝の95%信頼区間の比較</title>
+<desc id="ci-desc">本当の勝率の95%信頼区間を数直線上に並べた図。5回中4勝は38%から96%と幅が広く、100回中60勝は50%から69%と狭い。観測勝率は80%と60%で前者が高いが、信頼区間の下限は38%と50%で逆転している。</desc>
+<style>text{font-family:system-ui,-apple-system,"Segoe UI",sans-serif;}</style>
+<rect x="0" y="0" width="400" height="321" rx="8" fill="#fcfcfb"/>
+<text x="12" y="24" font-size="17" font-weight="700" fill="#0b0b0b">本当の勝率の95%信頼区間</text>
+<text x="12" y="44" font-size="12" fill="#52514e">観測勝率は80%と60%で前者が高い。</text>
+<text x="12" y="60" font-size="12" fill="#52514e">しかし区間の下限は38%と50%で逆転する。</text>
+<line x1="30.0" y1="80" x2="30.0" y2="254" stroke="#e1e0d9" stroke-width="1"/>
+<line x1="117.5" y1="80" x2="117.5" y2="254" stroke="#e1e0d9" stroke-width="1"/>
+<line x1="205.0" y1="80" x2="205.0" y2="254" stroke="#e1e0d9" stroke-width="1"/>
+<line x1="292.5" y1="80" x2="292.5" y2="254" stroke="#e1e0d9" stroke-width="1"/>
+<line x1="380.0" y1="80" x2="380.0" y2="254" stroke="#e1e0d9" stroke-width="1"/>
+<text x="12" y="98" font-size="12" font-weight="600" fill="#0b0b0b">5回中4勝（観測80%）</text>
+<rect x="163.0" y="110" width="203.0" height="22" rx="3" fill="#2a78d6" fill-opacity="0.28"/>
+<line x1="163.0" y1="105" x2="163.0" y2="137" stroke="#2a78d6" stroke-width="2.5"/>
+<line x1="366.0" y1="105" x2="366.0" y2="137" stroke="#2a78d6" stroke-width="2.5"/>
+<circle cx="310.0" cy="121" r="5" fill="#2a78d6" stroke="#fcfcfb" stroke-width="1.5"/>
+<text x="163.0" y="153" font-size="11" font-weight="600" text-anchor="middle" fill="#0b0b0b">38%</text>
+<text x="366.0" y="153" font-size="11" font-weight="600" text-anchor="middle" fill="#0b0b0b">96%</text>
+<text x="12" y="180" font-size="12" font-weight="600" fill="#0b0b0b">100回中60勝（観測60%）</text>
+<rect x="205.0" y="192" width="66.5" height="22" rx="3" fill="#eb6834" fill-opacity="0.28"/>
+<line x1="205.0" y1="187" x2="205.0" y2="219" stroke="#eb6834" stroke-width="2.5"/>
+<line x1="271.5" y1="187" x2="271.5" y2="219" stroke="#eb6834" stroke-width="2.5"/>
+<circle cx="240.0" cy="203" r="5" fill="#eb6834" stroke="#fcfcfb" stroke-width="1.5"/>
+<text x="205.0" y="235" font-size="11" font-weight="600" text-anchor="middle" fill="#0b0b0b">50%</text>
+<text x="271.5" y="235" font-size="11" font-weight="600" text-anchor="middle" fill="#0b0b0b">69%</text>
+<line x1="30" y1="254" x2="380" y2="254" stroke="#c3c2b7" stroke-width="1"/>
+<text x="30.0" y="269" font-size="11" text-anchor="middle" fill="#898781">0%</text>
+<text x="117.5" y="269" font-size="11" text-anchor="middle" fill="#898781">25%</text>
+<text x="205.0" y="269" font-size="11" text-anchor="middle" fill="#898781">50%</text>
+<text x="292.5" y="269" font-size="11" text-anchor="middle" fill="#898781">75%</text>
+<text x="380.0" y="269" font-size="11" text-anchor="middle" fill="#898781">100%</text>
+<text x="205" y="287" font-size="11" text-anchor="middle" fill="#52514e">本当の勝率</text>
+<text x="12" y="306" font-size="10" fill="#898781">丸は観測された勝率。区間はWilson score interval。</text>
+</svg>
