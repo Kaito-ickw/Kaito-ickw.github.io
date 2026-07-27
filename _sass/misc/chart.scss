@@ -1,0 +1,19 @@
+// 記事本文に埋め込むSVG図。
+//
+// 図は <img> として一様に拡縮されるため、記事の本文幅（約860px）いっぱいに広げると
+// デスクトップでは文字が大きくなりすぎ、逆にモバイル基準で作ると本文幅で崩れる。
+// 表示幅に上限をかけて、モバイルとデスクトップの倍率差を 2.6倍 から 1.7倍 に縮める。
+//
+// マークダウン側では kramdown の IAL で付ける。
+//
+//   ![alt](/assets/images/posts/<slug>/figure.svg){: .chart}
+//
+// 図の生成は _scripts/charts/ を参照。
+
+.chart {
+  display: block;
+  width: 100%;
+  max-width: 560px;
+  height: auto;
+  margin: 1.5em auto;
+}
