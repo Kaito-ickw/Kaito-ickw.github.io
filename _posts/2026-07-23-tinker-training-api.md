@@ -100,17 +100,7 @@ Tinker Cookbook（Thinking Machines Labが公開しているOSSのポストト�
 
 エージェント基盤にTinkerを組み込む場合、次のようなループになる。
 
-```mermaid!
-flowchart TB
-    Run["エージェントがIssue/タスクを処理"] --> Log["テスト結果・レビュー・人間評価を記録"]
-    Log --> Convert["成功/失敗を報酬または教師データへ変換"]
-    Convert --> Train["TinkerでSFT・DPO・RLを実行"]
-    Train --> Deploy["学習済み重みを再配置"]
-    Deploy --> Eval["同じ評価セットで改善を検証"]
-    Eval -->|改善を確認| Run
-    Eval -->|悪化・変化なし| Review["データ・報酬設計を見直す"]
-    Review --> Convert
-```
+![エージェントの処理結果を記録し、報酬や教師データへ変換してTinkerで学習し、評価を経て運用へ戻すループ](/assets/images/posts/2026-07-23-tinker-training-api/training-loop.svg){: .chart}
 
 ポイントは、評価結果を見て即座に本番へ反映しない点だ。学習済みモデルを既存の評価セットで比較し、改善が確認できてから初めて再配置する。RLHFの3段階構成（[RLHFがモデルの返答をどう変えるか]({% post_url 2026-06-09-rlhf-model-training %})）と同じく、学習は一度で終わらず、評価と学習を繰り返す前提で設計する必要がある。
 

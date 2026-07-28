@@ -61,12 +61,7 @@ nodes:
 
 この依存関係をグラフとして見ると、次のような単純な流れになる。
 
-```mermaid!
-flowchart TB
-    LLM["llm<br/>openAIAgent"]
-    Output["output<br/>copyAgent"]
-    LLM --> Output
-```
+![openAIAgentのllmノードとcopyAgentのoutputノードだけからなる最小のGraphAIグラフ](/assets/images/posts/2026-06-16-graphai-agent-workflow-engine/minimal-graph.svg){: .chart}
 
 ノードが増えるほど、この依存関係は枝分かれや合流を持つようになるが、書き方自体は変わらない。`inputs`に書いた`:nodeId.property`がエッジになる。
 

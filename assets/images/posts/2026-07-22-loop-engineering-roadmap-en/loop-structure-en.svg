@@ -1,0 +1,53 @@
+<svg viewBox="0 0 400 533" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="loopen-title loopen-desc">
+<title id="loopen-title">The skeleton of an autonomous loop</title>
+<desc id="loopen-desc">A time or event trigger fetches work and an agent executes it. If mechanical verification fails, the cause and state are recorded and execution is retried. On pass, a human approves, state is saved, and the stopping condition decides whether to continue or finish.</desc>
+<style>text{font-family:system-ui,-apple-system,"Segoe UI",sans-serif;}</style>
+<rect x="0" y="0" width="400" height="533" rx="8" fill="#fcfcfb"/>
+<rect x="28" y="16" width="344" height="46" rx="6" fill="#eaf1fb" stroke="#2a78d6" stroke-width="1"/>
+<text x="200" y="36" font-size="12" font-weight="600" text-anchor="middle" fill="#0b0b0b">Trigger</text>
+<text x="200" y="51" font-size="12" font-weight="600" text-anchor="middle" fill="#0b0b0b">time / event</text>
+<rect x="28" y="102" width="344" height="31" rx="6" fill="#f0efec" stroke="#c3c2b7" stroke-width="1"/>
+<text x="200" y="122" font-size="12" text-anchor="middle" fill="#0b0b0b">Fetch work</text>
+<rect x="28" y="159" width="344" height="31" rx="6" fill="#f0efec" stroke="#c3c2b7" stroke-width="1"/>
+<text x="200" y="179" font-size="12" text-anchor="middle" fill="#0b0b0b">Agent executes</text>
+<polygon points="41,216 359,216 372,235 359,254 41,254 28,235" fill="#fcfaf4" stroke="#c3c2b7" stroke-width="1"/>
+<text x="200" y="239.5" font-size="12" text-anchor="middle" fill="#0b0b0b">Mechanical verification</text>
+<rect x="28" y="294" width="166" height="31" rx="6" fill="#fdf1eb" stroke="#eb6834" stroke-width="1"/>
+<text x="111" y="314" font-size="12" text-anchor="middle" fill="#0b0b0b">Record cause and state</text>
+<rect x="206" y="294" width="166" height="31" rx="6" fill="#f0efec" stroke="#c3c2b7" stroke-width="1"/>
+<text x="289" y="314" font-size="12" text-anchor="middle" fill="#0b0b0b">Human approval</text>
+<rect x="28" y="351" width="344" height="31" rx="6" fill="#f0efec" stroke="#c3c2b7" stroke-width="1"/>
+<text x="200" y="371" font-size="12" text-anchor="middle" fill="#0b0b0b">Save state</text>
+<polygon points="41,408 359,408 372,427 359,446 41,446 28,427" fill="#fcfaf4" stroke="#c3c2b7" stroke-width="1"/>
+<text x="200" y="431.5" font-size="12" text-anchor="middle" fill="#0b0b0b">Stopping condition</text>
+<rect x="28" y="486" width="344" height="31" rx="6" fill="#eef8f4" stroke="#1baf7a" stroke-width="1"/>
+<text x="200" y="506" font-size="12" text-anchor="middle" fill="#0b0b0b">Done</text>
+<path d="M200,62 L200,96" stroke="#c3c2b7" stroke-width="1.3" fill="none" stroke-linejoin="round"/>
+<path d="M196.4,96 L203.6,96 L200,102 Z" fill="#c3c2b7"/>
+<path d="M200,133 L200,153" stroke="#c3c2b7" stroke-width="1.3" fill="none" stroke-linejoin="round"/>
+<path d="M196.4,153 L203.6,153 L200,159 Z" fill="#c3c2b7"/>
+<path d="M200,190 L200,210" stroke="#c3c2b7" stroke-width="1.3" fill="none" stroke-linejoin="round"/>
+<path d="M196.4,210 L203.6,210 L200,216 Z" fill="#c3c2b7"/>
+<path d="M200,254 L200,267 Q200,274 193,274 L118,274 Q111,274 111,281 L111,288" stroke="#c3c2b7" stroke-width="1.3" fill="none" stroke-linejoin="round"/>
+<path d="M107.4,288 L114.6,288 L111,294 Z" fill="#c3c2b7"/>
+<rect x="140.5" y="265" width="30" height="13" rx="3" fill="#fcfcfb" opacity="0.95"/>
+<text x="155.5" y="275" font-size="10" text-anchor="middle" fill="#52514e">Fail</text>
+<path d="M200,254 L200,267 Q200,274 207,274 L282,274 Q289,274 289,281 L289,288" stroke="#c3c2b7" stroke-width="1.3" fill="none" stroke-linejoin="round"/>
+<path d="M285.4,288 L292.6,288 L289,294 Z" fill="#c3c2b7"/>
+<rect x="229.5" y="265" width="30" height="13" rx="3" fill="#fcfcfb" opacity="0.95"/>
+<text x="244.5" y="275" font-size="10" text-anchor="middle" fill="#52514e">Pass</text>
+<path d="M289,325 L289,331 Q289,338 282,338 L207,338 Q200,338 200,345 L200,345" stroke="#c3c2b7" stroke-width="1.3" fill="none" stroke-linejoin="round"/>
+<path d="M196.4,345 L203.6,345 L200,351 Z" fill="#c3c2b7"/>
+<path d="M200,382 L200,402" stroke="#c3c2b7" stroke-width="1.3" fill="none" stroke-linejoin="round"/>
+<path d="M196.4,402 L203.6,402 L200,408 Z" fill="#c3c2b7"/>
+<path d="M200,446 L200,480" stroke="#c3c2b7" stroke-width="1.3" fill="none" stroke-linejoin="round"/>
+<path d="M196.4,480 L203.6,480 L200,486 Z" fill="#c3c2b7"/>
+<rect x="187.8" y="457" width="24.5" height="13" rx="3" fill="#fcfcfb" opacity="0.95"/>
+<text x="200" y="467" font-size="10" text-anchor="middle" fill="#52514e">End</text>
+<path d="M28,309.5 L24,309.5 Q17,309.5 17,302.5 L17,181.5 Q17,174.5 24,174.5 L22,174.5" stroke="#c3c2b7" stroke-width="1.3" fill="none" stroke-linejoin="round"/>
+<path d="M22,170.9 L22,178.1 L28,174.5 Z" fill="#c3c2b7"/>
+<path d="M372,427 L376,427 Q383,427 383,420 L383,124.5 Q383,117.5 376,117.5 L378,117.5" stroke="#c3c2b7" stroke-width="1.3" fill="none" stroke-linejoin="round"/>
+<path d="M378,113.9 L378,121.1 L372,117.5 Z" fill="#c3c2b7"/>
+<rect x="331" y="263.2" width="52" height="13" rx="3" fill="#fcfcfb" opacity="0.95"/>
+<text x="379" y="273.2" font-size="10" text-anchor="end" fill="#52514e">Continue</text>
+</svg>

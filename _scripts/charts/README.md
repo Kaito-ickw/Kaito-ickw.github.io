@@ -3,9 +3,17 @@
 記事本文に埋め込むSVGの図を生成するスクリプト。`_scripts/` はアンダースコア始まりなので
 Jekyll のビルド対象に入らない（`_config.yml` の `exclude` を触る必要はない）。
 
-対象は「データを持つ図」と「Mermaidだと崩れる構造図」だけ。フロー・シーケンス・状態遷移など
-Mermaidで書けるものは本文へ ` ```mermaid! ` で直接書く。アイキャッチは対象外
+対象は次の2つ。アイキャッチは対象外
 （[アイキャッチ画像生成ワークフロー](../../docs/eyecatch-image-generation-workflow.md) を参照）。
+
+| | モジュール | 用途 |
+| :--- | :--- | :--- |
+| データを持つ図 | `common.py` | 棒グラフ、区間、ベンチマーク比較 |
+| 構造図 | `diagram.py` | 構成図、処理フロー、判断の分岐 |
+
+本文へ ` ```mermaid! ` で直接書いてよいのはシーケンス図だけ。`jekyll-spaceship` は Mermaid を
+`mermaid.ink` の外部SVGとして `<img>` で読み込むため、表示幅・文字サイズ・ノードの寸法・配色を
+制御できない。フローや構成図は `diagram.py` で描く。
 
 ## サイズの決め方
 
@@ -58,7 +66,56 @@ docker compose run --rm jekyll bundle exec jekyll build
 | `2026-07-14-win-rate-sample-size-statistics.py` | 勝率と標本サイズ | `confidence-interval.svg` / `beta-posterior.svg` |
 | `2026-07-20-kimi-k3-vs-fable-gpt.py` | Kimi K3比較 | `benchmark-comparison.svg` / `pricing-comparison.svg` |
 
+構造図（`diagram.py`）を使うスクリプトは、記事のslugと同名で以下にある。
+
+`2026-06-13-nodejs-basics-for-vibe-coding` / `2026-06-13-openclaw-personal-ai-agent` /
+`2026-06-16-graphai-agent-workflow-engine` / `2026-06-16-notion-database-personal-backend` /
+`2026-06-16-spacex-ipo-kardashev-scale` / `2026-06-17-mcp-protocol-overview` /
+`2026-06-18-google-workspace-studio-guide` / `2026-06-18-mcp-host-client-server` /
+`2026-06-19-mcp-tools-resources-prompts` / `2026-06-20-mcp-json-rpc-lifecycle` /
+`2026-06-21-build-mcp-server-python` / `2026-06-22-mcp-local-remote-transports` /
+`2026-06-23-mcp-security-operations` / `2026-06-24-gsd-core-ai-coding-workflow` /
+`2026-07-22-loop-engineering-roadmap` / `2026-07-23-physical-ai-data-flywheel-agi` /
+`2026-07-23-tinker-training-api` / `2026-07-27-graph-engineering-agent-systems`
+
 ファイル名は記事のslugに合わせる。日英で同じ図を使う記事は1スクリプトで両方を出力する。
+
+## 構造図の書き方（diagram.py）
+
+ノードと辺を宣言すると、層の割り当て・ラベルの折り返し・辺の経路まで組み立てる。
+
+```python
+from diagram import Section, figure, write_figure
+
+write_figure("2026-06-13-nodejs-basics-for-vibe-coding", "npm-run-dev-flow.svg", figure(
+    "npmdev",
+    "npm run dev が開発サーバーを起動するまで",   # <title>
+    "AIエージェントがnpm run devを実行し、……",    # <desc>。記事の alt とは別に読み上げへ渡る
+    [Section(
+        nodes=[("agent", "AIエージェント"), ("cmd", "npm run dev", "accent")],
+        edges=[("agent", "cmd")],
+    )]))
+```
+
+- ノードは `(id, ラベル, スタイル)`。スタイルは `box`（既定） / `accent` / `warm` / `cool` /
+  `plain` / `decision`。`decision` は分岐で、菱形だと日本語の置き場がないので六角形で描く
+- 辺は `(src, dst, ラベル, オプション)`。オプションに `dashed` / `both`（双方向）を書ける
+- ラベルの `\n` は明示的な改行になる。それ以外は幅に合わせて自動で折り返す
+- 上へ戻る辺と、箱を突き抜けてしまう辺は、左右のチャネルへ自動で迂回する
+- 層の並びが意図と違うときは `layers=[[...], [...]]` で明示する
+
+Mermaid の `subgraph` は横に並んで幅が倍になるので、`Section` として縦に積む。
+
+| 形 | 使うもの |
+| :--- | :--- |
+| フロー・分岐・ループ | `Section(nodes=..., edges=...)` |
+| 並列に列挙するだけ | `Section(chips=[...])` |
+| 10段を超える一本道 | `Section(steps=[...])` |
+| 当事者どうしのやり取り | `sequence(...)` |
+| 内包・階層 | `nested(...)` |
+
+1つの層に4つ以上並べると幅が痩せる。自動で折り返すが、折り返した行は「別の層」に見えるので
+警告を出す。並列な列挙なら `chips`、そうでなければ図を分割すること。
 
 ## 書くときの約束
 

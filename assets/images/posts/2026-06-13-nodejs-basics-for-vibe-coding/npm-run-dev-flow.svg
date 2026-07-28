@@ -1,0 +1,28 @@
+<svg viewBox="0 0 400 348" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="npmdev-title npmdev-desc">
+<title id="npmdev-title">npm run dev が開発サーバーを起動するまで</title>
+<desc id="npmdev-desc">AIエージェントがnpm run devを実行すると、package.jsonが読まれ、そこに書かれたViteやNext.jsといったツールがNode.js上で動き、開発サーバーが立ち上がる。</desc>
+<style>text{font-family:system-ui,-apple-system,"Segoe UI",sans-serif;}</style>
+<rect x="0" y="0" width="400" height="348" rx="8" fill="#fcfcfb"/>
+<rect x="12" y="16" width="376" height="31" rx="6" fill="#f0efec" stroke="#c3c2b7" stroke-width="1"/>
+<text x="200" y="36" font-size="12" text-anchor="middle" fill="#0b0b0b">AIエージェント</text>
+<rect x="12" y="73" width="376" height="31" rx="6" fill="#eaf1fb" stroke="#2a78d6" stroke-width="1"/>
+<text x="200" y="93" font-size="12" font-weight="600" text-anchor="middle" fill="#0b0b0b">npm run dev</text>
+<rect x="12" y="130" width="376" height="31" rx="6" fill="#f0efec" stroke="#c3c2b7" stroke-width="1"/>
+<text x="200" y="150" font-size="12" text-anchor="middle" fill="#0b0b0b">package.json</text>
+<rect x="12" y="187" width="376" height="31" rx="6" fill="#f0efec" stroke="#c3c2b7" stroke-width="1"/>
+<text x="200" y="207" font-size="12" text-anchor="middle" fill="#0b0b0b">Vite / Next.js など</text>
+<rect x="12" y="244" width="376" height="31" rx="6" fill="#f0efec" stroke="#c3c2b7" stroke-width="1"/>
+<text x="200" y="264" font-size="12" text-anchor="middle" fill="#0b0b0b">Node.js上で実行</text>
+<rect x="12" y="301" width="376" height="31" rx="6" fill="#eaf1fb" stroke="#2a78d6" stroke-width="1"/>
+<text x="200" y="321" font-size="12" font-weight="600" text-anchor="middle" fill="#0b0b0b">開発サーバー</text>
+<path d="M200,47 L200,67" stroke="#c3c2b7" stroke-width="1.3" fill="none" stroke-linejoin="round"/>
+<path d="M196.4,67 L203.6,67 L200,73 Z" fill="#c3c2b7"/>
+<path d="M200,104 L200,124" stroke="#c3c2b7" stroke-width="1.3" fill="none" stroke-linejoin="round"/>
+<path d="M196.4,124 L203.6,124 L200,130 Z" fill="#c3c2b7"/>
+<path d="M200,161 L200,181" stroke="#c3c2b7" stroke-width="1.3" fill="none" stroke-linejoin="round"/>
+<path d="M196.4,181 L203.6,181 L200,187 Z" fill="#c3c2b7"/>
+<path d="M200,218 L200,238" stroke="#c3c2b7" stroke-width="1.3" fill="none" stroke-linejoin="round"/>
+<path d="M196.4,238 L203.6,238 L200,244 Z" fill="#c3c2b7"/>
+<path d="M200,275 L200,295" stroke="#c3c2b7" stroke-width="1.3" fill="none" stroke-linejoin="round"/>
+<path d="M196.4,295 L203.6,295 L200,301 Z" fill="#c3c2b7"/>
+</svg>

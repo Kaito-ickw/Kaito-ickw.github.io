@@ -34,19 +34,7 @@ Loop Engineeringとは、プロンプトを繰り返し送る技法ではない�
 
 大規模なマルチエージェント構成から始める必要はない。まず一度、人間の操作で確実に成功する手順を作る。次に手順をファイルへ記録し、客観的な検証を追加してから定期実行へ移す。この順序を飛ばすと、どこで失敗したのか分からないまま実行回数とコストだけが増える。
 
-```mermaid!
-flowchart TB
-    Trigger["起動条件<br>時刻・イベント"] --> Discover["作業を取得"]
-    Discover --> Execute["エージェントが実行"]
-    Execute --> Gate["機械的な検証"]
-    Gate -->|失敗| Retry["原因と状態を記録"]
-    Retry --> Execute
-    Gate -->|合格| Approval["人間の承認"]
-    Approval --> State["状態を保存"]
-    State --> Stop{"停止条件"}
-    Stop -->|継続| Discover
-    Stop -->|終了| End["完了"]
-```
+![起動条件から作業の取得、実行、機械的な検証、人間の承認、状態の保存、停止条件までをつなぐ自律ループの骨格](/assets/images/posts/2026-07-22-loop-engineering-roadmap/loop-structure.svg){: .chart}
 
 ## Part 1: その仕事にループは必要か
 

@@ -34,19 +34,7 @@ The minimal configuration needs only these four:
 
 You do not need to start from a large multi-agent setup. First, build a procedure that reliably succeeds once with human operation. Then record the procedure in a file, add objective verification, and only then move to scheduled runs. Skip this order, and the number of runs and the cost grow while you have no idea where it failed.
 
-```mermaid!
-flowchart TB
-    Trigger["Trigger<br>time / event"] --> Discover["Fetch work"]
-    Discover --> Execute["Agent executes"]
-    Execute --> Gate["Mechanical verification"]
-    Gate -->|Fail| Retry["Record cause and state"]
-    Retry --> Execute
-    Gate -->|Pass| Approval["Human approval"]
-    Approval --> State["Save state"]
-    State --> Stop{"Stopping condition"}
-    Stop -->|Continue| Discover
-    Stop -->|End| End["Done"]
-```
+![The skeleton of an autonomous loop: trigger, fetch work, agent execution, mechanical verification, human approval, saved state and a stopping condition](/assets/images/posts/2026-07-22-loop-engineering-roadmap-en/loop-structure-en.svg){: .chart}
 
 ## Part 1: Does This Work Need a Loop?
 

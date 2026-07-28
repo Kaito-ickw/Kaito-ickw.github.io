@@ -76,27 +76,7 @@ Claude CodeやCodex CLIは、ソフトウェア開発の作業ディレクトリ
 
 OpenClawの中心はGatewayである。Gatewayは長時間動作するプロセスで、チャンネル、クライアント、エージェント、ツール、端末の接続を管理する。
 
-```mermaid!
-flowchart TB
-    Channels["Telegram / Slack / Discord / WebChat"]
-    Gateway["OpenClaw Gateway<br/>Channel routing<br/>Session management<br/>Agent runtime<br/>Tool and Skill policies<br/>Cron and event handling"]
-    LLM["LLM provider"]
-    Tools["Tools / Nodes"]
-    Files["Files"]
-    Shell["Shell"]
-    Browser["Browser"]
-    Search["Search"]
-    Devices["Phone / PC"]
-
-    Channels --> Gateway
-    Gateway --> LLM
-    Gateway --> Tools
-    Tools --> Files
-    Tools --> Shell
-    Tools --> Browser
-    Tools --> Search
-    Tools --> Devices
-```
+![各チャネルからの入力をOpenClaw GatewayがLLM providerとTools / Nodesへ振り分ける構成図](/assets/images/posts/2026-06-13-openclaw-personal-ai-agent/architecture.svg){: .chart}
 
 Web UI、CLI、端末NodeはWebSocketでGatewayへ接続する。初期設定ではGatewayは`127.0.0.1:18789`で待ち受けるため、同じ端末からだけアクセスできる。
 

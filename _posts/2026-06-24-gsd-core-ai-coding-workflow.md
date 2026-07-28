@@ -66,23 +66,7 @@ GSD Coreは開発をmilestone、phase、plan、taskの階層へ分ける。miles
 
 各phaseは、同じループを順番に通る。
 
-```mermaid!
-flowchart TB
-    Discuss["Discuss<br>実装上の判断を決める"]
-    Plan["Plan<br>調査してタスクへ分解する"]
-    Execute["Execute<br>計画単位で実装する"]
-    Verify["Verify<br>要件と動作を確認する"]
-    Ship["Ship<br>Pull Requestを作る"]
-    Next["次のphase"]
-
-    Discuss --> Plan
-    Plan --> Execute
-    Execute --> Verify
-    Verify -->|不具合あり| Plan
-    Verify -->|合格| Ship
-    Ship --> Next
-    Next --> Discuss
-```
+![Discuss、Plan、Execute、Verify、Shipの5つのphaseと、Verifyで不具合が出たときにPlanへ戻る流れ](/assets/images/posts/2026-06-24-gsd-core-ai-coding-workflow/phases.svg){: .chart}
 
 ### Discuss: 実装上の判断を確定する
 
@@ -143,22 +127,7 @@ GSD Coreの状態は、専用の外部データベースではなくリポジト
 
 GSD Coreの中心は、重い作業をしないオーケストレーターと、役割ごとに起動するサブエージェントの組み合わせである。
 
-```mermaid!
-flowchart TB
-    User["ユーザー"] --> Command["GSDコマンド"]
-    Command --> Orchestrator["オーケストレーター<br>状態確認と処理の振り分け"]
-    Orchestrator --> Researcher["researcher"]
-    Orchestrator --> Planner["planner"]
-    Orchestrator --> Executor["executor"]
-    Orchestrator --> Verifier["verifier"]
-
-    Researcher --> Planning[".planning/"]
-    Planner --> Planning
-    Planning --> Executor
-    Executor --> Repository["ソースコードとGit"]
-    Repository --> Verifier
-    Verifier --> Planning
-```
+![オーケストレーターが4つのサブエージェントへ振り分け、成果物が.planning/を介してやり取りされる構成](/assets/images/posts/2026-06-24-gsd-core-ai-coding-workflow/agent-roles.svg){: .chart}
 
 オーケストレーターは、現在の状態を読み、適切な担当を起動し、結果を次へ渡す。調査や実装を自分で抱えないため、メインセッションのコンテキスト増加を抑えられる。
 

@@ -62,6 +62,15 @@ FS = {
 
 FONT = '<style>text{font-family:system-ui,-apple-system,"Segoe UI",sans-serif;}</style>'
 
+# 文字幅の概算（font-size に対する比率）。ラスタライズせずに折り返しと
+# はみ出しを見るために使う。diagram.py と check.py が同じ値を参照する。
+W_WIDE = 1.0     # 日本語・全角
+W_NARROW = 0.55  # 英数字・記号
+
+
+def est_width(s, size):
+    return sum(W_WIDE if ord(ch) > 0x2E80 else W_NARROW for ch in s) * size
+
 # リポジトリルート（このファイルは _scripts/charts/ にある）
 ROOT = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 POSTS_IMG = os.path.join(ROOT, "assets", "images", "posts")

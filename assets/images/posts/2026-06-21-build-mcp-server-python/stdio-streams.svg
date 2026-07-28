@@ -1,0 +1,36 @@
+<svg viewBox="0 0 400 319" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="stdio-title stdio-desc">
+<title id="stdio-title">stdoutとstderrの使い分け</title>
+<desc id="stdio-desc">MCP ClientはJSON-RPCをserverのstdinへ書き込む。server.pyはstdoutにはJSON-RPCだけを出し、診断ログはstderrへ出す。stdoutをClientが読み、stderrはログの表示・収集にまわる。stdoutにログを混ぜるとJSON-RPCが壊れる。</desc>
+<style>text{font-family:system-ui,-apple-system,"Segoe UI",sans-serif;}</style>
+<rect x="0" y="0" width="400" height="319" rx="8" fill="#fcfcfb"/>
+<rect x="28" y="16" width="360" height="31" rx="6" fill="#eaf1fb" stroke="#2a78d6" stroke-width="1"/>
+<text x="208" y="36" font-size="12" font-weight="600" text-anchor="middle" fill="#0b0b0b">MCP Client</text>
+<rect x="28" y="87" width="360" height="31" rx="6" fill="#f0efec" stroke="#c3c2b7" stroke-width="1"/>
+<text x="208" y="107" font-size="12" text-anchor="middle" fill="#0b0b0b">server stdin</text>
+<rect x="28" y="144" width="360" height="31" rx="6" fill="#f0efec" stroke="#c3c2b7" stroke-width="1"/>
+<text x="208" y="164" font-size="12" text-anchor="middle" fill="#0b0b0b">server.py</text>
+<rect x="28" y="215" width="174" height="31" rx="6" fill="#f0efec" stroke="#c3c2b7" stroke-width="1"/>
+<text x="115" y="235" font-size="12" text-anchor="middle" fill="#0b0b0b">server stdout</text>
+<rect x="214" y="215" width="174" height="31" rx="6" fill="#f0efec" stroke="#c3c2b7" stroke-width="1"/>
+<text x="301" y="235" font-size="12" text-anchor="middle" fill="#0b0b0b">server stderr</text>
+<rect x="28" y="272" width="360" height="31" rx="6" fill="#f0efec" stroke="#c3c2b7" stroke-width="1"/>
+<text x="208" y="292" font-size="12" text-anchor="middle" fill="#0b0b0b">ログ表示・収集</text>
+<path d="M208,47 L208,81" stroke="#c3c2b7" stroke-width="1.3" fill="none" stroke-linejoin="round"/>
+<path d="M204.4,81 L211.6,81 L208,87 Z" fill="#c3c2b7"/>
+<rect x="182" y="58" width="52" height="13" rx="3" fill="#fcfcfb" opacity="0.95"/>
+<text x="208" y="68" font-size="10" text-anchor="middle" fill="#52514e">JSON-RPC</text>
+<path d="M208,118 L208,138" stroke="#c3c2b7" stroke-width="1.3" fill="none" stroke-linejoin="round"/>
+<path d="M204.4,138 L211.6,138 L208,144 Z" fill="#c3c2b7"/>
+<path d="M208,175 L208,188 Q208,195 201,195 L122,195 Q115,195 115,202 L115,209" stroke="#c3c2b7" stroke-width="1.3" fill="none" stroke-linejoin="round"/>
+<path d="M111.4,209 L118.6,209 L115,215 Z" fill="#c3c2b7"/>
+<rect x="125.5" y="186" width="72" height="13" rx="3" fill="#fcfcfb" opacity="0.95"/>
+<text x="161.5" y="196" font-size="10" text-anchor="middle" fill="#52514e">JSON-RPCのみ</text>
+<path d="M208,175 L208,188 Q208,195 215,195 L294,195 Q301,195 301,202 L301,209" stroke="#c3c2b7" stroke-width="1.3" fill="none" stroke-linejoin="round"/>
+<path d="M297.4,209 L304.6,209 L301,215 Z" fill="#c3c2b7"/>
+<rect x="230.5" y="186" width="48" height="13" rx="3" fill="#fcfcfb" opacity="0.95"/>
+<text x="254.5" y="196" font-size="10" text-anchor="middle" fill="#52514e">診断ログ</text>
+<path d="M301,246 L301,252 Q301,259 294,259 L215,259 Q208,259 208,266 L208,266" stroke="#c3c2b7" stroke-width="1.3" fill="none" stroke-linejoin="round"/>
+<path d="M204.4,266 L211.6,266 L208,272 Z" fill="#c3c2b7"/>
+<path d="M28,230.5 L24,230.5 Q17,230.5 17,223.5 L17,38.5 Q17,31.5 24,31.5 L22,31.5" stroke="#c3c2b7" stroke-width="1.3" fill="none" stroke-linejoin="round"/>
+<path d="M22,27.9 L22,35.1 L28,31.5 Z" fill="#c3c2b7"/>
+</svg>

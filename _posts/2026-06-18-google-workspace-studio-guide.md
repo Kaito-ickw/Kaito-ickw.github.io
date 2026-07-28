@@ -31,11 +31,7 @@ Google Workspace Studio は、Gemini を使ったノーコードのワークフ�
 
 ワークフローは3つのパートで構成される。
 
-```mermaid!
-flowchart TB
-    A["スターター（トリガー）\nGmail受信・Sheetsの行追加・Formsの回答など"] --> B["推論（Gemini）\n内容を読んで判断・分類・要約・生成"]
-    B --> C["アクション（出力）\nDraft作成・Sheetsへの書き込み・Chat通知・外部SaaS連携"]
-```
+![スターター、Geminiによる推論、アクションという3段でWorkspace Studioのワークフローが進む図](/assets/images/posts/2026-06-18-google-workspace-studio-guide/workflow-stages.svg){: .chart}
 
 **スターター**は Gmail の受信・Sheets の行追加・Forms の回答・Google Chat のメッセージなどが選べる。
 

@@ -17,3 +17,15 @@
   height: auto;
   margin: 1.5em auto;
 }
+
+// Mermaid（jekyll-spaceship が mermaid.ink の SVG を <img class="mermaid"> で出す）。
+// 記事で残しているのは sequenceDiagram だけで、それ以外の図は上の .chart へ移した。
+// 上限をかけないと本文幅（約860px）まで引き伸ばされて文字が過大になるため、
+// .chart と同じ 560px に揃える。
+img.mermaid {
+  display: block;
+  width: 100%;
+  max-width: 560px;
+  height: auto;
+  margin: 1.5em auto;
+}

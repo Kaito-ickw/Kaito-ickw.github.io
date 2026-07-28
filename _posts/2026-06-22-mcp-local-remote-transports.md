@@ -45,22 +45,7 @@ stdioは通常、同じ端末上の子プロセスとの通信に使う。Stream
 
 しかし、仕様上の概念は次のように分かれている。
 
-```mermaid!
-flowchart TB
-    Placement["Serverをどこで動かすか"]
-    Transport["Clientとどう通信するか"]
-    Lifecycle["誰が起動・停止するか"]
-    Authority["誰の権限で実行するか"]
-
-    Placement --> Local["同じ端末"]
-    Placement --> Remote["別ホスト / クラウド"]
-    Transport --> Stdio["stdio"]
-    Transport --> HTTP["Streamable HTTP"]
-    Lifecycle --> Spawn["Clientが子プロセス起動"]
-    Lifecycle --> Service["独立サービスとして運用"]
-    Authority --> User["端末ユーザーの権限"]
-    Authority --> ServiceAccount["サービス用権限"]
-```
+![配置・通信・起動と停止・権限という4つの軸で、ローカルとリモートの選択肢が分かれる図](/assets/images/posts/2026-06-22-mcp-local-remote-transports/design-axes.svg){: .chart}
 
 たとえば、同じ端末の`127.0.0.1`でStreamable HTTP Serverを動かす構成もある。この場合は配置がローカルでも、ServerはHostの子プロセスとは限らず、独立したサービスになる。
 
@@ -70,19 +55,7 @@ flowchart TB
 
 stdio transportでは、ClientがMCP Serverをサブプロセスとして起動する。Serverは改行で区切られたUTF-8のJSON-RPCメッセージを`stdin`から読み、`stdout`へ返す。
 
-```mermaid!
-flowchart TB
-    Host["MCP Host"]
-    Client["MCP Client"]
-    Process["Server子プロセス"]
-    Tool["ローカルTool / Data"]
-
-    Host --> Client
-    Client -->|"起動・停止"| Process
-    Client -->|"stdin"| Process
-    Process -->|"stdout"| Client
-    Process --> Tool
-```
+![MCP ClientがServerを子プロセスとして起動し、stdinとstdoutでやり取りする構成](/assets/images/posts/2026-06-22-mcp-local-remote-transports/stdio-topology.svg){: .chart}
 
 この構成では接続とプロセス寿命が近い。Hostを終了した、設定を無効にした、Clientが子プロセスを停止した、といった操作でServerも終了する設計にしやすい。Server内のメモリ状態も、そのプロセスとともに消える。
 
@@ -109,18 +82,19 @@ Streamable HTTPでは、ServerはClientから独立したプロセスとして�
 Serverはリクエストに`application/json`で一つの応答を返すことも、`text/event-stream`でSSEストリームを開いて複数のメッセージを返すこともできる。Clientからの先行リクエストなしにServer側の通知やリクエストを送る必要があれば、Clientは同じendpointへHTTP GETを行い、SSEストリームを開ける。
 
 ```mermaid!
+%%{init: {'theme':'base','themeVariables':{'fontFamily':'system-ui, -apple-system, sans-serif','fontSize':'15px','actorBkg':'#eaf1fb','actorBorder':'#2a78d6','actorTextColor':'#0b0b0b','signalColor':'#52514e','signalTextColor':'#52514e','noteBkgColor':'#f0efec','noteBorderColor':'#c3c2b7','lineColor':'#a9a89d','textColor':'#0b0b0b'}}}%%
 sequenceDiagram
     participant C as MCP Client
     participant S as MCP Server
 
-    C->>S: POST /mcp InitializeRequest
-    S-->>C: JSONまたはSSEでInitializeResult
-    C->>S: POST /mcp InitializedNotification
+    C->>S: POST /mcp initialize
+    S-->>C: InitializeResult
+    C->>S: POST /mcp initialized
     S-->>C: 202 Accepted
     C->>S: POST /mcp tools/call
-    S-->>C: JSONまたはSSEで結果
+    S-->>C: 結果（JSON / SSE）
     C->>S: GET /mcp（任意）
-    S-->>C: SSEで通知・Serverからのrequest
+    S-->>C: SSEで通知・request
 ```
 
 SSEはStreamable HTTPとは別の第三の標準transportではない。Streamable HTTPが応答やServer発のメッセージをストリーミングするときに利用できる仕組みである。単純なServerはJSON応答だけを使い、GETに`405 Method Not Allowed`を返すことも仕様上可能だ。
@@ -147,21 +121,7 @@ stdioでは、一つのClient接続と一つの子プロセスを対応させや
 
 Serverがstateful sessionを使う場合、初期化応答の`MCP-Session-Id`ヘッダーでsession IDを発行できる。Clientは以降のHTTPリクエストに同じヘッダーを付ける。Serverがsessionを終了し、そのIDに対して`404 Not Found`を返した場合、Clientはsession IDなしで再度初期化する。
 
-```mermaid!
-flowchart TB
-    Init["initialize"]
-    SessionId["MCP-Session-Idを受領"]
-    Requests["後続のPOST / GET"]
-    End["DELETEまたはServer側で終了"]
-    Missing["404 Not Found"]
-    Reinit["新しいinitialize"]
-
-    Init --> SessionId
-    SessionId --> Requests
-    Requests --> End
-    Requests --> Missing
-    Missing --> Reinit
-```
+![initializeでMCP-Session-Idを受け取り、後続のリクエストで使い、終了または404 Not Foundから再initializeに至るまで](/assets/images/posts/2026-06-22-mcp-local-remote-transports/session-lifecycle.svg){: .chart}
 
 ここでいうsessionはTCP接続そのものではない。POSTごとにHTTP接続が変わっても、session IDによって論理的な状態を関連付けられる。
 
@@ -213,25 +173,7 @@ MCPの認可仕様はHTTP-based transportを対象にしている。認可を実
 
 一方、仕様はstdio transportにこのHTTP向け認可フローを適用せず、資格情報を環境から取得するよう示している。stdioだから資格情報が不要なのではなく、渡し方と信頼境界が異なる。
 
-```mermaid!
-flowchart TB
-    subgraph Local["stdio"]
-        Host["Host / Client"]
-        Env["環境・OSの資格情報"]
-        LocalServer["Server子プロセス"]
-        Host --> LocalServer
-        Env --> LocalServer
-    end
-
-    subgraph Remote["Streamable HTTP"]
-        RemoteClient["MCP Client"]
-        Auth["Authorization Server"]
-        RemoteServer["MCP Resource Server"]
-        RemoteClient --> Auth
-        Auth --> RemoteClient
-        RemoteClient -->|"Bearer token"| RemoteServer
-    end
-```
+![stdioでは端末の資格情報がそのままServerへ渡り、Streamable HTTPではAuthorization Serverが発行したBearer tokenを使う違い](/assets/images/posts/2026-06-22-mcp-local-remote-transports/trust-boundaries.svg){: .chart}
 
 リモートServerでは、session IDを認証情報の代わりにしてはいけない。`MCP-Session-Id`は論理sessionを関連付ける識別子であり、HTTPリクエストごとのBearer token検証を省略する根拠にはならない。現行の認可仕様も、同じsessionに属する場合を含め、すべてのHTTPリクエストに認可情報を含めるよう定めている。
 

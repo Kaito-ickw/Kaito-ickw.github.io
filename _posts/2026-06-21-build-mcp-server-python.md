@@ -26,24 +26,7 @@ MCPのHost・Client・ServerやJSON-RPCの流れを理解しても、自分でSe
 
 構成は次のようになる。
 
-```mermaid!
-flowchart TB
-    User["ユーザー"]
-    Host["MCP Host"]
-    Client["MCP Client"]
-    Server["Python MCP Server"]
-    List["list_notes"]
-    Read["read_note"]
-    Notes["notes/*.md"]
-
-    User --> Host
-    Host --> Client
-    Client -->|"stdio / JSON-RPC"| Server
-    Server --> List
-    Server --> Read
-    List --> Notes
-    Read --> Notes
-```
+![MCP HostとMCP Clientの先にPython製MCP Serverがあり、list_notesとread_noteがnotesディレクトリのMarkdownを読む構成](/assets/images/posts/2026-06-21-build-mcp-server-python/server-structure.svg){: .chart}
 
 `list_notes`は読み取り可能なノート名とサイズを返す。`read_note`は一覧に出たファイル名を受け取り、その内容を返す。どちらも読み取り専用で、アクセス範囲はServerと同じディレクトリにある`notes/`以下へ限定する。
 
@@ -210,22 +193,7 @@ Toolの説明は人間向けのコメントに見えるが、HostはTool定義�
 
 stdio transportでは、ClientがServerを子プロセスとして起動する。Serverは`stdin`からJSON-RPCメッセージを読み、`stdout`へJSON-RPCメッセージを返す。
 
-```mermaid!
-flowchart TB
-    Client["MCP Client"]
-    Stdin["server stdin"]
-    Python["server.py"]
-    Stdout["server stdout"]
-    Stderr["server stderr"]
-    Logs["ログ表示・収集"]
-
-    Client -->|"JSON-RPC"| Stdin
-    Stdin --> Python
-    Python -->|"JSON-RPCのみ"| Stdout
-    Stdout --> Client
-    Python -->|"診断ログ"| Stderr
-    Stderr --> Logs
-```
+![server.pyがstdoutにはJSON-RPCだけを出し、診断ログはstderrへ分ける流れ](/assets/images/posts/2026-06-21-build-mcp-server-python/stdio-streams.svg){: .chart}
 
 そのため、`print("Server started")`を何気なく追加すると、Clientから見ればJSON-RPCではない文字列が通信路へ混ざる。公式仕様は、stdio Serverが有効なMCPメッセージ以外を`stdout`へ書くことを禁止している。
 

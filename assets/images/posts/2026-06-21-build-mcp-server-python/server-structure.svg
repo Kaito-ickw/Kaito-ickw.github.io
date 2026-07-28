@@ -1,0 +1,36 @@
+<svg viewBox="0 0 400 362" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="pysrv-title pysrv-desc">
+<title id="pysrv-title">作るMCP Serverの位置</title>
+<desc id="pysrv-desc">ユーザーの操作はMCP Hostが受け、MCP Clientがstdio上のJSON-RPCでPython製のMCP Serverと通信する。Serverはlist_notesとread_noteの2つのToolを公開し、どちらもnotesディレクトリのMarkdownを読む。</desc>
+<style>text{font-family:system-ui,-apple-system,"Segoe UI",sans-serif;}</style>
+<rect x="0" y="0" width="400" height="362" rx="8" fill="#fcfcfb"/>
+<rect x="12" y="16" width="376" height="31" rx="6" fill="#f0efec" stroke="#c3c2b7" stroke-width="1"/>
+<text x="200" y="36" font-size="12" text-anchor="middle" fill="#0b0b0b">ユーザー</text>
+<rect x="12" y="73" width="376" height="31" rx="6" fill="#f0efec" stroke="#c3c2b7" stroke-width="1"/>
+<text x="200" y="93" font-size="12" text-anchor="middle" fill="#0b0b0b">MCP Host</text>
+<rect x="12" y="130" width="376" height="31" rx="6" fill="#f0efec" stroke="#c3c2b7" stroke-width="1"/>
+<text x="200" y="150" font-size="12" text-anchor="middle" fill="#0b0b0b">MCP Client</text>
+<rect x="12" y="201" width="376" height="31" rx="6" fill="#eaf1fb" stroke="#2a78d6" stroke-width="1"/>
+<text x="200" y="221" font-size="12" font-weight="600" text-anchor="middle" fill="#0b0b0b">Python MCP Server</text>
+<rect x="12" y="258" width="182" height="31" rx="6" fill="#f0efec" stroke="#c3c2b7" stroke-width="1"/>
+<text x="103" y="278" font-size="12" text-anchor="middle" fill="#0b0b0b">list_notes</text>
+<rect x="206" y="258" width="182" height="31" rx="6" fill="#f0efec" stroke="#c3c2b7" stroke-width="1"/>
+<text x="297" y="278" font-size="12" text-anchor="middle" fill="#0b0b0b">read_note</text>
+<rect x="12" y="315" width="376" height="31" rx="6" fill="#f0efec" stroke="#c3c2b7" stroke-width="1"/>
+<text x="200" y="335" font-size="12" text-anchor="middle" fill="#0b0b0b">notes/*.md</text>
+<path d="M200,47 L200,67" stroke="#c3c2b7" stroke-width="1.3" fill="none" stroke-linejoin="round"/>
+<path d="M196.4,67 L203.6,67 L200,73 Z" fill="#c3c2b7"/>
+<path d="M200,104 L200,124" stroke="#c3c2b7" stroke-width="1.3" fill="none" stroke-linejoin="round"/>
+<path d="M196.4,124 L203.6,124 L200,130 Z" fill="#c3c2b7"/>
+<path d="M200,161 L200,195" stroke="#c3c2b7" stroke-width="1.3" fill="none" stroke-linejoin="round"/>
+<path d="M196.4,195 L203.6,195 L200,201 Z" fill="#c3c2b7"/>
+<rect x="152" y="172" width="96" height="13" rx="3" fill="#fcfcfb" opacity="0.95"/>
+<text x="200" y="182" font-size="10" text-anchor="middle" fill="#52514e">stdio / JSON-RPC</text>
+<path d="M200,232 L200,238 Q200,245 193,245 L110,245 Q103,245 103,252 L103,252" stroke="#c3c2b7" stroke-width="1.3" fill="none" stroke-linejoin="round"/>
+<path d="M99.4,252 L106.6,252 L103,258 Z" fill="#c3c2b7"/>
+<path d="M200,232 L200,238 Q200,245 207,245 L290,245 Q297,245 297,252 L297,252" stroke="#c3c2b7" stroke-width="1.3" fill="none" stroke-linejoin="round"/>
+<path d="M293.4,252 L300.6,252 L297,258 Z" fill="#c3c2b7"/>
+<path d="M103,289 L103,295 Q103,302 110,302 L193,302 Q200,302 200,309 L200,309" stroke="#c3c2b7" stroke-width="1.3" fill="none" stroke-linejoin="round"/>
+<path d="M196.4,309 L203.6,309 L200,315 Z" fill="#c3c2b7"/>
+<path d="M297,289 L297,295 Q297,302 290,302 L207,302 Q200,302 200,309 L200,309" stroke="#c3c2b7" stroke-width="1.3" fill="none" stroke-linejoin="round"/>
+<path d="M196.4,309 L203.6,309 L200,315 Z" fill="#c3c2b7"/>
+</svg>

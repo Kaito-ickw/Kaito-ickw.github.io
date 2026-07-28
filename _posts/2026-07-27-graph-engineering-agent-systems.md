@@ -44,19 +44,7 @@ Graph Engineeringという言葉が混乱を招きやすいのは、少なくと
 
 実際、AI Operatorの整理では2026年7月の拡散時に「オーケストレーショングラフ（LangGraph・Temporal領域）」「ループのグラフ（自己改善サイクルの相互監視網）」「グラフ構造化された知識と記憶」という3つの異なる解釈が同時に生まれ、互いを指して議論がすれ違っていたと指摘されている。
 
-```mermaid!
-flowchart TB
-    subgraph EG["実行グラフ（本記事の対象）"]
-        direction TB
-        E1["Issue取得"] --> E2["調査"] --> E3["分岐"] --> E4["公開"]
-    end
-    subgraph KG["Knowledge Graph / GraphRAG"]
-        direction TB
-        K1["Claude Code"] -- uses --> K2["GitHub"]
-        K2 -- produces --> K3["Pull Request"]
-        K1 -- constrained_by --> K4["CLAUDE.md"]
-    end
-```
+![手順が一列につながる実行グラフと、関係で結ばれるKnowledge Graphの違い](/assets/images/posts/2026-07-27-graph-engineering-agent-systems/graph-types.svg){: .chart}
 
 実行グラフは「次に何をするか」という手順の集合であり、ノードを一つずつ辿って処理を進める。Knowledge GraphやGraphRAGは「何と何が関係しているか」という意味構造であり、辿るというより問い合わせて関連情報を取り出す使い方をする。両者は同じ「ノードと辺」という表現形式を共有しているだけで、設計する対象も評価の基準も異なる。本記事は前者、つまりエージェント実行グラフとしてのGraph Engineeringだけを扱う。
 
@@ -70,19 +58,7 @@ Loop Engineeringは、単一または局所的なAgent loopを安定させる設
 
 Graph Engineeringが扱うのは、複数のloop、通常の決定的コード、人間の承認、ツール呼び出し、評価処理を含む、システム全体の構成である。個々のloopの内部設計を置き換えるのではなく、複数のloopと非loopの処理がどう繋がり、どう制御されるかという一段上の層を扱う。
 
-```mermaid!
-flowchart TB
-    subgraph Grain["設計する粒度"]
-        direction TB
-        A["Prompt Engineering<br>1回の入力"]
-        B["Context Engineering<br>入力に添える情報"]
-        C["Loop / Harness Engineering<br>1つのAgent loopの安定動作"]
-        D["Graph Engineering<br>複数のloop・通常コード・<br>人間・評価を含む全体構成"]
-    end
-    A -.内包.-> B
-    B -.内包.-> C
-    C -.内包.-> D
-```
+![Prompt Engineeringを最も内側に、Context Engineering、Loop / Harness Engineering、Graph Engineeringが順に外側へ入れ子になる図](/assets/images/posts/2026-07-27-graph-engineering-agent-systems/design-grain.svg){: .chart}
 
 この図は「置き換え」ではなく「内包」の関係として描いている。Graph Engineeringのグラフを構成するノードの一つが、そのままLoop Engineeringで設計したAgent loopになる場合が多い。[ハーネスエンジニアリングとは何か]({% post_url 2026-06-08-harness-engineering-guide %})で扱ったHooksやSupervisor Patternも、グラフの中の1ノードの内部実装として使われ続ける。
 
@@ -95,20 +71,7 @@ Graph Engineeringを考えるうえで避けて通れないのが、Anthropicが
 - **Workflow** — LLMやツールが、事前に定義されたコードパスに沿って動くシステム。制御フローは開発者が持つ
 - **Agent** — LLMが、目的達成のための手順やツール利用を動的に自ら決定するシステム。開発者は目的とガードレールを渡し、個々の分岐までは持たない
 
-```mermaid!
-flowchart TB
-    subgraph WF["Workflow"]
-        direction TB
-        W1["事前定義したコードパス"] --> W2["LLM呼び出し"] --> W3["次のステップも固定"]
-    end
-    subgraph AG["Agent"]
-        direction TB
-        A1["目的とツールを渡す"] --> A2["LLMが次の行動を決定"]
-        A2 --> A3{"完了したか"}
-        A3 -->|いいえ| A2
-        A3 -->|はい| A4["終了"]
-    end
-```
+![コードパスが固定されたWorkflowと、LLMが次の行動を決めて完了判定で戻るAgentの違い](/assets/images/posts/2026-07-27-graph-engineering-agent-systems/workflow-vs-agent.svg){: .chart}
 
 同資料はWorkflowの型として、prompt chaining（順序立った処理連鎖）、routing（分類による振り分け）、parallelization（並行実行と多数決）、orchestrator-workers（動的な分解と委譲）、evaluator-optimizer（生成と評価の反復）の5パターンを挙げている。そのうえで、"most production systems don't need agents" という趣旨の姿勢を取り、まずシンプルな解決策を探し、柔軟性が必要な場面でだけAgencyを足すよう勧めている。
 
@@ -131,18 +94,7 @@ Graph Engineeringの中身の多くは、新発明というより既存技術の
 | Durable Execution（Temporal, AWS Step Functions, Azure Durable Functions） | 実行状態の永続化とクラッシュ後の再開 |
 | CI/CDパイプライン / データパイプライン | 段階的な処理とゲートによる品質管理 |
 
-```mermaid!
-flowchart TB
-    subgraph Old["決定的な実行モデル"]
-        direction TB
-        FSM["有限状態機械 / Statechart"]
-        DAGX["DAG / ワークフローエンジン"]
-        Durable["Durable Execution"]
-        Actor["Actor model / Event-driven"]
-    end
-    Old --> GE["Graph Engineering<br>ノードの一部にAgent loopを含む"]
-    GE --> New["新たに重要になる観点<br>停止条件・冪等性・評価・権限・コスト"]
-```
+![有限状態機械やDAGなど決定的な実行モデルの延長にGraph Engineeringがあり、停止条件や冪等性などが新たに問題になる図](/assets/images/posts/2026-07-27-graph-engineering-agent-systems/execution-models.svg){: .chart}
 
 Temporalは自社をDurable Execution基盤と位置づけ、ワークフロー実行の全ステップをイベント履歴として記録し、途中で失敗しても最初からではなく直前のステップから再開できる仕組みを提供している（[Temporal Workflow Execution overview](https://docs.temporal.io/workflow-execution)）。近年はAgentをラップして非決定的なI/O（モデル呼び出し、ツール呼び出し、MCP通信）だけをactivityとして切り出す統合も進めている。
 
@@ -175,22 +127,11 @@ LangGraphをGraph Engineeringそのものとして扱うのは誤りだ。LangGr
 
 抽象的な議論だけでは実感が湧きにくいので、具体例で考える。[スマホでAI開発を回すIssue/PRベースワークフローの設計]({% post_url 2026-06-11-mobile-first-ai-dev-issue-pr-workflow %})で扱った「GitHub Issueからブログ記事のPRを作る」フローを、実行グラフとして描き直してみる。
 
-```mermaid!
-flowchart TB
-    Start["Issue作成"] --> Parse["Issue解析<br>通常コード"]
-    Parse --> Classify["依頼タイプ分類<br>LLM or ルール"]
-    Classify -->|調査不要| Compose["構成作成"]
-    Classify -->|調査必要| Research["Web調査<br>Agent loop"]
-    Research --> Compose
-    Compose --> Write["記事作成<br>通常コード"]
-    Write --> Build["Jekyll build<br>通常コード"]
-    Build -->|失敗| Fix["自動修正<br>Agent loop"]
-    Fix --> Build
-    Build -->|成功| Eval["品質評価<br>Rule + LLM"]
-    Eval -->|不合格| Fix
-    Eval -->|合格| PR["PR作成<br>GitHub API"]
-    PR --> Human["人間レビュー・承認"]
-```
+![Issue作成からIssue解析、依頼タイプ分類を経て、調査の要否で分かれたあと構成作成と記事作成へ合流する、パイプライン前半の実行グラフ](/assets/images/posts/2026-07-27-graph-engineering-agent-systems/article-pipeline.svg){: .chart}
+
+記事ができたところで前半は終わり、ここから検証とPR作成へ移る。
+
+![Jekyll buildの失敗を自動修正で戻し、品質評価の合否でPR作成と人間レビューへ進む、パイプライン後半の実行グラフ](/assets/images/posts/2026-07-27-graph-engineering-agent-systems/article-pipeline-verify.svg){: .chart}
 
 このグラフを設計するとき、実際に決めなければならないことは次のようなものだ。
 
@@ -224,15 +165,7 @@ flowchart TB
 - 実行経路を監査したい
 - コストや権限を制御したい
 
-```mermaid!
-flowchart TB
-    Q1{"分岐・再試行・<br>中断再開があるか"} -->|なし| Code["通常コードのままでよい"]
-    Q1 -->|あり| Q2{"複数のツール・<br>複数のAgent loopがあるか"}
-    Q2 -->|なし| Loop["Loop / Harness Engineeringで足りる"]
-    Q2 -->|あり| Q3{"人間承認・監査・<br>コストや権限の制御が必要か"}
-    Q3 -->|なし| Loop
-    Q3 -->|あり| Graph["Graph Engineeringとして設計する"]
-```
+![分岐や再試行の有無、複数ツールやAgent loopの有無、人間承認や権限制御の要否を順に見て設計方針を決める判断の流れ](/assets/images/posts/2026-07-27-graph-engineering-agent-systems/when-graph.svg){: .chart}
 
 逆に言えば、単発のLLM呼び出しで完結する処理や、分岐も再試行もない一本道の処理にまでノードとエッジの表現を持ち込む必要はない。判断すべきは「グラフとして描けるか」ではなく「グラフとして描く効果が運用コストを上回るか」である。
 

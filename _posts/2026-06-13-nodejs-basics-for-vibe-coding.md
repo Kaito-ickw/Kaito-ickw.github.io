@@ -39,14 +39,7 @@ Node.js周辺は、次のように分けると理解しやすい。
 
 AIエージェントが `npm run dev` を実行している場合、npmだけが動いているわけではない。npmが `package.json` を読み、ViteやNext.jsなどの開発ツールを呼び、そのツールがNode.js上で動いている。
 
-```mermaid!
-flowchart TB
-    Agent["AIエージェント"] --> Command["npm run dev"]
-    Command --> PackageJson["package.json"]
-    PackageJson --> Tool["Vite / Next.js など"]
-    Tool --> Runtime["Node.js上で実行"]
-    Runtime --> Result["開発サーバー"]
-```
+![AIエージェントがnpm run devを実行し、package.jsonに書かれたViteなどのツールがNode.js上で動いて開発サーバーが起動するまでの流れ](/assets/images/posts/2026-06-13-nodejs-basics-for-vibe-coding/npm-run-dev-flow.svg){: .chart}
 
 この記事では、Node.js周辺でよく見るものをこの順番で整理する。その中でも出現頻度の高い `npm run` と依存関係については、少し詳しく扱う。
 
@@ -107,14 +100,7 @@ JavaScriptはもともとブラウザ上で動くものとして広く使われ�
 
 フロントエンド開発でもNode.jsが登場するのは、ブラウザで動く画面そのものだけでなく、開発サーバー、TypeScript変換、コード検査、ビルドなどをNode.js上のツールが担当するためである。
 
-```mermaid!
-flowchart TB
-    Source["React / TypeScript のソース"] --> Tools["Node.js上の開発ツール"]
-    Tools --> Dev["開発サーバー"]
-    Tools --> Build["ブラウザ向け成果物"]
-    Dev --> Browser["ブラウザで確認"]
-    Build --> Deploy["デプロイ"]
-```
+![React・TypeScriptのソースがNode.js上の開発ツールを経て、開発サーバーとブラウザ向け成果物の2つの経路に分かれる図](/assets/images/posts/2026-06-13-nodejs-basics-for-vibe-coding/nodejs-role.svg){: .chart}
 
 エラーに `window is not defined` や `document is not defined` と出る場合は、ブラウザ向けの処理がNode.js側で動いている可能性がある。反対に、ブラウザ側でNode.js専用のファイル操作を使おうとして失敗することもある。
 
@@ -208,13 +194,7 @@ npm run dev
 
 npmは `scripts` の `dev` を探し、実際には `vite` を実行する。
 
-```mermaid!
-flowchart TB
-    Command["npm run dev"] --> PackageJson["package.json を読む"]
-    PackageJson --> Script["scripts.dev を探す"]
-    Script --> Tool["vite を実行する"]
-    Tool --> Result["開発サーバーが起動する"]
-```
+![npm run devがpackage.jsonのscripts.devを読んでviteを実行するまでの解決順](/assets/images/posts/2026-06-13-nodejs-basics-for-vibe-coding/npm-script-resolution.svg){: .chart}
 
 `dev`、`build`、`lint` といった名前は、プロジェクト内の作業に付けられたラベルだと考えると分かりやすい。
 
@@ -328,12 +308,7 @@ npm install
 
 npmは `package.json` と `package-lock.json` を読み、必要なパッケージを `node_modules/` へ配置する。
 
-```mermaid!
-flowchart TB
-    PackageJson["package.json<br>許容するバージョン"] --> Install["npm install"]
-    LockFile["package-lock.json<br>具体的な依存関係"] --> Install
-    Install --> Modules["node_modules"]
-```
+![package.jsonとpackage-lock.jsonの両方をnpm installが読んでnode_modulesを作る関係](/assets/images/posts/2026-06-13-nodejs-basics-for-vibe-coding/dependency-install.svg){: .chart}
 
 インストールが終わると、`npm run dev` などからローカルのツールを呼び出せるようになる。
 
@@ -667,11 +642,7 @@ npm run build
 
 `prebuild`、`build`、`postbuild` の順に動く。
 
-```mermaid!
-flowchart TB
-    Pre["prebuild<br>事前処理"] --> Main["build<br>本処理"]
-    Main --> Post["postbuild<br>事後処理"]
-```
+![prebuild・build・postbuildがこの順に呼ばれる図](/assets/images/posts/2026-06-13-nodejs-basics-for-vibe-coding/npm-script-hooks.svg){: .chart}
 
 `build` の一行だけを見て終わりだと思っていると、生成ファイルの更新やレポート出力を見落とすことがある。スクリプトを確認するときは、同名の `pre...` と `post...` も確認したい。
 

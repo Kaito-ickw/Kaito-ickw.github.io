@@ -1,0 +1,30 @@
+<svg viewBox="0 0 400 328" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="axes-title axes-desc">
+<title id="axes-title">ローカルとリモートを分ける4つの軸</title>
+<desc id="axes-desc">Serverをどこで動かすかは同じ端末か別ホストかに分かれる。Clientとどう通信するかはstdioかStreamable HTTPか。誰が起動・停止するかはClientの子プロセスか独立サービスか。誰の権限で実行するかは端末ユーザーの権限かサービス用権限か。</desc>
+<style>text{font-family:system-ui,-apple-system,"Segoe UI",sans-serif;}</style>
+<rect x="0" y="0" width="400" height="328" rx="8" fill="#fcfcfb"/>
+<rect x="12" y="16" width="376" height="62" rx="8" fill="none" stroke="#e1e0d9" stroke-width="1"/>
+<text x="22" y="30" font-size="13" font-weight="600" fill="#52514e">Serverをどこで動かすか</text>
+<rect x="98.9" y="42" width="66" height="26" rx="6" fill="#f0efec" stroke="#c3c2b7" stroke-width="1"/>
+<text x="131.9" y="59" font-size="11" text-anchor="middle" fill="#0b0b0b">同じ端末</text>
+<rect x="172.9" y="42" width="128.1" height="26" rx="6" fill="#f0efec" stroke="#c3c2b7" stroke-width="1"/>
+<text x="237" y="59" font-size="11" text-anchor="middle" fill="#0b0b0b">別ホスト / クラウド</text>
+<rect x="12" y="94" width="376" height="62" rx="8" fill="none" stroke="#e1e0d9" stroke-width="1"/>
+<text x="22" y="108" font-size="13" font-weight="600" fill="#52514e">Clientとどう通信するか</text>
+<rect x="113.5" y="120" width="52.2" height="26" rx="6" fill="#f0efec" stroke="#c3c2b7" stroke-width="1"/>
+<text x="139.6" y="137" font-size="11" text-anchor="middle" fill="#0b0b0b">stdio</text>
+<rect x="173.8" y="120" width="112.7" height="26" rx="6" fill="#f0efec" stroke="#c3c2b7" stroke-width="1"/>
+<text x="230.1" y="137" font-size="11" text-anchor="middle" fill="#0b0b0b">Streamable HTTP</text>
+<rect x="12" y="172" width="376" height="62" rx="8" fill="none" stroke="#e1e0d9" stroke-width="1"/>
+<text x="22" y="186" font-size="13" font-weight="600" fill="#52514e">誰が起動・停止するか</text>
+<rect x="51.3" y="198" width="146.3" height="26" rx="6" fill="#f0efec" stroke="#c3c2b7" stroke-width="1"/>
+<text x="124.5" y="215" font-size="11" text-anchor="middle" fill="#0b0b0b">Clientが子プロセス起動</text>
+<rect x="205.7" y="198" width="143" height="26" rx="6" fill="#f0efec" stroke="#c3c2b7" stroke-width="1"/>
+<text x="277.1" y="215" font-size="11" text-anchor="middle" fill="#0b0b0b">独立サービスとして運用</text>
+<rect x="12" y="250" width="376" height="62" rx="8" fill="none" stroke="#e1e0d9" stroke-width="1"/>
+<text x="22" y="264" font-size="13" font-weight="600" fill="#52514e">誰の権限で実行するか</text>
+<rect x="86" y="276" width="121" height="26" rx="6" fill="#f0efec" stroke="#c3c2b7" stroke-width="1"/>
+<text x="146.5" y="293" font-size="11" text-anchor="middle" fill="#0b0b0b">端末ユーザーの権限</text>
+<rect x="215" y="276" width="99" height="26" rx="6" fill="#f0efec" stroke="#c3c2b7" stroke-width="1"/>
+<text x="264.5" y="293" font-size="11" text-anchor="middle" fill="#0b0b0b">サービス用権限</text>
+</svg>

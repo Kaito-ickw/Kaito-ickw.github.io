@@ -24,17 +24,7 @@ MCPの構成は「ClientとServerが通信する」と説明される。それ�
 
 MCPの中心にいる参加者はHost、Client、Serverの三つである。Serverから先にある外部API、データベース、ファイルシステムは実用上重要だが、MCPプロトコルの参加者ではない。
 
-```mermaid!
-flowchart TB
-    User["ユーザー"] --> Host["MCP Host<br>AIアプリケーション"]
-    Host --> LLM["LLM"]
-    Host --> ClientA["MCP Client A"]
-    Host --> ClientB["MCP Client B"]
-    ClientA <-->|"専用の接続"| ServerA["MCP Server A<br>ファイル操作"]
-    ClientB <-->|"専用の接続"| ServerB["MCP Server B<br>Issue操作"]
-    ServerA --> Files["ファイルシステム"]
-    ServerB --> GitHub["外部API"]
-```
+![1つのMCP Hostが2つのMCP Clientを持ち、それぞれが専用の接続で別のMCP Serverとつながる構成](/assets/images/posts/2026-06-18-mcp-host-client-server/host-client-server.svg){: .chart}
 
 ユーザーから見ると、Hostの画面に複数Serverの機能がまとまって表示される。しかし、プロトコル上はClient AとServer A、Client BとServer Bが独立した接続を持つ。Hostがそれらを束ね、LLMやユーザーインターフェースと調整している。
 
@@ -160,19 +150,7 @@ MCPのプロトコル版が変わらなくても、外部APIの仕様変更でSe
 
 ここまでの参加者を、接続開始から一つのTool結果が回答へ戻るまでの流れに当てはめる。
 
-```mermaid!
-flowchart TB
-    Init["1. ClientがServerへinitialize"] --> Negotiate["2. VersionとCapabilityを合意"]
-    Negotiate --> List["3. Clientがtools/listを取得"]
-    List --> Register["4. HostがTool定義を管理"]
-    Register --> Request["5. ユーザーが依頼"]
-    Request --> Decide["6. LLMとHostがTool使用を決定"]
-    Decide --> Approve["7. 必要ならユーザーが承認"]
-    Approve --> Call["8. Clientがtools/callを送信"]
-    Call --> Execute["9. Serverが処理・外部APIを実行"]
-    Execute --> Result["10. Tool結果をClientへ返す"]
-    Result --> Answer["11. Hostが結果をLLMへ渡し回答"]
-```
+![initializeからtools/callの結果をLLMへ渡すまでの11段の手順](/assets/images/posts/2026-06-18-mcp-host-client-server/connection-sequence.svg){: .chart}
 
 ### 1. Clientが初期化を始める
 

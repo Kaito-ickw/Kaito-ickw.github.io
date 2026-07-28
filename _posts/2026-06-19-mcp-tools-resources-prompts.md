@@ -34,15 +34,7 @@ MCP仕様は、サーバー側の3つのprimitiveを次のように整理して�
 
 同様に、`application-controlled`はResourceをHostが必ず自動挿入するという意味ではない。ツリーからユーザーに選ばせてもよいし、検索やヒューリスティクス、モデルの選択を使ってもよい。`user-controlled`のPromptも、必ずスラッシュコマンドとして表示する決まりではない。仕様は代表的な操作モデルを示すが、具体的なUIまでは規定していない。
 
-```mermaid!
-flowchart TB
-    Server["MCP Server"] --> Tools["Tools<br/>実行可能な機能"]
-    Server --> Resources["Resources<br/>参照するデータ"]
-    Server --> Prompts["Prompts<br/>再利用する指示"]
-    Model["Modelが選択"] --> Tools
-    App["Applicationが文脈を管理"] --> Resources
-    User["Userが明示的に選択"] --> Prompts
-```
+![MCP ServerがTools・Resources・Promptsの3つを公開し、それぞれModel・Application・Userが選ぶ関係](/assets/images/posts/2026-06-19-mcp-tools-resources-prompts/server-primitives.svg){: .chart}
 
 この整理は権限モデルそのものではない。安全性は、Server側のアクセス制御、Host側の承認、OSやコンテナの権限などで別に担保する必要がある。
 
@@ -175,15 +167,7 @@ Promptはモデルのsystem promptをServerが自由に上書きする仕組み�
 
 Tools、Resources、PromptsはServerがClientへ公開するServer Featuresである。MCPには反対方向、つまりServerがClientの機能を利用するClient Featuresもある。`2025-11-25`版で主要なものはRoots、Sampling、Elicitationだ。
 
-```mermaid!
-flowchart TB
-    Client["MCP Client"] -->|"公開・提供"| Roots["Roots<br/>対象ディレクトリ"]
-    Client -->|"モデル利用を仲介"| Sampling["Sampling<br/>LLM生成"]
-    Client -->|"ユーザー操作を仲介"| Elicitation["Elicitation<br/>追加情報"]
-    Server["MCP Server"] -->|"roots/list"| Roots
-    Server -->|"sampling/createMessage"| Sampling
-    Server -->|"elicitation/create"| Elicitation
-```
+![MCP ClientがRoots・Sampling・Elicitationを提供し、Server側がroots/listなどのメソッドで呼び出す関係](/assets/images/posts/2026-06-19-mcp-tools-resources-prompts/client-primitives.svg){: .chart}
 
 ### Rootsは作業対象をServerへ伝える
 
@@ -220,16 +204,7 @@ Elicitationは、ServerがClientを通じてユーザーへ追加情報を求め
 
 複数に該当する場合は組み合わせる。ノート管理Serverなら、検索と更新をTools、各ノート本文をResources、定型レビューをPromptとして公開できる。レビュー中に評価基準を選ばせるならElicitation、Server側で下書きを生成するならSamplingが加わる。
 
-```mermaid!
-flowchart TB
-    Start["公開したい機能"] --> Action{"処理や副作用があるか"}
-    Action -->|"Yes"| Tool["Tool"]
-    Action -->|"No"| Data{"既存データの参照か"}
-    Data -->|"Yes"| Resource["Resource"]
-    Data -->|"No"| Workflow{"ユーザーが選ぶ対話手順か"}
-    Workflow -->|"Yes"| Prompt["Prompt"]
-    Workflow -->|"No"| Recheck["要件と操作主体を再確認"]
-```
+![処理や副作用の有無、既存データの参照か、対話手順かを順に見てTool・Resource・Promptを選ぶ判断の流れ](/assets/images/posts/2026-06-19-mcp-tools-resources-prompts/choose-primitive.svg){: .chart}
 
 SDKのデコレーターや登録APIは、この設計をコードに落とすための手段である。どのSDKを使っても、Toolへ寄せすぎた設計が自動的に直るわけではない。先に操作主体と責任範囲を決め、それからSDKのAPIへ対応づける方が理解しやすい。
 
