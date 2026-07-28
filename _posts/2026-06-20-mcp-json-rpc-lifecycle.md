@@ -30,20 +30,7 @@ MCPの接続ライフサイクルは、大きく3段階に分かれる。
 
 Toolを1回呼ぶ場合、代表的な流れは次のようになる。
 
-```mermaid!
-flowchart TB
-    Connect["ClientがServerへ接続"] --> InitReq["initialize request"]
-    InitReq --> InitRes["initialize response"]
-    InitRes --> Initialized["notifications/initialized"]
-    Initialized --> ListReq["tools/list request"]
-    ListReq --> ListRes["Tool定義を返す"]
-    ListRes --> Select["Hostが定義をモデルへ渡す"]
-    Select --> Approval["必要ならユーザーが承認"]
-    Approval --> CallReq["tools/call request"]
-    CallReq --> CallRes["Tool結果を返す"]
-    CallRes --> Answer["Hostが結果をモデルへ渡す"]
-    Answer --> Shutdown["transportを終了"]
-```
+![接続からinitialize、tools/list、tools/callを経てtransportを終了するまでの12段](/assets/images/posts/2026-06-20-mcp-json-rpc-lifecycle/lifecycle.svg){: .chart}
 
 この図のうち、MCPが規定するのはClientとServer間のメッセージである。「Tool定義をどのモデルへ渡すか」「いつ承認を求めるか」「結果を会話へどう入れるか」はHostの実装であり、JSON-RPCメッセージには現れない。
 
@@ -470,17 +457,7 @@ stdioでは標準出力がJSON-RPCの通信路になるため、Serverの通常�
 
 ## まとめ
 
-```mermaid!
-flowchart TB
-    A["initialize"] --> B["versionとcapabilityを確認"]
-    B --> C["notifications/initialized"]
-    C --> D["tools/listで発見"]
-    D --> E["tools/callで実行"]
-    E --> F{"結果"}
-    F -->|"成功"| G["result"]
-    F -->|"プロトコルの問題"| H["JSON-RPC error"]
-    F -->|"Tool処理の失敗"| I["result + isError"]
-```
+![tools/callの結果がresult、JSON-RPC error、result + isErrorの3つに分かれる図](/assets/images/posts/2026-06-20-mcp-json-rpc-lifecycle/result-branches.svg){: .chart}
 
 MCP通信を読むときは、次の点を押さえればよい。
 

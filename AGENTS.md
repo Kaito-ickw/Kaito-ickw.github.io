@@ -322,36 +322,59 @@ image:   # Only when the post has an eyecatch image
 
 ## 図・画像の使い分け
 
-記事内で構造や関係を示す場合は、文字で罫線を描いたASCIIアートではなく、Mermaidまたは画像を使う。
+記事内で構造や関係を示す場合は、文字で罫線を描いたASCIIアートではなく、画像またはMermaidを使う。
+
+構成図、処理フロー、判断の分岐といった「箱と矢印」の図は、`_scripts/charts/`のレイアウトエンジンで生成したSVGを使う。Mermaidを使うのはシーケンス図だけとする。
+
+`jekyll-spaceship`はMermaidを`mermaid.ink`の外部SVGとして`<img>`で読み込むため、表示幅・文字サイズ・ノードの寸法・配色を制御できない。上限をかけないとデスクトップ（本文幅約860px）とモバイル（約330px）で2.6倍の差がつき、どちらかで必ず破綻する。重要な図を外部サービスに依存させないという方針にも反する。
+
+### 構造図はSVGで作る
+
+`_scripts/charts/diagram.py`にノードと辺を宣言すると、層の割り当て・ラベルの折り返し・辺の迂回まで組み立てる。詳細は同ディレクトリのREADMEに従う。
+
+```python
+figure("uid", "図のタイトル", "読み上げ用の説明", [
+    Section(
+        nodes=[("a", "入力"), ("b", "処理", "accent"), ("c", "出力")],
+        edges=[("a", "b"), ("b", "c")],
+    )])
+```
+
+- 縦方向に積む。スマートフォンでは横幅だけが足りない
+- ノード内の文章は短くし、説明が多い場合は本文へ分ける
+- ノードや接続が多い図は、1枚へ詰め込まず複数の図へ分割する
+- 1つの層に4つ以上並べない。並列に列挙するだけなら`Section(chips=[...])`を使う
+- 10段を超える一本道は`Section(steps=[...])`で番号付きに詰める
 
 ### Mermaidを使う場合
 
-構成図、処理フロー、状態遷移図、シーケンス図など、テキストで構造を管理できる図はMermaidを第一候補にする。
-
-このリポジトリは`jekyll-spaceship`のMermaid Processorを使うため、コードフェンスには通常の`mermaid`ではなく、末尾に`!`を付けた`mermaid!`を指定する。
+シーケンス図に限ってMermaidを使う。コードフェンスには通常の`mermaid`ではなく、末尾に`!`を付けた`mermaid!`を指定する。テーマ指定は`_config.yml`を触らずに済むよう、図の先頭へ`%%{init: ...}%%`で書く（既存記事の指定をコピーする）。
 
 ````markdown
 ```mermaid!
-flowchart TB
-    Input["入力"] --> Process["処理"]
-    Process --> Output["出力"]
+%%{init: {'theme':'base','themeVariables':{'fontFamily':'system-ui, -apple-system, sans-serif','fontSize':'15px','actorBkg':'#eaf1fb','actorBorder':'#2a78d6','signalColor':'#52514e','signalTextColor':'#52514e','lineColor':'#a9a89d','textColor':'#0b0b0b'}}}%%
+sequenceDiagram
+    participant C as Client
+    participant S as Server
+
+    C->>S: リクエスト
+    S-->>C: レスポンス
 ```
 ````
 
-- スマートフォンでの表示を考え、原則として横方向の`LR`より縦方向の`TB`を使う
-- ノード内の文章は短くし、説明が多い場合は本文へ分ける
-- ノードや接続が多い図は、1枚へ詰め込まず複数の図へ分割する
-- Mermaidで表現しにくい装飾や厳密な配置が必要な場合はSVGへ切り替える
+- 図の幅は最長のメッセージラベルで決まる。ラベルは短くし、条件や補足は本文へ逃がす
+- 参加者は3人までにする
+- 表示幅の上限は`_sass/misc/chart.scss`の`img.mermaid`でかけている
 
 ### 画像を使う場合
 
 | 形式 | 用途 |
 | :--- | :--- |
-| SVG | 複雑な構成図、厳密なレイアウト、拡大表示が必要な図 |
+| SVG | 構成図・フロー・データを持つ図。`_scripts/charts/`で生成する |
 | PNG / WebP | スクリーンショット、UI操作、写真 |
 
 - 画像は`assets/images/posts/YYYY-MM-DD-slug/`以下へ置く
-- MermaidからSVGを書き出す場合は、再編集用の`.mmd`ファイルも同じディレクトリへ残す
+- 構造図のSVGを手で書かない。`_scripts/charts/`のスクリプトから生成し、スクリプトを正本とする
 - 画像には内容が分かるaltテキストを付ける。`alt text`のような仮文字列を残さない
 - 重要な図を外部サービス上の画像だけに依存させない。長期的な表示安定性が必要ならリポジトリ内へSVGを保存する
 
@@ -377,7 +400,7 @@ AIでアイキャッチを生成する場合は、[アイキャッチ画像生�
 
 ### 記事本文へ埋め込むSVG
 
-データを持つ図とMermaidでは崩れる構造図は、`_scripts/charts/`のスクリプトで生成する。詳細は同ディレクトリのREADMEに従う。
+データを持つ図（`common.py`）と構造図（`diagram.py`）は、どちらも`_scripts/charts/`のスクリプトで生成する。詳細は同ディレクトリのREADMEに従う。
 
 - `viewBox`の幅は400で固定する。図は`<img>`として一様に拡縮されるため、座標系の単位をスマートフォンでの実pxへ近づける
 - マークダウンでは必ず`{: .chart}`を付ける。表示幅の上限がかからないと、デスクトップ（本文幅約860px）とモバイル（約330px）の倍率差が2.6倍になり、どちらかで文字が破綻する
@@ -482,12 +505,15 @@ docker compose up
 docker compose run --rm jekyll bundle exec jekyll serve --drafts
 ```
 
-Mermaidを含む記事は、Jekyllビルド後のHTMLでコードブロックのまま残っていないことを確認する。
+図を追加・変更した記事は、Jekyllビルド後のHTMLで参照が解決していることを確認する。
 
 ```bash
 docker compose run --rm jekyll bundle exec jekyll build
 
-# 生成HTMLにMermaidの画像または要素が存在するか確認
+# SVGの参照が .chart クラス付きで出ているか
+rg 'class="chart"' _site/
+
+# Mermaid（シーケンス図のみ）がコードブロックのまま残っていないか
 rg 'class="mermaid"|mermaid.ink' _site/
 ```
 

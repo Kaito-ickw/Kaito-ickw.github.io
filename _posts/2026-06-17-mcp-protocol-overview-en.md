@@ -36,16 +36,7 @@ These are exchanged as JSON-RPC 2.0 messages. For connections to a local process
 
 On the other hand, MCP does not uniformly decide which LLM to use, what to pass to the LLM, which Tool to let it choose, or what kind of approval screen to show before execution. That is the design scope of the MCP Host — that is, the AI application.
 
-```mermaid!
-flowchart TB
-    User["User"] --> Host["AI application<br>MCP Host"]
-    Host --> Client["MCP Client"]
-    Client <-->|"Communication standardized by MCP"| Server["MCP Server"]
-    Server --> API["Existing API"]
-    Server --> DB["Database"]
-    Server --> Files["Local files"]
-    Host -.-> LLM["LLM"]
-```
+![From the user through the MCP Host, MCP Client and MCP Server to an existing API or database. The client-to-server connection is what MCP standardizes](/assets/images/posts/2026-06-17-mcp-protocol-overview-en/mcp-overview-en.svg){: .chart}
 
 The boundary between the Client and Server at the center of the diagram is MCP's main subject. The Client lives inside the Host and handles communication with the Server it connects to. The connection to the LLM, and the API, DB, and file operations beyond the Server, run under separate contracts and implementations.
 
@@ -119,15 +110,7 @@ Function Calling, or Tool Calling, generally refers to the mechanism of passing 
 
 MCP's Tools also have a name, description, and input schema, so they look quite similar. But the boundaries each one is responsible for are different.
 
-```mermaid!
-flowchart TB
-    Server["MCP Server"] -->|"tools/list"| Host["MCP Host"]
-    Host -->|"Make Tool definitions available"| Model["LLM"]
-    Model -->|"Propose Tool use"| Host
-    Host -->|"tools/call"| Server
-    Server -->|"Tool result"| Host
-    Host -->|"Pass the result"| Model
-```
+![How the MCP Server, MCP Host and LLM exchange messages from tools/list through tools/call and back](/assets/images/posts/2026-06-17-mcp-protocol-overview-en/tool-call-flow-en.svg){: .chart}
 
 Function Calling mainly concerns the part between the application and model inference where the model outputs a structured Tool call. MCP concerns the part between the Client inside the Host and the MCP Server where Tools are discovered and execution results are exchanged.
 

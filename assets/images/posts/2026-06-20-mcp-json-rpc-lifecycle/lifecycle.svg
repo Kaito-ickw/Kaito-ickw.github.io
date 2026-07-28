@@ -1,0 +1,53 @@
+<svg viewBox="0 0 400 386" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="lifecycle-title lifecycle-desc">
+<title id="lifecycle-title">接続から終了までのライフサイクル</title>
+<desc id="lifecycle-desc">ClientがServerへ接続し、initializeのrequestとresponse、notifications/initializedを経て、tools/listでTool定義を受け取る。Hostが定義をモデルへ渡し、必要なら承認を挟んでtools/callを送り、Tool結果をモデルへ渡したあとtransportを終了する。</desc>
+<style>text{font-family:system-ui,-apple-system,"Segoe UI",sans-serif;}</style>
+<rect x="0" y="0" width="400" height="386" rx="8" fill="#fcfcfb"/>
+<path d="M25,340 L25,346" stroke="#c3c2b7" stroke-width="1.1" fill="none" stroke-linejoin="round"/>
+<path d="M25,310 L25,316" stroke="#c3c2b7" stroke-width="1.1" fill="none" stroke-linejoin="round"/>
+<path d="M25,280 L25,286" stroke="#c3c2b7" stroke-width="1.1" fill="none" stroke-linejoin="round"/>
+<path d="M25,250 L25,256" stroke="#c3c2b7" stroke-width="1.1" fill="none" stroke-linejoin="round"/>
+<path d="M25,220 L25,226" stroke="#c3c2b7" stroke-width="1.1" fill="none" stroke-linejoin="round"/>
+<path d="M25,190 L25,196" stroke="#c3c2b7" stroke-width="1.1" fill="none" stroke-linejoin="round"/>
+<path d="M25,160 L25,166" stroke="#c3c2b7" stroke-width="1.1" fill="none" stroke-linejoin="round"/>
+<path d="M25,130 L25,136" stroke="#c3c2b7" stroke-width="1.1" fill="none" stroke-linejoin="round"/>
+<path d="M25,100 L25,106" stroke="#c3c2b7" stroke-width="1.1" fill="none" stroke-linejoin="round"/>
+<path d="M25,70 L25,76" stroke="#c3c2b7" stroke-width="1.1" fill="none" stroke-linejoin="round"/>
+<path d="M25,40 L25,46" stroke="#c3c2b7" stroke-width="1.1" fill="none" stroke-linejoin="round"/>
+<rect x="12" y="16" width="26" height="24" rx="5" fill="#f0efec" stroke="#c3c2b7" stroke-width="1"/>
+<text x="25" y="32" font-size="10" font-weight="600" text-anchor="middle" fill="#52514e">1</text>
+<text x="48" y="32" font-size="11" fill="#0b0b0b">ClientがServerへ接続</text>
+<rect x="12" y="46" width="26" height="24" rx="5" fill="#f0efec" stroke="#c3c2b7" stroke-width="1"/>
+<text x="25" y="62" font-size="10" font-weight="600" text-anchor="middle" fill="#52514e">2</text>
+<text x="48" y="62" font-size="11" fill="#0b0b0b">initialize request</text>
+<rect x="12" y="76" width="26" height="24" rx="5" fill="#f0efec" stroke="#c3c2b7" stroke-width="1"/>
+<text x="25" y="92" font-size="10" font-weight="600" text-anchor="middle" fill="#52514e">3</text>
+<text x="48" y="92" font-size="11" fill="#0b0b0b">initialize response</text>
+<rect x="12" y="106" width="26" height="24" rx="5" fill="#f0efec" stroke="#c3c2b7" stroke-width="1"/>
+<text x="25" y="122" font-size="10" font-weight="600" text-anchor="middle" fill="#52514e">4</text>
+<text x="48" y="122" font-size="11" fill="#0b0b0b">notifications/initialized</text>
+<rect x="12" y="136" width="26" height="24" rx="5" fill="#f0efec" stroke="#c3c2b7" stroke-width="1"/>
+<text x="25" y="152" font-size="10" font-weight="600" text-anchor="middle" fill="#52514e">5</text>
+<text x="48" y="152" font-size="11" fill="#0b0b0b">tools/list request</text>
+<rect x="12" y="166" width="26" height="24" rx="5" fill="#f0efec" stroke="#c3c2b7" stroke-width="1"/>
+<text x="25" y="182" font-size="10" font-weight="600" text-anchor="middle" fill="#52514e">6</text>
+<text x="48" y="182" font-size="11" fill="#0b0b0b">Tool定義を返す</text>
+<rect x="12" y="196" width="26" height="24" rx="5" fill="#f0efec" stroke="#c3c2b7" stroke-width="1"/>
+<text x="25" y="212" font-size="10" font-weight="600" text-anchor="middle" fill="#52514e">7</text>
+<text x="48" y="212" font-size="11" fill="#0b0b0b">Hostが定義をモデルへ渡す</text>
+<rect x="12" y="226" width="26" height="24" rx="5" fill="#f0efec" stroke="#c3c2b7" stroke-width="1"/>
+<text x="25" y="242" font-size="10" font-weight="600" text-anchor="middle" fill="#52514e">8</text>
+<text x="48" y="242" font-size="11" fill="#0b0b0b">必要ならユーザーが承認</text>
+<rect x="12" y="256" width="26" height="24" rx="5" fill="#f0efec" stroke="#c3c2b7" stroke-width="1"/>
+<text x="25" y="272" font-size="10" font-weight="600" text-anchor="middle" fill="#52514e">9</text>
+<text x="48" y="272" font-size="11" fill="#0b0b0b">tools/call request</text>
+<rect x="12" y="286" width="26" height="24" rx="5" fill="#f0efec" stroke="#c3c2b7" stroke-width="1"/>
+<text x="25" y="302" font-size="10" font-weight="600" text-anchor="middle" fill="#52514e">10</text>
+<text x="48" y="302" font-size="11" fill="#0b0b0b">Tool結果を返す</text>
+<rect x="12" y="316" width="26" height="24" rx="5" fill="#f0efec" stroke="#c3c2b7" stroke-width="1"/>
+<text x="25" y="332" font-size="10" font-weight="600" text-anchor="middle" fill="#52514e">11</text>
+<text x="48" y="332" font-size="11" fill="#0b0b0b">Hostが結果をモデルへ渡す</text>
+<rect x="12" y="346" width="26" height="24" rx="5" fill="#f0efec" stroke="#c3c2b7" stroke-width="1"/>
+<text x="25" y="362" font-size="10" font-weight="600" text-anchor="middle" fill="#52514e">12</text>
+<text x="48" y="362" font-size="11" fill="#0b0b0b">transportを終了</text>
+</svg>

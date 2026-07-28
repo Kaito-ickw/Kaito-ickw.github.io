@@ -1,0 +1,40 @@
+<svg viewBox="0 0 400 393" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="pipe2-title pipe2-desc">
+<title id="pipe2-title">記事作成パイプラインの後半</title>
+<desc id="pipe2-desc">Jekyllのビルドが失敗したらAgent loopが自動修正してビルドへ戻る。成功したらルールとLLMで品質を評価し、不合格なら自動修正へ戻す。合格したらGitHub APIでPRを作り、人間のレビューと承認へ渡す。</desc>
+<style>text{font-family:system-ui,-apple-system,"Segoe UI",sans-serif;}</style>
+<rect x="0" y="0" width="400" height="393" rx="8" fill="#fcfcfb"/>
+<rect x="12" y="16" width="344" height="46" rx="6" fill="#eaf1fb" stroke="#2a78d6" stroke-width="1"/>
+<text x="184" y="36" font-size="12" font-weight="600" text-anchor="middle" fill="#0b0b0b">Jekyll build</text>
+<text x="184" y="51" font-size="12" font-weight="600" text-anchor="middle" fill="#0b0b0b">通常コード</text>
+<rect x="12" y="102" width="344" height="46" rx="6" fill="#fdf1eb" stroke="#eb6834" stroke-width="1"/>
+<text x="184" y="122" font-size="12" text-anchor="middle" fill="#0b0b0b">自動修正</text>
+<text x="184" y="137" font-size="12" text-anchor="middle" fill="#0b0b0b">Agent loop</text>
+<polygon points="25,188 343,188 356,211 343,234 25,234 12,211" fill="#fcfaf4" stroke="#c3c2b7" stroke-width="1"/>
+<text x="184" y="208" font-size="12" text-anchor="middle" fill="#0b0b0b">品質評価</text>
+<text x="184" y="223" font-size="12" text-anchor="middle" fill="#0b0b0b">Rule + LLM</text>
+<rect x="12" y="274" width="344" height="46" rx="6" fill="#f0efec" stroke="#c3c2b7" stroke-width="1"/>
+<text x="184" y="294" font-size="12" text-anchor="middle" fill="#0b0b0b">PR作成</text>
+<text x="184" y="309" font-size="12" text-anchor="middle" fill="#0b0b0b">GitHub API</text>
+<rect x="12" y="346" width="344" height="31" rx="6" fill="#eef8f4" stroke="#1baf7a" stroke-width="1"/>
+<text x="184" y="366" font-size="12" text-anchor="middle" fill="#0b0b0b">人間レビュー・承認</text>
+<path d="M184,62 L184,96" stroke="#c3c2b7" stroke-width="1.3" fill="none" stroke-linejoin="round"/>
+<path d="M180.4,96 L187.6,96 L184,102 Z" fill="#c3c2b7"/>
+<rect x="170" y="73" width="28" height="13" rx="3" fill="#fcfcfb" opacity="0.95"/>
+<text x="184" y="83" font-size="10" text-anchor="middle" fill="#52514e">失敗</text>
+<path d="M184,234 L184,268" stroke="#c3c2b7" stroke-width="1.3" fill="none" stroke-linejoin="round"/>
+<path d="M180.4,268 L187.6,268 L184,274 Z" fill="#c3c2b7"/>
+<rect x="170" y="245" width="28" height="13" rx="3" fill="#fcfcfb" opacity="0.95"/>
+<text x="184" y="255" font-size="10" text-anchor="middle" fill="#52514e">合格</text>
+<path d="M184,320 L184,340" stroke="#c3c2b7" stroke-width="1.3" fill="none" stroke-linejoin="round"/>
+<path d="M180.4,340 L187.6,340 L184,346 Z" fill="#c3c2b7"/>
+<path d="M356,125 L360,125 Q367,125 367,118 L367,46 Q367,39 360,39 L362,39" stroke="#c3c2b7" stroke-width="1.3" fill="none" stroke-linejoin="round"/>
+<path d="M362,35.4 L362,42.6 L356,39 Z" fill="#c3c2b7"/>
+<path d="M356,39 L376,39 Q383,39 383,46 L383,204 Q383,211 376,211 L362,211" stroke="#c3c2b7" stroke-width="1.3" fill="none" stroke-linejoin="round"/>
+<path d="M362,207.4 L362,214.6 L356,211 Z" fill="#c3c2b7"/>
+<rect x="355" y="116" width="28" height="13" rx="3" fill="#fcfcfb" opacity="0.95"/>
+<text x="379" y="126" font-size="10" text-anchor="end" fill="#52514e">成功</text>
+<path d="M356,211 L360,211 Q367,211 367,204 L367,132 Q367,125 360,125 L362,125" stroke="#c3c2b7" stroke-width="1.3" fill="none" stroke-linejoin="round"/>
+<path d="M362,121.4 L362,128.6 L356,125 Z" fill="#c3c2b7"/>
+<rect x="329" y="159" width="38" height="13" rx="3" fill="#fcfcfb" opacity="0.95"/>
+<text x="363" y="169" font-size="10" text-anchor="end" fill="#52514e">不合格</text>
+</svg>

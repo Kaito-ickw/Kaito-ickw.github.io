@@ -12,11 +12,7 @@ import os
 import re
 import sys
 
-from common import FS, POSTS_IMG, VB_W
-
-# 文字幅の概算（font-size に対する比率）
-W_WIDE = 1.0    # 日本語・全角
-W_NARROW = 0.55  # 英数字・記号
+from common import FS, POSTS_IMG, VB_W, est_width
 
 # モバイル/デスクトップでの実表示幅（_sass/misc/chart.scss の max-width と本文幅から）
 MOBILE_PX = 330
@@ -26,13 +22,6 @@ TEXT_RE = re.compile(
     r'<text x="([-\d.]+)" y="([-\d.]+)" font-size="([\d.]+)"'
     r'(?: font-weight="\d+")?(?: text-anchor="(\w+)")?[^>]*>([^<]*)</text>'
 )
-
-
-def est_width(s, size):
-    w = 0.0
-    for ch in s:
-        w += W_WIDE if ord(ch) > 0x2E80 else W_NARROW
-    return w * size
 
 
 def check(path):

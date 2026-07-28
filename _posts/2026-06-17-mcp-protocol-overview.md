@@ -36,16 +36,7 @@ MCPは、AIアプリケーションと外部機能の間で、次のようなや
 
 一方で、どのLLMを使うか、LLMに何を渡すか、どのToolを選ばせるか、実行前にどのような承認画面を出すかまではMCPが一律に決めない。そこはMCP Host、つまりAIアプリケーションの設計範囲である。
 
-```mermaid!
-flowchart TB
-    User["ユーザー"] --> Host["AIアプリケーション<br>MCP Host"]
-    Host --> Client["MCP Client"]
-    Client <-->|"MCPで標準化された通信"| Server["MCP Server"]
-    Server --> API["既存API"]
-    Server --> DB["データベース"]
-    Server --> Files["ローカルファイル"]
-    Host -.-> LLM["LLM"]
-```
+![ユーザーからMCP Host、MCP Client、MCP Serverを経て既存APIやデータベースへつながる全体像。ClientとServerの間の通信がMCPで標準化されている](/assets/images/posts/2026-06-17-mcp-protocol-overview/mcp-overview.svg){: .chart}
 
 図の中央にあるClientとServerの境界がMCPの主な対象だ。ClientはHost内部にあり、接続先Serverとの通信を担当する。LLMとの接続や、Serverから先にあるAPI・DB・ファイル操作は、別の契約と実装で動いている。
 
@@ -119,15 +110,7 @@ Function CallingやTool Callingは一般に、LLMへ利用可能な関数の名�
 
 MCPのToolにも名前、説明、入力スキーマがあるため、見た目はよく似ている。しかし、両者が受け持つ境界は異なる。
 
-```mermaid!
-flowchart TB
-    Server["MCP Server"] -->|"tools/list"| Host["MCP Host"]
-    Host -->|"Tool定義を利用可能にする"| Model["LLM"]
-    Model -->|"Tool使用を提案"| Host
-    Host -->|"tools/call"| Server
-    Server -->|"Tool結果"| Host
-    Host -->|"結果を渡す"| Model
-```
+![MCP Server・MCP Host・LLMの3者がtools/listからtools/callまでをやり取りする順序](/assets/images/posts/2026-06-17-mcp-protocol-overview/tool-call-flow.svg){: .chart}
 
 Function Callingは、主にアプリケーションとモデル推論の間で、モデルが構造化されたTool呼び出しを出力する部分に関係する。MCPは、Host内のClientとMCP Serverの間で、Toolを発見して実行結果を交換する部分に関係する。
 

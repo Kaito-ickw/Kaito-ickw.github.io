@@ -39,15 +39,7 @@ MCPサーバーの安全性は、次の四層に分けて考えると整理し�
 
 MCPを利用する構成には、少なくとも次の主体が登場する。
 
-```mermaid!
-flowchart TB
-    User["ユーザー"] --> Host["MCP Host / AIアプリ"]
-    Host --> Client["MCP Client"]
-    Client --> Server["MCP Server"]
-    Server --> API["外部API / DB / ファイル"]
-    Data["Tool結果・Resource・外部文書"] --> Server
-    Server --> Client
-```
+![依頼が下る経路と、Tool結果やResourceなど外部由来の文字列が戻る経路を分けて示した図](/assets/images/posts/2026-06-23-mcp-security-operations/data-flow.svg){: .chart}
 
 矢印を一つの「AIシステム」とまとめず、それぞれについて次を確認する。
 
@@ -87,6 +79,7 @@ Streamable HTTPを使うリモートMCPサーバーでは、接続元が誰か�
 基本構成は次のようになる。
 
 ```mermaid!
+%%{init: {'theme':'base','themeVariables':{'fontFamily':'system-ui, -apple-system, sans-serif','fontSize':'15px','actorBkg':'#eaf1fb','actorBorder':'#2a78d6','actorTextColor':'#0b0b0b','signalColor':'#52514e','signalTextColor':'#52514e','noteBkgColor':'#f0efec','noteBorderColor':'#c3c2b7','lineColor':'#a9a89d','textColor':'#0b0b0b'}}}%%
 sequenceDiagram
     participant C as MCP Client
     participant AS as Authorization Server
@@ -95,8 +88,8 @@ sequenceDiagram
     C->>S: MCPリクエスト
     S-->>C: 401 + 認証情報
     C->>AS: 認可リクエスト
-    AS-->>C: MCP Server向けアクセストークン
-    C->>S: Authorization: Bearer token
+    AS-->>C: Server向けトークン
+    C->>S: Bearer token
     S->>S: 署名・期限・audience・scopeを検証
     S-->>C: MCPレスポンス
 ```

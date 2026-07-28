@@ -1,0 +1,28 @@
+<svg viewBox="0 0 400 234" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="role-title role-desc">
+<title id="role-title">Node.jsが担っているもの</title>
+<desc id="role-desc">React・TypeScriptのソースはNode.js上の開発ツールが処理し、開発サーバーとしてブラウザで確認する経路と、ブラウザ向け成果物としてデプロイする経路に分かれる。</desc>
+<style>text{font-family:system-ui,-apple-system,"Segoe UI",sans-serif;}</style>
+<rect x="0" y="0" width="400" height="234" rx="8" fill="#fcfcfb"/>
+<rect x="12" y="16" width="376" height="31" rx="6" fill="#f0efec" stroke="#c3c2b7" stroke-width="1"/>
+<text x="200" y="36" font-size="12" text-anchor="middle" fill="#0b0b0b">React / TypeScript のソース</text>
+<rect x="12" y="73" width="376" height="31" rx="6" fill="#eaf1fb" stroke="#2a78d6" stroke-width="1"/>
+<text x="200" y="93" font-size="12" font-weight="600" text-anchor="middle" fill="#0b0b0b">Node.js上の開発ツール</text>
+<rect x="12" y="130" width="182" height="31" rx="6" fill="#f0efec" stroke="#c3c2b7" stroke-width="1"/>
+<text x="103" y="150" font-size="12" text-anchor="middle" fill="#0b0b0b">開発サーバー</text>
+<rect x="206" y="130" width="182" height="31" rx="6" fill="#f0efec" stroke="#c3c2b7" stroke-width="1"/>
+<text x="297" y="150" font-size="12" text-anchor="middle" fill="#0b0b0b">ブラウザ向け成果物</text>
+<rect x="12" y="187" width="182" height="31" rx="6" fill="#f0efec" stroke="#c3c2b7" stroke-width="1"/>
+<text x="103" y="207" font-size="12" text-anchor="middle" fill="#0b0b0b">ブラウザで確認</text>
+<rect x="206" y="187" width="182" height="31" rx="6" fill="#f0efec" stroke="#c3c2b7" stroke-width="1"/>
+<text x="297" y="207" font-size="12" text-anchor="middle" fill="#0b0b0b">デプロイ</text>
+<path d="M200,47 L200,67" stroke="#c3c2b7" stroke-width="1.3" fill="none" stroke-linejoin="round"/>
+<path d="M196.4,67 L203.6,67 L200,73 Z" fill="#c3c2b7"/>
+<path d="M200,104 L200,110 Q200,117 193,117 L110,117 Q103,117 103,124 L103,124" stroke="#c3c2b7" stroke-width="1.3" fill="none" stroke-linejoin="round"/>
+<path d="M99.4,124 L106.6,124 L103,130 Z" fill="#c3c2b7"/>
+<path d="M200,104 L200,110 Q200,117 207,117 L290,117 Q297,117 297,124 L297,124" stroke="#c3c2b7" stroke-width="1.3" fill="none" stroke-linejoin="round"/>
+<path d="M293.4,124 L300.6,124 L297,130 Z" fill="#c3c2b7"/>
+<path d="M103,161 L103,181" stroke="#c3c2b7" stroke-width="1.3" fill="none" stroke-linejoin="round"/>
+<path d="M99.4,181 L106.6,181 L103,187 Z" fill="#c3c2b7"/>
+<path d="M297,161 L297,181" stroke="#c3c2b7" stroke-width="1.3" fill="none" stroke-linejoin="round"/>
+<path d="M293.4,181 L300.6,181 L297,187 Z" fill="#c3c2b7"/>
+</svg>

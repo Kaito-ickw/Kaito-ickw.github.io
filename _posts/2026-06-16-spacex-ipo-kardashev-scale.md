@@ -24,13 +24,7 @@ last_modified_at: 2026-07-03
 | Type II | 約10^26W | 恒星（太陽）そのものが放出するエネルギーの全体を利用できる文明 |
 | Type III | 約10^36W | 銀河系規模のエネルギーを利用できる文明 |
 
-```mermaid!
-flowchart TB
-    Type1["Type I<br>惑星に届く太陽エネルギーを使い切る"]
-    Type2["Type II<br>恒星のエネルギーを丸ごと使う"]
-    Type3["Type III<br>銀河系規模のエネルギーを使う"]
-    Type1 --> Type2 --> Type3
-```
+![Type IからType IIIまで、扱うエネルギーの規模が惑星・恒星・銀河系と上がる3段階](/assets/images/posts/2026-06-16-spacex-ipo-kardashev-scale/kardashev-scale.svg){: .chart}
 
 現在の人類は、Carl Saganによる修正版の計算ではType Iにすら達していない（0.7前後とされる）。Type IIに到達するには、恒星のエネルギーをほぼ丸ごと回収する技術、いわゆるダイソン球的な発想が必要になり、現実的には数百年単位の時間軸の話になる。
 

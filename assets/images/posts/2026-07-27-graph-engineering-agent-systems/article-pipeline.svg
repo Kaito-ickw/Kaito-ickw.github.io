@@ -1,0 +1,38 @@
+<svg viewBox="0 0 400 436" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="pipe-title pipe-desc">
+<title id="pipe-title">記事作成パイプラインの前半</title>
+<desc id="pipe-desc">Issueが作られると通常コードがIssueを解析し、LLMかルールで依頼タイプを分類する。調査が要らなければそのまま構成作成へ進み、必要ならAgent loopがWeb調査をしてから構成作成へ合流する。構成ができたら通常コードで記事を作成する。</desc>
+<style>text{font-family:system-ui,-apple-system,"Segoe UI",sans-serif;}</style>
+<rect x="0" y="0" width="400" height="436" rx="8" fill="#fcfcfb"/>
+<rect x="12" y="16" width="360" height="31" rx="6" fill="#eaf1fb" stroke="#2a78d6" stroke-width="1"/>
+<text x="192" y="36" font-size="12" font-weight="600" text-anchor="middle" fill="#0b0b0b">Issue作成</text>
+<rect x="12" y="73" width="360" height="46" rx="6" fill="#f0efec" stroke="#c3c2b7" stroke-width="1"/>
+<text x="192" y="93" font-size="12" text-anchor="middle" fill="#0b0b0b">Issue解析</text>
+<text x="192" y="108" font-size="12" text-anchor="middle" fill="#0b0b0b">通常コード</text>
+<polygon points="25,145 359,145 372,168 359,191 25,191 12,168" fill="#fcfaf4" stroke="#c3c2b7" stroke-width="1"/>
+<text x="192" y="165" font-size="12" text-anchor="middle" fill="#0b0b0b">依頼タイプ分類</text>
+<text x="192" y="180" font-size="12" text-anchor="middle" fill="#0b0b0b">LLM or ルール</text>
+<rect x="12" y="231" width="360" height="46" rx="6" fill="#eef8f4" stroke="#1baf7a" stroke-width="1"/>
+<text x="192" y="251" font-size="12" text-anchor="middle" fill="#0b0b0b">Web調査</text>
+<text x="192" y="266" font-size="12" text-anchor="middle" fill="#0b0b0b">Agent loop</text>
+<rect x="12" y="317" width="360" height="31" rx="6" fill="#f0efec" stroke="#c3c2b7" stroke-width="1"/>
+<text x="192" y="337" font-size="12" text-anchor="middle" fill="#0b0b0b">構成作成</text>
+<rect x="12" y="374" width="360" height="46" rx="6" fill="#f0efec" stroke="#c3c2b7" stroke-width="1"/>
+<text x="192" y="394" font-size="12" text-anchor="middle" fill="#0b0b0b">記事作成</text>
+<text x="192" y="409" font-size="12" text-anchor="middle" fill="#0b0b0b">通常コード</text>
+<path d="M192,47 L192,67" stroke="#c3c2b7" stroke-width="1.3" fill="none" stroke-linejoin="round"/>
+<path d="M188.4,67 L195.6,67 L192,73 Z" fill="#c3c2b7"/>
+<path d="M192,119 L192,139" stroke="#c3c2b7" stroke-width="1.3" fill="none" stroke-linejoin="round"/>
+<path d="M188.4,139 L195.6,139 L192,145 Z" fill="#c3c2b7"/>
+<path d="M192,191 L192,225" stroke="#c3c2b7" stroke-width="1.3" fill="none" stroke-linejoin="round"/>
+<path d="M188.4,225 L195.6,225 L192,231 Z" fill="#c3c2b7"/>
+<rect x="168" y="202" width="48" height="13" rx="3" fill="#fcfcfb" opacity="0.95"/>
+<text x="192" y="212" font-size="10" text-anchor="middle" fill="#52514e">調査必要</text>
+<path d="M192,277 L192,311" stroke="#c3c2b7" stroke-width="1.3" fill="none" stroke-linejoin="round"/>
+<path d="M188.4,311 L195.6,311 L192,317 Z" fill="#c3c2b7"/>
+<path d="M192,348 L192,368" stroke="#c3c2b7" stroke-width="1.3" fill="none" stroke-linejoin="round"/>
+<path d="M188.4,368 L195.6,368 L192,374 Z" fill="#c3c2b7"/>
+<path d="M372,168 L376,168 Q383,168 383,175 L383,325.5 Q383,332.5 376,332.5 L378,332.5" stroke="#c3c2b7" stroke-width="1.3" fill="none" stroke-linejoin="round"/>
+<path d="M378,328.9 L378,336.1 L372,332.5 Z" fill="#c3c2b7"/>
+<rect x="335" y="241.2" width="48" height="13" rx="3" fill="#fcfcfb" opacity="0.95"/>
+<text x="379" y="251.2" font-size="10" text-anchor="end" fill="#52514e">調査不要</text>
+</svg>
