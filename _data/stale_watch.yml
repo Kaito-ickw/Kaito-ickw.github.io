@@ -226,3 +226,8 @@ articles:
     stale_risk: medium
     reason: Codex Automations・Skills・worktree・MCPなどエージェント実行環境の仕様
     last_verified: 2026-07-22
+
+  - slug: 2026-07-29-felix-craft-autonomy
+    stale_risk: high
+    reason: Felix Craftの累計収益・内訳・運用コスト・自律範囲（本人の公開レポートに依存し、月次で更新される）
+    last_verified: 2026-07-29

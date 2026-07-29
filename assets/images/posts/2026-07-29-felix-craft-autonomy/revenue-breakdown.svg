@@ -1,0 +1,44 @@
+<svg viewBox="0 0 400 396" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="rb-title rb-desc">
+<title id="rb-title">Felixの累計収益の内訳</title>
+<desc id="rb-desc">収益の源泉はStripe決済が約100,570ドル、暗号資産が約94,973ドルで、半分近くが$FELIXトークンの取引手数料などプロダクト外の収入である。Stripe決済の内訳は、29ドルのガイドPDFが約41,000ドル、スキル市場Claw Martが約14,000ドル、受託などのその他が約45,570ドル。出典はFelix CraftとNat Eliasonの公開レポート、およびOpenClaw.reportの集計（2026年3月初旬時点の累計）。</desc>
+<style>text{font-family:system-ui,-apple-system,"Segoe UI",sans-serif;}</style>
+<rect x="0" y="0" width="400" height="396" rx="8" fill="#fcfcfb"/>
+<text x="12" y="24" font-size="17" font-weight="700" fill="#0b0b0b">Felixの累計収益の内訳</text>
+<text x="12" y="44" font-size="12" fill="#52514e">約半分はプロダクト売上ではなく、</text>
+<text x="12" y="60" font-size="12" fill="#52514e">自分の名前を冠したトークン由来。</text>
+<text x="12" y="94" font-size="13" font-weight="600" fill="#52514e">収益の源泉</text>
+<line x1="86.0" y1="102" x2="86.0" y2="162" stroke="#e1e0d9" stroke-width="1"/>
+<line x1="214.0" y1="102" x2="214.0" y2="162" stroke="#e1e0d9" stroke-width="1"/>
+<line x1="342.0" y1="102" x2="342.0" y2="162" stroke="#e1e0d9" stroke-width="1"/>
+<text x="78" y="121.0" font-size="11" text-anchor="end" fill="#52514e">Stripe決済</text>
+<path d="M86,107.0 L297.5,107.0 Q300.5,107.0 300.5,110.0 L300.5,122.0 Q300.5,125.0 297.5,125.0 L86,125.0 Z" fill="#2a78d6"/>
+<text x="306.5493333333333" y="122.0" font-size="12" font-weight="600" fill="#0b0b0b">$101k</text>
+<text x="78" y="149.0" font-size="11" text-anchor="end" fill="#52514e">暗号資産</text>
+<path d="M86,135.0 L285.6,135.0 Q288.6,135.0 288.6,138.0 L288.6,150.0 Q288.6,153.0 285.6,153.0 L86,153.0 Z" fill="#eb6834"/>
+<text x="294.60906666666665" y="150.0" font-size="12" font-weight="600" fill="#0b0b0b">$95k</text>
+<line x1="86" y1="162" x2="342" y2="162" stroke="#c3c2b7" stroke-width="1"/>
+<text x="86.0" y="176" font-size="11" text-anchor="middle" fill="#898781">$0k</text>
+<text x="214.0" y="176" font-size="11" text-anchor="middle" fill="#898781">$60k</text>
+<text x="342.0" y="176" font-size="11" text-anchor="middle" fill="#898781">$120k</text>
+<text x="12" y="208" font-size="13" font-weight="600" fill="#52514e">Stripe決済の内訳</text>
+<line x1="86.0" y1="216" x2="86.0" y2="304" stroke="#e1e0d9" stroke-width="1"/>
+<line x1="214.0" y1="216" x2="214.0" y2="304" stroke="#e1e0d9" stroke-width="1"/>
+<line x1="342.0" y1="216" x2="342.0" y2="304" stroke="#e1e0d9" stroke-width="1"/>
+<text x="78" y="235.0" font-size="11" text-anchor="end" fill="#52514e">ガイドPDF</text>
+<path d="M86,221.0 L257.9,221.0 Q260.9,221.0 260.9,224.0 L260.9,236.0 Q260.9,239.0 257.9,239.0 L86,239.0 Z" fill="#2a78d6"/>
+<text x="266.93333333333334" y="236.0" font-size="12" font-weight="600" fill="#0b0b0b">$41k</text>
+<text x="78" y="263.0" font-size="11" text-anchor="end" fill="#52514e">Claw Mart</text>
+<path d="M86,249.0 L142.7,249.0 Q145.7,249.0 145.7,252.0 L145.7,264.0 Q145.7,267.0 142.7,267.0 L86,267.0 Z" fill="#eb6834"/>
+<text x="151.73333333333335" y="264.0" font-size="12" font-weight="600" fill="#0b0b0b">$14k</text>
+<text x="78" y="291.0" font-size="11" text-anchor="end" fill="#52514e">その他</text>
+<path d="M86,277.0 L277.4,277.0 Q280.4,277.0 280.4,280.0 L280.4,292.0 Q280.4,295.0 277.4,295.0 L86,295.0 Z" fill="#1baf7a"/>
+<text x="286.432" y="292.0" font-size="12" font-weight="600" fill="#0b0b0b">$46k</text>
+<line x1="86" y1="304" x2="342" y2="304" stroke="#c3c2b7" stroke-width="1"/>
+<text x="86.0" y="318" font-size="11" text-anchor="middle" fill="#898781">$0k</text>
+<text x="214.0" y="318" font-size="11" text-anchor="middle" fill="#898781">$30k</text>
+<text x="342.0" y="318" font-size="11" text-anchor="middle" fill="#898781">$60k</text>
+<text x="12" y="342" font-size="10" fill="#898781">出典: Felix Craft と Nat Eliason の公開レポート、</text>
+<text x="12" y="355" font-size="10" fill="#898781">OpenClaw.report の集計（2026年3月初旬時点の累計）。</text>
+<text x="12" y="368" font-size="10" fill="#898781">「その他」はStripe合計からの差分で、受託などを含む。</text>
+<text x="12" y="381" font-size="10" fill="#898781">パネルごとに横軸のスケールが異なる。</text>
+</svg>
