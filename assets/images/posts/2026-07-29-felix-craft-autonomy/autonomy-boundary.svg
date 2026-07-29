@@ -1,0 +1,43 @@
+<svg viewBox="0 0 400 496" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="felixloop-title felixloop-desc">
+<title id="felixloop-title">Felixのループと人間の介入点</title>
+<desc id="felixloop-desc">Natが音声メモで方針を渡すと、Felixが計画を立て、サブエージェントのIrisとRemyがサポートと営業を実行する。コード作成、デプロイ、決済処理はFelixが人手を介さず行う。外部公開にあたるXの投稿だけは人間の承認を通す。夜間の自己改善ループで、その日に人間の手が必要だった箇所を洗い出し、自動化の範囲を広げてから翌日の計画へ戻る。</desc>
+<style>text{font-family:system-ui,-apple-system,"Segoe UI",sans-serif;}</style>
+<rect x="0" y="0" width="400" height="496" rx="8" fill="#fcfcfb"/>
+<rect x="12" y="16" width="360" height="31" rx="6" fill="#fdf1eb" stroke="#eb6834" stroke-width="1"/>
+<text x="192" y="36" font-size="12" text-anchor="middle" fill="#0b0b0b">Natの音声メモ（方針）</text>
+<rect x="12" y="87" width="360" height="31" rx="6" fill="#eaf1fb" stroke="#2a78d6" stroke-width="1"/>
+<text x="192" y="107" font-size="12" font-weight="600" text-anchor="middle" fill="#0b0b0b">Felixが計画を立てる</text>
+<rect x="12" y="144" width="360" height="46" rx="6" fill="#f0efec" stroke="#c3c2b7" stroke-width="1"/>
+<text x="192" y="164" font-size="12" text-anchor="middle" fill="#0b0b0b">Iris（サポート）</text>
+<text x="192" y="179" font-size="12" text-anchor="middle" fill="#0b0b0b">Remy（営業）</text>
+<rect x="12" y="216" width="360" height="31" rx="6" fill="#f0efec" stroke="#c3c2b7" stroke-width="1"/>
+<text x="192" y="236" font-size="12" text-anchor="middle" fill="#0b0b0b">実装・デプロイ・決済処理</text>
+<polygon points="25,273 359,273 372,292 359,311 25,311 12,292" fill="#fcfaf4" stroke="#c3c2b7" stroke-width="1"/>
+<text x="192" y="296.5" font-size="12" text-anchor="middle" fill="#0b0b0b">外部公開は承認</text>
+<rect x="12" y="337" width="360" height="31" rx="6" fill="#f0efec" stroke="#c3c2b7" stroke-width="1"/>
+<text x="192" y="357" font-size="12" text-anchor="middle" fill="#0b0b0b">夜間の自己改善ループ</text>
+<path d="M192,47 L192,81" stroke="#c3c2b7" stroke-width="1.3" fill="none" stroke-linejoin="round"/>
+<path d="M188.4,81 L195.6,81 L192,87 Z" fill="#c3c2b7"/>
+<path d="M192,118 L192,138" stroke="#c3c2b7" stroke-width="1.3" fill="none" stroke-linejoin="round"/>
+<path d="M188.4,138 L195.6,138 L192,144 Z" fill="#c3c2b7"/>
+<path d="M192,190 L192,210" stroke="#c3c2b7" stroke-width="1.3" fill="none" stroke-linejoin="round"/>
+<path d="M188.4,210 L195.6,210 L192,216 Z" fill="#c3c2b7"/>
+<path d="M192,247 L192,267" stroke="#c3c2b7" stroke-width="1.3" fill="none" stroke-linejoin="round"/>
+<path d="M188.4,267 L195.6,267 L192,273 Z" fill="#c3c2b7"/>
+<path d="M192,311 L192,331" stroke="#c3c2b7" stroke-width="1.3" fill="none" stroke-linejoin="round"/>
+<path d="M188.4,331 L195.6,331 L192,337 Z" fill="#c3c2b7"/>
+<path d="M372,352.5 L376,352.5 Q383,352.5 383,345.5 L383,109.5 Q383,102.5 376,102.5 L378,102.5" stroke="#c3c2b7" stroke-width="1.3" fill="none" stroke-linejoin="round"/>
+<path d="M378,98.9 L378,106.1 L372,102.5 Z" fill="#c3c2b7"/>
+<rect x="275" y="218.5" width="108" height="13" rx="3" fill="#fcfcfb" opacity="0.95"/>
+<text x="379" y="228.5" font-size="10" text-anchor="end" fill="#52514e">自動化の範囲を広げる</text>
+<rect x="12" y="384" width="376" height="96" rx="8" fill="none" stroke="#e1e0d9" stroke-width="1"/>
+<text x="22" y="398" font-size="13" font-weight="600" fill="#52514e">人間が握り続けているもの</text>
+<rect x="69.5" y="410" width="170" height="26" rx="6" fill="#fcfcfb" stroke="#c3c2b7" stroke-width="1"/>
+<text x="154.5" y="427" font-size="11" text-anchor="middle" fill="#52514e">戦略と market positioning</text>
+<rect x="247.5" y="410" width="83" height="26" rx="6" fill="#fcfcfb" stroke="#c3c2b7" stroke-width="1"/>
+<text x="289" y="427" font-size="11" text-anchor="middle" fill="#52514e">X投稿の原文</text>
+<rect x="75" y="444" width="110" height="26" rx="6" fill="#fcfcfb" stroke="#c3c2b7" stroke-width="1"/>
+<text x="130" y="461" font-size="11" text-anchor="middle" fill="#52514e">法務・銀行・税務</text>
+<rect x="193" y="444" width="132" height="26" rx="6" fill="#fcfcfb" stroke="#c3c2b7" stroke-width="1"/>
+<text x="259" y="461" font-size="11" text-anchor="middle" fill="#52514e">配信力（フォロワー）</text>
+</svg>

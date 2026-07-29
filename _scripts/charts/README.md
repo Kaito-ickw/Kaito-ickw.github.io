@@ -65,6 +65,7 @@ docker compose run --rm jekyll bundle exec jekyll build
 | `2026-06-10-claude-mythos-fable.py` | Mythos/Fable | `benchmark-comparison.svg` |
 | `2026-07-14-win-rate-sample-size-statistics.py` | 勝率と標本サイズ | `confidence-interval.svg` / `beta-posterior.svg` |
 | `2026-07-20-kimi-k3-vs-fable-gpt.py` | Kimi K3比較 | `benchmark-comparison.svg` / `pricing-comparison.svg` |
+| `2026-07-29-felix-craft-autonomy.py` | Felix Craftの自律範囲 | `revenue-breakdown.svg` / `autonomy-boundary.svg` |
 
 構造図（`diagram.py`）を使うスクリプトは、記事のslugと同名で以下にある。
 
@@ -76,7 +77,8 @@ docker compose run --rm jekyll bundle exec jekyll build
 `2026-06-21-build-mcp-server-python` / `2026-06-22-mcp-local-remote-transports` /
 `2026-06-23-mcp-security-operations` / `2026-06-24-gsd-core-ai-coding-workflow` /
 `2026-07-22-loop-engineering-roadmap` / `2026-07-23-physical-ai-data-flywheel-agi` /
-`2026-07-23-tinker-training-api` / `2026-07-27-graph-engineering-agent-systems`
+`2026-07-23-tinker-training-api` / `2026-07-27-graph-engineering-agent-systems` /
+`2026-07-29-felix-craft-autonomy`
 
 ファイル名は記事のslugに合わせる。日英で同じ図を使う記事は1スクリプトで両方を出力する。
 
