@@ -98,6 +98,11 @@ articles:
     reason: ChatGPT Tasks・Gemini Scheduled Actions・Claude Cowork/Claude Code Scheduled Tasksのセッション仕様（各社の機能変更で頻繁に変わる）
     last_verified: 2026-07-23
 
+  - slug: 2026-07-30-blender-mcp-3d-generation-workflow
+    stale_risk: high
+    reason: Meshy・Tripo・Hunyuan3D・Hyper3D Rodinの料金・クレジット単価・ライセンス条件、Blender MCP実装のREADME記載機能、Anthropic公式Blender連携の提供状況
+    last_verified: 2026-07-30
+
   # ── medium: 6ヶ月ごとに確認 ──────────────────────────────
 
   - slug: 2026-06-17-mcp-protocol-overview
