@@ -5,6 +5,9 @@ subtitle: 売上を出したAIエージェントの構造と、人間が握り�
 categories: AI開発
 tags: ["OpenClaw", "AIエージェント", "AIネイティブ開発", "自動化", "LLM"]
 lang: ja
+image:
+  path: /assets/images/posts/2026-07-29-felix-craft-autonomy/eyecatch.png
+  alt: 製図台に向かい、自分自身を描いた図面へ新しいアームを1本描き足している作業機械。横の作業台には、その部品が既に組み上がって置かれている
 ---
 
 「AIエージェントが一晩で商品を作り、売上を立てた」という話が今年の2月ごろから流れている。Nat Eliason が動かしている Felix Craft のことだ。累計収益はすでに数十万ドル規模だと本人が公表している。
