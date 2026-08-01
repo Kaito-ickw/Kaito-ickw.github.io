@@ -16,174 +16,174 @@ articles:
   - slug: 2026-07-27-graph-engineering-agent-systems
     stale_risk: high
     reason: Graph Engineeringという語の定義・主要プレイヤーの整理（2026年7月中旬に急速に広まったばかりで用語自体が流動的）。LangGraph・Temporal・OpenAI Agents SDKの仕様変更も対象
-    last_verified: 2026-07-27
+    last_verified: 2026-08-01
 
   - slug: 2026-07-23-tinker-training-api
     stale_risk: high
     reason: Tinkerの対応モデル一覧・課金メーターごとの単価・Inklingとの関係・OpenAI互換APIの提供状況
-    last_verified: 2026-07-23
+    last_verified: 2026-08-01
 
   - slug: 2026-07-20-kimi-k3-vs-fable-gpt
     stale_risk: high
     reason: Kimi K3・Claude Fable 5・GPT-5.6 Solのベンチマーク数値・価格・ウェイト公開予定日
-    last_verified: 2026-07-20
+    last_verified: 2026-08-01
 
   - slug: 2026-07-20-kimi-k3-setup
     stale_risk: high
     reason: Kimi Coding APIのエンドポイント・モデル名（k3[1m]）・環境変数仕様・Kimi CLIの提供形態
-    last_verified: 2026-07-20
+    last_verified: 2026-08-01
 
   - slug: 2026-07-12-gpt-5-6-prompt-design
     stale_risk: high
     reason: GPT-5.6のモデル名・プロンプト設計指針・reasoningおよびtext.verbosityの仕様
-    last_verified: 2026-07-12
+    last_verified: 2026-08-01
 
   - slug: 2026-06-24-ai-subscription-telehodai
     stale_risk: high
     reason: Claude Code・Codexのサブスクリプション利用上限とリセット仕様
-    last_verified: 2026-07-03
+    last_verified: 2026-08-01
 
   - slug: 2026-06-16-spacex-ipo-kardashev-scale
     stale_risk: high
     reason: SpaceXのIPO価格・調達額・時価総額・株価などの数値（市場変動で陳腐化）
-    last_verified: 2026-07-03
+    last_verified: 2026-08-01
 
   - slug: 2026-06-06-supabase-vs-railway-comparison
     stale_risk: high
     reason: Supabase・Railway・Neon の詳細料金比較（無料枠・従量単価）
-    last_verified: 2026-07-03
+    last_verified: 2026-08-01
 
   - slug: 2026-06-06-vercel-frontend-selection
     stale_risk: high
     reason: Vercel / Netlify / Cloudflare の料金表（月額・帯域課金・Netlify のクレジット単価）
-    last_verified: 2026-07-27
+    last_verified: 2026-08-01
 
   - slug: 2026-06-10-claude-mythos-fable
     stale_risk: high
     reason: Claude Fable 5 のベンチマーク・特性（新モデルリリースで陳腐化）
-    last_verified: 2026-07-03
+    last_verified: 2026-08-01
 
   - slug: 2026-06-11-goose-agent-pyramid-hierarchy
     stale_risk: high
     reason: エージェントツール比較表（Goose・Claude Code・Codex CLI の LLM バージョン）
-    last_verified: 2026-07-03
+    last_verified: 2026-08-01
 
   - slug: 2026-06-11-mobile-first-ai-dev-issue-pr-workflow
     stale_risk: medium
     reason: Claude Code GitHub Actions の Issue/PR メンション仕様（機能追加で変わる可能性）
-    last_verified: 2026-07-03
+    last_verified: 2026-08-01
 
   - slug: 2026-06-16-openai-jony-ive-ai-hardware-vision
     stale_risk: high
     reason: OpenAIのハードウェアデバイス計画（製品名・形状・発売時期・製造体制）。未発表のため報道内容が頻繁に変わる
-    last_verified: 2026-07-03
+    last_verified: 2026-08-01
 
   - slug: 2026-06-18-google-workspace-studio-guide
     stale_risk: high
     reason: Google Workspace Studio の機能仕様・対応コネクタ数・利用可能プラン（リリース初期のため頻繁に変わる）
-    last_verified: 2026-07-03
+    last_verified: 2026-08-01
 
   - slug: 2026-07-11-ai-agent-terminal-herdr-cmux
     stale_risk: high
     reason: Herdr・cmuxのバージョン番号・GitHubスター数・対応OS・ライセンス形態（リリース初期のツールで変化が速い）
-    last_verified: 2026-07-11
+    last_verified: 2026-08-01
 
   - slug: 2026-07-23-physical-ai-data-flywheel-agi
     stale_risk: high
     reason: ロボット基盤モデルのバージョン名（π0.7・GR00T N1等）とベンチマーク数値（V-JEPA 2の成功率比較など）
-    last_verified: 2026-07-23
+    last_verified: 2026-08-01
 
   - slug: 2026-07-23-ai-scheduled-task-context-pollution
     stale_risk: high
     reason: ChatGPT Tasks・Gemini Scheduled Actions・Claude Cowork/Claude Code Scheduled Tasksのセッション仕様（各社の機能変更で頻繁に変わる）
-    last_verified: 2026-07-23
+    last_verified: 2026-08-01
 
   # ── medium: 6ヶ月ごとに確認 ──────────────────────────────
 
   - slug: 2026-06-17-mcp-protocol-overview
     stale_risk: medium
     reason: MCP の現行プロトコルバージョン・仕様範囲・公式SDKの位置づけ
-    last_verified: 2026-07-03
+    last_verified: 2026-08-01
 
   - slug: 2026-06-18-mcp-host-client-server
     stale_risk: medium
     reason: MCP のHost・Client・Server構成とCapability仕様
-    last_verified: 2026-07-03
+    last_verified: 2026-08-01
 
   - slug: 2026-06-19-mcp-tools-resources-prompts
     stale_risk: medium
     reason: MCP のTools・Resources・Prompts・Client機能の仕様
-    last_verified: 2026-07-03
+    last_verified: 2026-08-01
 
   - slug: 2026-06-20-mcp-json-rpc-lifecycle
     stale_risk: medium
     reason: MCP のLifecycle・JSON-RPCメソッド・エラー処理の仕様
-    last_verified: 2026-07-03
+    last_verified: 2026-08-01
 
   - slug: 2026-06-21-build-mcp-server-python
     stale_risk: medium
     reason: MCP Python SDK・MCP Inspector・stdioサーバー実装方法
-    last_verified: 2026-07-03
+    last_verified: 2026-08-01
 
   - slug: 2026-06-22-mcp-local-remote-transports
     stale_risk: medium
     reason: MCP のstdio・Streamable HTTP・認証・セッション仕様
-    last_verified: 2026-07-03
+    last_verified: 2026-08-01
 
   - slug: 2026-06-23-mcp-security-operations
     stale_risk: medium
     reason: MCP Authorization・Security Best Practices・Tool annotation仕様
-    last_verified: 2026-07-03
+    last_verified: 2026-08-01
 
   - slug: 2026-06-16-notion-database-personal-backend
     stale_risk: medium
     reason: Notion API のレート制限（約3req/s）・無料プラン上限（5MB・履歴7日）・データソースモデル（2025-09-03）
-    last_verified: 2026-07-03
+    last_verified: 2026-08-01
 
   - slug: 2026-06-13-github-secrets-guide
     stale_risk: medium
     reason: GitHub Actions Secrets の上限・スコープ・Environment保護ルール・プラン制限
-    last_verified: 2026-07-03
+    last_verified: 2026-08-01
 
   - slug: 2026-06-13-github-useful-features
     stale_risk: medium
     reason: Dependabot・Branch Protection・Secret scanning・Push Protection・GitHub Actions の仕様
-    last_verified: 2026-07-03
+    last_verified: 2026-08-01
 
   - slug: 2026-06-13-nodejs-basics-for-vibe-coding
     stale_risk: medium
     reason: Node.js・npm run・npm install・npm ci・npm exec・環境変数の仕様
-    last_verified: 2026-07-03
+    last_verified: 2026-08-01
 
   - slug: 2026-06-13-openclaw-personal-ai-agent
     stale_risk: medium
     reason: OpenClaw の対応チャンネル・導入手順・Gateway・Skill・Sandbox・Cron 仕様
-    last_verified: 2026-07-03
+    last_verified: 2026-08-01
 
   - slug: 2026-06-10-claude-code-skills-guide
     stale_risk: medium
     reason: Claude Code スキル一覧（機能追加で変わる）
-    last_verified: 2026-07-03
+    last_verified: 2026-08-01
 
   - slug: 2026-06-08-opencode-guide
     stale_risk: medium
     reason: opencode の仕様・セットアップ手順
-    last_verified: 2026-07-03
+    last_verified: 2026-08-01
 
   - slug: 2026-06-08-harness-engineering-guide
     stale_risk: medium
     reason: Claude Code Hook イベント仕様・権限設定の記述
-    last_verified: 2026-07-03
+    last_verified: 2026-08-01
 
   - slug: 2026-06-16-graphai-agent-workflow-engine
     stale_risk: medium
     reason: GraphAI のバージョン・対応エージェント一覧・CLI仕様
-    last_verified: 2026-07-03
+    last_verified: 2026-08-01
 
   - slug: 2026-06-09-beast-mode-ai-tools
     stale_risk: medium
     reason: VS Code Copilot のカスタムモード仕様（バージョン 3.1 と記載）
-    last_verified: 2026-07-03
+    last_verified: 2026-08-01
 
   # ── low: 1年ごとに確認 ────────────────────────────────────
 
@@ -205,29 +205,29 @@ articles:
   - slug: 2026-06-18-claude-code-grill-me
     stale_risk: medium
     reason: npx インストールコマンド・SKILL.md の仕様（スキルリポジトリのアップデートで変わる可能性）
-    last_verified: 2026-07-03
+    last_verified: 2026-08-01
 
   - slug: 2026-06-24-gsd-core-ai-coding-workflow
     stale_risk: medium
     reason: GSD Core の開発リポジトリ・インストール方法・コマンド名・対応ランタイム・phase loop仕様
-    last_verified: 2026-07-03
+    last_verified: 2026-08-01
 
   - slug: 2026-07-18-japanese-tech-writing-skill
     stale_risk: medium
     reason: japanese-tech-writing SKILL.mdの章構成・条項内容（Gistが継続的に更新される）
-    last_verified: 2026-07-20
+    last_verified: 2026-08-01
 
   - slug: 2026-07-19-cognitive-rhythm-writing-skill
     stale_risk: medium
     reason: cognitive-rhythm-writing SKILL.mdの条項・点検手順の内容（Gistが継続的に更新される）
-    last_verified: 2026-07-20
+    last_verified: 2026-08-01
 
   - slug: 2026-07-22-loop-engineering-roadmap
     stale_risk: medium
     reason: Codex Automations・Skills・worktree・MCPなどエージェント実行環境の仕様
-    last_verified: 2026-07-22
+    last_verified: 2026-08-01
 
   - slug: 2026-07-29-felix-craft-autonomy
     stale_risk: high
     reason: Felix Craftの累計収益・内訳・運用コスト・自律範囲（本人の公開レポートに依存し、月次で更新される）
-    last_verified: 2026-07-29
+    last_verified: 2026-08-01

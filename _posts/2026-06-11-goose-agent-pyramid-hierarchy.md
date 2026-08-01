@@ -5,7 +5,7 @@ subtitle: BlockのOSSエージェントの仕組みと、チーム構造が変�
 categories: AI開発
 tags: ["AIエージェント", "Goose", "OSS", "CLI", "LLM", "コーディングエージェント", "AIネイティブ開発"]
 lang: ja
-last_modified_at: 2026-07-03
+last_modified_at: 2026-08-01
 ---
 
 「チームの規模を維持したまま、出力だけを増やす」という発想が崩れ始めている。AIエージェントが実装・テスト・レビューの一部を担えるなら、従来の開発チームのピラミッド構造はその前提ごと見直しを迫られる。
@@ -101,7 +101,7 @@ Gooseが関係するのは、その「誰でも使えるOSSの入口」という
 | :--- | :--- | :--- | :--- | :--- | :--- |
 | Goose | Linux Foundation AAIF | 任意（設定） | MCP + 独自拡張（70+） | OSS（Apache 2.0） | コーディング以外も対応 |
 | Claude Code | Anthropic | Claude | MCP | 商用（サブスクリプション） | コーディング特化 |
-| Codex CLI | OpenAI | GPT-5.5系 | MCPサポート済み | OSS | コーディング特化 |
+| Codex CLI | OpenAI | GPT-5.6系（Sol/Terra/Luna） | MCPサポート済み | OSS | コーディング特化 |
 | opencode | Anomaly | 任意（設定） | MCP + サブエージェント | OSS | コーディング特化 |
 
 Claude CodeはAnthropicのエコシステムと深く統合されており、完成度は高い。opencode（Anomalyチーム製）はコーディングに特化し、`build`（フルアクセス）と`plan`（読み取り専用）の2モードで安全性を担保する設計になっている。

@@ -6,7 +6,7 @@ date: 2026-07-20 09:00:00 +0900
 categories: AI開発
 tags: ["AI", "LLM", "Kimi", "OSS"]
 lang: ja
-last_modified_at: 2026-07-27
+last_modified_at: 2026-08-01
 image:
   path: /assets/images/posts/2026-07-20-kimi-k3-vs-fable-gpt/eyecatch.png
   alt: 密閉された2艇のボートに、骨組みがむき出しの大きな1艇が並びかけるリソグラフ調のレースイラスト
@@ -23,7 +23,7 @@ K3の主な仕様は次のとおり。
 - 総パラメータ数 2.8兆。発表時点で史上最大のオープンウェイトモデル
 - コンテキストウィンドウは100万トークン
 - Kimi Delta Attention（KDA）とLatentMoE構成。896エキスパートのうち16を活性化し、スケーリング効率はK2の約2.5倍とされる
-- モデルウェイトは2026年7月27日までに公開予定
+- モデルウェイトは2026年7月27日に公開された（HuggingFace: moonshotai/Kimi-K3）
 
 「オープンウェイトのままフロンティアに追いついた」という点が、発表直後から市場でDeepSeekショックの再来として扱われた理由である。
 

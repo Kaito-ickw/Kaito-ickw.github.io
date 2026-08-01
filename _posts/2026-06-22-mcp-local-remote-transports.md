@@ -5,6 +5,7 @@ subtitle: stdioとStreamable HTTPを実行・通信・運用から比較する
 categories: AI開発
 tags: ["MCP", "AIエージェント", "API", "REST", "設計"]
 lang: ja
+last_modified_at: 2026-08-01
 image:
   path: /assets/images/posts/2026-06-22-mcp-local-remote-transports/eyecatch.png
   alt: 操作卓から机下の専用機と橋の先の共有施設へ二つの経路が分かれる紙コラージュ風イラスト
@@ -16,7 +17,7 @@ MCP仕様が標準transportとして定めるのは`stdio`と`Streamable HTTP`�
 
 連載第5回の[「Pythonで小さなMCPサーバーを作る」]({% post_url 2026-06-21-build-mcp-server-python %})では、ローカルノートを読むstdio Serverを作った。今回は同じServerを共有サービスへ広げる場面を想定し、transport選定で何が変わるかを整理する。
 
-本稿はMCP仕様2025-11-25版を基準にする。特定SDKの設定値ではなく仕様上の動作を中心に扱い、SDK固有の例はその旨を分けて記載する。
+本稿はMCP仕様2025-11-25版を基準にする。2026年7月28日に`2026-07-28`版が正式公開されており、statelessコア設計への移行など、本稿で扱うtransport設計に関係する変更が含まれる。特定SDKの設定値ではなく仕様上の動作を中心に扱い、SDK固有の例はその旨を分けて記載する。
 
 {% include mcp-series-index.html current=6 %}
 

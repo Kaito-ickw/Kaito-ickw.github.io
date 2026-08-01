@@ -5,6 +5,7 @@ subtitle: Herdr と cmux が解決するマルチエージェント運用の課�
 categories: AI開発
 tags: ["AIエージェント", "マルチエージェント", "コーディングエージェント", "Claude Code", "Codex", "自動化", "CLI", "OSS", "Herdr", "cmux"]
 lang: ja
+last_modified_at: 2026-08-01
 image:
   path: /assets/images/posts/2026-07-11-ai-agent-terminal-herdr-cmux/eyecatch.png
   alt: "並んだ複数の作業ブースのうち一つだけ静止し、そのブースだけに橙色の光る枠が灯って目立っているリソグラフ風のイラスト"
@@ -38,7 +39,7 @@ HerdrとcmuxはいずれもClaude Code、Codex、OpenCode、Gemini CLIなど、�
 - 15種類以上のエージェントを追加設定なしで検知する（Claude Code、GitHub Copilot CLI、Codexなどが対象）
 - CLIとJSONソケットAPIを備え、通知フックなど外部の自動化と連携できる
 
-開発はRustで、AGPL-3.0-or-laterのオープンソース版と、組織向けの商用ライセンスを併用するデュアルライセンス方式を取っている。2026年7月11日時点でGitHubスター数は15.3k、最新リリースはv0.7.3（2026年7月7日）。インストールは`curl -fsSL https://herdr.dev/install.sh | sh`で行う（Windows版はベータ扱い）。
+開発はRustで、AGPL-3.0-or-laterのオープンソース版と、組織向けの商用ライセンスを併用するデュアルライセンス方式を取っている。2026年7月11日時点でGitHubスター数は15.3k、最新リリースはv0.7.5（2026年7月21日）。インストールは`curl -fsSL https://herdr.dev/install.sh | sh`で行う（Windows版はベータ扱い）。
 
 すでにtmuxやSSH経由のリモート開発に慣れているなら、操作感を変えずにエージェント検知だけ足す選択として合っている。
 

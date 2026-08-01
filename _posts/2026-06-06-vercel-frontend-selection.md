@@ -6,7 +6,7 @@ categories: 開発
 tags: ["Vercel", "Netlify", "Cloudflare", "Next.js", "フロントエンド", "ホスティング"]
 lang: ja
 ref: vercel-frontend-selection
-last_modified_at: 2026-07-27
+last_modified_at: 2026-08-01
 image:
   path: /assets/images/posts/2026-06-06-vercel-frontend-selection/eyecatch.png
   alt: 複雑なWebアプリが専用発射台に収まり将来の大容量経路も残されているリソグラフ
@@ -95,6 +95,7 @@ Cloudflare の 300+ エッジロケーションを活かした静的ホスティ
 | プラン | 月額 |
 | :--- | :--- |
 | **Free** | $0 (300 クレジット) |
+| **Personal** | $9/月（1,000 クレジット、個人向け） |
 | **Pro** | $20/月（席数無制限、3,000 クレジット込み） |
 | **Enterprise** | 要相談 |
 

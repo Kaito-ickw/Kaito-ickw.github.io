@@ -3,7 +3,7 @@ layout: post
 title: "MCPは何を標準化するプロトコルなのか"
 subtitle: AIアプリケーションと外部機能の接続境界を整理する
 categories: AI開発
-last_modified_at: 2026-07-03
+last_modified_at: 2026-08-01
 tags: ["MCP", "AIエージェント", "LLM", "API", "設計"]
 lang: ja
 ref: mcp-protocol-overview
@@ -70,7 +70,7 @@ MCPの仕様は、一枚のTool呼び出し形式だけではない。大きく�
 
 すべての実装が全機能を持つわけではない。Base ProtocolとLifecycleは土台になるが、ToolsやResourcesなどは必要に応じて実装される。接続時にはClientとServerがCapabilityを交換し、そのセッションで利用できる機能を確認する。
 
-2026年7月初旬時点で公式サイトのCurrentプロトコル版は`2025-11-25`である。2026年7月3日には`2026-07-28`版のリリース候補（RC）が公開された。ステートレスコア設計、Extensionsフレームワーク、Tasks、MCP Appsなどの変更を含む予定で、正式公開は2026年7月28日の見込みとされている。MCPの版は、後方互換性のない変更が入った日を`YYYY-MM-DD`形式で表す。ClientとServerが同じ最新版を実装している前提ではなく、初期化時に1つの版へ合意する設計になっている。
+2026年7月28日に`2026-07-28`版が正式公開され、現在の公式プロトコル版になった。ステートレスコアへの移行、Extensionsフレームワーク、Tasks、MCP Appsなどを含む大規模な仕様更新で、MCPチームが「認可追加以来最も大きな変更」と説明している。MCPの版は、後方互換性のない変更が入った日を`YYYY-MM-DD`形式で表す。ClientとServerが同じ最新版を実装している前提ではなく、初期化時に1つの版へ合意する設計になっている。
 
 ### 「Context」は文章だけではない
 
