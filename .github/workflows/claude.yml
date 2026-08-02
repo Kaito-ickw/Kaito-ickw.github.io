@@ -30,6 +30,14 @@ jobs:
         with:
           fetch-depth: 1
 
+      # 図の生成（python3）とJekyllビルド（bundle exec jekyll build）を
+      # Claudeが自分で確認できるようにする
+      - name: Setup Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: '3.2'
+          bundler-cache: true
+
       - name: Run Claude Code for new issue
         id: claude
         uses: anthropics/claude-code-action@v1
@@ -56,7 +64,7 @@ jobs:
             「調査して後で返答する」「I'll analyze this and get back to you」のような応答だけで終了しないでください。
 
           claude_args: |
-            --allowedTools "Read,Write,Edit,MultiEdit,Glob,Grep,LS,WebFetch,WebSearch,Bash(git:*),Bash(gh:*)"
+            --allowedTools "Read,Write,Edit,MultiEdit,Glob,Grep,LS,WebFetch,WebSearch,Bash(git:*),Bash(gh:*),Bash(python3:*),Bash(bundle:*)"
 
   # Issue・PRコメント時の対話モード。従来どおり @claude メンションで起動し、
   # コメント内容をそのまま指示として扱う（追加指示・修正依頼用）。
@@ -78,6 +86,14 @@ jobs:
         with:
           fetch-depth: 1
 
+      # 図の生成（python3）とJekyllビルド（bundle exec jekyll build）を
+      # Claudeが自分で確認できるようにする
+      - name: Setup Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: '3.2'
+          bundler-cache: true
+
       - name: Run Claude Code
         id: claude
         uses: anthropics/claude-code-action@v1
@@ -95,4 +111,4 @@ jobs:
           # See https://github.com/anthropics/claude-code-action/blob/main/docs/usage.md
           # or https://code.claude.com/docs/en/cli-reference for available options
           claude_args: |
-            --allowedTools "Read,Write,Edit,MultiEdit,Glob,Grep,LS,WebFetch,WebSearch,Bash(git:*),Bash(gh:*)"
+            --allowedTools "Read,Write,Edit,MultiEdit,Glob,Grep,LS,WebFetch,WebSearch,Bash(git:*),Bash(gh:*),Bash(python3:*),Bash(bundle:*)"
