@@ -3,7 +3,7 @@ layout: post
 title: "生成AIとBlender MCPで、3D未経験者はどこまでモデルを作れるか"
 subtitle: Text-to-3DとBlender操作エージェントの役割を分けて考える
 categories: AI開発
-tags: ["Blender", "MCP", "AIエージェント", "3Dモデリング", "生成AI", "AIセーフティ"]
+tags: ["Blender", "MCP", "AIエージェント", "3Dモデリング", "AI", "AIセーフティ"]
 lang: ja
 ---
 
