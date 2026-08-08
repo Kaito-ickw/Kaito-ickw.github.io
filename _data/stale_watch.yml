@@ -231,3 +231,8 @@ articles:
     stale_risk: high
     reason: Felix Craftの累計収益・内訳・運用コスト・自律範囲（本人の公開レポートに依存し、月次で更新される）
     last_verified: 2026-08-01
+
+  - slug: 2026-08-07-kawabe-ai-solopreneur
+    stale_risk: high
+    reason: 川邊健太郎の新会社の社名・事業内容・エージェント構成（POC段階で今後公表される見込み）
+    last_verified: 2026-08-07
