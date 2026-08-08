@@ -10,3 +10,7 @@ Gemfile.lock
 # Python bytecode
 __pycache__/
 *.pyc
+
+# Analytics snapshots (never commit: contains access numbers and local config)
+/.analytics/
+service-account*.json
