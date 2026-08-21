@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "Claude Code の /grill-me: 実装前に設計を問い詰める"
+title: "Claude Code スキル /grill-me の使い方: 実装前に設計を問い詰める"
 categories: AI開発
 tags: ["Claude Code", "AIエージェント", "コーディングエージェント", "AIネイティブ開発", "CLI"]
 lang: ja
