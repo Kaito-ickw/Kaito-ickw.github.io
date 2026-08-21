@@ -6,7 +6,7 @@ categories: 開発
 tags: ["Supabase", "Railway", "Neon", "BaaS", "PaaS", "バックエンド"]
 lang: ja
 ref: supabase-vs-railway-comparison
-last_modified_at: 2026-07-03
+last_modified_at: 2026-08-21
 image:
   path: /assets/images/posts/2026-06-06-supabase-vs-railway-comparison/eyecatch.png
   alt: ログの箱からDB・認証の保管庫とAPI実行基盤へ紙の道が分岐するコラージュ
@@ -15,7 +15,7 @@ image:
 AIネイティブなログアプリを個人で開発している。
 バックエンドの選定を進める中で **Supabase** と **Railway** のどちらにするか迷い、ついでに **Neon** や **PlanetScale** も候補に挙がってきた。
 
-この記事では 2026年6月時点の最新情報をもとに、各サービスの特徴・料金・ユースケースを整理する。
+この記事では 2026年8月時点の最新情報をもとに、各サービスの特徴・料金・ユースケースを整理する。
 
 ---
 
@@ -52,7 +52,7 @@ pgvector はすべてのプランで**無料**で利用可能なのが嬉しい�
 | Edge Functions | Deno ランタイム |
 | ベクトル検索 | pgvector 組み込み (無料) |
 
-### 料金 (2026年6月時点)
+### 料金 (2026年8月時点)
 
 | プラン | 月額 | 主な制限 |
 | :--- | :--- | :--- |
@@ -62,7 +62,8 @@ pgvector はすべてのプランで**無料**で利用可能なのが嬉しい�
 | **Enterprise** | 要相談 | HIPAA対応、専用インフラ |
 
 Pro プランは**デフォルトで使用上限あり**なので、予期せぬ請求を防ぎやすい。
-コンピュートは別途 $12〜の追加課金。
+Pro には $10/月分のコンピュートクレジットが含まれ、最小の Micro インスタンス1台ならこの範囲に収まる。それ以上のコンピュートは追加課金。
+なお Free プランのプロジェクトは1週間アクセスがないと一時停止される。
 
 ### ログアプリ視点での評価
 
@@ -93,14 +94,17 @@ Supabase とは競合というより**補完関係**に近い。Next.js や Fast
 | テンプレート | OSS を one-click デプロイ |
 | CI/CD | GitHub 連携で自動デプロイ |
 
-### 料金 (2026年6月時点)
+### 料金 (2026年8月時点)
 
 | プラン | 月額 | 付与クレジット |
 | :--- | :--- | :--- |
+| **Free** | $0 | $1 のクレジット |
 | **Trial** | $0 (一時) | $5 のワンタイムクレジット |
 | **Hobby** | $5 | $5 のリソースクレジット込み |
 | **Pro** | $20/シート | $20 のリソースクレジット込み |
 | **Enterprise** | 要相談 | SLA・コンプライアンス対応 |
+
+以前は Trial 後は有料プランのみだったが、恒常的な Free プランが加わった。ただし $1 分のクレジットでは常時稼働のサービスは動かせないので、実用は Hobby からになる。
 
 **使い切った分だけ払う**モデル。$5 の Hobby プランなら $3 しか使わなくても $5 の請求、$8 使ったら $8 の請求になる。
 
@@ -133,7 +137,7 @@ Supabase とは競合というより**補完関係**に近い。Next.js や Fast
 | エッジ対応 | HTTP ドライバーでエッジから直接クエリ |
 | pgvector | 対応 |
 
-### 料金 (2026年7月時点)
+### 料金 (2026年8月時点)
 
 Databricks 買収後に従量課金モデルへ移行し、Launch/Scale の月額固定プランは廃止された。
 
@@ -158,19 +162,18 @@ Databricks 買収後に従量課金モデルへ移行し、Launch/Scale の月�
 ### 概要
 
 Vitess ベースの**高スケール DB サービス**。Cursor・Intercom・Block など大規模サービスの実績がある。
-2024年に一度無料プランを廃止したが、2026年に Postgres 対応とあわせて無料枠を復活させた。
+無料プランは2024年に廃止されたままだが、Postgres 対応により最安 $5/月のシングルノード構成から使えるようになった。
 
-### 料金 (2026年7月時点)
+### 料金 (2026年8月時点)
 
 | プラン | 月額 |
 | :--- | :--- |
-| **Free** | $0 |
-| **Postgres Single** | $5〜 |
-| **PS-5** | $15〜 |
+| **Postgres シングルノード (PS-5)** | $5〜 |
+| **Postgres HA 3ノード (PS-5)** | $15〜 |
 | **Metal HA** | $50〜 |
 | **Enterprise** | 要相談 |
 
-大規模・ミッションクリティカルなユースケース向けの強みは変わらないが、無料枠の復活で個人開発の入口としても使えるようになった。
+大規模・ミッションクリティカルなユースケース向けの強みは変わらないが、$5 のシングルノードが入口になり、以前ほど個人開発から遠い存在ではなくなった。ただし無料枠はない。
 
 ---
 
@@ -196,7 +199,7 @@ Railway に比べると設定の自由度はやや低いが、UI がシンプル
 | **Auth** | ✅ 標準搭載 | ❌ 自前 | ❌ 自前 | ❌ 自前 | ❌ 自前 |
 | **pgvector** | ✅ 無料 | ⚠️ 手動 | ✅ 対応 | ❌ MySQL主体 | ⚠️ 手動 |
 | **ゼロスケール** | ❌ | ✅ | ✅ | ✅ | ✅ (Free のみ) |
-| **無料枠** | ✅ 500MB | ✅ $5 | ✅ 0.5GB | ✅ あり | ✅ 750h |
+| **無料枠** | ✅ 500MB | ✅ $1 | ✅ 0.5GB | ❌ | ✅ 750h |
 | **月額最低 (有料)** | $25 | $5 | 従量制 | $5 | $7〜 |
 | **個人開発向け** | ◎ | ◎ | ○ | △ | ○ |
 | **チーム・本番向け** | ○ | ○ | ○ | ◎ | ○ |
@@ -244,7 +247,7 @@ DB + Auth        → Supabase (Free)
 DB + Auth        → Supabase (Pro / $25〜)
 ```
 
-Supabase Pro でバックアップ・接続数・MAU 上限が緩和される。コンピュートは最小 (Micro $12/月) で様子を見る。
+Supabase Pro でバックアップ・接続数・MAU 上限が緩和される。コンピュートはプラン込みのクレジットで賄える最小構成 (Micro) のまま様子を見る。
 
 **見直しトリガー:** API のレスポンスが遅くなってきた or DB のコンピュートがボトルネックと分かった時。
 
@@ -303,6 +306,8 @@ DB + Auth + ベクトル検索     → Supabase (pgvector)
 
 - [Supabase Pricing](https://supabase.com/pricing)
 - [Railway Pricing Docs](https://docs.railway.com/pricing/plans)
+- [Neon Pricing](https://neon.com/pricing)
+- [PlanetScale Pricing](https://planetscale.com/pricing)
 - [Neon vs Supabase — Bytebase](https://www.bytebase.com/blog/neon-vs-supabase/)
 - [Best Backend Platforms for Indie Hackers 2026 — MindStudio](https://www.mindstudio.ai/blog/best-backend-platforms-indie-hackers)
 - [Supabase vs PlanetScale vs Neon 2026 — DevToolReviews](https://www.devtoolreviews.com/reviews/supabase-vs-planetscale-vs-neon)

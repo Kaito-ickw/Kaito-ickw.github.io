@@ -1,11 +1,12 @@
 ---
 layout: post
-title: "Supabase vs Railway vs Neon — Choosing a Backend for an AI-Native Logging App (2026)"
-subtitle: A deep dive into pricing and features of major BaaS/PaaS platforms
+title: "Supabase vs Railway vs Neon: Choosing a Backend in 2026"
+subtitle: Pricing and features compared, from an AI-native logging app's perspective
 categories: Development
 tags: ["Supabase", "Railway", "Neon", "BaaS", "PaaS", "Backend"]
 lang: en
 ref: supabase-vs-railway-comparison
+last_modified_at: 2026-08-21
 image:
   path: /assets/images/posts/2026-06-06-supabase-vs-railway-comparison/eyecatch.png
   alt: Paper collage of a log box branching toward a database and identity vault and an API execution platform
@@ -14,7 +15,7 @@ image:
 I'm building an AI-native logging app as a personal project.
 While evaluating backend options, I found myself torn between **Supabase** and **Railway** — and soon **Neon** and **PlanetScale** entered the picture as well.
 
-This post organizes the latest information as of June 2026 to compare the characteristics, pricing, and use cases of each service.
+This post organizes the latest information as of August 2026 to compare the characteristics, pricing, and use cases of each service.
 
 ---
 
@@ -51,7 +52,7 @@ One highlight: pgvector is available **for free** on all plans.
 | Edge Functions | Deno runtime |
 | Vector Search | pgvector built-in (free) |
 
-### Pricing (as of June 2026)
+### Pricing (as of August 2026)
 
 | Plan | Monthly | Key Limits |
 | :--- | :--- | :--- |
@@ -61,7 +62,8 @@ One highlight: pgvector is available **for free** on all plans.
 | **Enterprise** | Contact | HIPAA-compliant, dedicated infra |
 
 The Pro plan has **spend caps enabled by default**, which helps avoid unexpected bills.
-Compute is billed separately starting at $12/month.
+Pro includes $10/month in compute credits, which covers a single Micro instance; anything beyond that is billed on top.
+Note that Free-plan projects are paused after a week of inactivity.
 
 ### Evaluation for a Logging App
 
@@ -92,16 +94,17 @@ The build system uses **Nixpacks**, which auto-detects your framework so you don
 | Templates | One-click deploy for popular OSS projects |
 | CI/CD | Auto-deploy via GitHub integration |
 
-### Pricing (as of June 2026)
+### Pricing (as of August 2026)
 
 | Plan | Monthly | Included Credits |
 | :--- | :--- | :--- |
+| **Free** | $0 | $1 credit |
 | **Trial** | $0 (temporary) | $5 one-time credit |
 | **Hobby** | $5 | $5 in resource credits |
 | **Pro** | $20/seat | $20 in resource credits |
 | **Enterprise** | Contact | SLA and compliance support |
 
-**You pay for what you use.** On the $5 Hobby plan, if you use $3 you're billed $3; if you use $8 you're billed $8 — the plan fee is a minimum credit, not a cap.
+**You pay for what you use, with the plan fee as the floor.** On the $5 Hobby plan, using $3 still means a $5 bill; using $8 means an $8 bill. A permanent Free plan has been added, but its $1 credit won't keep an always-on service running — Hobby is the practical entry point.
 
 ### Evaluation for a Logging App
 
@@ -118,7 +121,7 @@ The build system uses **Nixpacks**, which auto-detects your framework so you don
 ### Overview
 
 A database service specialized in **serverless PostgreSQL**.
-Acquired by Databricks for approximately $1 billion in 2025, it's being strengthened as a data platform for AI agents.
+Acquired by Databricks for approximately $1 billion in 2025, it's being strengthened as a data platform for AI agents. Following the acquisition, pricing moved to a usage-based model and the fixed monthly Launch/Scale plans were retired.
 
 Its standout feature is **branching** — just like git, you can snapshot the database and spin up a test environment for each PR.
 
@@ -132,13 +135,13 @@ Its standout feature is **branching** — just like git, you can snapshot the da
 | Edge Support | Direct queries from the edge via HTTP driver |
 | pgvector | Supported |
 
-### Pricing (as of June 2026)
+### Pricing (as of August 2026)
 
-| Plan | Monthly | Key Limits |
+| Plan | Monthly | Key Terms |
 | :--- | :--- | :--- |
-| **Free** | $0 | 0.5 GB, 10 compute hours |
-| **Launch** | $19+ | 10 GB, unlimited compute |
-| **Scale** | $69+ | 50 GB, compliance features |
+| **Free** | $0 | 0.5 GB storage, 100 CU-hours per project (up from the old 10 hours) |
+| **Launch** | Usage-based ($0.106/CU-hour + $0.35/GB-month) | No compute cap, no monthly minimum |
+| **Scale** | Usage-based ($0.222/CU-hour + $0.35/GB-month) | Adds compliance features |
 
 ### Evaluation for a Logging App
 
@@ -155,17 +158,18 @@ Its standout feature is **branching** — just like git, you can snapshot the da
 ### Overview
 
 A **high-scale DB service** built on Vitess, with proven usage at Cursor, Intercom, Block, and other large-scale services.
-**The free tier was discontinued in 2024**, signaling a pivot toward enterprise positioning.
+The free tier was discontinued in 2024 and has not returned, but with the addition of managed Postgres, entry pricing now starts at $5/month for a single-node cluster.
 
-### Pricing (as of June 2026)
+### Pricing (as of August 2026)
 
 | Plan | Monthly |
 | :--- | :--- |
-| **Hobby** | $39+ |
-| **Scaler** | $79+ |
+| **Postgres single-node (PS-5)** | $5+ |
+| **Postgres HA 3-node (PS-5)** | $15+ |
+| **Metal HA** | $50+ |
 | **Enterprise** | Contact |
 
-Pricing is heavy for individual developers or early-stage projects. Best suited for large-scale, mission-critical use cases.
+Its strengths remain large-scale, mission-critical use cases, but the $5 single-node option makes it less out of reach for individual developers than it used to be. There is still no free tier.
 
 ---
 
@@ -191,8 +195,8 @@ Slightly less configuration flexibility than Railway, but a simpler UI that's mo
 | **Auth** | ✅ Built-in | ❌ DIY | ❌ DIY | ❌ DIY | ❌ DIY |
 | **pgvector** | ✅ Free | ⚠️ Manual | ✅ Supported | ❌ MySQL-focused | ⚠️ Manual |
 | **Scale-to-zero** | ❌ | ✅ | ✅ | ✅ | ✅ (Free only) |
-| **Free tier** | ✅ 500 MB | ✅ $5 credit | ✅ 0.5 GB | ❌ | ✅ 750h |
-| **Min paid** | $25 | $5 | $19 | $39 | $7+ |
+| **Free tier** | ✅ 500 MB | ✅ $1 credit | ✅ 0.5 GB | ❌ | ✅ 750h |
+| **Min paid** | $25 | $5 | Usage-based | $5 | $7+ |
 | **Personal dev** | ◎ | ◎ | ○ | △ | ○ |
 | **Team/production** | ○ | ○ | ○ | ◎ | ○ |
 
@@ -239,7 +243,7 @@ Log collection API  → Railway (Pro / $20/seat)
 DB + Auth           → Supabase (Pro / $25+)
 ```
 
-Supabase Pro relaxes backup retention, connection limits, and MAU caps. Start with the smallest compute tier (Micro at $12/month) and monitor.
+Supabase Pro relaxes backup retention, connection limits, and MAU caps. Start with the smallest compute tier (Micro, covered by the plan's included compute credits) and monitor.
 
 **Trigger to revisit:** API response times degrading, or DB compute confirmed as the bottleneck.
 
@@ -298,6 +302,8 @@ I cover the reasons for choosing Vercel for the frontend in a [separate post]({%
 
 - [Supabase Pricing](https://supabase.com/pricing)
 - [Railway Pricing Docs](https://docs.railway.com/pricing/plans)
+- [Neon Pricing](https://neon.com/pricing)
+- [PlanetScale Pricing](https://planetscale.com/pricing)
 - [Neon vs Supabase — Bytebase](https://www.bytebase.com/blog/neon-vs-supabase/)
 - [Best Backend Platforms for Indie Hackers 2026 — MindStudio](https://www.mindstudio.ai/blog/best-backend-platforms-indie-hackers)
 - [Supabase vs PlanetScale vs Neon 2026 — DevToolReviews](https://www.devtoolreviews.com/reviews/supabase-vs-planetscale-vs-neon)
