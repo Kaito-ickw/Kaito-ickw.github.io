@@ -1,7 +1,7 @@
 ---
 layout: post
-title: "Alembic でデータベーススキーマの変更を管理する"
-subtitle: SQLAlchemy との関係、マイグレーションの仕組み、既存DBへの導入までやさしく解説
+title: "Alembic 入門: SQLAlchemy と使う DB マイグレーション管理"
+subtitle: マイグレーションの仕組みと既存DBへの導入手順
 categories: 開発
 tags: ["Alembic", "SQLAlchemy", "PostgreSQL", "データベース", "マイグレーション", "AIネイティブ開発"]
 lang: ja
