@@ -155,6 +155,8 @@ Claude Code を使っていると、処理中に `Cogitating...` や `Noodling..
 
 コミュニティの観察によると、シリアスなトピック（セキュリティ処理など）では `Setting up the calculation` のような平凡な文言が出る傾向があり、ユーモラスな語彙は軽いタスクや創作的な作業に多い。意図的に語彙とトーンを使い分けているようだ。
 
+この記事をきっかけに Claude Code の中身へ興味が湧いたなら、拡張の仕組みは [Claude Code のスキルを今から使いはじめる]({% post_url 2026-06-10-claude-code-skills-guide %})で、スキルの具体例は [Claude Code スキル /grill-me の使い方]({% post_url 2026-06-18-claude-code-grill-me %})で扱っている。
+
 ---
 
 ## 参考
