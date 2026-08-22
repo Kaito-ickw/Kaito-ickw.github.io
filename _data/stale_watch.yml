@@ -30,8 +30,8 @@ articles:
 
   - slug: 2026-07-20-kimi-k3-vs-fable-gpt
     stale_risk: high
-    reason: Kimi K3・Claude Fable 5・GPT-5.6 Solのベンチマーク数値・価格・ウェイト公開予定日
-    last_verified: 2026-08-01
+    reason: Kimi K3・Claude Fable 5・GPT-5.6 Solのベンチマーク数値・価格・ウェイト公開予定日（英語版も同時に更新する）
+    last_verified: 2026-08-22
 
   - slug: 2026-07-20-kimi-k3-setup
     stale_risk: high
@@ -209,8 +209,8 @@ articles:
 
   - slug: 2026-06-18-claude-code-grill-me
     stale_risk: medium
-    reason: npx インストールコマンド・SKILL.md の仕様（スキルリポジトリのアップデートで変わる可能性）
-    last_verified: 2026-08-01
+    reason: インストールコマンド（plugins/npx）・SKILL.md の仕様（スキルリポジトリのアップデートで変わる可能性。英語版も同時に更新する）
+    last_verified: 2026-08-22
 
   - slug: 2026-06-24-gsd-core-ai-coding-workflow
     stale_risk: medium
