@@ -4,12 +4,14 @@ title: "Claude Code スキル /grill-me の使い方: 実装前に設計を問�
 categories: AI開発
 tags: ["Claude Code", "AIエージェント", "コーディングエージェント", "AIネイティブ開発", "CLI"]
 lang: ja
+ref: claude-code-grill-me
+last_modified_at: 2026-08-22
 image:
   path: /assets/images/posts/2026-06-18-claude-code-grill-me/eyecatch.png
   alt: 分岐点で止まった道の先を確かめてから進む様子を表したミニチュアジオラマ写真
 ---
 
-「grill-me」という Claude Code スキルが話題になっている。Matt Pocock が自分の `.claude` ディレクトリをオープンソース化したリポジトリ（mattpocock/skills）に含まれており、GitHub で 5 万以上のスターを集めた。
+「grill-me」という Claude Code スキルが話題になっている。Matt Pocock が自分の `.claude` ディレクトリをオープンソース化したリポジトリ（mattpocock/skills）に含まれており、GitHub で 23 万以上のスターを集めた。
 
 名前だけ聞いてもどんなツールか想像しにくい。調べてみると、用途は一言でいえばこうだ。コードを書き始める前に、AI にあなたの設計を徹底的に問い詰めさせる。
 
@@ -43,13 +45,19 @@ Claude Code に「〜を作って」と投げると、すぐに実装が始ま�
 
 ## インストールと起動
 
-Matt Pocock のスキルリポジトリは npx コマンドで追加できる。
+Claude Code では、スキル一式がプラグインとしてインストールできる。
+
+```bash
+claude plugins install mattpocock-skills
+```
+
+他のエージェントで使う場合や、手元で編集できるコピーが欲しい場合は npx でも追加できる。
 
 ```bash
 npx skills@latest add mattpocock/skills
 ```
 
-プロジェクトの `.claude/skills/` ディレクトリにインストールされ、その後は `/grill-me` として呼び出せる。
+npx の場合はプロジェクトの `.claude/skills/` ディレクトリにインストールされる。どちらの方法でも、その後は `/grill-me` として呼び出せる。
 
 SKILL.md 自体は数行しかない。強力な動作を生み出しているのは巨大なプロンプトではなく、「徹底的に問い詰める」「一度に一問だけ」という明確なロール指示だ。
 
