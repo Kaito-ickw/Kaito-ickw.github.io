@@ -39,6 +39,7 @@ AIネイティブなログアプリを個人で開発している。
 
 PostgreSQL をコアに据えた **BaaS (Backend as a Service)**。
 DB だけでなく Auth・Storage・Realtime・Edge Functions がワンパッケージで揃う。
+中身は素の PostgreSQL なので、[JSONB]({% post_url 2026-06-05-postgresql-jsonb-guide %}) のような Postgres 固有の機能もそのまま使える。
 pgvector はすべてのプランで**無料**で利用可能なのが嬉しいポイント。
 
 ### 主な機能

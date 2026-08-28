@@ -39,6 +39,7 @@ Let's evaluate each service against these criteria.
 
 A **BaaS (Backend as a Service)** built on PostgreSQL at its core.
 Beyond the database, Auth, Storage, Realtime, and Edge Functions are all bundled in one package.
+Since the core is plain PostgreSQL, Postgres-specific features like [JSONB]({% post_url 2026-06-05-postgresql-jsonb-guide-en %}) work out of the box.
 One highlight: pgvector is available **for free** on all plans.
 
 ### Key Features
