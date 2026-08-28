@@ -23,6 +23,11 @@ articles:
     reason: A2UIの仕様バージョン（v0.8）・MCP Apps対応クライアント一覧・AG-UI対応フレームワーク一覧・各プロトコルの勢力図（標準化初期で頻繁に変わる）
     last_verified: 2026-08-21
 
+  - slug: 2026-08-28-mysql-json-vs-postgresql-jsonb
+    stale_risk: medium
+    reason: MySQL（8.4 LTS / 9.x）と PostgreSQL（18）のバージョン表記・JSON機能の対応状況（JSON_TABLE、マルチバリューインデックス、部分更新の仕様）
+    last_verified: 2026-08-29
+
   - slug: 2026-07-23-tinker-training-api
     stale_risk: high
     reason: Tinkerの対応モデル一覧・課金メーターごとの単価・Inklingとの関係・OpenAI互換APIの提供状況
