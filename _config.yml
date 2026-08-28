@@ -47,7 +47,7 @@ description: >-
   Data Engineering・AI Agent開発・SaaS最適化など、Docker・WSL2・Python・TypeScriptを中心としたプロダクション実践ノートを記録。
 
 baseurl: "" # the subpath of your site, e.g. /blog
-url: "" # the base hostname & protocol for your site, e.g. http://example.com
+url: "https://waka-ds.com" # the base hostname & protocol for your site, e.g. http://example.com
 favicon: "" # the favicon for your site
 
 # Yat date format
