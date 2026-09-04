@@ -80,6 +80,81 @@ python3 -m venv .analytics/venv
     raw/*.json          再集計用の生データ
 ```
 
+前回から何が変わったかだけを読みたいときは `watch.py` を使う（次節）。
+
+## 変化だけを追う
+
+`watch.py` は `fetch.py` と同じ取得をしてレポートを更新したうえで、`.analytics/` に
+残っている直前の実行結果と比べ、変わった点だけを標準出力へ出す。
+
+```bash
+.analytics/venv/bin/python _scripts/analytics/watch.py
+
+# 取得せず、すでにある直近2回のスナップショットだけを比べ直す
+.analytics/venv/bin/python _scripts/analytics/watch.py --no-fetch
+```
+
+出力はこの形になる。
+
+```
+前回 2026-09-04 との比較（今回 2026-09-05）
+- 検索表示（週次） 21 → 41（+95%） 2026-08-17週 → 2026-08-24週
+- 平均順位 56.1 → 37.7（18.4位改善） 2026-08-17週 → 2026-08-24週
+- bing / organic セッション（週次） 13 → 19（+46%） 2026-08-17週 → 2026-08-24週
+詳細は .analytics/latest-ja.md
+```
+
+見ているのは、Google検索の週次表示回数と平均順位、検索エンジン別の週次セッション、
+伸び／落ちの一覧へ新しく入った記事、前回になかった検索クエリの4つ。しきい値を
+超えるものが1つもなければ `前回 YYYY-MM-DD と比べて大きな変化なし。` の1行で終わる。
+基準は `watch.py` の先頭にまとめてある。
+
+週は7日そろっている週だけを比べる。取得範囲の端にかかる週を混ぜると、
+落ちたのか、まだ日数が足りないだけなのかが区別できない。
+
+進捗と失敗は標準エラーへ出す。標準出力は差分だけなので、そのままファイルへ落とせる。
+
+## 定期実行
+
+思い出したときに実行する運用だと、検索からの断落に数週間気づけない。
+月1回 cron で回し、差分の行だけを読む。
+
+`crontab -e` へ次の1行を足す（毎月1日の午前9時）。パスは環境に合わせて置き換える。
+
+```cron
+0 9 1 * * /home/kaito/projects/Kaito-ickw.github.io/.analytics/venv/bin/python /home/kaito/projects/Kaito-ickw.github.io/_scripts/analytics/watch.py >> /home/kaito/projects/Kaito-ickw.github.io/.analytics/watch.log 2>> /home/kaito/projects/Kaito-ickw.github.io/.analytics/watch-error.log
+```
+
+cron は PATH もカレントディレクトリも当てにできないため、venv の python と
+スクリプトはどちらも絶対パスで書く。出力先の `.analytics/` はスクリプト側が
+リポジトリの位置から決めるので、`cd` は要らない。
+
+WSLでは cron が動いていないことがある。`service cron status` で確認し、
+止まっていれば `sudo service cron start` で起動する。Windowsを再起動すると
+また止まるので、動いているかを最初に疑う。
+
+### どこを読むか
+
+| 見るもの | 中身 |
+| :--- | :--- |
+| `.analytics/watch.log` | 実行ごとの差分。ここだけ読めばよい |
+| `.analytics/latest-ja.md` | 差分で気になった点を掘るときのレポート本体 |
+| `.analytics/watch-error.log` | 失敗したときの原因 |
+
+`watch.log` は追記される。各回の1行目に「前回 … との比較（今回 …）」が入るので、
+末尾から遡って読む。
+
+### 失敗したとき
+
+終了コードが1なら差分は出ていない。`watch-error.log` の末尾を見る。
+
+- `設定エラー` … `.analytics/config.env` か鍵のパス。セットアップの4を見直す
+- `取得に失敗した` … 認証か権限。サービスアカウントの登録を疑う（同じログに手順が出る）
+- ログが空のまま更新されない … cron 自体が動いていない。上のWSLの注意を見る
+
+数か月ぶんの実行が飛んでいても、`.analytics/` に残っている直前のスナップショットと
+比べるだけなので、そのまま実行してよい。ただし比較の間隔は空くほど粗くなる。
+
 ## レポートの読み方
 
 | セクション | 使いどころ |
