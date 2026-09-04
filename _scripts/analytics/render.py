@@ -2,7 +2,15 @@
 
 from __future__ import annotations
 
-from analysis import PostMetrics, falling, missed_opportunities, rising
+from analysis import (
+    MIN_SEC_PER_VIEW,
+    PostMetrics,
+    falling,
+    missed_opportunities,
+    rising,
+    search_visibility_trend,
+    source_trend,
+)
 
 LANG_LABEL = {"ja": "日本語記事", "en": "英語記事"}
 
@@ -107,17 +115,29 @@ def _table_section(items: list[PostMetrics]) -> list[str]:
     lines = [
         "## 記事一覧",
         "",
-        "| 記事 | 公開日 | 閲覧数 | 前期比 | 訪問者 | クリック | 表示 | CTR | 順位 |",
-        "| :--- | :--- | ---: | ---: | ---: | ---: | ---: | ---: | ---: |",
+        "滞在は1閲覧あたりの秒数。ここが0秒台の行は、人が読んだ数として扱わない。",
+        "",
+        "| 記事 | 公開日 | 閲覧数 | 前期比 | 訪問者 | 滞在 | クリック | 表示 | CTR | 順位 |",
+        "| :--- | :--- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: |",
     ]
     for item in rows:
         ratio = "新規" if item.is_new else _ratio(item.pv_ratio)
+        stay = f"{item.sec_per_view:.0f}秒" if item.pv else "—"
+        if item.is_unread:
+            stay += "※"
         lines.append(
             f"| {_post_link(item)} | {item.post.date} | {_num(item.pv)} | {ratio} | "
-            f"{_num(item.users)} | {_num(item.clicks)} | {_num(item.impressions)} | "
+            f"{_num(item.users)} | {stay} | {_num(item.clicks)} | {_num(item.impressions)} | "
             f"{_pct(item.ctr)} | {item.position:.1f} |"
         )
     lines.append("")
+    unread = [i for i in rows if i.is_unread]
+    if unread:
+        lines += [
+            f"※ の {len(unread)} 本は滞在が1閲覧あたり{MIN_SEC_PER_VIEW:.0f}秒未満で、"
+            "自動巡回の可能性が高い。伸びた記事としては数えていない。",
+            "",
+        ]
     silent = [i for i in items if not i.has_data]
     if silent:
         lines += [
@@ -193,6 +213,57 @@ def _channel_section(channels: list[dict], channels_prev: list[dict]) -> list[st
     return lines
 
 
+def _visibility_section(gsc_daily: list[dict], gsc_has_data: bool) -> list[str]:
+    """検索での見え方の推移。期間の合計では見えない断落をここで拾う。"""
+    lines = [
+        "## 検索での見え方の推移（サイト全体・Google）",
+        "",
+        "記事単位ではなくサイト全体の値。表示回数と平均順位が同じ週にそろって"
+        "悪化していたら、記事ではなくサイト全体が検索結果から外れている。",
+        "",
+    ]
+    if not gsc_has_data:
+        lines += [NO_GSC_DATA, ""]
+        return lines
+    weeks = search_visibility_trend(gsc_daily)
+    if not weeks:
+        lines += ["該当なし。", ""]
+        return lines
+    lines += ["| 週（月曜） | 表示 | クリック | 平均順位 |", "| :--- | ---: | ---: | ---: |"]
+    for week in weeks:
+        position = f"{week['position']:.1f}" if week["impressions"] else "—"
+        impressions = _num(week["impressions"])
+        clicks = _num(week["clicks"])
+        lines.append(f"| {week['week']} | {impressions} | {clicks} | {position} |")
+    lines.append("")
+    return lines
+
+
+def _source_trend_section(ga_daily_sources: list[dict]) -> list[str]:
+    """流入元ごとの週別セッション。どの経路がいつ変わったかを見る。"""
+    names, rows = source_trend(ga_daily_sources)
+    lines = [
+        "## 流入元の推移（サイト全体・週別セッション）",
+        "",
+        "検索エンジンごとに分けている。片方だけが落ちているなら、"
+        "サイトの中身ではなくそのエンジン側での扱いが変わった可能性が高い。",
+        "",
+    ]
+    if not rows:
+        lines += ["該当なし。", ""]
+        return lines
+    header = " | ".join(_escape(name) for name in names)
+    lines += [
+        f"| 週（月曜） | {header} |",
+        "| :--- |" + " ---: |" * len(names),
+    ]
+    for row in rows:
+        cells = " | ".join(_num(row["sessions"].get(name, 0.0)) for name in names)
+        lines.append(f"| {row['week']} | {cells} |")
+    lines.append("")
+    return lines
+
+
 def render(
     lang: str,
     items: list[PostMetrics],
@@ -200,6 +271,8 @@ def render(
     channels: list[dict],
     channels_prev: list[dict],
     period: dict,
+    gsc_daily: list[dict] | None = None,
+    ga_daily_sources: list[dict] | None = None,
     gsc_has_data: bool = True,
 ) -> str:
     label = LANG_LABEL.get(lang, lang)
@@ -215,6 +288,8 @@ def render(
     ]
     body = (
         _summary(items)
+        + _visibility_section(gsc_daily or [], gsc_has_data)
+        + _source_trend_section(ga_daily_sources or [])
         + _trend_section("伸びている記事", rising(items), "前期比+30%以上の記事がなかった")
         + _trend_section("落ちている記事", falling(items), "前期比-30%以下の記事がなかった")
         + _missed_section(missed_opportunities(items), gsc_has_data)

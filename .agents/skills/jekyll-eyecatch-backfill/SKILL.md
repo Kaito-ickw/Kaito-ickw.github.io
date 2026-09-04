@@ -12,7 +12,7 @@ Process exactly one Japanese article or Japanese-English pair per cycle. Treat t
 Read these files completely before acting:
 
 - `AGENTS.md`
-- `docs/eyecatch-image-generation-workflow.md`
+- `_docs/eyecatch-image-generation-workflow.md`
 - the available `imagegen` skill's `SKILL.md`
 
 Preserve unrelated dirty-worktree changes. Never edit `_config.yml` or `_site/`, and never commit.

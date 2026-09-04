@@ -132,7 +132,7 @@ Serverが`resources.subscribe` capabilityを宣言している場合、Clientは
 
 ## Promptsは「選んで使う対話の型」を公開する
 
-Promptsは、Serverが再利用可能なメッセージや指示のテンプレートをClientへ公開する機能だ。Clientは`prompts/list`で候補を取得し、ユーザーが選んだPromptを`prompts/get`で展開する。Promptは引数を受け取れる。
+Promptsは、Serverが再利用可能なメッセージや指示のテンプレートをClientへ公開する機能だ。Clientは`prompts/list`で候補を取得し、ユーザーが選んだPromptを`prompts/get`で展開する。Promptは引数を受け取れる。テンプレートの中身をどう書くかはモデル側の作法に寄るため、[GPT-5.6向けプロンプト設計の考え方]({% post_url 2026-07-12-gpt-5-6-prompt-design %})も併せて見ておくといい。
 
 ```json
 {

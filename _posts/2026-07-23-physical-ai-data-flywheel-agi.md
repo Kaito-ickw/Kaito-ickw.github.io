@@ -70,6 +70,8 @@ LLMやVLMは、AGI以前に実用的なフィジカルエージェントを成�
 
 それでも、この仮説にはもう一つ見ておくべき側面がある。フィジカルAIがAIを変えるとしたら、それは非言語データを大量に与えるからではない。AIを、世界について語る存在から、世界に問いを投げかける存在へ変えるからだ。
 
+その入口をどんな機器が担うのかという話は、[OpenAIはなぜ「スクリーンのない」AIデバイスを作ろうとしているのか]({% post_url 2026-06-16-openai-jony-ive-ai-hardware-vision %})で追っている。
+
 ## 参考
 
 - [RT-2: New model translates vision and language into action](https://deepmind.google/blog/rt-2-new-model-translates-vision-and-language-into-action/)

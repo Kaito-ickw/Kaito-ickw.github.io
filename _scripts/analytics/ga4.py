@@ -68,3 +68,22 @@ def fetch_channels(config: Config, start: str, end: str) -> list[dict]:
         end=end,
         limit=50,
     )
+
+
+def fetch_daily_sources(config: Config, start: str, end: str) -> list[dict]:
+    """日別の流入元。増減がいつ起きたかと、機械的な流入の切り分けに使う。
+
+    チャネルの合計だけでは「先月から半減した」ことしか分からず、それが
+    いつ・どの検索エンジンで起きたのかが見えない。日別まで落として初めて、
+    緩やかな減衰と、ある日を境にした断落を区別できる。
+    """
+    client = _client(config)
+    return _run(
+        client,
+        config,
+        dimensions=["date", "sessionSource", "sessionMedium"],
+        metrics=["sessions", "userEngagementDuration"],
+        start=start,
+        end=end,
+        limit=PAGE_ROW_LIMIT * 10,
+    )

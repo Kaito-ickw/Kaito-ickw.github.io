@@ -4,7 +4,7 @@
 Jekyll のビルド対象に入らない（`_config.yml` の `exclude` を触る必要はない）。
 
 対象は次の2つ。アイキャッチは対象外
-（[アイキャッチ画像生成ワークフロー](../../docs/eyecatch-image-generation-workflow.md) を参照）。
+（[アイキャッチ画像生成ワークフロー](../../_docs/eyecatch-image-generation-workflow.md) を参照）。
 
 | | モジュール | 用途 |
 | :--- | :--- | :--- |
