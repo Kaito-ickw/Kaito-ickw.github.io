@@ -180,6 +180,8 @@ MCPの認可仕様はHTTP-based transportを対象にしている。認可を実
 
 認証・認可の詳細は次回のセキュリティ回で扱う。
 
+ServerがどんなToolを持つのかを外部と合意する場面では、HTTP APIと同じくスキーマを正本にする発想が使える。その進め方は[OpenAPI で API の仕様とドキュメントを同期させる]({% post_url 2026-06-07-openapi-guide %})で扱った。
+
 ## Streamable HTTPで必要なネットワーク防御
 
 HTTP endpointを公開すると、MCPを理解していない一般のWebクライアントからも到達可能になる。現行のtransport仕様は、Serverに`Origin`ヘッダーの検証を求めている。ローカルでHTTP Serverを動かす場合も、`0.0.0.0`ではなく`127.0.0.1`へbindすることを推奨している。

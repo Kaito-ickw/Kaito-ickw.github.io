@@ -107,7 +107,7 @@ Organization Secrets に `DATABASE_URL` があっても、Repository Secrets に
 | 本番と開発で異なる値を使いたい | Environment Secrets（環境ごとに登録） |
 | 複数リポジトリで同じシークレットを使いたい | Organization Secrets |
 
-個人での CI 程度であれば Repository Secrets で十分だ。チームで本番環境へのデプロイを管理する場合は、Environment Secrets と Deployment protection rules を組み合わせると誤操作への備えになる。
+個人での CI 程度であれば Repository Secrets で十分だ。チームで本番環境へのデプロイを管理する場合は、Environment Secrets と Deployment protection rules を組み合わせると誤操作への備えになる。Deployment protection rules を含めた設定まわりは[まだ使っていない GitHub の便利機能を整理する]({% post_url 2026-06-13-github-useful-features %})にまとめてある。
 
 ---
 

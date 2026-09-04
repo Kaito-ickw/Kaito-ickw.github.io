@@ -28,7 +28,7 @@ OpenAIが公開した連名のレターでは、Sam AltmanとJony Iveが「新�
 
 Altmanは複数のインタビューで、この計画の狙いを現在のデバイス体験への違和感として語っている。Nikkei Asiaのインタビューを引用した報道によれば、Altmanは今のデバイスを使う感覚を「ニューヨークのタイムズスクエアを歩いているようなもので、光が顔に当たり、人にぶつかられ、常に音が鳴っている」と表現した。一方で目指す体験は「湖畔の美しい山小屋に座って、静けさを楽しんでいる」感覚だという（[Tom's Guide](https://www.tomsguide.com/ai/thats-it-its-so-simple-openais-sam-altman-teases-screenless-device-with-jony-ive)、[WebProNews](https://www.webpronews.com/sam-altman-jony-ive-team-on-ai-device-to-surpass-smartphones-by-2027/)）。
 
-この発言は、デバイスの仕様よりも設計思想を示すものとして報じられている。通知や画面に追われる状態から離れ、声で話しかければ文脈を理解して反応する、背景に存在するAIという方向性だ。報道では「スマートフォンを置き換える」という表現と、「スマートフォンやノートPCと並ぶ第三のコアデバイス」という表現の両方が使われており、最終的にどちらの位置づけになるかはまだ固まっていないようにみえる（[Built In](https://builtin.com/articles/openai-device)、[9to5Mac](https://9to5mac.com/2026/02/10/jony-ives-ai-hardware-is-delayed-to-2027-and-wont-be-called-io/)）。
+この発言は、デバイスの仕様よりも設計思想を示すものとして報じられている。センサーを持つ機器を通じて現実世界のデータを集める流れ自体は[フィジカルAIのデータフライホイール]({% post_url 2026-07-23-physical-ai-data-flywheel-agi %})として別に整理している。通知や画面に追われる状態から離れ、声で話しかければ文脈を理解して反応する、背景に存在するAIという方向性だ。報道では「スマートフォンを置き換える」という表現と、「スマートフォンやノートPCと並ぶ第三のコアデバイス」という表現の両方が使われており、最終的にどちらの位置づけになるかはまだ固まっていないようにみえる（[Built In](https://builtin.com/articles/openai-device)、[9to5Mac](https://9to5mac.com/2026/02/10/jony-ives-ai-hardware-is-delayed-to-2027-and-wont-be-called-io/)）。
 
 ## 検討されてきた形状は一つではない
 

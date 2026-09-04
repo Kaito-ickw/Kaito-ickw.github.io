@@ -132,6 +132,8 @@ last_modified_at: 2026-07-27
 
 ---
 
+同じ考え方をスポーツの成績評価へ持ち込んだ例は、[2026ワールドカップで見るサッカーのデータ革命]({% post_url 2026-06-12-2026-world-cup-soccer-data-revolution %})で扱った期待ゴール数（xG）が分かりやすい。
+
 ## 参考
 
 - [Wilson score interval - Wikipedia](https://en.wikipedia.org/wiki/Binomial_proportion_confidence_interval#Wilson_score_interval)

@@ -93,7 +93,7 @@ updates:
 | Require branches to be up to date | base ブランチに追いついていないとマージできない |
 | Do not allow bypassing the above settings | 管理者でもルールを回避できないようにする |
 
-個人リポジトリで CI を走らせている場合は「Require status checks to pass」だけでも入れておくと、テストが落ちたまま main を更新してしまうミスを防げる。
+個人リポジトリで CI を走らせている場合は「Require status checks to pass」だけでも入れておくと、テストが落ちたまま main を更新してしまうミスを防げる。保護をかける前提となるブランチの切り方は[チーム開発のブランチ戦略と Git Flow の使いどころ]({% post_url 2026-06-11-git-flow-guide %})で扱っている。
 
 ---
 
