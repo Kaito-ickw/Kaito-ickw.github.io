@@ -8,6 +8,7 @@ from __future__ import annotations
 
 import re
 from dataclasses import dataclass, field
+from datetime import date, timedelta
 
 from posts import Post, url_to_key
 
@@ -22,6 +23,9 @@ MIN_IMPRESSIONS_UNCOVERED = 10   # 未カバークエリとして挙げる最低
 MIN_IMPRESSIONS_LOWRANK = 30     # 低順位クエリとして挙げる最低表示回数
 LOW_RANK_POSITION = 20.0
 TOP_QUERIES_PER_POST = 5
+MIN_SEC_PER_VIEW = 3.0       # 1閲覧あたりの滞在がこれ未満なら実読とみなさない
+TREND_WEEKS = 12             # 推移セクションでさかのぼる週数
+TREND_SOURCES = 5            # 推移セクションに載せる流入元の数
 
 JAPANESE_RE = re.compile(r"[ぁ-んァ-ヴ一-龥]")
 
@@ -50,6 +54,16 @@ class PostMetrics:
     @property
     def has_data(self) -> bool:
         return self.pv > 0 or self.impressions > 0
+
+    @property
+    def sec_per_view(self) -> float:
+        """1閲覧あたりの滞在秒数。実際に読まれたかどうかの目安。"""
+        return self.engagement_sec / self.pv if self.pv else 0.0
+
+    @property
+    def is_unread(self) -> bool:
+        """閲覧数は立っているのに滞在がほぼゼロ。自動巡回の可能性が高い。"""
+        return self.pv > 0 and self.sec_per_view < MIN_SEC_PER_VIEW
 
     @property
     def is_new(self) -> bool:
@@ -138,10 +152,18 @@ def split_by_lang(metrics: dict[str, PostMetrics]) -> dict[str, list[PostMetrics
 
 
 def rising(items: list[PostMetrics]) -> list[PostMetrics]:
+    """伸びた記事。滞在がほぼゼロの記事は、読まれた実績として数えない。
+
+    自動巡回は1ページを一瞬だけ開いて去るため、閲覧数だけを見ていると
+    「急に伸びた記事」として上位に並んでしまう。
+    """
     picked = [
         i
         for i in items
-        if i.pv >= MIN_PV_FOR_TREND and i.pv_ratio is not None and i.pv_ratio >= TREND_RATIO
+        if i.pv >= MIN_PV_FOR_TREND
+        and i.pv_ratio is not None
+        and i.pv_ratio >= TREND_RATIO
+        and not i.is_unread
     ]
     return sorted(picked, key=lambda i: i.pv_ratio or 0, reverse=True)[:10]
 
@@ -210,3 +232,68 @@ def query_candidates(
             result[lang][bucket].sort(key=lambda r: r.get("impressions", 0), reverse=True)
             result[lang][bucket] = result[lang][bucket][:25]
     return result
+
+
+# --- 推移 -----------------------------------------------------------------
+
+
+def _week_start(yyyymmdd: str) -> str:
+    """GA4形式(20260901)またはGSC形式(2026-09-01)の日付を、その週の月曜へ丸める。"""
+    text = yyyymmdd.replace("-", "")
+    if len(text) != 8 or not text.isdigit():
+        return ""
+    day = date(int(text[:4]), int(text[4:6]), int(text[6:]))
+    return (day - timedelta(days=day.weekday())).isoformat()
+
+
+def search_visibility_trend(gsc_daily: list[dict], weeks: int = TREND_WEEKS) -> list[dict]:
+    """検索での見え方を週単位にまとめる。
+
+    期間の合計だけでは、緩やかに落ちたのか、ある週を境に消えたのかが
+    区別できない。順位まで並べて初めて、記事側の問題か、サイト全体が
+    検索結果から外れたのかを見分けられる。
+    """
+    buckets: dict[str, dict] = {}
+    for row in gsc_daily:
+        week = _week_start(str(row.get("date", "")))
+        if not week:
+            continue
+        bucket = buckets.setdefault(
+            week, {"week": week, "clicks": 0.0, "impressions": 0.0, "_pos": 0.0}
+        )
+        bucket["clicks"] += row.get("clicks", 0)
+        bucket["impressions"] += row.get("impressions", 0)
+        bucket["_pos"] += row.get("position", 0.0) * row.get("impressions", 0)
+    result = []
+    for bucket in sorted(buckets.values(), key=lambda b: b["week"]):
+        impressions = bucket["impressions"]
+        bucket["position"] = bucket.pop("_pos") / impressions if impressions else 0.0
+        result.append(bucket)
+    return result[-weeks:]
+
+
+def source_trend(
+    ga_daily_sources: list[dict], weeks: int = TREND_WEEKS, top: int = TREND_SOURCES
+) -> tuple[list[str], list[dict]]:
+    """流入元ごとのセッション数を週単位にまとめ、主要な流入元だけへ絞る。
+
+    戻り値は (流入元の並び, 週ごとの行)。
+    """
+    buckets: dict[str, dict[str, float]] = {}
+    totals: dict[str, float] = {}
+    for row in ga_daily_sources:
+        week = _week_start(str(row.get("date", "")))
+        if not week:
+            continue
+        medium = row.get("sessionMedium", "")
+        source = row.get("sessionSource", "")
+        name = source if medium in ("", "(none)", "(not set)") else f"{source} / {medium}"
+        sessions = row.get("sessions", 0.0)
+        bucket = buckets.setdefault(week, {})
+        bucket[name] = bucket.get(name, 0.0) + sessions
+        totals[name] = totals.get(name, 0.0) + sessions
+
+    recent = sorted(buckets)[-weeks:]
+    names = [n for n, _ in sorted(totals.items(), key=lambda kv: kv[1], reverse=True)[:top]]
+    rows = [{"week": week, "sessions": buckets[week]} for week in recent]
+    return names, rows

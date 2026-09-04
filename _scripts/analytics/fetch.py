@@ -29,6 +29,8 @@ from posts import load_posts  # noqa: E402
 # GA4もSearch Consoleも直近数日のデータは確定しない。既定でこの日数だけ遡る。
 DEFAULT_END_OFFSET = 3
 DEFAULT_DAYS = 28
+# 推移を見る区間。前期比だけでは、ある週を境に検索から消えた場合に気づけない。
+TREND_DAYS = 84
 
 
 def build_periods(days: int, end_offset: int, today: date) -> dict:
@@ -36,9 +38,11 @@ def build_periods(days: int, end_offset: int, today: date) -> dict:
     start = end - timedelta(days=days - 1)
     prev_end = start - timedelta(days=1)
     prev_start = prev_end - timedelta(days=days - 1)
+    trend_start = end - timedelta(days=TREND_DAYS - 1)
     return {
         "current": (start.isoformat(), end.isoformat()),
         "previous": (prev_start.isoformat(), prev_end.isoformat()),
+        "trend": (trend_start.isoformat(), end.isoformat()),
         "generated": today.isoformat(),
     }
 
@@ -63,6 +67,7 @@ def main() -> int:
     period = build_periods(args.days, args.end_offset, date.today())
     now_start, now_end = period["current"]
     prev_start, prev_end = period["previous"]
+    trend_start, trend_end = period["trend"]
 
     print(f"対象期間 {now_start} 〜 {now_end}（比較: {prev_start} 〜 {prev_end}）")
 
@@ -72,12 +77,14 @@ def main() -> int:
         ga_pages_prev = ga4.fetch_pages(config, prev_start, prev_end)
         ga_channels = ga4.fetch_channels(config, now_start, now_end)
         ga_channels_prev = ga4.fetch_channels(config, prev_start, prev_end)
+        ga_daily_sources = ga4.fetch_daily_sources(config, trend_start, trend_end)
 
         print("Search Console を取得中...")
         gsc_pages = gsc.fetch_pages(config, now_start, now_end)
         gsc_pages_prev = gsc.fetch_pages(config, prev_start, prev_end)
         gsc_queries = gsc.fetch_queries(config, now_start, now_end)
         gsc_page_queries = gsc.fetch_page_queries(config, now_start, now_end)
+        gsc_daily = gsc.fetch_daily(config, trend_start, trend_end)
     except Exception as error:  # 認証・権限まわりの失敗を分かりやすく出す
         print(f"\n取得に失敗した: {error}\n", file=sys.stderr)
         print(
@@ -126,6 +133,8 @@ def main() -> int:
         "gsc-pages-previous": gsc_pages_prev,
         "gsc-queries": gsc_queries,
         "gsc-page-queries": gsc_page_queries,
+        "gsc-daily": gsc_daily,
+        "ga4-daily-sources": ga_daily_sources,
     }
     for name, rows in raw.items():
         (raw_dir / f"{name}.json").write_text(
@@ -144,6 +153,8 @@ def main() -> int:
             ga_channels,
             ga_channels_prev,
             period,
+            gsc_daily=gsc_daily,
+            ga_daily_sources=ga_daily_sources,
             gsc_has_data=bool(gsc_pages or gsc_queries),
         )
         path = out_dir / f"report-{lang}.md"

@@ -52,3 +52,8 @@ def fetch_queries(config: Config, start: str, end: str) -> list[dict]:
 def fetch_page_queries(config: Config, start: str, end: str) -> list[dict]:
     """記事ごとの流入クエリ。どのクエリが既存記事で拾えているかの判定に使う。"""
     return _query(config, ["page", "query"], start, end, limit=5000)
+
+
+def fetch_daily(config: Config, start: str, end: str) -> list[dict]:
+    """日別の表示回数・クリック・平均順位。検索での見え方の推移を追う。"""
+    return _query(config, ["date"], start, end, limit=1000)
