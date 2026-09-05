@@ -1,0 +1,23 @@
+{%- comment -%}
+  日英ペア記事の hreflang を出力する。
+
+  - フロントマターの `ref` が同じで `lang` が異なる記事同士を相互に結ぶ
+  - 自分自身への self-referential な hreflang も含める（仕様上必須）
+  - x-default は日本語版へ向ける（当サイトは日本語が主）
+  - 対になる記事が片方しか存在しない場合は何も出力しない
+  - 対象は `_posts/` の記事のみ。記事以外のページでは出力しない
+{%- endcomment -%}
+{%- if page.ref and page.ref != empty -%}
+  {%- assign ref_posts = site.posts | where: "ref", page.ref -%}
+  {%- assign ja_posts = ref_posts | where: "lang", "ja" -%}
+  {%- assign en_posts = ref_posts | where: "lang", "en" -%}
+  {%- if ja_posts.size > 0 and en_posts.size > 0 -%}
+    {%- assign ja_post = ja_posts.first -%}
+    {%- assign en_post = en_posts.first -%}
+    {%- if page.url == ja_post.url or page.url == en_post.url -%}
+  <link rel="alternate" hreflang="ja" href="{{ ja_post.url | absolute_url }}">
+  <link rel="alternate" hreflang="en" href="{{ en_post.url | absolute_url }}">
+  <link rel="alternate" hreflang="x-default" href="{{ ja_post.url | absolute_url }}">
+    {%- endif -%}
+  {%- endif -%}
+{%- endif -%}
