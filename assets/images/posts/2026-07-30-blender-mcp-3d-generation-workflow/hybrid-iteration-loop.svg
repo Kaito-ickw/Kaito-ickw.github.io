@@ -1,0 +1,49 @@
+<svg viewBox="0 0 400 565" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="loop-title loop-desc">
+<title id="loop-title">生成→検査→修正→評価の反復ワークフロー</title>
+<desc id="loop-desc">3D仕様書をもとにGeneratorが初期メッシュを作り、InspectorがBlender内から寸法やメッシュ統計を検査する。ActorがBlender MCP経由で局所修正を行い、レンダリング結果をVisual Criticが要件と比較し、Validatorが用途別の機械的な合格条件を確認したうえで人間が最終承認する。問題があればGeneratorまたはActorへ戻る。</desc>
+<style>text{font-family:system-ui,-apple-system,"Segoe UI",sans-serif;}</style>
+<rect x="0" y="0" width="400" height="565" rx="8" fill="#fcfcfb"/>
+<rect x="12" y="16" width="344" height="31" rx="6" fill="#eaf1fb" stroke="#2a78d6" stroke-width="1"/>
+<text x="184" y="36" font-size="12" font-weight="600" text-anchor="middle" fill="#0b0b0b">3D仕様書</text>
+<rect x="12" y="87" width="344" height="46" rx="6" fill="#f0efec" stroke="#c3c2b7" stroke-width="1"/>
+<text x="184" y="107" font-size="12" text-anchor="middle" fill="#0b0b0b">Generator</text>
+<text x="184" y="122" font-size="12" text-anchor="middle" fill="#0b0b0b">初期メッシュ生成</text>
+<rect x="12" y="159" width="344" height="46" rx="6" fill="#f0efec" stroke="#c3c2b7" stroke-width="1"/>
+<text x="184" y="179" font-size="12" text-anchor="middle" fill="#0b0b0b">Inspector</text>
+<text x="184" y="194" font-size="12" text-anchor="middle" fill="#0b0b0b">寸法・構造検査</text>
+<rect x="12" y="245" width="344" height="46" rx="6" fill="#f0efec" stroke="#c3c2b7" stroke-width="1"/>
+<text x="184" y="265" font-size="12" text-anchor="middle" fill="#0b0b0b">Actor</text>
+<text x="184" y="280" font-size="12" text-anchor="middle" fill="#0b0b0b">Blender MCPで修正</text>
+<rect x="12" y="317" width="344" height="31" rx="6" fill="#f0efec" stroke="#c3c2b7" stroke-width="1"/>
+<text x="184" y="337" font-size="12" text-anchor="middle" fill="#0b0b0b">レンダリング</text>
+<rect x="12" y="374" width="344" height="46" rx="6" fill="#f0efec" stroke="#c3c2b7" stroke-width="1"/>
+<text x="184" y="394" font-size="12" text-anchor="middle" fill="#0b0b0b">Visual Critic</text>
+<text x="184" y="409" font-size="12" text-anchor="middle" fill="#0b0b0b">要件と画像を比較</text>
+<rect x="12" y="446" width="344" height="46" rx="6" fill="#f0efec" stroke="#c3c2b7" stroke-width="1"/>
+<text x="184" y="466" font-size="12" text-anchor="middle" fill="#0b0b0b">Validator</text>
+<text x="184" y="481" font-size="12" text-anchor="middle" fill="#0b0b0b">用途別の機械検査</text>
+<rect x="12" y="518" width="344" height="31" rx="6" fill="#eef8f4" stroke="#1baf7a" stroke-width="1"/>
+<text x="184" y="538" font-size="12" text-anchor="middle" fill="#0b0b0b">人間の最終承認</text>
+<path d="M184,47 L184,81" stroke="#c3c2b7" stroke-width="1.3" fill="none" stroke-linejoin="round"/>
+<path d="M180.4,81 L187.6,81 L184,87 Z" fill="#c3c2b7"/>
+<path d="M184,133 L184,153" stroke="#c3c2b7" stroke-width="1.3" fill="none" stroke-linejoin="round"/>
+<path d="M180.4,153 L187.6,153 L184,159 Z" fill="#c3c2b7"/>
+<path d="M184,205 L184,239" stroke="#c3c2b7" stroke-width="1.3" fill="none" stroke-linejoin="round"/>
+<path d="M180.4,239 L187.6,239 L184,245 Z" fill="#c3c2b7"/>
+<path d="M184,291 L184,311" stroke="#c3c2b7" stroke-width="1.3" fill="none" stroke-linejoin="round"/>
+<path d="M180.4,311 L187.6,311 L184,317 Z" fill="#c3c2b7"/>
+<path d="M184,348 L184,368" stroke="#c3c2b7" stroke-width="1.3" fill="none" stroke-linejoin="round"/>
+<path d="M180.4,368 L187.6,368 L184,374 Z" fill="#c3c2b7"/>
+<path d="M184,420 L184,440" stroke="#c3c2b7" stroke-width="1.3" fill="none" stroke-linejoin="round"/>
+<path d="M180.4,440 L187.6,440 L184,446 Z" fill="#c3c2b7"/>
+<path d="M184,492 L184,512" stroke="#c3c2b7" stroke-width="1.3" fill="none" stroke-linejoin="round"/>
+<path d="M180.4,512 L187.6,512 L184,518 Z" fill="#c3c2b7"/>
+<path d="M356,397 L360,397 Q367,397 367,390 L367,275 Q367,268 360,268 L362,268" stroke="#898781" stroke-width="1.3" fill="none" stroke-linejoin="round" stroke-dasharray="4 3"/>
+<path d="M362,264.4 L362,271.6 L356,268 Z" fill="#898781"/>
+<rect x="319" y="323.5" width="48" height="13" rx="3" fill="#fcfcfb" opacity="0.95"/>
+<text x="363" y="333.5" font-size="10" text-anchor="end" fill="#52514e">問題あり</text>
+<path d="M356,469 L376,469 Q383,469 383,462 L383,117 Q383,110 376,110 L362,110" stroke="#898781" stroke-width="1.3" fill="none" stroke-linejoin="round" stroke-dasharray="4 3"/>
+<path d="M362,106.4 L362,113.6 L356,110 Z" fill="#898781"/>
+<rect x="335" y="280.5" width="48" height="13" rx="3" fill="#fcfcfb" opacity="0.95"/>
+<text x="379" y="290.5" font-size="10" text-anchor="end" fill="#52514e">要件未達</text>
+</svg>
