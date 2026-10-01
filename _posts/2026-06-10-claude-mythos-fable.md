@@ -5,7 +5,7 @@ subtitle: Anthropic が2026年6月9日に公開した新最上位モデルの仕
 categories: AI開発
 tags: ["Claude", "LLM", "AIセーフティ"]
 lang: ja
-last_modified_at: 2026-07-27
+last_modified_at: 2026-10-01
 ---
 
 2026年6月9日、Anthropic は Claude Fable 5 を一般公開した。同時に、安全対策を一部解除した Claude Mythos 5 も招待制で提供を開始している。「Mythos」というモデルの名前を初めて聞いた人も多いだろう。この記事では、Mythos と Fable の関係、性能、安全機構、利用条件を整理する。
@@ -96,6 +96,16 @@ Mythos/Fable の構成をひとことでいうと、「強力なモデルをそ�
 モデル性能という軸では確実に上位ティアが開いた。AIセーフティという軸では、制約の強さと用途のトレードオフを構造で解こうとしているのが今回の設計の特徴だ。Fable がどこまで実際の用途で Opus 4.8 の上位互換として使えるかは、今後の実用報告が蓄積されるにつれてより明確になるだろう。
 
 ---
+
+## 追記（2026年10月1日）
+
+2026年9月1日、AnthropicはClaude Fable 5.1とClaude Mythos 5.1を公開した。APIの価格（入力$10・出力$50）は変わらないが、キャッシュ読み取りコストが75%削減された。ベンチマーク上はFable 5からの大幅な改善が示されており、Fable 5.1はAnthropicが公開したすべての指標でClaude Opus 5を上回っている。
+
+- Terminal-Bench-Science 0.1（科学的推論の agentic ベンチマーク）: Fable 5.1 が52.6%、Fable 5 が24.7%
+- Terminal-Bench 4.0: Fable 5.1 が55.8%、Fable 5 が42.0%
+- GDPval-AA v2（実務・知識労働）: Fable 5.1 が1,853、Fable 5 が1,723
+
+本文の性能数値と比較表はFable 5（2026年6月9日公開）時点のものである。最新のリーダーボード上の位置づけはFable 5.1を参照してほしい。
 
 ## 参考
 

@@ -31,17 +31,17 @@ articles:
   - slug: 2026-07-23-tinker-training-api
     stale_risk: high
     reason: Tinkerの対応モデル一覧・課金メーターごとの単価・Inklingとの関係・OpenAI互換APIの提供状況
-    last_verified: 2026-09-01
+    last_verified: 2026-10-01
 
   - slug: 2026-07-20-kimi-k3-vs-fable-gpt
     stale_risk: high
     reason: Kimi K3・Claude Fable 5・GPT-5.6 Solのベンチマーク数値・価格・ウェイト公開予定日（英語版も同時に更新する）
-    last_verified: 2026-09-01
+    last_verified: 2026-10-01
 
   - slug: 2026-07-20-kimi-k3-setup
     stale_risk: high
     reason: Kimi Coding APIのエンドポイント・モデル名（k3[1m]）・環境変数仕様・Kimi CLIの提供形態
-    last_verified: 2026-09-01
+    last_verified: 2026-10-01
 
   - slug: 2026-07-12-gpt-5-6-prompt-design
     stale_risk: high
@@ -51,32 +51,32 @@ articles:
   - slug: 2026-06-24-ai-subscription-telehodai
     stale_risk: high
     reason: Claude Code・Codexのサブスクリプション利用上限とリセット仕様
-    last_verified: 2026-09-01
+    last_verified: 2026-10-01
 
   - slug: 2026-06-16-spacex-ipo-kardashev-scale
     stale_risk: high
     reason: SpaceXのIPO価格・調達額・時価総額・株価などの数値（市場変動で陳腐化）
-    last_verified: 2026-09-01
+    last_verified: 2026-10-01
 
   - slug: 2026-06-06-supabase-vs-railway-comparison
     stale_risk: high
     reason: Supabase・Railway・Neon の詳細料金比較（無料枠・従量単価）
-    last_verified: 2026-09-01
+    last_verified: 2026-10-01
 
   - slug: 2026-06-06-vercel-frontend-selection
     stale_risk: high
     reason: Vercel / Netlify / Cloudflare の料金表（月額・帯域課金・Netlify のクレジット単価）
-    last_verified: 2026-09-01
+    last_verified: 2026-10-01
 
   - slug: 2026-06-10-claude-mythos-fable
     stale_risk: high
     reason: Claude Fable 5 のベンチマーク・特性（新モデルリリースで陳腐化）
-    last_verified: 2026-09-01
+    last_verified: 2026-10-01
 
   - slug: 2026-06-11-goose-agent-pyramid-hierarchy
     stale_risk: high
     reason: エージェントツール比較表（Goose・Claude Code・Codex CLI の LLM バージョン）
-    last_verified: 2026-09-01
+    last_verified: 2026-10-01
 
   - slug: 2026-06-11-mobile-first-ai-dev-issue-pr-workflow
     stale_risk: medium
@@ -86,12 +86,12 @@ articles:
   - slug: 2026-06-16-openai-jony-ive-ai-hardware-vision
     stale_risk: high
     reason: OpenAIのハードウェアデバイス計画（製品名・形状・発売時期・製造体制）。未発表のため報道内容が頻繁に変わる
-    last_verified: 2026-09-01
+    last_verified: 2026-10-01
 
   - slug: 2026-06-18-google-workspace-studio-guide
     stale_risk: high
     reason: Google Workspace Studio の機能仕様・対応コネクタ数・利用可能プラン（リリース初期のため頻繁に変わる）
-    last_verified: 2026-09-01
+    last_verified: 2026-10-01
 
   - slug: 2026-07-11-ai-agent-terminal-herdr-cmux
     stale_risk: high
@@ -240,9 +240,9 @@ articles:
   - slug: 2026-07-29-felix-craft-autonomy
     stale_risk: high
     reason: Felix Craftの累計収益・内訳・運用コスト・自律範囲（本人の公開レポートに依存し、月次で更新される）
-    last_verified: 2026-09-01
+    last_verified: 2026-10-01
 
   - slug: 2026-08-07-kawabe-ai-solopreneur
     stale_risk: high
     reason: 川邊健太郎の新会社の社名・事業内容・エージェント構成（POC段階で今後公表される見込み）
-    last_verified: 2026-09-01
+    last_verified: 2026-10-01
